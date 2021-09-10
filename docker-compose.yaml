@@ -1,0 +1,45 @@
+version: "3.2"
+
+services:
+  api-config:
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    networks:
+      - api-conf-net
+
+  flyway:
+    image: flyway/flyway
+    command: migrate
+    volumes:
+      - ./database/sql:/flyway/sql
+      - ./database/drivers:/flyway/drivers
+      - ./database/conf:/flyway/conf
+    depends_on:
+      - oracle
+    networks:
+      - api-conf-net
+
+  oracle:
+    container_name: 'oracle-db-12c'
+    image: store/oracle/database-enterprise:12.2.0.1
+    volumes:
+      - './database/volume:/ORCL'
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    networks:
+      - api-conf-net
+
+
+networks:
+  api-conf-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
+
+
