@@ -26,5 +26,6 @@ hs_err_pid*
 .idea
 
 # Project files
-database/volume/*
+/database/volume/*
 /target/
+/.jpb/

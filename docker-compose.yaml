@@ -2,6 +2,7 @@ version: "3.2"
 
 services:
   api-config:
+    container_name: 'spring-api-config'
     ports:
       - "8080:8080"
     env_file:
@@ -9,10 +10,13 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
+    depends_on:
+      - oracle
     networks:
       - api-conf-net
 
   flyway:
+    container_name: 'flyway'
     image: flyway/flyway
     command: migrate
     volumes:
