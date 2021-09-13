@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.models;
+package it.pagopa.pagopa.apiconfig.models.entities;
 
 import lombok.Getter;
 import lombok.Setter;

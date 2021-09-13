@@ -11,9 +11,6 @@ RUN mvn -f /home/app/pom.xml clean package
 #
 FROM adoptopenjdk/openjdk16:alpine
 COPY --from=build /home/app/target/*.jar /usr/local/lib/app.jar
-COPY wait-for-it.sh .
-RUN chmod +x /wait-for-it.sh
-RUN apk add --no-cache bash
 
 EXPOSE 8080
 
