@@ -12,6 +12,7 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - oracle
+#    command: wait-for-it.sh oracle-db-12c:1521 --strict --timeout=600 -- java -jar /usr/local/lib/app.jar
     networks:
       - api-conf-net
 
