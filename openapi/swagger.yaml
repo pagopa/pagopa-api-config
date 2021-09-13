@@ -13,19 +13,19 @@ servers:
 security:
   - ApiKey: []
 tags:
-  - name: Creditor Istitutions
-    description: Everything about Creditor Istitution
+  - name: Creditor Institutions
+    description: Everything about Creditor Institution
   - name: Payment Service Providers
     description: Everything about PSP
   - name: Configuration
     description: Everything about general configuration
 paths:
-  /creditoristitutions/:
+  /creditorinstitutions/:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
-        Get creditor istitutions list
+        Get creditor institutions list
       operationId: GetECs
       responses:
         200:
@@ -33,7 +33,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreditorIstitutions'
+                $ref: '#/components/schemas/CreditorInstitutions'
         403:
           description: Forbidden client error status.
           content: {}
@@ -46,12 +46,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
-  /creditoristitutions/{organizationfiscalcode}:
+  /creditorinstitutions/{organizationfiscalcode}:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
-        Get creditor istitution details
+        Get creditor institution details
       operationId: GetEC
       parameters:
         - name: organizationfiscalcode
@@ -69,7 +69,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreditorIstitutionDetails'
+                $ref: '#/components/schemas/CreditorInstitutionDetails'
         403:
           description: Forbidden client error status.
           content: {}
@@ -85,12 +85,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
-  /creditoristitutions/{organizationfiscalcode}/encodings:
+  /creditorinstitutions/{organizationfiscalcode}/encodings:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
-        Get creditor istitution encodings
+        Get creditor institution encodings
       operationId: GetECCodifiche
       parameters:
         - name: organizationfiscalcode
@@ -108,7 +108,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreditorIstitutionEncodings'
+                $ref: '#/components/schemas/CreditorInstitutionEncodings'
         403:
           description: Forbidden client error status.
           content: {}
@@ -124,12 +124,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
-  /creditoristitutions/{organizationfiscalcode}/encodings/{encodingcode}:
+  /creditorinstitutions/{organizationfiscalcode}/encodings/{encodingcode}:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
-        Get creditor istitution encoding exists
+        Get creditor institution encoding exists
       operationId: GetECCodifica
       parameters:
         - name: organizationfiscalcode
@@ -172,12 +172,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
-  /creditoristitutions/{organizationfiscalcode}/ibans:
+  /creditorinstitutions/{organizationfiscalcode}/ibans:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
-        Get creditor istitution ibans
+        Get creditor institution ibans
       operationId: GetECIbans
       parameters:
         - name: organizationfiscalcode
@@ -211,12 +211,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
-  /creditoristitutions/{organizationfiscalcode}/ibans/{ibancode}:
+  /creditorinstitutions/{organizationfiscalcode}/ibans/{ibancode}:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
-        Get creditor istitution iban exists
+        Get creditor institution iban exists
       operationId: GetECIban
       parameters:
         - name: organizationfiscalcode
@@ -262,7 +262,7 @@ paths:
   /brokersec/:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
         Get creditor brokers list
       operationId: GetBrokersEC
@@ -288,7 +288,7 @@ paths:
   /brokersec/{brokercode}:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
         Get creditor broker details
       operationId: GetBrokerEC
@@ -327,7 +327,7 @@ paths:
   /stations/:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
         Get stations list
       operationId: GetStations
@@ -353,7 +353,7 @@ paths:
   /stations/{stationcode}:
     get:
       tags:
-        - Creditor Istitutions
+        - Creditor Institutions
       summary: |
         Get station details
       operationId: GetStation
@@ -423,14 +423,14 @@ components:
             An absolute URI that identifies the specific occurrence of the problem.
             It may or may not yield further information if dereferenced.
           format: uri
-    CreditorIstitutions:
+    CreditorInstitutions:
       type: object
       properties:
-        creditor_istitutions:
+        creditor_institutions:
           type: array
           items:
-            $ref: '#/components/schemas/CreditorIstitution'
-    CreditorIstitution:
+            $ref: '#/components/schemas/CreditorInstitution'
+    CreditorInstitution:
       required:
         - address
         - business_name
@@ -448,7 +448,7 @@ components:
           example: "1234567890100"
         enabled:
           type: boolean
-          description: creditor istitution enabled
+          description: creditor institution enabled
           default: true
         business_name:
           $ref: '#/components/schemas/Description'
@@ -479,13 +479,13 @@ components:
         payment_cancellation:
           type: boolean
           default: false
-    CreditorIstitutionDetails:
+    CreditorInstitutionDetails:
       required:
         - stations
       type: object
       properties:
-        creditor_istitution:
-          $ref: '#/components/schemas/CreditorIstitution'
+        creditor_institution:
+          $ref: '#/components/schemas/CreditorInstitution'
         stations:
           type: array
           items:
@@ -497,7 +497,7 @@ components:
     Result:
       type: boolean
       default: false
-    CreditorIstitutionEncodings:
+    CreditorInstitutionEncodings:
       type: object
       properties:
         id_dominio:
