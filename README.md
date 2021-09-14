@@ -2,21 +2,44 @@
 Spring application to manage configuration Api for EC/PSP on the Nodo component.
 
 ## Start Project Locally
-If you just want to try this project, open a terminal in the root of this project and run:
+If you just want to try this project, open a terminal in the root of this project and typing:
 
 `docker-compose up --build`
 
-This command create 3 containers: the Spring application, the Oracle DB and [Flyway](https://flywaydb.org/).
+if all right you'll see something like that :
+```sh
+oracle-db-12c | /u01/app/oracle/diag/rdbms/orclcdb/ORCLCDB/trace/ORCLCDB_vktm_29.trc
+flyway        | Flyway Community Edition 7.15.0 by Redgate
+flyway        | Database: jdbc:oracle:thin:@oracle-db-12c:1521:ORCLCDB (Oracle 12.2)
+flyway        | Successfully validated 3 migrations (execution time 00:00.103s)
+flyway        | Current version of schema "NODO4_CFG": 2
+flyway        | Schema "NODO4_CFG" is up to date. No migration necessary.
+flyway exited with code 0
+spring-api-config | 2021-09-14 10:54:29.485  INFO 1 --- [           main] i.p.p.a.config.RetryableDataSource       : try getting connection...
+spring-api-config | 2021-09-14 10:54:29.485  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+spring-api-config | 2021-09-14 10:54:29.814  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+spring-api-config | 2021-09-14 10:54:29.868  INFO 1 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle12cDialect
+spring-api-config | 2021-09-14 10:55:01.768  INFO 1 --- [           main] i.p.p.a.config.RetryableDataSource       : try getting connection...
+spring-api-config | 2021-09-14 10:55:02.065  INFO 1 --- [           main] i.p.p.a.config.RetryableDataSource       : try getting connection...
+spring-api-config | 2021-09-14 10:55:02.125  INFO 1 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+spring-api-config | 2021-09-14 10:55:02.159  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+spring-api-config | 2021-09-14 10:55:02.858  WARN 1 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+spring-api-config | 2021-09-14 10:55:03.454  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/apiconfig'
+spring-api-config | 2021-09-14 10:55:03.468  INFO 1 --- [           main] it.pagopa.pagopa.apiconfig.ApiConfig     : Started ApiConfig in 99.198 seconds (JVM running for 100.391)
+```
+> NOTE : you can connect to local instance of `NODO4_CFG` db, for example via `sqlplus` typing `sqlplus NODO4_CFG/PASS_NODO4_CFG@localhost:1521/ORCLCDB.localdomain` on a terminal
+
+The `docker-compose` command create 3 containers: 
+- `pagopa-api-config` spring application, 
+-  Oracle DB with `NODO_CFG` instance
+-  and [Flyway](https://flywaydb.org/) to manage db versioning.
+
 The DB container map `/database/volume` directory to store persistent data.
 Then flyway updates the DB using the script in `/database/script` directory and the configuration in `/database/conf/flyway.conf`.
 
 Because Oracle container can take a long time to start up, the Spring application tries several times to connect using the annotation `@Retryable` waiting with an increasing delay.
-
-See these classes:
-```
-/src/main/java/it/pagopa/pagopa/apiconfig/config/RetryableDataSource.java
-/src/main/java/it/pagopa/pagopa/apiconfig/config/RetryableDatabasePostProcessor.java
-```
+According to [Control startup and shutdown order in Compose](https://docs.docker.com/compose/startup-order/) best practice.
+To details see `RetryableDataSource.java` and `RetryableDatabasePostProcessor.java` classes
 
 *NB: for this reason you can see some connection error in the application log. After 10 failed attempts the application stops with an error.*
 
@@ -61,5 +84,4 @@ local url = jdbc:oracle:thin:@localhost:1521:ORCLCDB
 Make with ❤️ from PagoPa S.p.A.
 
 ### Mainteiners:
-- [Jacopo Carlini](https://github.com/jacopocarlini)
-- [Pasquale Spica](https://github.com/pasqualespica)
+see `CODEOWNERS` file
