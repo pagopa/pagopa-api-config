@@ -1,7 +1,9 @@
 package it.pagopa.pagopa.apiconfig.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.Pattern;
@@ -14,27 +16,25 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutionAddress {
     @JsonProperty("location")
-    @ApiModelProperty(example = "Via delle vie 3", value = "")
-
-
+    @Schema(example = "Via delle vie 3", description = "")
     private String location;
 
     @JsonProperty("city")
-    @ApiModelProperty(example = "Lorem", value = "")
-
-
+    @Schema(example = "Lorem", description = "")
     private String city;
 
     @JsonProperty("zipCode")
-    @ApiModelProperty(example = "00187", value = "")
+    @Schema(example = "00187", description = "")
 
     @Pattern(regexp = "^\\d{5}$")
     private String zipCode;
 
     @JsonProperty("country_code")
-    @ApiModelProperty(example = "RM", value = "")
+    @Schema(example = "RM", description = "")
 
     @Pattern(regexp = "^\\w{2}$")
     private String countryCode;
