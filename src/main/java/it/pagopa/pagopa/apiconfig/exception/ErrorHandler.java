@@ -1,6 +1,6 @@
 package it.pagopa.pagopa.apiconfig.exception;
 
-import it.pagopa.pagopa.apiconfig.model.ErrorResponse;
+import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,21 +13,26 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ErrorHandler extends ResponseEntityExceptionHandler {
 
 
+    public static final String INTERNAL_SERVER_ERROR = "INTERNAL SERVER ERROR";
+
     /**
      * Handle if a {@link AppException} is raised
      *
      * @param ex      {@link AppException} exception raised
      * @param request from frontend
-     * @return a {@link ErrorResponse} as response with the cause and with an appropriated HTTP status
+     * @return a {@link ProblemJson} as response with the cause and with an appropriated HTTP status
      */
     @ExceptionHandler({AppException.class})
-    public ResponseEntity<ErrorResponse> handleAppException(final AppException ex, final WebRequest request) {
-        var errorResponse = ErrorResponse.builder()
-                .message(ex.getDetails())
+    public ResponseEntity<ProblemJson> handleAppException(final AppException ex, final WebRequest request) {
+        var errorResponse = ProblemJson.builder()
+                .status(ex.getHttpStatus().value())
+                .type(null) // TODO
+                .title(ex.getMessage())
+                .detail(ex.getDetails())
+                .instance(null) // TODO
                 .build();
         return new ResponseEntity<>(errorResponse, ex.getHttpStatus());
     }
-
 
 
     /**
@@ -35,12 +40,16 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      *
      * @param ex      {@link Exception} exception raised
      * @param request from frontend
-     * @return a {@link ErrorResponse} as response with the cause and with 500 as HTTP status
+     * @return a {@link ProblemJson} as response with the cause and with 500 as HTTP status
      */
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<ErrorResponse> handleGenericException(final Exception ex, final WebRequest request) {
-        var errorResponse = ErrorResponse.builder()
-                .message(ex.getMessage())
+    public ResponseEntity<ProblemJson> handleGenericException(final Exception ex, final WebRequest request) {
+        var errorResponse = ProblemJson.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .type(null) // TODO
+                .title(INTERNAL_SERVER_ERROR)
+                .detail(ex.getMessage())
+                .instance(null) // TODO
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
