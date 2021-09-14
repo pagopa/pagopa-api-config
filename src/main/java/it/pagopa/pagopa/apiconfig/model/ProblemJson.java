@@ -10,7 +10,8 @@ import javax.validation.constraints.Min;
 import java.net.URI;
 
 /**
- * ProblemJson
+ * Object returned as response in case of an error.
+ * <p> See {@link it.pagopa.pagopa.apiconfig.exception.ErrorHandler}
  */
 @Data
 @Builder(toBuilder = true)
