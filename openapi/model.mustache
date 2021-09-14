@@ -17,10 +17,13 @@ import org.springframework.validation.annotation.Validated;
         import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
     {{/withXml}}
+    import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+    import com.fasterxml.jackson.annotation.JsonInclude;
 {{/jackson}}
 {{#withXml}}
     import javax.xml.bind.annotation.*;
 {{/withXml}}
+import io.swagger.v3.oas.annotations.media.Schema;
 
 {{#useLombok}}  import lombok.*;{{/useLombok}}
 

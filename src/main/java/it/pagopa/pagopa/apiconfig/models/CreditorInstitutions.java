@@ -1,7 +1,9 @@
 package it.pagopa.pagopa.apiconfig.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -15,9 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutions {
     @JsonProperty("creditor_institutions")
-    @ApiModelProperty(value = "")
+    @Schema(description = "")
     @Valid
     private List<CreditorInstitution> creditorInstitutionList = null;
 

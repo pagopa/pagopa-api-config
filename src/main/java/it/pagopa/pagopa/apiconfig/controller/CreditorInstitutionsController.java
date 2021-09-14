@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("/creditorinstitutions")
 public class CreditorInstitutionsController {
 
     @Autowired
@@ -23,10 +23,10 @@ public class CreditorInstitutionsController {
     @Operation(summary = "Get creditor institutions list ", description = "", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Istitutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreditorInstitutions.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden client error status."),
-            @ApiResponse(responseCode = "429", description = "Too many requests"),
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
-    @GetMapping(value = "/creditorinstitutions/", produces = {"application/json"})
+    @GetMapping(value = "", produces = {"application/json"})
     public ResponseEntity<CreditorInstitutions> getECs() {
         return ResponseEntity.ok(creditorInstitutionsService.getECs());
     }
