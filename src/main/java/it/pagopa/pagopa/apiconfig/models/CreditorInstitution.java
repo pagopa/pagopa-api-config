@@ -1,7 +1,9 @@
 package it.pagopa.pagopa.apiconfig.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -15,53 +17,49 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitution {
     @JsonProperty("id_dominio")
-    @ApiModelProperty(example = "1234567890100", required = true, value = "")
+    @Schema(example = "1234567890100", required = true, description = "")
     @NotNull
     @Size(max = 35)
     private String idDominio;
 
     @JsonProperty("enabled")
-    @ApiModelProperty(required = true, value = "creditor institution enabled")
+    @Schema(required = true, description = "creditor institution enabled", defaultValue = "true")
     @NotNull
-
     private Boolean enabled = true;
 
     @JsonProperty("business_name")
-    @ApiModelProperty(example = "Comune di Lorem Ipsum", required = true, value = "")
+    @Schema(example = "Comune di Lorem Ipsum", required = true, description = "")
     @NotNull
     @Size(max = 70)
     private String businessName;
 
     @JsonProperty("address")
-    @ApiModelProperty(required = true, value = "")
+    @Schema(required = true, description = "")
     @NotNull
-
     private CreditorInstitutionAddress address;
 
     @JsonProperty("psp_payment")
-    @ApiModelProperty(required = true, value = "")
+    @Schema(required = true, description = "", defaultValue = "true")
     @NotNull
-
     private Boolean pspPayment = true;
 
     @JsonProperty("reporting_ftp")
-    @ApiModelProperty(required = true, value = "")
+    @Schema(required = true, description = "", defaultValue = "false")
     @NotNull
-
     private Boolean reportingFtp = false;
 
     @JsonProperty("reporting_zip")
-    @ApiModelProperty(required = true, value = "")
+    @Schema(required = true, description = "", defaultValue = "false")
     @NotNull
-
     private Boolean reportingZip = false;
 
     @JsonProperty("payment_cancellation")
-    @ApiModelProperty(required = true, value = "")
+    @Schema(required = true, description = "", defaultValue = "false")
     @NotNull
-
     private Boolean paymentCancellation = false;
 
 
