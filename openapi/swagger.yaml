@@ -20,7 +20,7 @@ tags:
   - name: Configuration
     description: Everything about general configuration
 paths:
-  /creditorinstitutions/:
+  /creditorinstitutions:
     get:
       tags:
         - Creditor Institutions
@@ -259,7 +259,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
-  /brokersec/:
+  /brokersec:
     get:
       tags:
         - Creditor Institutions
@@ -324,7 +324,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
-  /stations/:
+  /stations:
     get:
       tags:
         - Creditor Institutions

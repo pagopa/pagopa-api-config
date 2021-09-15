@@ -1,0 +1,15 @@
+{
+  "creditor_institutions": [
+    {
+      "id_domain": "00168480242",
+      "enabled": true,
+      "business_name": "Comune di Bassano del Grappa",
+      "address": {
+        "zipCode": "00123"
+      },
+      "psp_payment": true,
+      "reporting_ftp": false,
+      "reporting_zip": false
+    }
+  ]
+}
