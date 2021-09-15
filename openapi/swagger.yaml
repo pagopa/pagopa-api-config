@@ -435,14 +435,14 @@ components:
         - address
         - business_name
         - enabled
-        - id_dominio
+        - id_domain
         - payment_cancellation
         - psp_payment
         - reporting_ftp
         - reporting_zip
       type: object
       properties:
-        id_dominio:
+        id_domain:
           maxLength: 35
           type: string
           example: "1234567890100"
@@ -500,11 +500,11 @@ components:
     CreditorInstitutionEncodings:
       type: object
       properties:
-        id_dominio:
+        id_domain:
           maxLength: 35
           type: string
           example: "1234567890100"
-        econdings:
+        encodings:
           type: array
           items:
             $ref: '#/components/schemas/Encoding'
@@ -537,7 +537,7 @@ components:
     Ibans:
       type: object
       properties:
-        id_dominio:
+        id_domain:
           maxLength: 35
           type: string
           example: "1234567890100"
@@ -580,7 +580,7 @@ components:
     Broker:
       type: object
       properties:
-        id_dominio:
+        id_domain:
           maxLength: 35
           type: string
           example: "1234567890100"
@@ -620,7 +620,7 @@ components:
           items:
             maxLength: 35
             type: string
-            description: id_dominio's creditor istituion
+            description: id_domain's creditor istituion
             example: "1234567890100"
     HttpStatusCode:
       maximum: 6E+2

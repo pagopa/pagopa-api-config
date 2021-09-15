@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.models;
+package it.pagopa.pagopa.apiconfig.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Station {
     @JsonProperty("id_station")
-    @Schema(example = "1234567890100", required = true, description = "")
+    @Schema(example = "1234567890100", required = true)
     @NotNull
     @Size(max = 35)
     private String idStation;

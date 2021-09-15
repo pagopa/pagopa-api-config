@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.models;
+package it.pagopa.pagopa.apiconfig.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -23,11 +23,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutionDetails {
     @JsonProperty("creditor_institution")
-    @Schema(description = "")
+    @Schema()
     private CreditorInstitution creditorInstitution;
 
     @JsonProperty("stations")
-    @Schema(required = true, description = "")
+    @Schema(required = true)
     @NotNull
     @Valid
     private List<Station> stations = new ArrayList<>();

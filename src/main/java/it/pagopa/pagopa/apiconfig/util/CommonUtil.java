@@ -11,7 +11,7 @@ public class CommonUtil {
      * @param value string value: Y or N
      * @return true if value is equals to Y, false if N
      */
-    public static Boolean flagToBoolean(String value){
+    public static Boolean flagToBoolean(String value) {
         return YES.equals(value);
     }
 

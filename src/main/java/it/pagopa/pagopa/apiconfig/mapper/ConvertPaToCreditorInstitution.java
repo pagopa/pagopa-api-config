@@ -1,18 +1,21 @@
-package it.pagopa.pagopa.apiconfig.util;
+package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entities.Pa;
-import it.pagopa.pagopa.apiconfig.models.CreditorInstitution;
-import it.pagopa.pagopa.apiconfig.models.CreditorInstitutionAddress;
-import lombok.experimental.UtilityClass;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import org.modelmapper.Converter;
+import org.modelmapper.spi.MappingContext;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.flagToBoolean;
 
-@UtilityClass
-public class CreditorInstitutionsMapper {
+public class ConvertPaToCreditorInstitution implements Converter<Pa, CreditorInstitution> {
 
-    public CreditorInstitution mapPaToCreditorInstitution(Pa pa) {
+    @Override
+    public CreditorInstitution convert(MappingContext<Pa, CreditorInstitution> context) {
+        Pa pa = context.getSource();
         return CreditorInstitution.builder()
-                .idDominio(pa.getIdDominio())
+                .idDomain(pa.getIdDominio())
                 .enabled(flagToBoolean(pa.getEnabled()))
                 .businessName(pa.getRagioneSociale())
                 .address(CreditorInstitutionAddress.builder()
@@ -26,5 +29,4 @@ public class CreditorInstitutionsMapper {
                 .reportingZip(flagToBoolean(pa.getRendicontazioneZip()))
                 .build();
     }
-
 }

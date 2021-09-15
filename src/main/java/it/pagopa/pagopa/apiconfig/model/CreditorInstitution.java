@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.models;
+package it.pagopa.pagopa.apiconfig.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,11 +20,11 @@ import javax.validation.constraints.Size;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitution {
-    @JsonProperty("id_dominio")
-    @Schema(example = "1234567890100", required = true, description = "")
+    @JsonProperty("id_domain")
+    @Schema(example = "1234567890100", required = true)
     @NotNull
     @Size(max = 35)
-    private String idDominio;
+    private String idDomain;
 
     @JsonProperty("enabled")
     @Schema(required = true, description = "creditor institution enabled", defaultValue = "true")
@@ -32,33 +32,33 @@ public class CreditorInstitution {
     private Boolean enabled = true;
 
     @JsonProperty("business_name")
-    @Schema(example = "Comune di Lorem Ipsum", required = true, description = "")
+    @Schema(example = "Comune di Lorem Ipsum", required = true)
     @NotNull
     @Size(max = 70)
     private String businessName;
 
     @JsonProperty("address")
-    @Schema(required = true, description = "")
+    @Schema(required = true)
     @NotNull
     private CreditorInstitutionAddress address;
 
     @JsonProperty("psp_payment")
-    @Schema(required = true, description = "", defaultValue = "true")
+    @Schema(required = true, defaultValue = "true")
     @NotNull
     private Boolean pspPayment = true;
 
     @JsonProperty("reporting_ftp")
-    @Schema(required = true, description = "", defaultValue = "false")
+    @Schema(required = true, defaultValue = "false")
     @NotNull
     private Boolean reportingFtp = false;
 
     @JsonProperty("reporting_zip")
-    @Schema(required = true, description = "", defaultValue = "false")
+    @Schema(required = true, defaultValue = "false")
     @NotNull
     private Boolean reportingZip = false;
 
     @JsonProperty("payment_cancellation")
-    @Schema(required = true, description = "", defaultValue = "false")
+    @Schema(required = true, defaultValue = "false")
     @NotNull
     private Boolean paymentCancellation = false;
 
