@@ -1,8 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +12,9 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Pa {
     @Id
     @Column(name = "OBJ_ID", nullable = false)
