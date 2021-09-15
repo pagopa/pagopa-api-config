@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.models;
+package it.pagopa.pagopa.apiconfig.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,22 +20,20 @@ import javax.validation.constraints.Pattern;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutionAddress {
     @JsonProperty("location")
-    @Schema(example = "Via delle vie 3", description = "")
+    @Schema(example = "Via delle vie 3")
     private String location;
 
     @JsonProperty("city")
-    @Schema(example = "Lorem", description = "")
+    @Schema(example = "Lorem")
     private String city;
 
     @JsonProperty("zipCode")
-    @Schema(example = "00187", description = "")
-
+    @Schema(example = "00187")
     @Pattern(regexp = "^\\d{5}$")
     private String zipCode;
 
     @JsonProperty("country_code")
-    @Schema(example = "RM", description = "")
-
+    @Schema(example = "RM")
     @Pattern(regexp = "^\\w{2}$")
     private String countryCode;
 

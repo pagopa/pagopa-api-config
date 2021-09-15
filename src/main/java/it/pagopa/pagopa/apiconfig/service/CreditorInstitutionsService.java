@@ -1,9 +1,9 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.models.CreditorInstitution;
-import it.pagopa.pagopa.apiconfig.models.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
-import it.pagopa.pagopa.apiconfig.util.CreditorInstitutionsMapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +13,29 @@ import java.util.List;
 public class CreditorInstitutionsService {
 
     @Autowired
-    PaRepository paRepository;
+    private PaRepository paRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
 
     public CreditorInstitutions getECs() {
-        List<CreditorInstitution> creditorInstitutions = paRepository.findAll()
-                .stream()
-                .map(CreditorInstitutionsMapper::mapPaToCreditorInstitution)
-                .toList();
         return CreditorInstitutions.builder()
-                .creditorInstitutionList(creditorInstitutions)
+                .creditorInstitutionList(getCreditorInstitutions())
                 .build();
     }
+
+
+    /**
+     * Maps all PAs stored in the DB in a List of CreditorInstitution
+     * @return a list of {@link CreditorInstitution}.
+     */
+    private List<CreditorInstitution> getCreditorInstitutions() {
+        return paRepository.findAll()
+                .stream()
+                .map(elem -> modelMapper.map(elem, CreditorInstitution.class))
+                .toList();
+    }
+
 
 }

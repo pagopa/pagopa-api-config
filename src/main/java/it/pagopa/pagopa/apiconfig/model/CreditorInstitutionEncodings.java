@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.models;
+package it.pagopa.pagopa.apiconfig.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,10 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
- * CreditorInstitutions
+ * CreditorInstitutionEncodings
  */
 @Data
 @Builder(toBuilder = true)
@@ -19,11 +20,16 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreditorInstitutions {
-    @JsonProperty("creditor_institutions")
-    @Schema(description = "")
+public class CreditorInstitutionEncodings {
+    @JsonProperty("id_dominio")
+    @Schema(example = "1234567890100")
+    @Size(max = 35)
+    private String idDominio;
+
+    @JsonProperty("encodings")
+    @Schema()
     @Valid
-    private List<CreditorInstitution> creditorInstitutionList = null;
+    private List<Encoding> encodings = null;
 
 
 }

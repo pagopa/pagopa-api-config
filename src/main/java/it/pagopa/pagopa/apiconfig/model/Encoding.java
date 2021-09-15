@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.models;
+package it.pagopa.pagopa.apiconfig.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,14 +20,13 @@ import javax.validation.constraints.Size;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Encoding {
     @JsonProperty("pa_code")
-    @Schema(example = "000011050036", description = "")
+    @Schema(example = "000011050036")
 
     @Size(max = 35)
     private String paCode;
+
     @JsonProperty("code_type")
-    @Schema(description = "")
-
-
+    @Schema()
     private CodeTypeEnum codeType;
 
     /**
