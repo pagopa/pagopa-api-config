@@ -13,8 +13,8 @@ public class HomeController {
      * @return redirect to Swagger page documentation
      */
     @Hidden
-    @GetMapping("/")
+    @GetMapping("")
     public RedirectView home() {
-        return new RedirectView("/apiconfig/swagger-ui.html");
+        return new RedirectView("/apiconfig/api/v1/swagger-ui.html");
     }
 }
