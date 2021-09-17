@@ -1,0 +1,43 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+# Automatically triggered on PR
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#pr-trigger
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-20.04'
+
+variables:
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+
+steps:
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      testRunTitle: 'coverage'
+      codeCoverageToolOption: 'JaCoCo'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.11'
+      mavenVersionOption: 'Default'
+      mavenAuthenticateFeed: false
+      effectivePomSkip: false
+      sonarQubeRunAnalysis: false
+
+#  - task: SonarCloudPrepare@1
+#    inputs:
+#      SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
+#      organization: '$(SONARCLOUD_ORG)'
+#      scannerMode: Other
+#      extraProperties: |
+#        sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
+#        sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
+#
+#  - task: SonarCloudPublish@1
+#    inputs:
+#      pollingTimeoutSec: '300'

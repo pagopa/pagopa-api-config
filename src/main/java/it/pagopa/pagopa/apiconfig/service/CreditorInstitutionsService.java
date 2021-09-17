@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CreditorInstitutionsService {
@@ -34,7 +35,7 @@ public class CreditorInstitutionsService {
         return paRepository.findAll()
                 .stream()
                 .map(elem -> modelMapper.map(elem, CreditorInstitution.class))
-                .toList();
+                .collect(Collectors.toList());
     }
 
 
