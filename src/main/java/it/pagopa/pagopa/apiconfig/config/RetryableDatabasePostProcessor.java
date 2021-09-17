@@ -15,9 +15,9 @@ import javax.sql.DataSource;
 public class RetryableDatabasePostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof DataSource dataSource) {
+        if (bean instanceof DataSource) {
             log.info("-----> configuring a retryable datasource for beanName = {}", beanName);
-            return new RetryableDataSource(dataSource);
+            return new RetryableDataSource((DataSource) bean);
         }
         return bean;
     }
