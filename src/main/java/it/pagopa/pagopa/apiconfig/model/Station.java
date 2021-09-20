@@ -8,7 +8,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 
 /**
  * Station
@@ -35,7 +34,7 @@ public class Station {
     @JsonProperty("version")
     @Schema(required = true, description = "number version")
     @NotNull
-    private BigDecimal version;
+    private Long version;
 
 
 }

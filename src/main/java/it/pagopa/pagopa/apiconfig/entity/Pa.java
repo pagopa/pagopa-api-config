@@ -2,10 +2,7 @@ package it.pagopa.pagopa.apiconfig.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "PA")
@@ -32,7 +29,7 @@ public class Pa {
     @Column(name = "RAGIONE_SOCIALE")
     private String ragioneSociale;
 
-    @Column(name = "FK_INT_QUADRATURE")
+    @JoinColumn(name = "FK_INT_QUADRATURE")
     private Long fkIntQuadrature;
 
     @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA", columnDefinition = "CHAR")
