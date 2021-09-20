@@ -1,7 +1,7 @@
 {
   "creditor_institutions": [
     {
-      "id_domain": "00168480242",
+      "organization_fiscal_code": "00168480242",
       "enabled": true,
       "business_name": "Comune di Bassano del Grappa",
       "address": {},

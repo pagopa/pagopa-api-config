@@ -28,7 +28,7 @@ public class AppException extends RuntimeException {
      * @param message    the detail message returend to the response
      * @param cause      The cause of this {@link AppException}
      */
-    AppException(HttpStatus httpStatus, String title, String message, Throwable cause) {
+    public AppException(HttpStatus httpStatus, String title, String message, Throwable cause) {
         super(message, cause);
         this.title = title;
         this.httpStatus = httpStatus;
