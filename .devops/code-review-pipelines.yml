@@ -15,7 +15,21 @@ variables:
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
 
 steps:
+  - task: SonarCloudPrepare@1
+      displayName: 'Prepare SonarCloud analysis configuration'
+      inputs:
+        SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
+        organization: '$(SONARCLOUD_ORG)'
+        scannerMode: Other
+        extraProperties: |
+          sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
+          sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
+        #  sonar.coverage.exclusions=**/config/*,**/*Mock*,**/model/*
+        #  sonar.coverage.jacoco.xmlReportPaths=./report/target/site/jacoco-aggregate/jacoco.xml
+        #  sonar.junit.reportPaths=target/surefire-reports/
+
   - task: Maven@3
+    displayName: 'Maven Build'
     inputs:
       mavenPomFile: 'pom.xml'
       publishJUnitResults: true
@@ -27,17 +41,10 @@ steps:
       mavenVersionOption: 'Default'
       mavenAuthenticateFeed: false
       effectivePomSkip: false
-      sonarQubeRunAnalysis: false
+      sonarQubeRunAnalysis: true
 
-#  - task: SonarCloudPrepare@1
-#    inputs:
-#      SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
-#      organization: '$(SONARCLOUD_ORG)'
-#      scannerMode: Other
-#      extraProperties: |
-#        sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
-#        sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
-#
-#  - task: SonarCloudPublish@1
-#    inputs:
-#      pollingTimeoutSec: '300'
+
+  - task: SonarCloudPublish@1
+    displayName: 'Publish SonarCloud results on build summary'
+    inputs:
+      pollingTimeoutSec: '300'
