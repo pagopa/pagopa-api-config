@@ -109,7 +109,6 @@
                 <version>0.8.7</version>
                 <configuration>
                     <excludes>
-<!--                        <exclude>**/config/*</exclude>-->
                     </excludes>
                 </configuration>
                 <executions>
