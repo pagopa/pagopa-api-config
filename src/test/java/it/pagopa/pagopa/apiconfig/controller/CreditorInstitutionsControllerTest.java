@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,11 +32,20 @@ class CreditorInstitutionsControllerTest {
     @BeforeEach
     void setUp() {
         when(creditorInstitutionsService.getECs()).thenReturn(CreditorInstitutions.builder().build());
+        when(creditorInstitutionsService.getEC("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
     }
 
     @Test
     void getECs_ok() throws Exception {
         String url = "/creditorinstitutions";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getEC_ok() throws Exception {
+        String url = "/creditorinstitutions/1234";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

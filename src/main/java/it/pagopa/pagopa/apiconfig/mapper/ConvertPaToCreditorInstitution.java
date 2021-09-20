@@ -17,7 +17,7 @@ public class ConvertPaToCreditorInstitution implements Converter<Pa, CreditorIns
     public CreditorInstitution convert(MappingContext<Pa, CreditorInstitution> context) {
         @Valid Pa pa = context.getSource();
         return CreditorInstitution.builder()
-                .idDomain(pa.getIdDominio())
+                .organizationFiscalCode(pa.getIdDominio())
                 .enabled(flagToBoolean(pa.getEnabled()))
                 .businessName(pa.getRagioneSociale())
                 .address(CreditorInstitutionAddress.builder()

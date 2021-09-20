@@ -20,11 +20,11 @@ import javax.validation.constraints.Size;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitution {
-    @JsonProperty("id_domain")
+    @JsonProperty("organization_fiscal_code")
     @Schema(example = "1234567890100", required = true)
     @NotNull
     @Size(max = 35)
-    private String idDomain;
+    private String organizationFiscalCode;
 
     @JsonProperty("enabled")
     @Schema(required = true, description = "creditor institution enabled", defaultValue = "true")
