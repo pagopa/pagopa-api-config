@@ -27,6 +27,16 @@ class ErrorHandlerTest {
     }
 
     @Test
+    void handleAppException2() {
+        AppException appException = new AppException(HttpStatus.BAD_REQUEST, "some error", "details", null);
+        ResponseEntity<ProblemJson> actual = errorHandler.handleAppException(appException, null);
+        assertEquals(appException.getHttpStatus(), actual.getStatusCode());
+        assertEquals(appException.getTitle(), actual.getBody().getTitle());
+        assertEquals(appException.getMessage(), actual.getBody().getDetail());
+        assertEquals(appException.getHttpStatus().value(), actual.getBody().getStatus());
+    }
+
+    @Test
     void handleGenericException() {
         ResponseEntity<ProblemJson> actual = errorHandler.handleGenericException(new NullPointerException("message"), null);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode());

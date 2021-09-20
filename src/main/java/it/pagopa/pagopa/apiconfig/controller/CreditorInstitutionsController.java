@@ -41,9 +41,9 @@ public class CreditorInstitutionsController {
     @Operation(summary = "Get creditor institution details ", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Istitutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreditorInstitutionDetails.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden client error status."),
-            @ApiResponse(responseCode = "404", description = "Not Found"),
-            @ApiResponse(responseCode = "429", description = "Too many requests"),
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/{organizationfiscalcode}", produces = {"application/json"})
     public ResponseEntity<CreditorInstitutionDetails> getEC(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationFiscalCode) {
