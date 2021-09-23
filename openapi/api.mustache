@@ -55,7 +55,7 @@ import java.util.Map;
 {{#useBeanValidation}}
     @Validated
 {{/useBeanValidation}}
-@Api(value = "{{{baseName}}}", description = "the {{{baseName}}} API")
+@Tag(name = {{#vendorExtensions.x-tags}}"{{tag}}",{{/vendorExtensions.x-tags}}, description = "the {{{baseName}}} API")
 {{#operations}}
     {{#virtualService}}
         @VirtualService
@@ -101,9 +101,9 @@ import java.util.Map;
         {{#virtualService}}
                 @ApiVirtual
         {{/virtualService}}
-            @Operation(summary = "{{{summary}}}" {{#hasAuthMethods}}, security = { {{#authMethods}} @SecurityRequirement(name = "{{name}}"{{#isOAuth}}, scopes=[{{#scopes}}"{{scope}}"{{^-last}},{{/-last}}{{/scopes}}]{{/isOAuth}} } {{/authMethods}} {{/hasAuthMethods}}, tags={ {{#vendorExtensions.x-tags}}"{{tag}}",{{/vendorExtensions.x-tags}} })
+            @Operation(summary = "{{{summary}}}" {{#hasAuthMethods}}, security = { {{#authMethods}} @SecurityRequirement(name = "{{name}}"{{#isOAuth}}, scopes=[{{#scopes}}"{{scope}}"{{^-last}},{{/-last}}{{/scopes}}]{{/isOAuth}} )} {{/authMethods}} {{/hasAuthMethods}}, tags={ {{#vendorExtensions.x-tags}}"{{tag}}",{{/vendorExtensions.x-tags}} })
             @ApiResponses(value = { {{#responses}}
-                @ApiResponse(responseCode = "{{{code}}}", description = "{{{message}}}"{{#baseType}}, content = @Content(mediaType = "application/json", schema = @Schema(implementation = {{{.}}}.class{{/baseType}}{{^baseType}}, content = @Content(schema = @Schema(){{/baseType}}))){{^-last}},{{/-last}}{{/responses}} })
+                @ApiResponse(responseCode = "{{{code}}}", description = "{{{message}}}"{{#baseType}}, content = @Content(mediaType = "application/json", schema = @Schema(implementation = {{{.}}}.class{{/baseType}}{{^baseType}}, content = @Content(schema = @Schema({{/baseType}}))){{^-last}},{{/-last}}{{/responses}} })
         {{#implicitHeaders}}
                 @ApiImplicitParams({
             {{#headerParams}}
