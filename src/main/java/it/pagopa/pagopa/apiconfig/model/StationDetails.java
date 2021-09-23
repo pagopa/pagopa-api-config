@@ -6,11 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CreditorInstitutions
+ * StationDetails
  */
 @Data
 @Builder(toBuilder = true)
@@ -19,14 +20,17 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreditorInstitutions {
-    @JsonProperty("creditor_institutions")
-    @Schema()
-    @Valid
-    private List<CreditorInstitution> creditorInstitutionList = null;
+public class StationDetails {
 
-    @JsonProperty("page_info")
-    @Schema()
-    @Valid
-    private PageInfo pageInfo;
+    @JsonProperty("station")
+    @Schema(required = true)
+    @NotNull
+    private Station station;
+
+    @JsonProperty("ecs")
+    @Schema(required = true)
+    @NotNull
+    private List<String> ecs = new ArrayList<>();
+
+
 }

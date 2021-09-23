@@ -620,7 +620,7 @@ components:
           items:
             maxLength: 35
             type: string
-            description: organization_fiscal_code's creditor istituion
+            description: organization_fiscal_code's creditor instituion
             example: "1234567890100"
     HttpStatusCode:
       maximum: 6E+2
