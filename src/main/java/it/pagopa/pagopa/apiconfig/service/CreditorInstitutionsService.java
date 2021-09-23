@@ -3,14 +3,15 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.Station;
+import it.pagopa.pagopa.apiconfig.model.*;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -32,20 +33,24 @@ public class CreditorInstitutionsService {
     private ModelMapper modelMapper;
 
 
-    public CreditorInstitutions getECs() {
+    public CreditorInstitutions getECs(Integer limit, Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Page<Pa> page = paRepository.findAll(pageable);
         return CreditorInstitutions.builder()
-                .creditorInstitutionList(getCreditorInstitutions())
+                .creditorInstitutionList(getCreditorInstitutions(page))
+                .pageInfo(CommonUtil.buildPageInfo(page))
                 .build();
     }
+
 
     public CreditorInstitutionDetails getEC(String organizationFiscalCode) {
         Optional<Pa> result = paRepository.findByIdDominio(organizationFiscalCode);
         if (result.isPresent()) {
             Pa pa = result.get();
             List<Station> stations = getStationList(pa);
-            CreditorInstitution creditorInstitution = modelMapper.map(pa, CreditorInstitution.class);
+            CreditorInstitutionFull creditorInstitutionFull = modelMapper.map(pa, CreditorInstitutionFull.class);
             return CreditorInstitutionDetails.builder()
-                    .creditorInstitution(creditorInstitution)
+                    .creditorInstitutionFull(creditorInstitutionFull)
                     .stations(stations)
                     .build();
         } else {
@@ -72,12 +77,12 @@ public class CreditorInstitutionsService {
     /**
      * Maps all PAs stored in the DB in a List of CreditorInstitution
      *
-     * @return a list of {@link CreditorInstitution}.
+     * @param page page of PA returned from the database
+     * @return a list of {@link CreditorInstitutionFull}.
      */
-    private List<CreditorInstitution> getCreditorInstitutions() {
-        return paRepository.findAll()
-                .stream()
-                .map(elem -> modelMapper.map(elem, CreditorInstitution.class))
+    private List<CreditorInstitutionLight> getCreditorInstitutions(Page<Pa> page) {
+        return page.stream()
+                .map(elem -> modelMapper.map(elem, CreditorInstitutionLight.class))
                 .collect(Collectors.toList());
     }
 

@@ -14,18 +14,23 @@ import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -44,7 +49,17 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getECs_empty() throws IOException, JSONException {
-        CreditorInstitutions result = creditorInstitutionsService.getECs();
+        List<Pa> ts = Lists.emptyList();
+        Page<Pa> page = Mockito.mock(Page.class);
+        when(page.getTotalPages()).thenReturn(0);
+        when(page.getNumberOfElements()).thenReturn(0);
+        when(page.getNumber()).thenReturn(0);
+        when(page.getSize()).thenReturn(0);
+        when(page.stream()).thenReturn(ts.stream());
+
+        when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        CreditorInstitutions result = creditorInstitutionsService.getECs(50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_empty.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -52,16 +67,24 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getECs_ok1() throws IOException, JSONException {
-        when(paRepository.findAll()).thenReturn(Lists.newArrayList(Pa.builder()
+        List<Pa> ts = Lists.newArrayList(Pa.builder()
                 .idDominio("00168480242")
                 .enabled("Y")
                 .ragioneSociale("Comune di Bassano del Grappa")
                 .pagamentoPressoPsp("Y")
                 .rendicontazioneFtp("N")
                 .rendicontazioneZip("N")
-                .build()));
+                .build());
+        Page<Pa> page = Mockito.mock(Page.class);
+        when(page.getTotalPages()).thenReturn(1);
+        when(page.getNumberOfElements()).thenReturn(1);
+        when(page.getNumber()).thenReturn(0);
+        when(page.getSize()).thenReturn(1);
+        when(page.stream()).thenReturn(ts.stream());
 
-        CreditorInstitutions result = creditorInstitutionsService.getECs();
+        when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        CreditorInstitutions result = creditorInstitutionsService.getECs(50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -69,9 +92,16 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getECs_ok2() throws IOException, JSONException {
-        when(paRepository.findAll()).thenReturn(Lists.newArrayList(getMockPa()));
+        List<Pa> ts = Lists.newArrayList(getMockPa());
+        Page<Pa> page = Mockito.mock(Page.class);
+        when(page.getTotalPages()).thenReturn(1);
+        when(page.getNumberOfElements()).thenReturn(1);
+        when(page.getNumber()).thenReturn(0);
+        when(page.getSize()).thenReturn(1);
+        when(page.stream()).thenReturn(ts.stream());
+        when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getECs();
+        CreditorInstitutions result = creditorInstitutionsService.getECs(50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

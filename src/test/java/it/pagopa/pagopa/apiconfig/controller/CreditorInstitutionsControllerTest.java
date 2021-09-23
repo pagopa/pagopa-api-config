@@ -31,13 +31,13 @@ class CreditorInstitutionsControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(creditorInstitutionsService.getECs()).thenReturn(CreditorInstitutions.builder().build());
+        when(creditorInstitutionsService.getECs(50, 0)).thenReturn(CreditorInstitutions.builder().build());
         when(creditorInstitutionsService.getEC("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
     }
 
     @Test
     void getECs_ok() throws Exception {
-        String url = "/creditorinstitutions";
+        String url = "/creditorinstitutions?page=0";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
