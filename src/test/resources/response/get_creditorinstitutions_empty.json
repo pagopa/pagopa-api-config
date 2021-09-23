@@ -1,3 +1,9 @@
 {
-  "creditor_institutions": []
+  "creditor_institutions": [],
+  "page_info": {
+    "page": 0,
+    "limit": 0,
+    "items_found": 0,
+    "total_pages": 0
+  }
 }
