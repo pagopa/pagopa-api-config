@@ -40,8 +40,8 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "", produces = {"application/json"})
-    public ResponseEntity<CreditorInstitutions> getECs(@Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false) Integer limit, @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
-        return ResponseEntity.ok(creditorInstitutionsService.getECs());
+    public ResponseEntity<CreditorInstitutions> getECs(@Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit, @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
+        return ResponseEntity.ok(creditorInstitutionsService.getECs(limit, page));
     }
 
     /**

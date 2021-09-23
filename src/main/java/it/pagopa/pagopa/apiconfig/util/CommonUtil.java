@@ -1,6 +1,9 @@
 package it.pagopa.pagopa.apiconfig.util;
 
+import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import lombok.experimental.UtilityClass;
+import org.springframework.data.domain.Page;
 
 @UtilityClass
 public class CommonUtil {
@@ -22,5 +25,19 @@ public class CommonUtil {
      */
     public static String numberToZipCode(Long zipcode) {
         return zipcode == null ? null : String.format("%05d", zipcode);
+    }
+
+
+    /**
+     * @param page Page returned from the database
+     * @return return the page info
+     */
+    public PageInfo buildPageInfo(Page<Pa> page) {
+        return PageInfo.builder()
+                .page(page.getNumber())
+                .limit(page.getSize())
+                .totalPages(page.getTotalPages())
+                .itemsFound(page.getNumberOfElements())
+                .build();
     }
 }

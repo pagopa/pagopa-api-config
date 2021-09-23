@@ -23,7 +23,7 @@ public class CreditorInstitutions {
     @JsonProperty("creditor_institutions")
     @Schema()
     @Valid
-    private List<CreditorInstitution> creditorInstitutionList = null;
+    private List<CreditorInstitutionLight> creditorInstitutionList = null;
 
     @JsonProperty("page_info")
     @Schema()

@@ -24,7 +24,7 @@ import java.util.List;
 public class CreditorInstitutionDetails {
     @JsonProperty("creditor_institution")
     @Schema()
-    private CreditorInstitution creditorInstitution;
+    private CreditorInstitutionFull creditorInstitutionFull;
 
     @JsonProperty("stations")
     @Schema(required = true)
