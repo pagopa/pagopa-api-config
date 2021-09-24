@@ -1,4 +1,7 @@
 # pagoPa Api Config
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa_pagopa-api-config&metric=alert_status)](https://sonarcloud.io/dashboard?id=pagopa_pagopa-api-config)
+
 Spring application to manage configuration Api for EC/PSP on the Nodo component.
 
 See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-api-config/main/openapi/swagger.yaml)
