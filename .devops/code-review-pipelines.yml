@@ -5,7 +5,10 @@
 
 # Automatically triggered on PR
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#pr-trigger
-trigger: none
+trigger:
+  branches:
+    include:
+    - main 
 
 pool:
   vmImage: 'ubuntu-20.04'
