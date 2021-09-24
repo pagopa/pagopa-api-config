@@ -7,11 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 /**
- * Broker
+ * BrokerDetails
  */
 @Data
 @Builder(toBuilder = true)
@@ -20,17 +20,31 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Broker {
+public class BrokerDetails {
+
+    @JsonProperty("broker_code")
+    @Schema(example = "223344556677889900")
+    @Size(max = 35)
+    private String idBroker;
+
+    @JsonProperty("enabled")
+    @Schema()
+    private Boolean enabled;
+
+    @JsonProperty("description")
+    @Schema(example = "Lorem ipsum dolor sit amet", required = true)
+    @NotNull
+    @Size(max = 255)
+    private String description;
+
+    @JsonProperty("extended_fault_bean")
+    @Schema()
+    @Valid
+    private Boolean extendedFaultBean;
 
     @JsonProperty("organization_fiscal_code")
     @Schema(example = "1234567890100")
     @Size(max = 35)
     private String organizationFiscalCode;
-
-    @JsonProperty("broker")
-    @Schema()
-    @Valid
-    private List<BrokerDetails> brokerList = null;
-
 
 }
