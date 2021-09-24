@@ -19,14 +19,14 @@ import javax.validation.constraints.Size;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Encoding {
-    @JsonProperty("pa_code")
-    @Schema(example = "000011050036")
 
+    @JsonProperty("creditor_institution_code")
+    @Schema(example = "000011050036", required = true)
     @Size(max = 35)
-    private String paCode;
+    private String creditorInstitutionCode;
 
     @JsonProperty("code_type")
-    @Schema()
+    @Schema(required = true)
     private CodeTypeEnum codeType;
 
     /**

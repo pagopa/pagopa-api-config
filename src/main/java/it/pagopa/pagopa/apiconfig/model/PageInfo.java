@@ -19,22 +19,22 @@ import javax.validation.constraints.PositiveOrZero;
 public class PageInfo {
 
     @JsonProperty("page")
-    @Schema(description = "Page number")
+    @Schema(description = "Page number", required = true)
     @PositiveOrZero
     Integer page;
 
     @JsonProperty("limit")
-    @Schema(description = "Required number of items per page")
+    @Schema(description = "Required number of items per page", required = true)
     @Positive
     Integer limit;
 
     @JsonProperty("items_found")
-    @Schema(description = "Number of items found. (The last page may have fewer elements than required)")
+    @Schema(description = "Number of items found. (The last page may have fewer elements than required)", required = true)
     @Positive
     Integer itemsFound;
 
     @JsonProperty("total_pages")
-    @Schema(description = "Total number of pages")
+    @Schema(description = "Total number of pages", required = true)
     @PositiveOrZero
     Integer totalPages;
 }

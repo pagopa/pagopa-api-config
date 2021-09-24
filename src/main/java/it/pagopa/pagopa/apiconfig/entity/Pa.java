@@ -32,9 +32,17 @@ public class Pa {
     @JoinColumn(name = "FK_INT_QUADRATURE")
     private Long fkIntQuadrature;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA", columnDefinition = "CHAR")
     private String flagRepoCommissioneCaricoPa;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "EMAIL_REPO_COMMISSIONE_CARICO_PA")
     private String emailRepoCommissioneCaricoPa;
 
@@ -62,6 +70,10 @@ public class Pa {
     @Column(name = "RENDICONTAZIONE_ZIP", columnDefinition = "CHAR")
     private String rendicontazioneZip;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "REVOCA_PAGAMENTO")
     private Long revocaPagamento;
 

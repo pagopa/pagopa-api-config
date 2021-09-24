@@ -22,9 +22,9 @@ import java.util.List;
 public class Stations {
 
     @JsonProperty("stations")
-    @Schema()
+    @Schema(required = true)
     @Valid
-    private List<Station> stations = null;
+    private List<Station> stationList = null;
 
 
 }

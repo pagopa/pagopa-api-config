@@ -3,7 +3,10 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.*;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.Station;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -47,12 +50,7 @@ public class CreditorInstitutionsService {
         Optional<Pa> result = paRepository.findByIdDominio(organizationFiscalCode);
         if (result.isPresent()) {
             Pa pa = result.get();
-            List<Station> stations = getStationList(pa);
-            CreditorInstitutionFull creditorInstitutionFull = modelMapper.map(pa, CreditorInstitutionFull.class);
-            return CreditorInstitutionDetails.builder()
-                    .creditorInstitutionFull(creditorInstitutionFull)
-                    .stations(stations)
-                    .build();
+            return modelMapper.map(pa, CreditorInstitutionDetails.class);
         } else {
             throw new AppException(HttpStatus.NOT_FOUND, "Organization not found", "No organization found with the provided fiscal code", null);
         }
@@ -60,7 +58,7 @@ public class CreditorInstitutionsService {
 
 
     /**
-     * @param pa CE
+     * @param pa CI
      * @return the list of the stations of a PA
      */
     private List<Station> getStationList(Pa pa) {
@@ -78,11 +76,11 @@ public class CreditorInstitutionsService {
      * Maps all PAs stored in the DB in a List of CreditorInstitution
      *
      * @param page page of PA returned from the database
-     * @return a list of {@link CreditorInstitutionFull}.
+     * @return a list of {@link CreditorInstitutionDetails}.
      */
-    private List<CreditorInstitutionLight> getCreditorInstitutions(Page<Pa> page) {
+    private List<CreditorInstitution> getCreditorInstitutions(Page<Pa> page) {
         return page.stream()
-                .map(elem -> modelMapper.map(elem, CreditorInstitutionLight.class))
+                .map(elem -> modelMapper.map(elem, CreditorInstitution.class))
                 .collect(Collectors.toList());
     }
 

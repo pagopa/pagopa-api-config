@@ -37,9 +37,17 @@ public class PaStazionePa {
     @Column(name = "QUARTO_MODELLO", columnDefinition = "CHAR")
     private String quartoModello;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "STAZIONE_NODO", columnDefinition = "CHAR")
     private String stazioneNodo;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "STAZIONE_AVV", columnDefinition = "CHAR")
     private String stazioneAvv;
 

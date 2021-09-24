@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * BrokersEC
+ * Brokers
  */
 @Data
 @Builder(toBuilder = true)
@@ -19,12 +19,12 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BrokersEC {
+public class Brokers {
 
-    @JsonProperty("brokers_ec")
+    @JsonProperty("brokers_list")
     @Schema()
     @Valid
-    private List<Broker> brokersEc = null;
+    private List<Broker> brokerList = null;
 
 
 }

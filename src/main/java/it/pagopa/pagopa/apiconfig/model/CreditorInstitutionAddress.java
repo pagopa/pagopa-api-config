@@ -27,7 +27,7 @@ public class CreditorInstitutionAddress {
     @Schema(example = "Lorem")
     private String city;
 
-    @JsonProperty("zipCode")
+    @JsonProperty("zip_code")
     @Schema(example = "00187")
     @Pattern(regexp = "^\\d{5}$")
     private String zipCode;
@@ -36,6 +36,10 @@ public class CreditorInstitutionAddress {
     @Schema(example = "RM")
     @Pattern(regexp = "^\\w{2}$")
     private String countryCode;
+
+    @JsonProperty("tax_domicile")
+    @Schema()
+    private String taxDomicile;
 
 
 }

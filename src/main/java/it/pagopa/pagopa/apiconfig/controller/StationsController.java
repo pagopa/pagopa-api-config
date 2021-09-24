@@ -17,10 +17,7 @@ import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.Stations;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Size;
 
@@ -33,7 +30,7 @@ public class StationsController {
     /**
      * GET /stations/{stationcode} : Get station details
      *
-     * @param stationcode station code. (required)
+     * @param stationCode station code. (required)
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Not Found (status code 404)
@@ -51,7 +48,7 @@ public class StationsController {
             value = "/{stationcode}",
             produces = {"application/json"}
     )
-    public ResponseEntity<StationDetails> getStation(@Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationcode) {
+    public ResponseEntity<StationDetails> getStation(@Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode) {
         return null;
 
     }
@@ -75,7 +72,9 @@ public class StationsController {
             value = "",
             produces = {"application/json"}
     )
-    public ResponseEntity<Stations> getStations() {
+    public ResponseEntity<Stations> getStations(@Parameter(description = "Filter by intermediary", required = false) @RequestParam(name = "intermediarycode", required = false) String intermediaryCode,
+                                                @Parameter(description = "Filter by creditor institution", required = false) @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode
+    ) {
         return null;
 
     }

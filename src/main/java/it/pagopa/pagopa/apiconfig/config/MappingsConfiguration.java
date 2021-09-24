@@ -3,11 +3,11 @@ package it.pagopa.pagopa.apiconfig.config;
 
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionFull;
-import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionLight;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitution;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStation;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionFull;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionLight;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.Station;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -23,12 +23,12 @@ public class MappingsConfiguration {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        Converter<Pa, CreditorInstitutionFull> convertPaToCreditorInstitutionFull = new ConvertPaToCreditorInstitutionFull();
-        Converter<Pa, CreditorInstitutionLight> convertPaToCreditorInstitutionLight = new ConvertPaToCreditorInstitutionLight();
+        Converter<Pa, CreditorInstitutionDetails> convertPaToCreditorInstitutionDetails = new ConvertPaToCreditorInstitutionDetails();
+        Converter<Pa, CreditorInstitution> convertPaToCreditorInstitution = new ConvertPaToCreditorInstitution();
         Converter<Stazioni, Station> convertStazioniToStation = new ConvertStazioniToStation();
 
-        mapper.createTypeMap(Pa.class, CreditorInstitutionFull.class).setConverter(convertPaToCreditorInstitutionFull);
-        mapper.createTypeMap(Pa.class, CreditorInstitutionLight.class).setConverter(convertPaToCreditorInstitutionLight);
+        mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
+        mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
         mapper.createTypeMap(Stazioni.class, Station.class).setConverter(convertStazioniToStation);
 
         return mapper;
