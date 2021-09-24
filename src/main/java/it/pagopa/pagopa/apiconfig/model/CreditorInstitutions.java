@@ -21,12 +21,12 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutions {
     @JsonProperty("creditor_institutions")
-    @Schema()
+    @Schema(required = true)
     @Valid
-    private List<CreditorInstitutionLight> creditorInstitutionList = null;
+    private List<CreditorInstitution> creditorInstitutionList = null;
 
     @JsonProperty("page_info")
-    @Schema()
+    @Schema(required = true)
     @Valid
     private PageInfo pageInfo;
 }
