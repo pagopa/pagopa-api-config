@@ -114,6 +114,7 @@ class CreditorInstitutionsServiceTest {
         CreditorInstitutionDetails result = creditorInstitutionsService.getEC("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ok.json");
+        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
