@@ -45,14 +45,14 @@ public class BrokerController {
             produces = {"application/json"}
     )
     public ResponseEntity<Broker> getBroker(@Size(max = 50) @Parameter(description = "broker code.", required = true) @PathVariable("brokercode") String brokercode) {
-        return null;
-
+        return ResponseEntity.ok(Broker.builder().build());
     }
 
 
     /**
      * GET /brokers : Get creditor brokers list
      *
+     * @param creditorInstitutionCode Filter by creditor institution
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Too many requests (status code 429)
@@ -68,9 +68,8 @@ public class BrokerController {
             value = "",
             produces = {"application/json"}
     )
-    public ResponseEntity<Brokers> getBrokers(@Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCod) {
-        return null;
-
+    public ResponseEntity<Brokers> getBrokers(@Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
+        return ResponseEntity.ok(Brokers.builder().build());
     }
 
 }

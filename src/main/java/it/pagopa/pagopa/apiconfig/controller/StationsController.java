@@ -44,14 +44,15 @@ public class StationsController {
             produces = {"application/json"}
     )
     public ResponseEntity<StationDetails> getStation(@Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode) {
-        return null;
-
+        return ResponseEntity.ok(StationDetails.builder().build());
     }
 
 
     /**
      * GET /stations : Get stations list
      *
+     * @param intermediaryCode Filter by intermediary
+     * @param creditorInstitutionCode Filter by creditor institution
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Too many requests (status code 429)
@@ -68,10 +69,8 @@ public class StationsController {
             produces = {"application/json"}
     )
     public ResponseEntity<Stations> getStations(@Parameter(description = "Filter by intermediary") @RequestParam(name = "intermediarycode", required = false) String intermediaryCode,
-                                                @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode
-    ) {
-        return null;
-
+                                                @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
+        return ResponseEntity.ok(Stations.builder().build());
     }
 
 }

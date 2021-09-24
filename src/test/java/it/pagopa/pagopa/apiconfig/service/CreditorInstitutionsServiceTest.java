@@ -59,7 +59,7 @@ class CreditorInstitutionsServiceTest {
 
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getECs(50, 0);
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_empty.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -84,7 +84,7 @@ class CreditorInstitutionsServiceTest {
 
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getECs(50, 0);
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -101,7 +101,7 @@ class CreditorInstitutionsServiceTest {
         when(page.stream()).thenReturn(ts.stream());
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getECs(50, 0);
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -111,7 +111,7 @@ class CreditorInstitutionsServiceTest {
     void getEC_ok() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(paStazionePaRepository.findAllByFkPa(1L)).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
-        CreditorInstitutionDetails result = creditorInstitutionsService.getEC("1234");
+        CreditorInstitutionDetails result = creditorInstitutionsService.getCreditorInstitution("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ok.json");
         System.out.println(actual);
@@ -122,7 +122,7 @@ class CreditorInstitutionsServiceTest {
     void getEC_notFound() {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.empty());
         try {
-            creditorInstitutionsService.getEC("1234");
+            creditorInstitutionsService.getCreditorInstitution("1234");
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
