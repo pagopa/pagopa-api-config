@@ -31,12 +31,12 @@ class CreditorInstitutionsControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(creditorInstitutionsService.getECs(50, 0)).thenReturn(CreditorInstitutions.builder().build());
-        when(creditorInstitutionsService.getEC("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
+        when(creditorInstitutionsService.getCreditorInstitutions(50, 0)).thenReturn(CreditorInstitutions.builder().build());
+        when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
     }
 
     @Test
-    void getECs_ok() throws Exception {
+    void getCreditorInstitutions() throws Exception {
         String url = "/creditorinstitutions?page=0";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -44,12 +44,34 @@ class CreditorInstitutionsControllerTest {
     }
 
     @Test
-    void getEC_ok() throws Exception {
+    void getCreditorInstitution() throws Exception {
         String url = "/creditorinstitutions/1234";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
+    @Test
+    void getStationsCI() throws Exception {
+        String url = "/creditorinstitutions/1234/stations";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
+    @Test
+    void getCreditorInstitutionEncodings() throws Exception {
+        String url = "/creditorinstitutions/1234/encodings";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getCreditorInstitutionsIbans() throws Exception {
+        String url = "/creditorinstitutions/1234/ibans";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 }

@@ -29,6 +29,8 @@ public class CreditorInstitutionsController {
     /**
      * GET /creditorinstitutions : Get creditor institutions list
      *
+     * @param limit Number of elements on one page. Default = 50
+     * @param page Page number. Page value starts from 0
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Too many requests (status code 429)
@@ -42,7 +44,7 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "", produces = {"application/json"})
     public ResponseEntity<CreditorInstitutions> getCreditorInstitutions(@Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit, @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
-        return ResponseEntity.ok(creditorInstitutionsService.getECs(limit, page));
+        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutions(limit, page));
     }
 
     /**
@@ -64,7 +66,7 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/{organizationfiscalcode}", produces = {"application/json"})
     public ResponseEntity<CreditorInstitutionDetails> getCreditorInstitution(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationFiscalCode) {
-        return ResponseEntity.ok(creditorInstitutionsService.getEC(organizationFiscalCode));
+        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitution(organizationFiscalCode));
     }
 
 
@@ -90,7 +92,7 @@ public class CreditorInstitutionsController {
             produces = {"application/json"}
     )
     public ResponseEntity<StationCIList> getStationsCI(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationfiscalcode) {
-        return null;
+        return ResponseEntity.ok(StationCIList.builder().build());
 
     }
 
@@ -116,8 +118,7 @@ public class CreditorInstitutionsController {
             produces = {"application/json"}
     )
     public ResponseEntity<CreditorInstitutionEncodings> getCreditorInstitutionEncodings(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationfiscalcode) {
-        return null;
-
+        return ResponseEntity.ok(CreditorInstitutionEncodings.builder().build());
     }
 
 
@@ -143,8 +144,7 @@ public class CreditorInstitutionsController {
             produces = {"application/json"}
     )
     public ResponseEntity<Ibans> getCreditorInstitutionsIbans(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationfiscalcode) {
-        return null;
-
+        return ResponseEntity.ok(Ibans.builder().build());
     }
 
 }

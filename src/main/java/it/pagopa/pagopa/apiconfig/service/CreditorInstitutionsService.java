@@ -36,7 +36,7 @@ public class CreditorInstitutionsService {
     private ModelMapper modelMapper;
 
 
-    public CreditorInstitutions getECs(Integer limit, Integer pageNumber) {
+    public CreditorInstitutions getCreditorInstitutions(Integer limit, Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
         Page<Pa> page = paRepository.findAll(pageable);
         return CreditorInstitutions.builder()
@@ -46,7 +46,7 @@ public class CreditorInstitutionsService {
     }
 
 
-    public CreditorInstitutionDetails getEC(String organizationFiscalCode) {
+    public CreditorInstitutionDetails getCreditorInstitution(String organizationFiscalCode) {
         Optional<Pa> result = paRepository.findByIdDominio(organizationFiscalCode);
         if (result.isPresent()) {
             Pa pa = result.get();
