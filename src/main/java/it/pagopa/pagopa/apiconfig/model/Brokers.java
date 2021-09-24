@@ -26,5 +26,9 @@ public class Brokers {
     @Valid
     private List<Broker> brokerList = null;
 
+    @JsonProperty("page_info")
+    @Schema(required = true)
+    @Valid
+    private PageInfo pageInfo;
 
 }

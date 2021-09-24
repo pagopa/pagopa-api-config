@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import javax.validation.constraints.Size;
-
 /**
  * Encoding
  */
@@ -19,11 +17,6 @@ import javax.validation.constraints.Size;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Encoding {
-
-    @JsonProperty("creditor_institution_code")
-    @Schema(example = "000011050036", required = true)
-    @Size(max = 35)
-    private String creditorInstitutionCode;
 
     @JsonProperty("code_type")
     @Schema(required = true)
