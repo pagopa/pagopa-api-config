@@ -36,6 +36,10 @@ public class Stazioni {
     @Column(name = "PORTA")
     private Long porta;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "PROTOCOLLO")
     private String protocollo;
 
@@ -96,15 +100,31 @@ public class Stazioni {
     @Column(name = "PROTOCOLLO_AVV")
     private String protocolloAvv;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "IP_AVV")
     private String ipAvv;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "PORTA_AVV")
     private Long portaAvv;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "SERVIZIO_AVV")
     private String servizioAvv;
 
+    /**
+     * @deprecated not used
+     */
+    @Deprecated(forRemoval = true)
     @Column(name = "TIMEOUT")
     private Long timeout;
 

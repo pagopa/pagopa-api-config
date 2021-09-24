@@ -1,362 +1,60 @@
 openapi: 3.0.1
 info:
   title: PagoPA API configuration
-  description: Specification for PagoPA API configuration
-  contact:
-    name: PagoPA
-    url: https://www.pagopa.gov.it/
-  version: 1.0.0
-  x-logo:
-    url: https://www.pagopa.gov.it/assets/images/pagopa-logo.png
+  description: Spring application to manage configuration Api for EC/PSP on the Nodo component.
+  termsOfService: https://www.pagopa.gov.it/
+  version: 1.0-SNAPSHOT
 servers:
-  - url: https://api.io.italia.it.TOBEDEFINE/api/v1
-security:
-  - ApiKey: []
+  - url: http://localhost:8080/apiconfig/api/v1
+    description: Generated server url
 tags:
   - name: Creditor Institutions
     description: Everything about Creditor Institution
-  - name: Payment Service Providers
-    description: Everything about PSP
-  - name: Configuration
-    description: Everything about general configuration
 paths:
-  /creditorinstitutions:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: |
-        Get creditor institutions list
-      operationId: GetECs
-      responses:
-        200:
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreditorInstitutions'
-        403:
-          description: Forbidden client error status.
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
-        500:
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
-  /creditorinstitutions/{organizationfiscalcode}:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: |
-        Get creditor institution details
-      operationId: GetEC
-      parameters:
-        - name: organizationfiscalcode
-          in: path
-          description: Organization fiscal code, the fiscal code of the Organization.
-          required: true
-          schema:
-            maxLength: 50
-            type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
-      responses:
-        200:
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreditorInstitutionDetails'
-        403:
-          description: Forbidden client error status.
-          content: {}
-        404:
-          description: Not Found
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
-        500:
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
-  /creditorinstitutions/{organizationfiscalcode}/encodings:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: |
-        Get creditor institution encodings
-      operationId: GetECCodifiche
-      parameters:
-        - name: organizationfiscalcode
-          in: path
-          description: Organization fiscal code, the fiscal code of the Organization.
-          required: true
-          schema:
-            maxLength: 50
-            type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
-      responses:
-        200:
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreditorInstitutionEncodings'
-        403:
-          description: Forbidden client error status.
-          content: {}
-        404:
-          description: Not Found
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
-        500:
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
-  /creditorinstitutions/{organizationfiscalcode}/encodings/{encodingcode}:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: |
-        Get creditor institution encoding exists
-      operationId: GetECCodifica
-      parameters:
-        - name: organizationfiscalcode
-          in: path
-          description: Organization fiscal code, the fiscal code of the Organization.
-          required: true
-          schema:
-            maxLength: 50
-            type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
-        - name: encodingcode
-          in: path
-          description: Encoding code.
-          required: true
-          schema:
-            maxLength: 50
-            type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
-      responses:
-        200:
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Result'
-        403:
-          description: Forbidden client error status.
-          content: {}
-        404:
-          description: Not Found
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
-        500:
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
-  /creditorinstitutions/{organizationfiscalcode}/ibans:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: |
-        Get creditor institution ibans
-      operationId: GetECIbans
-      parameters:
-        - name: organizationfiscalcode
-          in: path
-          description: Organization fiscal code, the fiscal code of the Organization.
-          required: true
-          schema:
-            maxLength: 50
-            type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
-      responses:
-        200:
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Ibans'
-        403:
-          description: Forbidden client error status.
-          content: {}
-        404:
-          description: Not Found
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
-        500:
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
-  /creditorinstitutions/{organizationfiscalcode}/ibans/{ibancode}:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: |
-        Get creditor institution iban exists
-      operationId: GetECIban
-      parameters:
-        - name: organizationfiscalcode
-          in: path
-          description: Organization fiscal code, the fiscal code of the Organization.
-          required: true
-          schema:
-            maxLength: 50
-            type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
-        - name: ibancode
-          in: path
-          description: iban code.
-          required: true
-          schema:
-            maxLength: 50
-            type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
-      responses:
-        200:
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Result'
-        403:
-          description: Forbidden client error status.
-          content: {}
-        404:
-          description: Not Found
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
-        500:
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
-  /brokersec:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: |
-        Get creditor brokers list
-      operationId: GetBrokersEC
-      responses:
-        200:
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BrokersEC'
-        403:
-          description: Forbidden client error status.
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
-        500:
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
-  /brokersec/{brokercode}:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: |
-        Get creditor broker details
-      operationId: GetBrokerEC
-      parameters:
-        - name: brokercode
-          in: path
-          description: broker code.
-          required: true
-          schema:
-            maxLength: 50
-            type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
-      responses:
-        200:
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Broker'
-        403:
-          description: Forbidden client error status.
-          content: {}
-        404:
-          description: Not Found
-          content: {}
-        429:
-          description: Too many requests
-          content: {}
-        500:
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
   /stations:
     get:
       tags:
         - Creditor Institutions
-      summary: |
-        Get stations list
-      operationId: GetStations
+      summary: 'Get stations list '
+      operationId: getStations
+      parameters:
+        - name: intermediarycode
+          in: query
+          description: Filter by intermediary
+          required: false
+          schema:
+            type: string
+        - name: creditorinstitutioncode
+          in: query
+          description: Filter by creditor institution
+          required: false
+          schema:
+            type: string
       responses:
-        200:
+        '200':
           description: OK.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Stations'
-        403:
+        '403':
           description: Forbidden client error status.
-          content: {}
-        429:
+        '429':
           description: Too many requests
-          content: {}
-        500:
+        '500':
           description: Service unavailable.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
   /stations/{stationcode}:
     get:
       tags:
         - Creditor Institutions
-      summary: |
-        Get station details
-      operationId: GetStation
+      summary: 'Get station details '
+      operationId: getStation
       parameters:
         - name: stationcode
           in: path
@@ -364,79 +62,520 @@ paths:
           required: true
           schema:
             maxLength: 50
+            minLength: 0
             type: string
-            x-import: italia-ts-commons/lib/strings
-          x-import: italia-ts-commons/lib/strings
       responses:
-        200:
+        '200':
           description: OK.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/StationDetails'
-        403:
+        '403':
           description: Forbidden client error status.
-          content: {}
-        404:
+        '404':
           description: Not Found
-          content: {}
-        429:
+        '429':
           description: Too many requests
-          content: {}
-        500:
+        '500':
           description: Service unavailable.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
+  /creditorinstitutions:
+    get:
+      tags:
+        - Creditor Institutions
+      summary: 'Get creditor institutions list '
+      operationId: getCreditorInstitutions
+      parameters:
+        - name: limit
+          in: query
+          description: Number of elements on one page. Default = 50
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: page
+          in: query
+          description: Page number. Page value starts from 0
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditorInstitutions'
+        '403':
+          description: Forbidden client error status.
+          content:
+            application/json: {}
+        '429':
+          description: Too many requests
+          content:
+            application/json: {}
+        '500':
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
+  /creditorinstitutions/{organizationfiscalcode}:
+    get:
+      tags:
+        - Creditor Institutions
+      summary: Get creditor institution details
+      operationId: getCreditorInstitution
+      parameters:
+        - name: organizationfiscalcode
+          in: path
+          description: Organization fiscal code, the fiscal code of the Organization.
+          required: true
+          schema:
+            maxLength: 50
+            minLength: 0
+            type: string
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditorInstitutionDetails'
+        '403':
+          description: Forbidden client error status.
+          content:
+            application/json: {}
+        '404':
+          description: Not Found
+          content:
+            application/json: {}
+        '429':
+          description: Too many requests
+          content:
+            application/json: {}
+        '500':
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
+  /creditorinstitutions/{organizationfiscalcode}/stations:
+    get:
+      tags:
+        - Creditor Institutions
+      summary: Get station details and relation info with CI
+      operationId: getStationsCI
+      parameters:
+        - name: organizationfiscalcode
+          in: path
+          description: Organization fiscal code, the fiscal code of the Organization.
+          required: true
+          schema:
+            maxLength: 50
+            minLength: 0
+            type: string
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationCIList'
+        '403':
+          description: Forbidden client error status.
+        '404':
+          description: Not Found
+        '429':
+          description: Too many requests
+        '500':
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
+  /creditorinstitutions/{organizationfiscalcode}/ibans:
+    get:
+      tags:
+        - Creditor Institutions
+      summary: Get creditor institution ibans
+      operationId: getCreditorInstitutionsIbans
+      parameters:
+        - name: organizationfiscalcode
+          in: path
+          description: Organization fiscal code, the fiscal code of the Organization.
+          required: true
+          schema:
+            maxLength: 50
+            minLength: 0
+            type: string
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ibans'
+        '403':
+          description: Forbidden client error status.
+        '404':
+          description: Not Found
+        '429':
+          description: Too many requests
+        '500':
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
+  /creditorinstitutions/{organizationfiscalcode}/encodings:
+    get:
+      tags:
+        - Creditor Institutions
+      summary: Get creditor institution encodings
+      operationId: getCreditorInstitutionEncodings
+      parameters:
+        - name: organizationfiscalcode
+          in: path
+          description: Organization fiscal code, the fiscal code of the Organization.
+          required: true
+          schema:
+            maxLength: 50
+            minLength: 0
+            type: string
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditorInstitutionEncodings'
+        '403':
+          description: Forbidden client error status.
+        '404':
+          description: Not Found
+        '429':
+          description: Too many requests
+        '500':
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
+  /brokers:
+    get:
+      tags:
+        - Creditor Institutions
+      summary: 'Get creditor brokers list '
+      operationId: getBrokers
+      parameters:
+        - name: creditorinstitutioncode
+          in: query
+          description: Filter by creditor institution
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brokers'
+        '403':
+          description: Forbidden client error status.
+        '429':
+          description: Too many requests
+        '500':
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
+  /brokers/{brokercode}:
+    get:
+      tags:
+        - Creditor Institutions
+      summary: 'Get creditor broker details '
+      operationId: getBroker
+      parameters:
+        - name: brokercode
+          in: path
+          description: broker code.
+          required: true
+          schema:
+            maxLength: 50
+            minLength: 0
+            type: string
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Broker'
+        '403':
+          description: Forbidden client error status.
+        '404':
+          description: Not Found
+        '429':
+          description: Too many requests
+        '500':
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemJson'
+      security:
+        - ApiKey: []
 components:
   schemas:
+    Station:
+      required:
+        - enabled
+        - station_code
+        - version
+      type: object
+      properties:
+        station_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
+        enabled:
+          type: boolean
+          description: station enabled
+          default: true
+        version:
+          type: integer
+          description: number version
+          format: int64
+    Stations:
+      required:
+        - stations
+      type: object
+      properties:
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
     ProblemJson:
       type: object
       properties:
         type:
           type: string
-          description: |-
-            An absolute URI that identifies the problem type. When dereferenced,
-            it SHOULD provide human-readable documentation for the problem type
-            (e.g., using HTML).
+          description: An absolute URI that identifies the problem type. When dereferenced, it SHOULD provide human-readable documentation for the problem type (e.g., using HTML).
           format: uri
           example: https://example.com/problem/constraint-violation
-          default: about:blank
         title:
           type: string
-          description: |-
-            A short, summary of the problem type. Written in english and readable
-            for engineers (usually not suited for non technical stakeholders and
-            not localized); example: Service Unavailable
+          description: 'A short, summary of the problem type. Written in english and readable for engineers (usually not suited for non technical stakeholders and not localized); example: Service Unavailable'
         status:
-          $ref: '#/components/schemas/HttpStatusCode'
+          maximum: 600
+          minimum: 100
+          type: integer
+          description: The HTTP status code generated by the origin server for this occurrence of the problem.
+          format: int32
+          example: 200
         detail:
           type: string
-          description: |-
-            A human readable explanation specific to this occurrence of the
-            problem.
+          description: A human readable explanation specific to this occurrence of the problem.
           example: There was an error processing the request
         instance:
           type: string
-          description: |-
-            An absolute URI that identifies the specific occurrence of the problem.
-            It may or may not yield further information if dereferenced.
+          description: An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
           format: uri
+    StationDetails:
+      required:
+        - enabled
+        - station_code
+        - version
+      type: object
+      properties:
+        station_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
+        enabled:
+          type: boolean
+          description: station enabled
+          default: true
+        version:
+          type: integer
+          description: number version
+          format: int64
+        ip:
+          type: string
+        new_password:
+          type: string
+        password:
+          type: string
+        port:
+          type: integer
+          format: int64
+        redirect_ip:
+          type: string
+        redirect_path:
+          type: string
+        redirect_port:
+          type: integer
+          format: int64
+        redirect_query_string:
+          type: string
+        service:
+          type: string
+        rt_enabled:
+          type: string
+        pof_service:
+          type: string
+        intermediary_id:
+          type: integer
+          format: int64
+        redirect_protocol:
+          type: string
+        protocol_4mod:
+          type: string
+        ip_4mod:
+          type: string
+        port_4mod:
+          type: integer
+          format: int64
+        service_4mod:
+          type: string
+        proxy_enabled:
+          type: string
+        proxy_host:
+          type: string
+        proxy_port:
+          type: integer
+          format: int64
+        proxy_username:
+          type: string
+        proxy_password:
+          type: string
+        protocol_avv:
+          type: string
+        thread_number:
+          type: integer
+          format: int64
+        timeout_a:
+          type: integer
+          format: int64
+        timeout_b:
+          type: integer
+          format: int64
+        timeout_c:
+          type: integer
+          format: int64
+        flag_online:
+          type: string
+        npm_service:
+          type: string
+    CreditorInstitution:
+      required:
+        - business_name
+        - enabled
+        - organization_fiscal_code
+      type: object
+      properties:
+        organization_fiscal_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
+        enabled:
+          type: boolean
+          description: creditor institution enabled
+          default: true
+        business_name:
+          maxLength: 70
+          minLength: 0
+          type: string
+          example: Comune di Lorem Ipsum
     CreditorInstitutions:
+      required:
+        - creditor_institutions
+        - page_info
       type: object
       properties:
         creditor_institutions:
           type: array
           items:
             $ref: '#/components/schemas/CreditorInstitution'
-    CreditorInstitution:
+        page_info:
+          $ref: '#/components/schemas/PageInfo'
+    PageInfo:
+      required:
+        - items_found
+        - limit
+        - page
+        - total_pages
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Page number
+          format: int32
+        limit:
+          type: integer
+          description: Required number of items per page
+          format: int32
+        items_found:
+          type: integer
+          description: Number of items found. (The last page may have fewer elements than required)
+          format: int32
+        total_pages:
+          type: integer
+          description: Total number of pages
+          format: int32
+    CreditorInstitutionAddress:
+      type: object
+      properties:
+        location:
+          type: string
+          example: Via delle vie 3
+        city:
+          type: string
+          example: Lorem
+        zip_code:
+          pattern: ^\d{5}$
+          type: string
+          example: '00187'
+        country_code:
+          pattern: ^\w{2}$
+          type: string
+          example: RM
+        tax_domicile:
+          type: string
+    CreditorInstitutionDetails:
       required:
         - address
         - business_name
+        - description
         - enabled
+        - fk_int_quadrature
         - organization_fiscal_code
-        - payment_cancellation
         - psp_payment
         - reporting_ftp
         - reporting_zip
@@ -444,29 +583,26 @@ components:
       properties:
         organization_fiscal_code:
           maxLength: 35
+          minLength: 0
           type: string
-          example: "1234567890100"
+          example: '1234567890100'
         enabled:
           type: boolean
           description: creditor institution enabled
           default: true
         business_name:
-          $ref: '#/components/schemas/Description'
+          maxLength: 70
+          minLength: 0
+          type: string
+          example: Comune di Lorem Ipsum
+        description:
+          type: string
+          example: Comune di Lorem Ipsum
         address:
-          type: object
-          properties:
-            location:
-              type: string
-              example: Via delle vie 3
-            city:
-              type: string
-              example: Lorem
-            zipCode:
-              $ref: '#/components/schemas/ZipCode'
-            country_code:
-              pattern: ^\w{2}$
-              type: string
-              example: RM
+          $ref: '#/components/schemas/CreditorInstitutionAddress'
+        fk_int_quadrature:
+          type: integer
+          format: int64
         psp_payment:
           type: boolean
           default: true
@@ -476,56 +612,128 @@ components:
         reporting_zip:
           type: boolean
           default: false
-        payment_cancellation:
-          type: boolean
-          default: false
-    CreditorInstitutionDetails:
+    StationCI:
       required:
-        - stations
+        - enabled
+        - station_code
+        - version
       type: object
       properties:
-        creditor_institution:
-          $ref: '#/components/schemas/CreditorInstitution'
-        stations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Station'
-    ZipCode:
-      pattern: ^\d{5}$
-      type: string
-      example: "00187"
-    Result:
-      type: boolean
-      default: false
-    CreditorInstitutionEncodings:
-      type: object
-      properties:
+        station_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
+        enabled:
+          type: boolean
+          description: station enabled
+          default: true
+        version:
+          type: integer
+          description: number version
+          format: int64
+        ip:
+          type: string
+        new_password:
+          type: string
+        password:
+          type: string
+        port:
+          type: integer
+          format: int64
+        redirect_ip:
+          type: string
+        redirect_path:
+          type: string
+        redirect_port:
+          type: integer
+          format: int64
+        redirect_query_string:
+          type: string
+        service:
+          type: string
+        rt_enabled:
+          type: string
+        pof_service:
+          type: string
+        intermediary_id:
+          type: integer
+          format: int64
+        redirect_protocol:
+          type: string
+        protocol_4mod:
+          type: string
+        ip_4mod:
+          type: string
+        port_4mod:
+          type: integer
+          format: int64
+        service_4mod:
+          type: string
+        proxy_enabled:
+          type: string
+        proxy_host:
+          type: string
+        proxy_port:
+          type: integer
+          format: int64
+        proxy_username:
+          type: string
+        proxy_password:
+          type: string
+        protocol_avv:
+          type: string
+        thread_number:
+          type: integer
+          format: int64
+        timeout_a:
+          type: integer
+          format: int64
+        timeout_b:
+          type: integer
+          format: int64
+        timeout_c:
+          type: integer
+          format: int64
+        flag_online:
+          type: string
+        npm_service:
+          type: string
+        notice_number:
+          type: integer
+          format: int64
         organization_fiscal_code:
-          maxLength: 35
+          type: integer
+          format: int64
+        aux_Digit:
+          type: integer
+          format: int64
+        segregation_number:
+          type: integer
+          format: int64
+        fourth_model:
           type: string
-          example: "1234567890100"
-        encodings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Encoding'
-    Encoding:
+        broadcast:
+          type: string
+    StationCIList:
+      required:
+        - stations_list
       type: object
       properties:
-        pa_code:
-          maxLength: 35
-          type: string
-          example: "000011050036"
-        code_type:
-          type: string
-          enum:
-            - BARCODE-GS1-128
-            - QR-CODE
-            - BARCODE-128-AIM
+        stations_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/StationCI'
     Iban:
+      required:
+        - iban
+        - publication_date
+        - validity_date
       type: object
       properties:
         iban:
           maxLength: 35
+          minLength: 0
           type: string
           example: IT99C0222211111000000000000
         validity_date:
@@ -535,257 +743,78 @@ components:
           type: string
           format: date-time
     Ibans:
+      required:
+        - ibans
       type: object
       properties:
-        organization_fiscal_code:
-          maxLength: 35
-          type: string
-          example: "1234567890100"
         ibans:
           type: array
           items:
             $ref: '#/components/schemas/Iban'
-    Stations:
-      type: object
-      properties:
-        stations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Station'
-    Station:
+    CreditorInstitutionEncodings:
       required:
-        - enabled
-        - id_station
-        - version
+        - encodings
       type: object
       properties:
-        id_station:
-          maxLength: 35
-          type: string
-          example: 12345678901_00
-        enabled:
-          type: boolean
-          description: station enabled
-          default: true
-        version:
-          type: number
-          description: number version
-    BrokersEC:
-      type: object
-      properties:
-        brokers_ec:
+        encodings:
           type: array
           items:
-            $ref: '#/components/schemas/Broker'
+            $ref: '#/components/schemas/Encoding'
+    Encoding:
+      required:
+        - code_type
+        - creditor_institution_code
+      type: object
+      properties:
+        creditor_institution_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '000011050036'
+        code_type:
+          type: string
+          enum:
+            - BARCODE_GS1_128
+            - QR_CODE
+            - BARCODE_128_AIM
     Broker:
       type: object
       properties:
         organization_fiscal_code:
           maxLength: 35
+          minLength: 0
           type: string
-          example: "1234567890100"
+          example: '1234567890100'
         broker:
           type: array
           items:
             $ref: '#/components/schemas/BrokerDetails'
-    Description:
-      maxLength: 70
-      type: string
-      example: Comune di Lorem Ipsum
     BrokerDetails:
       required:
         - description
       type: object
       properties:
-        id_broker:
+        broker_code:
           maxLength: 35
+          minLength: 0
           type: string
-          example: "223344556677889900"
+          example: '223344556677889900'
         enabled:
           type: boolean
         description:
           maxLength: 255
+          minLength: 0
           type: string
           example: Lorem ipsum dolor sit amet
-    StationDetails:
-      required:
-        - ecs
-        - station
+        extended_fault_bean:
+          type: boolean
+    Brokers:
       type: object
       properties:
-        station:
-          $ref: '#/components/schemas/Station'
-        ecs:
+        brokers_list:
           type: array
           items:
-            maxLength: 35
-            type: string
-            description: organization_fiscal_code's creditor instituion
-            example: "1234567890100"
-    HttpStatusCode:
-      maximum: 6E+2
-      exclusiveMaximum: true
-      minimum: 1E+2
-      type: integer
-      description: |-
-        The HTTP status code generated by the origin server for this occurrence
-        of the problem.
-      format: int32
-      example: 200
-  parameters:
-    ReceiptNumber:
-      name: receiptid
-      in: path
-      description: The receipt identification
-      required: true
-      schema:
-        maxLength: 50
-        type: string
-    OrganizationFiscalCode:
-      name: organizationfiscalcode
-      in: path
-      description: Organization fiscal code, the fiscal code of the Organization.
-      required: true
-      schema:
-        maxLength: 50
-        type: string
-        x-import: italia-ts-commons/lib/strings
-      x-import: italia-ts-commons/lib/strings
-    IbanCode:
-      name: ibancode
-      in: path
-      description: iban code.
-      required: true
-      schema:
-        maxLength: 50
-        type: string
-        x-import: italia-ts-commons/lib/strings
-      x-import: italia-ts-commons/lib/strings
-    BrokerCode:
-      name: brokercode
-      in: path
-      description: broker code.
-      required: true
-      schema:
-        maxLength: 50
-        type: string
-        x-import: italia-ts-commons/lib/strings
-      x-import: italia-ts-commons/lib/strings
-    StationCode:
-      name: stationcode
-      in: path
-      description: station code.
-      required: true
-      schema:
-        maxLength: 50
-        type: string
-        x-import: italia-ts-commons/lib/strings
-      x-import: italia-ts-commons/lib/strings
-    EncodingCode:
-      name: encodingcode
-      in: path
-      description: Encoding code.
-      required: true
-      schema:
-        maxLength: 50
-        type: string
-        x-import: italia-ts-commons/lib/strings
-      x-import: italia-ts-commons/lib/strings
-    FiscalCode:
-      name: fiscalcode
-      in: path
-      description: The fiscal code of the user, all upper case.
-      required: true
-      schema:
-        maxLength: 16
-        minLength: 16
-        type: string
-    PaymentNoticeNumber:
-      name: paymentnoticenumber
-      in: path
-      description: The field ["Numero Avviso"](https://pagopa-specifichepagamenti.readthedocs.io/it/latest/_docs/Capitolo7.html#il-numero-avviso-e-larchivio-dei-pagamenti-in-attesa)
-        of pagoPa, needed to identify the payment. Format is `<aux digit (1n)>[<application
-        code> (2n)]<codice IUV (15|17n)>`. See [pagoPa specs](https://www.agid.gov.it/sites/default/files/repository_files/specifiche_attuative_pagamenti_1_3_1_0.pdf)
-        for more info on this field and the IUV.
-      required: true
-      schema:
-        pattern: ^[0123][0-9]{17}$
-        type: string
-    AmountFrom:
-      name: amount_from
-      in: query
-      description: The mimimum amount to filter from, in Euro cents. The value refers
-        to the paymentOption.amount field in the GET/.../payment-notices case, while
-        it refers to the ReceiptAmount.amount field in the GET/.../payment-receipts
-        case.
-      schema:
-        maximum: 9999999999
-        minimum: 1
-        type: integer
-    AmountTo:
-      name: amount_to
-      in: query
-      description: The maximum amount to filter to, in Euro cents.
-      schema:
-        maximum: 9999999999
-        minimum: 1
-        type: integer
-    DueDateFrom:
-      name: due_date_from
-      in: query
-      description: The due date to filter from.
-      schema:
-        type: string
-        format: date
-    DueDateTo:
-      name: due_date_to
-      in: query
-      description: The due date to filter to.
-      schema:
-        type: string
-        format: date
-    PaymentDateFrom:
-      name: payment_date_from
-      in: query
-      description: The receipt's payment date to filter from.
-      schema:
-        type: string
-        format: date
-    PaymentDateTo:
-      name: payment_date_to
-      in: query
-      description: The receipt's payment date to filter to.
-      schema:
-        type: string
-        format: date
-    Status:
-      name: status
-      in: query
-      description: Payment status
-      schema:
-        type: string
-        enum:
-          - INSERTED
-          - PAYING
-          - PAID
-          - NOTIFIED
-    Limit:
-      name: limit
-      in: query
-      description: The number of items to return (from 1 to 100).
-      schema:
-        maximum: 100
-        minimum: 1
-        type: integer
-        default: 20
-    Offset:
-      name: offset
-      in: query
-      description: The number of items to skip before starting to collect the result
-        set.
-      schema:
-        minimum: 0
-        type: integer
+            $ref: '#/components/schemas/Broker'
   securitySchemes:
     ApiKey:
       type: apiKey

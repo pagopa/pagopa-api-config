@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -21,15 +20,11 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ibans {
-    @JsonProperty("organization_fiscal_code")
-    @Schema(example = "1234567890100")
-    @Size(max = 35)
-    private String organizationFiscalCode;
 
     @JsonProperty("ibans")
-    @Schema()
+    @Schema(required = true)
     @Valid
-    private List<Iban> ibans = null;
+    private List<Iban> ibanList = null;
 
 
 }

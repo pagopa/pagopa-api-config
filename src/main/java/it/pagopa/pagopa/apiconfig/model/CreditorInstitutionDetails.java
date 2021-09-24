@@ -5,32 +5,51 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * CreditorInstitutionDetails
+ * CreditorInstitution
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder(toBuilder = true)
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreditorInstitutionDetails {
-    @JsonProperty("creditor_institution")
-    @Schema()
-    private CreditorInstitutionFull creditorInstitutionFull;
+public class CreditorInstitutionDetails extends CreditorInstitution {
 
-    @JsonProperty("stations")
+    @JsonProperty("description")
+    @Schema(example = "Comune di Lorem Ipsum", required = true)
+    private String description;
+
+    @JsonProperty("address")
     @Schema(required = true)
     @NotNull
-    @Valid
-    private List<Station> stations = new ArrayList<>();
+    private CreditorInstitutionAddress address;
+
+    @JsonProperty("fk_int_quadrature")
+    @Schema(required = true)
+    @NotNull
+    private Long fkQuadrature;
+
+    @JsonProperty("psp_payment")
+    @Schema(required = true, defaultValue = "true")
+    @NotNull
+    private Boolean pspPayment = true;
+
+    @JsonProperty("reporting_ftp")
+    @Schema(required = true, defaultValue = "false")
+    @NotNull
+    private Boolean reportingFtp = false;
+
+    @JsonProperty("reporting_zip")
+    @Schema(required = true, defaultValue = "false")
+    @NotNull
+    private Boolean reportingZip = false;
 
 
 }

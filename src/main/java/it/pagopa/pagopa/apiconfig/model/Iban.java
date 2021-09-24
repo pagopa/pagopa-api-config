@@ -23,17 +23,17 @@ import java.time.OffsetDateTime;
 public class Iban {
 
     @JsonProperty("iban")
-    @Schema(example = "IT99C0222211111000000000000")
+    @Schema(example = "IT99C0222211111000000000000", required = true)
     @Size(max = 35)
-    private String iban;
+    private String ibanValue;
 
     @JsonProperty("validity_date")
-    @Schema()
+    @Schema(required = true)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime validityDate;
 
     @JsonProperty("publication_date")
-    @Schema()
+    @Schema(required = true)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime publicationDate;
 

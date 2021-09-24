@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -21,7 +22,7 @@ import javax.validation.constraints.Size;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BrokerDetails {
 
-    @JsonProperty("id_broker")
+    @JsonProperty("broker_code")
     @Schema(example = "223344556677889900")
     @Size(max = 35)
     private String idBroker;
@@ -36,5 +37,9 @@ public class BrokerDetails {
     @Size(max = 255)
     private String description;
 
+    @JsonProperty("extended_fault_bean")
+    @Schema()
+    @Valid
+    private Boolean extendedFaultBean;
 
 }

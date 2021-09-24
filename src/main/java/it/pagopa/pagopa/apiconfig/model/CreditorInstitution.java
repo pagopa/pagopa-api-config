@@ -23,7 +23,8 @@ import javax.validation.constraints.Size;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreditorInstitutionLight {
+public class CreditorInstitution {
+
     @JsonProperty("organization_fiscal_code")
     @Schema(example = "1234567890100", required = true)
     @NotNull
