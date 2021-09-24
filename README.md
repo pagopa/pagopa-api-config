@@ -1,5 +1,18 @@
-# pagopa-api-config
+# pagoPa Api Config
 Spring application to manage configuration Api for EC/PSP on the Nodo component.
+
+See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-api-config/main/openapi/swagger.yaml)
+
+---
+
+## Technology Stack
+- Java 11
+- Spring Boot
+- Spring Web
+- Hibernate
+- JPA
+
+---
 
 ## Start Project Locally
 If you just want to try this project, open a terminal in the root of this project and typing:
@@ -43,6 +56,8 @@ To details see `RetryableDataSource.java` and `RetryableDatabasePostProcessor.ja
 
 *NB: for this reason you can see some connection error in the application log. After 10 failed attempts the application stops with an error.*
 
+---
+
 ## Develop Locally
 The easiest way to develop locally is start only oracle and flyway containers. 
 ```
@@ -73,15 +88,17 @@ user = NODO4_CFG
 password = PSS_NODO4_CFG
 ```
 
-**Attention!** 
+⚠️ **Attention!** 
 
 If you want to connect to DB from your local PC replace `oracle-db-12c` with `localhost`
 ```
 local url = jdbc:oracle:thin:@localhost:1521:ORCLCDB
 ``` 
 
+---
+
 ## Contributors
 Make with ❤️ from PagoPa S.p.A.
 
 ### Mainteiners:
-see `CODEOWNERS` file
+See `CODEOWNERS` file

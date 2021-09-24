@@ -15,9 +15,24 @@ paths:
     get:
       tags:
         - Creditor Institutions
-      summary: 'Get stations list '
+      summary: Get paginated list of stations
       operationId: getStations
       parameters:
+        - name: limit
+          in: query
+          description: Number of elements on one page. Default = 50
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: page
+          in: query
+          description: Page number. Page value starts from 0
+          required: true
+          schema:
+            type: integer
+            format: int32
         - name: intermediarycode
           in: query
           description: Filter by intermediary
@@ -53,7 +68,7 @@ paths:
     get:
       tags:
         - Creditor Institutions
-      summary: 'Get station details '
+      summary: Get station details
       operationId: getStation
       parameters:
         - name: stationcode
@@ -89,7 +104,7 @@ paths:
     get:
       tags:
         - Creditor Institutions
-      summary: 'Get creditor institutions list '
+      summary: Get paginated list of creditor institutions
       operationId: getCreditorInstitutions
       parameters:
         - name: limit
@@ -130,14 +145,14 @@ paths:
                 $ref: '#/components/schemas/ProblemJson'
       security:
         - ApiKey: []
-  /creditorinstitutions/{organizationfiscalcode}:
+  /creditorinstitutions/{creditorinstitutioncode}:
     get:
       tags:
         - Creditor Institutions
       summary: Get creditor institution details
       operationId: getCreditorInstitution
       parameters:
-        - name: organizationfiscalcode
+        - name: creditorinstitutioncode
           in: path
           description: Organization fiscal code, the fiscal code of the Organization.
           required: true
@@ -172,14 +187,14 @@ paths:
                 $ref: '#/components/schemas/ProblemJson'
       security:
         - ApiKey: []
-  /creditorinstitutions/{organizationfiscalcode}/stations:
+  /creditorinstitutions/{creditorinstitutioncode}/stations:
     get:
       tags:
         - Creditor Institutions
-      summary: Get station details and relation info with CI
+      summary: Get station details and relation info with creditor institution
       operationId: getStationsCI
       parameters:
-        - name: organizationfiscalcode
+        - name: creditorinstitutioncode
           in: path
           description: Organization fiscal code, the fiscal code of the Organization.
           required: true
@@ -208,14 +223,14 @@ paths:
                 $ref: '#/components/schemas/ProblemJson'
       security:
         - ApiKey: []
-  /creditorinstitutions/{organizationfiscalcode}/ibans:
+  /creditorinstitutions/{creditorinstitutioncode}/ibans:
     get:
       tags:
         - Creditor Institutions
       summary: Get creditor institution ibans
       operationId: getCreditorInstitutionsIbans
       parameters:
-        - name: organizationfiscalcode
+        - name: creditorinstitutioncode
           in: path
           description: Organization fiscal code, the fiscal code of the Organization.
           required: true
@@ -244,14 +259,14 @@ paths:
                 $ref: '#/components/schemas/ProblemJson'
       security:
         - ApiKey: []
-  /creditorinstitutions/{organizationfiscalcode}/encodings:
+  /creditorinstitutions/{creditorinstitutioncode}/encodings:
     get:
       tags:
         - Creditor Institutions
       summary: Get creditor institution encodings
       operationId: getCreditorInstitutionEncodings
       parameters:
-        - name: organizationfiscalcode
+        - name: creditorinstitutioncode
           in: path
           description: Organization fiscal code, the fiscal code of the Organization.
           required: true
@@ -284,9 +299,24 @@ paths:
     get:
       tags:
         - Creditor Institutions
-      summary: 'Get creditor brokers list '
+      summary: Get paginated list of creditor brokers
       operationId: getBrokers
       parameters:
+        - name: limit
+          in: query
+          description: Number of elements on one page. Default = 50
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: page
+          in: query
+          description: Page number. Page value starts from 0
+          required: true
+          schema:
+            type: integer
+            format: int32
         - name: creditorinstitutioncode
           in: query
           description: Filter by creditor institution
@@ -312,73 +342,8 @@ paths:
                 $ref: '#/components/schemas/ProblemJson'
       security:
         - ApiKey: []
-  /brokers/{brokercode}:
-    get:
-      tags:
-        - Creditor Institutions
-      summary: 'Get creditor broker details '
-      operationId: getBroker
-      parameters:
-        - name: brokercode
-          in: path
-          description: broker code.
-          required: true
-          schema:
-            maxLength: 50
-            minLength: 0
-            type: string
-      responses:
-        '200':
-          description: OK.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Broker'
-        '403':
-          description: Forbidden client error status.
-        '404':
-          description: Not Found
-        '429':
-          description: Too many requests
-        '500':
-          description: Service unavailable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemJson'
-      security:
-        - ApiKey: []
 components:
   schemas:
-    Station:
-      required:
-        - enabled
-        - station_code
-        - version
-      type: object
-      properties:
-        station_code:
-          maxLength: 35
-          minLength: 0
-          type: string
-          example: '1234567890100'
-        enabled:
-          type: boolean
-          description: station enabled
-          default: true
-        version:
-          type: integer
-          description: number version
-          format: int64
-    Stations:
-      required:
-        - stations
-      type: object
-      properties:
-        stations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Station'
     ProblemJson:
       type: object
       properties:
@@ -405,6 +370,72 @@ components:
           type: string
           description: An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
           format: uri
+    PageInfo:
+      required:
+        - items_found
+        - limit
+        - page
+        - total_pages
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Page number
+          format: int32
+        limit:
+          type: integer
+          description: Required number of items per page
+          format: int32
+        items_found:
+          type: integer
+          description: Number of items found. (The last page may have fewer elements than required)
+          format: int32
+        total_pages:
+          type: integer
+          description: Total number of pages
+          format: int32
+    Station:
+      required:
+        - enabled
+        - station_code
+        - version
+      type: object
+      properties:
+        station_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
+        enabled:
+          type: boolean
+          description: station enabled
+          default: true
+        version:
+          type: integer
+          description: number version
+          format: int64
+        creditor_institution_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
+        broker_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '223344556677889900'
+    Stations:
+      required:
+        - page_info
+        - stations
+      type: object
+      properties:
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+        page_info:
+          $ref: '#/components/schemas/PageInfo'
     StationDetails:
       required:
         - enabled
@@ -425,6 +456,16 @@ components:
           type: integer
           description: number version
           format: int64
+        creditor_institution_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
+        broker_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '223344556677889900'
         ip:
           type: string
         new_password:
@@ -495,11 +536,11 @@ components:
     CreditorInstitution:
       required:
         - business_name
+        - creditor_institution_code
         - enabled
-        - organization_fiscal_code
       type: object
       properties:
-        organization_fiscal_code:
+        creditor_institution_code:
           maxLength: 35
           minLength: 0
           type: string
@@ -525,30 +566,6 @@ components:
             $ref: '#/components/schemas/CreditorInstitution'
         page_info:
           $ref: '#/components/schemas/PageInfo'
-    PageInfo:
-      required:
-        - items_found
-        - limit
-        - page
-        - total_pages
-      type: object
-      properties:
-        page:
-          type: integer
-          description: Page number
-          format: int32
-        limit:
-          type: integer
-          description: Required number of items per page
-          format: int32
-        items_found:
-          type: integer
-          description: Number of items found. (The last page may have fewer elements than required)
-          format: int32
-        total_pages:
-          type: integer
-          description: Total number of pages
-          format: int32
     CreditorInstitutionAddress:
       type: object
       properties:
@@ -572,16 +589,16 @@ components:
       required:
         - address
         - business_name
+        - creditor_institution_code
         - description
         - enabled
         - fk_int_quadrature
-        - organization_fiscal_code
         - psp_payment
         - reporting_ftp
         - reporting_zip
       type: object
       properties:
-        organization_fiscal_code:
+        creditor_institution_code:
           maxLength: 35
           minLength: 0
           type: string
@@ -632,6 +649,16 @@ components:
           type: integer
           description: number version
           format: int64
+        creditor_institution_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
+        broker_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '223344556677889900'
         ip:
           type: string
         new_password:
@@ -702,10 +729,7 @@ components:
         notice_number:
           type: integer
           format: int64
-        organization_fiscal_code:
-          type: integer
-          format: int64
-        aux_Digit:
+        aux_digit:
           type: integer
           format: int64
         segregation_number:
@@ -763,14 +787,8 @@ components:
     Encoding:
       required:
         - code_type
-        - creditor_institution_code
       type: object
       properties:
-        creditor_institution_code:
-          maxLength: 35
-          minLength: 0
-          type: string
-          example: '000011050036'
         code_type:
           type: string
           enum:
@@ -778,20 +796,11 @@ components:
             - QR_CODE
             - BARCODE_128_AIM
     Broker:
-      type: object
-      properties:
-        organization_fiscal_code:
-          maxLength: 35
-          minLength: 0
-          type: string
-          example: '1234567890100'
-        broker:
-          type: array
-          items:
-            $ref: '#/components/schemas/BrokerDetails'
-    BrokerDetails:
       required:
+        - broker_code
         - description
+        - enabled
+        - extended_fault_bean
       type: object
       properties:
         broker_code:
@@ -808,13 +817,22 @@ components:
           example: Lorem ipsum dolor sit amet
         extended_fault_bean:
           type: boolean
+        creditor_institution_code:
+          maxLength: 35
+          minLength: 0
+          type: string
+          example: '1234567890100'
     Brokers:
+      required:
+        - page_info
       type: object
       properties:
         brokers_list:
           type: array
           items:
             $ref: '#/components/schemas/Broker'
+        page_info:
+          $ref: '#/components/schemas/PageInfo'
   securitySchemes:
     ApiKey:
       type: apiKey

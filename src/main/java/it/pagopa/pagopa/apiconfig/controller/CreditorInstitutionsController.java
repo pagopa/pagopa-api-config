@@ -27,16 +27,16 @@ public class CreditorInstitutionsController {
 
 
     /**
-     * GET /creditorinstitutions : Get creditor institutions list
+     * GET /creditorinstitutions : Get paginated list of creditor institutions
      *
      * @param limit Number of elements on one page. Default = 50
-     * @param page Page number. Page value starts from 0
+     * @param page  Page number. Page value starts from 0
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Too many requests (status code 429)
      * or Service unavailable. (status code 500)
      */
-    @Operation(summary = "Get creditor institutions list. The result is paging", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @Operation(summary = "Get paginated list of creditor institutions", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreditorInstitutions.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
@@ -48,9 +48,9 @@ public class CreditorInstitutionsController {
     }
 
     /**
-     * GET /creditorinstitutions/{organizationfiscalcode} : Get creditor institution details
+     * GET /creditorinstitutions/{creditorinstitutioncode} : Get creditor institution details
      *
-     * @param organizationFiscalCode Organization fiscal code, the fiscal code of the Organization. (required)
+     * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization. (required)
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Not Found (status code 404)
@@ -64,23 +64,23 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
-    @GetMapping(value = "/{organizationfiscalcode}", produces = {"application/json"})
-    public ResponseEntity<CreditorInstitutionDetails> getCreditorInstitution(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationFiscalCode) {
-        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitution(organizationFiscalCode));
+    @GetMapping(value = "/{creditorinstitutioncode}", produces = {"application/json"})
+    public ResponseEntity<CreditorInstitutionDetails> getCreditorInstitution(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
+        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitution(creditorInstitutionCode));
     }
 
 
     /**
-     * GET /creditorinstitutions/{organizationfiscalcode}/stations : Get station details and relation info with CI
+     * GET /creditorinstitutions/{creditorinstitutioncode}/stations : Get station details and relation info with creditor institution
      *
-     * @param organizationfiscalcode Organization fiscal code, the fiscal code of the Organization. (required)
+     * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization. (required)
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Not Found (status code 404)
      * or Too many requests (status code 429)
      * or Service unavailable. (status code 500)
      */
-    @Operation(summary = "Get station details and relation info with CI", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
+    @Operation(summary = "Get station details and relation info with creditor institution", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StationCIList.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
@@ -88,18 +88,18 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
-            value = "/{organizationfiscalcode}/stations",
+            value = "/{creditorinstitutioncode}/stations",
             produces = {"application/json"}
     )
-    public ResponseEntity<StationCIList> getStationsCI(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationfiscalcode) {
+    public ResponseEntity<StationCIList> getStationsCI(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
         return ResponseEntity.ok(StationCIList.builder().build());
 
     }
 
     /**
-     * GET /creditorinstitutions/{organizationfiscalcode}/encodings : Get creditor institution encodings
+     * GET /creditorinstitutions/{creditorinstitutioncode}/encodings : Get creditor institution encodings
      *
-     * @param organizationfiscalcode Organization fiscal code, the fiscal code of the Organization. (required)
+     * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization. (required)
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Not Found (status code 404)
@@ -114,18 +114,18 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
-            value = "/{organizationfiscalcode}/encodings",
+            value = "/{creditorinstitutioncode}/encodings",
             produces = {"application/json"}
     )
-    public ResponseEntity<CreditorInstitutionEncodings> getCreditorInstitutionEncodings(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationfiscalcode) {
+    public ResponseEntity<CreditorInstitutionEncodings> getCreditorInstitutionEncodings(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
         return ResponseEntity.ok(CreditorInstitutionEncodings.builder().build());
     }
 
 
     /**
-     * GET /{organizationfiscalcode}/ibans : Get creditor institution ibans
+     * GET /{creditorinstitutioncode}/ibans : Get creditor institution ibans
      *
-     * @param organizationfiscalcode Organization fiscal code, the fiscal code of the Organization. (required)
+     * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization. (required)
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Not Found (status code 404)
@@ -140,10 +140,10 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
-            value = "/{organizationfiscalcode}/ibans",
+            value = "/{creditorinstitutioncode}/ibans",
             produces = {"application/json"}
     )
-    public ResponseEntity<Ibans> getCreditorInstitutionsIbans(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("organizationfiscalcode") String organizationfiscalcode) {
+    public ResponseEntity<Ibans> getCreditorInstitutionsIbans(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
         return ResponseEntity.ok(Ibans.builder().build());
     }
 

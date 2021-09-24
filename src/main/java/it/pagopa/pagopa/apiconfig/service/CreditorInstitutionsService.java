@@ -46,8 +46,8 @@ public class CreditorInstitutionsService {
     }
 
 
-    public CreditorInstitutionDetails getCreditorInstitution(String organizationFiscalCode) {
-        Optional<Pa> result = paRepository.findByIdDominio(organizationFiscalCode);
+    public CreditorInstitutionDetails getCreditorInstitution(String creditorInstitutionCode) {
+        Optional<Pa> result = paRepository.findByIdDominio(creditorInstitutionCode);
         if (result.isPresent()) {
             Pa pa = result.get();
             return modelMapper.map(pa, CreditorInstitutionDetails.class);

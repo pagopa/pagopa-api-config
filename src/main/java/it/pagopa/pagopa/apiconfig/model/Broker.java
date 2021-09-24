@@ -20,15 +20,15 @@ import javax.validation.constraints.Size;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BrokerDetails {
+public class Broker {
 
     @JsonProperty("broker_code")
-    @Schema(example = "223344556677889900")
+    @Schema(example = "223344556677889900", required = true)
     @Size(max = 35)
     private String idBroker;
 
     @JsonProperty("enabled")
-    @Schema()
+    @Schema(required = true)
     private Boolean enabled;
 
     @JsonProperty("description")
@@ -38,13 +38,13 @@ public class BrokerDetails {
     private String description;
 
     @JsonProperty("extended_fault_bean")
-    @Schema()
+    @Schema(required = true)
     @Valid
     private Boolean extendedFaultBean;
 
-    @JsonProperty("organization_fiscal_code")
+    @JsonProperty("creditor_institution_code")
     @Schema(example = "1234567890100")
     @Size(max = 35)
-    private String organizationFiscalCode;
+    private String creditorInstitutionCode;
 
 }

@@ -27,4 +27,8 @@ public class Stations {
     private List<Station> stationList = null;
 
 
+    @JsonProperty("page_info")
+    @Schema(required = true)
+    @Valid
+    private PageInfo pageInfo;
 }
