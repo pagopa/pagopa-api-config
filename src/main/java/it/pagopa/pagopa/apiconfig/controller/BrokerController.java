@@ -8,13 +8,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.pagopa.pagopa.apiconfig.model.Broker;
 import it.pagopa.pagopa.apiconfig.model.Brokers;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Positive;
 
 
 @RestController()
@@ -22,43 +24,18 @@ import javax.validation.constraints.Size;
 @Tag(name = "Creditor Institutions", description = "Everything about Creditor Institution")
 public class BrokerController {
 
-
     /**
-     * GET /brokers/{brokercode} : Get creditor broker details
+     * GET /brokers : Get paginated list of creditor brokers
      *
-     * @param brokercode broker code. (required)
-     * @return OK. (status code 200)
-     * or Forbidden client error status. (status code 403)
-     * or Not Found (status code 404)
-     * or Too many requests (status code 429)
-     * or Service unavailable. (status code 500)
-     */
-    @Operation(summary = "Get creditor broker details ", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Broker.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
-    @GetMapping(
-            value = "/{brokercode}",
-            produces = {"application/json"}
-    )
-    public ResponseEntity<Broker> getBroker(@Size(max = 50) @Parameter(description = "broker code.", required = true) @PathVariable("brokercode") String brokercode) {
-        return ResponseEntity.ok(Broker.builder().build());
-    }
-
-
-    /**
-     * GET /brokers : Get creditor brokers list
-     *
+     * @param limit      Number of elements on one page. Default = 50
+     * @param page       Page number. Page value starts from 0
      * @param creditorInstitutionCode Filter by creditor institution
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Too many requests (status code 429)
      * or Service unavailable. (status code 500)
      */
-    @Operation(summary = "Get creditor brokers list ", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
+    @Operation(summary = "Get paginated list of creditor brokers", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Brokers.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
@@ -68,7 +45,10 @@ public class BrokerController {
             value = "",
             produces = {"application/json"}
     )
-    public ResponseEntity<Brokers> getBrokers(@Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
+    public ResponseEntity<Brokers> getBrokers(
+            @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
+            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
         return ResponseEntity.ok(Brokers.builder().build());
     }
 

@@ -22,10 +22,7 @@ public class StationCI extends StationDetails {
     @JsonProperty("notice_number")
     private Long noticeNumber;
 
-    @JsonProperty("organization_fiscal_code")
-    private Long organizationFiscalCode;
-
-    @JsonProperty("aux_Digit")
+    @JsonProperty("aux_digit")
     private Long auxDigit;
 
     @JsonProperty("segregation_number")
