@@ -22,7 +22,7 @@ import java.util.List;
 public class Brokers {
 
     @JsonProperty("brokers_list")
-    @Schema()
+    @Schema(required = true)
     @Valid
     private List<Broker> brokerList = null;
 
