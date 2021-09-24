@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,5 +44,15 @@ class ErrorHandlerTest {
         assertEquals("INTERNAL SERVER ERROR", actual.getBody().getTitle());
         assertEquals("message", actual.getBody().getDetail());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), actual.getBody().getStatus());
+    }
+
+    @Test
+    void handleMissingServletRequestParameter() {
+        ResponseEntity<Object> actual = errorHandler.handleMissingServletRequestParameter(new MissingServletRequestParameterException("param", "String"), null, null, null);
+        ProblemJson body = (ProblemJson) actual.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
+        assertEquals("BAD REQUEST", body.getTitle());
+        assertEquals("Required request parameter 'param' for method parameter type String is not present", body.getDetail());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), body.getStatus());
     }
 }

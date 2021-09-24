@@ -3,6 +3,9 @@ package it.pagopa.pagopa.apiconfig.exception;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Custom exception.
@@ -10,6 +13,7 @@ import org.springframework.http.HttpStatus;
  */
 @EqualsAndHashCode(callSuper = true)
 @Value
+@Validated
 public class AppException extends RuntimeException {
 
     /**
@@ -28,7 +32,7 @@ public class AppException extends RuntimeException {
      * @param message    the detail message returend to the response
      * @param cause      The cause of this {@link AppException}
      */
-    public AppException(HttpStatus httpStatus, String title, String message, Throwable cause) {
+    public AppException(@NotNull HttpStatus httpStatus, @NotNull String title, @NotNull String message, Throwable cause) {
         super(message, cause);
         this.title = title;
         this.httpStatus = httpStatus;
