@@ -15,8 +15,14 @@ See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercon
 ---
 
 ## Start Project Locally
-If you just want to try this project, open a terminal in the root of this project and typing:
 
+### Prerequisites
+- docker 
+- account on dockerhub
+
+> 👀 The docker account is needed to be able to pull the image oracle-db-ee and for which accept the Terms of Service via web. [Open this link](https://hub.docker.com/_/oracle-database-enterprise-edition) and click on "Proceed to Checkout" button.
+
+### Run docker container
 `docker-compose up --build`
 
 if all right you'll see something like that :
@@ -54,11 +60,19 @@ Because Oracle container can take a long time to start up, the Spring applicatio
 According to [Control startup and shutdown order in Compose](https://docs.docker.com/compose/startup-order/) best practice.
 To details see `RetryableDataSource.java` and `RetryableDatabasePostProcessor.java` classes
 
-*NB: for this reason you can see some connection error in the application log. After 10 failed attempts the application stops with an error.*
+⚠️ *NB: for this reason you can see some connection error in the application log. After 10 failed attempts the application stops with an error.*
 
 ---
 
 ## Develop Locally
+
+### Prerequisites
+- git
+- maven
+- jdk-11
+- docker
+
+### Run the project
 The easiest way to develop locally is start only oracle and flyway containers. 
 ```
 /usr/local/bin/docker-compose up -d oracle
@@ -69,7 +83,7 @@ Then start the springboot application with this command:
 
 `mvn spring-boot:run -Dspring-boot.run.profiles=local`
 
-Using the spring profile `local` the Spring application connects to the docker DB.
+Using the spring profile `local`, the Spring application connects to the docker DB.
 
 
 ### Spring Profiles

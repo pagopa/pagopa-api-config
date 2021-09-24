@@ -40,14 +40,4 @@ public class Station {
     @NotNull
     private Long version;
 
-    @JsonProperty("creditor_institution_code")
-    @Schema(example = "1234567890100")
-    @Size(max = 35)
-    private String creditorInstitutionCode;
-
-    @JsonProperty("broker_code")
-    @Schema(example = "223344556677889900")
-    @Size(max = 35)
-    private String idBroker;
-
 }

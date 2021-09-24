@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.Valid;
 
 /**
  * BrokerDetails
@@ -23,21 +22,11 @@ import javax.validation.constraints.Size;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Broker {
+public class BrokerDetails extends Broker {
 
-    @JsonProperty("broker_code")
-    @Schema(example = "223344556677889900", required = true)
-    @Size(max = 35)
-    private String idBroker;
-
-    @JsonProperty("enabled")
+    @JsonProperty("extended_fault_bean")
     @Schema(required = true)
-    private Boolean enabled;
-
-    @JsonProperty("description")
-    @Schema(example = "Lorem ipsum dolor sit amet", required = true)
-    @NotNull
-    @Size(max = 255)
-    private String description;
+    @Valid
+    private Boolean extendedFaultBean;
 
 }
