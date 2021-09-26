@@ -1,30 +1,34 @@
 package it.pagopa.pagopa.apiconfig;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.And;
+import io.cucumber.docstring.DocString;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import io.cucumber.spring.CucumberContextConfiguration;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/test/resources")
@@ -36,37 +40,64 @@ public class CucumberIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
-    PaRepository paRepository;
+    @PersistenceContext
+    private EntityManager em;
 
-    @Given("^\\w+ in database:$")
-    public void init_db(DataTable table) throws Throwable{
+    private MvcResult lastCall;
+    private HttpHeaders headers;
+    private String body;
+
+    @Given("^(\\w+) in database:$")
+    @Transactional
+    public void init_db(String entity, DataTable table) throws Throwable {
         List<Map<String, String>> rows = table.asMaps(String.class, String.class);
-
         for (Map<String, String> columns : rows) {
-            Pa.class.getDeclaredField(columns.get()).set();
+            String columnsNames = String.join(", ", columns.keySet());
+            String values = String.join(", ", columns.values());
+            em.createNativeQuery(
+                    "INSERT INTO " + entity + "( " + columnsNames + ") " +
+                            " SELECT  " + values + "  FROM dual " +
+                            " WHERE NOT EXISTS (SELECT * " +
+                            "                     FROM " + entity +
+                            "                    WHERE OBJ_ID = " + columns.get("OBJ_ID") +
+                            "                  )")
+                    .executeUpdate();
         }
-        paRepository.save(Pa.builder()
-                        .objId(entity.asList().get(0).)
-                .build());
+    }
+
+    @Given("^headers:$")
+    public void headers(DocString docString) throws Throwable {
+        headers = new HttpHeaders();
+        JsonNode json = new ObjectMapper().readValue(docString.getContent(), JsonNode.class);
+        for (Iterator<String> it = json.fieldNames(); it.hasNext(); ) {
+            String field = it.next();
+            headers.add(field, json.get(field).asText());
+        }
 
     }
 
-    @When("^the client calls .*$")
-    public void the_client_issues_GET_version() throws Throwable{
-        String url = "/brokers?page=0";
-        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    @Given("^body:$")
+    public void body(DocString docString) {
+        body = docString.getContent();
     }
 
-    @Then("^the client receives status code of (\\d+)$")
-    public void the_client_receives_status_code_of(int statusCode) throws Throwable {
-
+    @When("^calls (GET|POST|PUT|DELETE) (.+)$")
+    public void perform_call(String method, String url) throws Throwable {
+        MockHttpServletRequestBuilder request = request(HttpMethod.valueOf(method), url);
+        if (headers != null) {
+            request.headers(headers);
+        }
+        if (body != null) {
+            request.content(body);
+        }
+        lastCall = mvc.perform(request)
+                .andReturn();
     }
 
-    @And("^the client receives server version (.+)$")
-    public void the_client_receives_server_version_body(String version) throws Throwable {
+    @Then("^receives status code of (\\d+)$")
+    public void check_response_code(int statusCode) throws Throwable {
+        assertEquals(statusCode, lastCall.getResponse().getStatus());
     }
+
 
 }

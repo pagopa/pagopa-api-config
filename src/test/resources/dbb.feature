@@ -1,9 +1,26 @@
 Feature: brokers api
-  Scenario: client makes call to GET /brokers
-    Given brokers in database:
-      | username | password | email               |
-      | everzet  | 123456   | everzet@knplabs.com |
-      | fabpot   | 22@222   | fabpot@symfony.com  |
-    When the client calls /brokers?page=1
-    Then the client receives status code of 200
-    And the client receives server version 1.0
+
+  Background:
+    Given INTERMEDIARI_PA in database:
+      | OBJ_ID | ID_INTERMEDIARIO_PA | ENABLED | CODICE_INTERMEDIARIO | FAULT_BEAN_ESTESO |
+      | 2      | '80007580279'       | 'Y'     | 'Regione Veneto'     | 'N'               |
+    Given headers:
+    """
+     {"apiKey": "ciao"}
+    """
+
+  Scenario: makes call to GET /brokers
+    Given headers:
+    """
+     {"apiKey": "override"}
+    """
+    When calls GET /brokers?page=0
+    Then receives status code of 200
+
+  Scenario: makes call to POST /brokers
+    Given body:
+    """
+     {"broker_code": "1", "enabled": true, "description": "ciao"}
+    """
+    When calls POST /brokers
+    Then receives status code of 200
