@@ -101,7 +101,7 @@ public class CreditorInstitutionsController {
             produces = {"application/json"}
     )
     public ResponseEntity<StationCIList> getStationsCI(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
-        return ResponseEntity.ok(StationCIList.builder().build());
+        return ResponseEntity.ok(creditorInstitutionsService.getStationsCI(creditorInstitutionCode));
 
     }
 
