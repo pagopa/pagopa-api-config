@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,7 +28,7 @@ public class Stations {
     @JsonProperty("stations")
     @Schema(required = true)
     @Valid
-    private List<Station> stationList = null;
+    private List<Station> stationsList = null;
 
 
     @JsonProperty("page_info")

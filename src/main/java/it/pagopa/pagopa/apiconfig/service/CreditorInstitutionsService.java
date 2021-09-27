@@ -65,7 +65,7 @@ public class CreditorInstitutionsService {
         List<PaStazionePa> relations = paStazionePaRepository.findAllByFkPa(pa.getObjId());
         return relations.stream()
                 .filter(Objects::nonNull)
-                .map(PaStazionePa::getFkStazioni)
+                .map(PaStazionePa::getFkStazione)
                 .filter(Objects::nonNull)
                 .map(elem -> modelMapper.map(elem, Station.class))
                 .collect(Collectors.toList());
