@@ -38,9 +38,6 @@ public class PaStazionePa {
     @Column(name = "FK_PA", nullable = false)
     private Long fkPa;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Pa pa;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_STAZIONE", nullable = false)
     private Stazioni fkStazione;

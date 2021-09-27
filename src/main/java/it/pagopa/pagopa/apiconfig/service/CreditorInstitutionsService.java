@@ -6,7 +6,8 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.Station;
+import it.pagopa.pagopa.apiconfig.model.StationCI;
+import it.pagopa.pagopa.apiconfig.model.StationCIList;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -46,35 +47,37 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
-
     public CreditorInstitutionDetails getCreditorInstitution(@NotNull String creditorInstitutionCode) {
         Optional<Pa> result = paRepository.findByIdDominio(creditorInstitutionCode);
-        if (result.isPresent()) {
-            Pa pa = result.get();
-            return modelMapper.map(pa, CreditorInstitutionDetails.class);
-        } else {
-            throw new AppException(HttpStatus.NOT_FOUND, "Organization not found", "No organization found with the provided fiscal code", null);
+        if (result.isEmpty()) {
+            throw new AppException(HttpStatus.NOT_FOUND, "Organization not found", "No organization found with the provided fiscal code");
         }
+        Pa pa = result.get();
+        return modelMapper.map(pa, CreditorInstitutionDetails.class);
     }
 
+    public StationCIList getStationsCI(@NotNull String creditorInstitutionCode) {
+        List<PaStazionePa> result = paStazionePaRepository.findAllFilterByPa(creditorInstitutionCode);
+        return StationCIList.builder()
+                .stationsList(getStationsList(result))
+                .build();
+    }
 
     /**
-     * @param pa CI
-     * @return the list of the stations of a PA
+     * Maps a list of PaStazionePa into a list of StationCI
+     *
+     * @param paStazionePaList list of {@link PaStazionePa}
+     * @return the list of {@link StationCI}
      */
-    private List<Station> getStationList(Pa pa) {
-        List<PaStazionePa> relations = paStazionePaRepository.findAllByFkPa(pa.getObjId());
-        return relations.stream()
+    private List<StationCI> getStationsList(List<PaStazionePa> paStazionePaList) {
+        return paStazionePaList.stream()
                 .filter(Objects::nonNull)
-                .map(PaStazionePa::getFkStazione)
-                .filter(Objects::nonNull)
-                .map(elem -> modelMapper.map(elem, Station.class))
+                .map(elem -> modelMapper.map(elem, StationCI.class))
                 .collect(Collectors.toList());
     }
 
-
     /**
-     * Maps all PAs stored in the DB in a List of CreditorInstitution
+     * Maps all PAs in a page stored in the DB in a List of CreditorInstitution
      *
      * @param page page of PA returned from the database
      * @return a list of {@link CreditorInstitutionDetails}.

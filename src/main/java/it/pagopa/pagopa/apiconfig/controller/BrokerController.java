@@ -59,7 +59,7 @@ public class BrokerController {
     /**
      * GET /brokers/{brokercode} : Get creditor broker details
      *
-     * @param brokercode broker code. (required)
+     * @param brokerCode broker code. (required)
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Not Found (status code 404)
