@@ -1,7 +1,9 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.Station;
+import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.Stations;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
@@ -11,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +44,15 @@ public class StationsService {
                 .build();
     }
 
+    public StationDetails getStation(String stationCode) {
+        Optional<Stazioni> result = stazioniRepository.findByIdStazione(stationCode);
+        if (result.isPresent()) {
+            Stazioni stazione = result.get();
+            return modelMapper.map(stazione, StationDetails.class);
+        } else {
+            throw new AppException(HttpStatus.NOT_FOUND, "Station not found", "No station found with the provided code", null);
+        }
+    }
 
     /**
      * Maps all Stazioni stored in the DB in a List of Station

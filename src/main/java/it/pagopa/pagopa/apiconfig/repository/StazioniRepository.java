@@ -7,8 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface StazioniRepository extends PagingAndSortingRepository<Stazioni, Long> {
+
+    Optional<Stazioni> findByIdStazione(String stationCode);
 
     @Query(value = "select distinct NODO4_CFG.STAZIONI.* " +
             "from NODO4_CFG.STAZIONI, NODO4_CFG.PA_STAZIONE_PA, NODO4_CFG.PA, NODO4_CFG.INTERMEDIARI_PA " +
