@@ -69,11 +69,11 @@ class CreditorInstitutionsServiceTest {
     void getECs_ok1() throws IOException, JSONException {
         List<Pa> ts = Lists.newArrayList(Pa.builder()
                 .idDominio("00168480242")
-                .enabled("Y")
+                .enabled(true)
                 .ragioneSociale("Comune di Bassano del Grappa")
-                .pagamentoPressoPsp("Y")
-                .rendicontazioneFtp("N")
-                .rendicontazioneZip("N")
+                .pagamentoPressoPsp(true)
+                .rendicontazioneFtp(false)
+                .rendicontazioneZip(false)
                 .build());
         Page<Pa> page = Mockito.mock(Page.class);
         when(page.getTotalPages()).thenReturn(1);
@@ -136,19 +136,19 @@ class CreditorInstitutionsServiceTest {
         return Pa.builder()
                 .objId(1L)
                 .idDominio("00168480242")
-                .enabled("Y")
+                .enabled(true)
                 .ragioneSociale("Comune di Bassano del Grappa")
                 .capDomicilioFiscale(123L)
-                .pagamentoPressoPsp("Y")
-                .rendicontazioneFtp("N")
-                .rendicontazioneZip("N")
+                .pagamentoPressoPsp(true)
+                .rendicontazioneFtp(false)
+                .rendicontazioneZip(false)
                 .build();
     }
 
     private PaStazionePa getMockPaStazionePa() {
         return PaStazionePa.builder()
                 .fkPa(1L)
-                .fkStazioni(Stazioni.builder().idStazione("1").build())
+                .fkStazione(Stazioni.builder().idStazione("1").build())
                 .build();
     }
 }

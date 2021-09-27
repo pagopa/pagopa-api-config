@@ -11,8 +11,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.Stations;
+import it.pagopa.pagopa.apiconfig.service.StationsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -21,6 +27,9 @@ import javax.validation.constraints.Size;
 @RequestMapping(path = "/stations")
 @Tag(name = "Creditor Institutions", description = "Everything about Creditor Institution")
 public class StationsController {
+
+    @Autowired
+    StationsService stationsService;
 
     /**
      * GET /stations : Get paginated list of stations
@@ -49,7 +58,7 @@ public class StationsController {
             @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
             @Parameter(description = "Filter by intermediary") @RequestParam(name = "intermediarycode", required = false) String intermediaryCode,
             @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
-        return ResponseEntity.ok(Stations.builder().build());
+        return ResponseEntity.ok(stationsService.getStations(limit, page, intermediaryCode, creditorInstitutionCode));
     }
 
 
@@ -77,7 +86,6 @@ public class StationsController {
     public ResponseEntity<StationDetails> getStation(@Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode) {
         return ResponseEntity.ok(StationDetails.builder().build());
     }
-
 
 
 }

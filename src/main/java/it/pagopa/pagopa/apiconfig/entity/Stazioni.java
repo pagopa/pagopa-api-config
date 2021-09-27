@@ -1,8 +1,22 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "STAZIONI", schema = "NODO4_CFG")
@@ -64,8 +78,9 @@ public class Stazioni {
     @Column(name = "SERVIZIO_POF")
     private String servizioPof;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_INTERMEDIARIO_PA")
-    private Long fkIntermediarioPa;
+    private IntermediariPa fkIntermediarioPa;
 
     @Column(name = "REDIRECT_PROTOCOLLO")
     private String redirectProtocollo;

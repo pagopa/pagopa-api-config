@@ -1,11 +1,20 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Table(name = "PA", schema = "NODO4_CFG")
 @Entity
-@Table(name = "PA")
 @Getter
 @Setter
 @ToString
@@ -20,8 +29,8 @@ public class Pa {
     @Column(name = "ID_DOMINIO")
     private String idDominio;
 
-    @Column(name = "ENABLED", columnDefinition = "CHAR")
-    private String enabled;
+    @Column(name = "ENABLED")
+    private Boolean enabled;
 
     @Column(name = "DESCRIZIONE")
     private String descrizione;
@@ -29,15 +38,15 @@ public class Pa {
     @Column(name = "RAGIONE_SOCIALE")
     private String ragioneSociale;
 
-    @JoinColumn(name = "FK_INT_QUADRATURE")
+    @Column(name = "FK_INT_QUADRATURE")
     private Long fkIntQuadrature;
 
     /**
      * @deprecated not used
      */
     @Deprecated(forRemoval = true)
-    @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA", columnDefinition = "CHAR")
-    private String flagRepoCommissioneCaricoPa;
+    @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
+    private Boolean flagRepoCommissioneCaricoPa;
 
     /**
      * @deprecated not used
@@ -61,14 +70,14 @@ public class Pa {
     @Column(name = "DENOMINAZIONE_DOMICILIO_FISCALE")
     private String denominazioneDomicilioFiscale;
 
-    @Column(name = "PAGAMENTO_PRESSO_PSP", columnDefinition = "CHAR")
-    private String pagamentoPressoPsp;
+    @Column(name = "PAGAMENTO_PRESSO_PSP")
+    private Boolean pagamentoPressoPsp;
 
-    @Column(name = "RENDICONTAZIONE_FTP", columnDefinition = "CHAR")
-    private String rendicontazioneFtp;
+    @Column(name = "RENDICONTAZIONE_FTP")
+    private Boolean rendicontazioneFtp;
 
-    @Column(name = "RENDICONTAZIONE_ZIP", columnDefinition = "CHAR")
-    private String rendicontazioneZip;
+    @Column(name = "RENDICONTAZIONE_ZIP")
+    private Boolean rendicontazioneZip;
 
     /**
      * @deprecated not used
@@ -76,5 +85,6 @@ public class Pa {
     @Deprecated(forRemoval = true)
     @Column(name = "REVOCA_PAGAMENTO")
     private Long revocaPagamento;
+
 
 }
