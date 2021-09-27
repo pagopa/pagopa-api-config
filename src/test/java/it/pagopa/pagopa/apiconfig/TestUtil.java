@@ -39,6 +39,15 @@ public class TestUtil {
     }
 
 
+    /**
+     * Prepare a Mock for the class {@link Page}
+     *
+     * @param content list of elements in the page to return by mock
+     * @param limit number of elements per page to return by mock
+     * @param pageNumber number of page to return by mock
+     * @param <T> Class of the elements
+     * @return a Mock of {@link Page}
+     */
     public <T> Page<T> mockPage(List<T> content, int limit, int pageNumber) {
         Page<T> page = Mockito.mock(Page.class);
         when(page.getTotalPages()).thenReturn((int) Math.ceil((double) content.size()/limit));
