@@ -2,7 +2,6 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.Station;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 
@@ -14,7 +13,7 @@ public class ConvertStazioniToStation implements Converter<Stazioni, Station> {
     public Station convert(MappingContext<Stazioni, Station> context) {
         @Valid Stazioni source = context.getSource();
         return Station.builder()
-                .enabled(CommonUtil.flagToBoolean(source.getEnabled()))
+                .enabled(source.getEnabled())
                 .idStation(source.getIdStazione())
                 .version(source.getVersione())
                 .build();

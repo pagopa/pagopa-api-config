@@ -4,11 +4,16 @@ package it.pagopa.pagopa.apiconfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
+import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Objects;
+
+import static org.mockito.Mockito.when;
 
 @UtilityClass
 public class TestUtil {
@@ -31,6 +36,18 @@ public class TestUtil {
      */
     public String toJson(Object object) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(object);
+    }
+
+
+    public <T> Page<T> mockPage(List<T> content, int limit, int pageNumber) {
+        Page<T> page = Mockito.mock(Page.class);
+        when(page.getTotalPages()).thenReturn((int) Math.ceil((double) content.size()/limit));
+        when(page.getNumberOfElements()).thenReturn(content.size());
+        when(page.getNumber()).thenReturn(pageNumber);
+        when(page.getSize()).thenReturn(limit);
+        when(page.getContent()).thenReturn(content);
+        when(page.stream()).thenReturn(content.stream());
+        return page;
     }
 
 }

@@ -35,8 +35,8 @@ public class Stazioni {
     @Column(name = "ID_STAZIONE")
     private String idStazione;
 
-    @Column(name = "ENABLED", columnDefinition = "CHAR")
-    private String enabled;
+    @Column(name = "ENABLED")
+    private Boolean enabled;
 
     @Column(name = "IP")
     private String ip;
