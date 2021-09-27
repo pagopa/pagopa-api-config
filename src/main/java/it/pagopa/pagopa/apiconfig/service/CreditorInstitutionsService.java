@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class CreditorInstitutionsService {
     private ModelMapper modelMapper;
 
 
-    public CreditorInstitutions getCreditorInstitutions(Integer limit, Integer pageNumber) {
+    public CreditorInstitutions getCreditorInstitutions(@NotNull Integer limit, @NotNull Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
         Page<Pa> page = paRepository.findAll(pageable);
         return CreditorInstitutions.builder()
@@ -46,7 +47,7 @@ public class CreditorInstitutionsService {
     }
 
 
-    public CreditorInstitutionDetails getCreditorInstitution(String creditorInstitutionCode) {
+    public CreditorInstitutionDetails getCreditorInstitution(@NotNull String creditorInstitutionCode) {
         Optional<Pa> result = paRepository.findByIdDominio(creditorInstitutionCode);
         if (result.isPresent()) {
             Pa pa = result.get();
