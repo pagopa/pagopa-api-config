@@ -51,7 +51,7 @@ public class StationDetails extends Station {
     private String service;
 
     @JsonProperty("rt_enabled")
-    private String rtEnabled;
+    private Boolean rtEnabled;
 
     @JsonProperty("pof_service")
     private String pofService;
@@ -75,7 +75,7 @@ public class StationDetails extends Station {
     private String service4Mod;
 
     @JsonProperty("proxy_enabled")
-    private String proxyEnabled;
+    private Boolean proxyEnabled;
 
     @JsonProperty("proxy_host")
     private String proxyHost;
@@ -105,7 +105,7 @@ public class StationDetails extends Station {
     private Long timeoutC;
 
     @JsonProperty("flag_online")
-    private String flagOnline;
+    private Boolean flagOnline;
 
     @JsonProperty("npm_service")
     private String npmService;

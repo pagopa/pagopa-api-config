@@ -84,7 +84,7 @@ public class StationsController {
             produces = {"application/json"}
     )
     public ResponseEntity<StationDetails> getStation(@Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode) {
-        return ResponseEntity.ok(StationDetails.builder().build());
+        return ResponseEntity.ok(stationsService.getStation(stationCode));
     }
 
 
