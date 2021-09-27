@@ -72,8 +72,8 @@ public class Stazioni {
     @Column(name = "SERVIZIO")
     private String servizio;
 
-    @Column(name = "RT_ENABLED", columnDefinition = "CHAR")
-    private String rtEnabled;
+    @Column(name = "RT_ENABLED")
+    private Boolean rtEnabled;
 
     @Column(name = "SERVIZIO_POF")
     private String servizioPof;
@@ -97,8 +97,8 @@ public class Stazioni {
     @Column(name = "SERVIZIO_4MOD")
     private String servizio4Mod;
 
-    @Column(name = "PROXY_ENABLED", columnDefinition = "CHAR")
-    private String proxyEnabled;
+    @Column(name = "PROXY_ENABLED")
+    private Boolean proxyEnabled;
 
     @Column(name = "PROXY_HOST")
     private String proxyHost;
@@ -155,8 +155,8 @@ public class Stazioni {
     @Column(name = "TIMEOUT_C")
     private Long timeoutC;
 
-    @Column(name = "FLAG_ONLINE", columnDefinition = "CHAR")
-    private String flagOnline;
+    @Column(name = "FLAG_ONLINE")
+    private Boolean flagOnline;
 
     @Column(name = "VERSIONE")
     private Long versione;

@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.Stations;
 import it.pagopa.pagopa.apiconfig.service.StationsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,6 +32,7 @@ class StationsControllerTest {
     @BeforeEach
     void setUp() {
         when(stationsService.getStations(50, 0, null, null)).thenReturn(Stations.builder().build());
+        when(stationsService.getStation(anyString())).thenReturn(StationDetails.builder().build());
     }
 
     @Test
