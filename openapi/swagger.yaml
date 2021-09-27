@@ -503,7 +503,7 @@ components:
         service:
           type: string
         rt_enabled:
-          type: string
+          type: boolean
         pof_service:
           type: string
         intermediary_id:
@@ -521,7 +521,7 @@ components:
         service_4mod:
           type: string
         proxy_enabled:
-          type: string
+          type: boolean
         proxy_host:
           type: string
         proxy_port:
@@ -546,7 +546,7 @@ components:
           type: integer
           format: int64
         flag_online:
-          type: string
+          type: boolean
         npm_service:
           type: string
     CreditorInstitution:
@@ -686,7 +686,7 @@ components:
         service:
           type: string
         rt_enabled:
-          type: string
+          type: boolean
         pof_service:
           type: string
         intermediary_id:
@@ -704,7 +704,7 @@ components:
         service_4mod:
           type: string
         proxy_enabled:
-          type: string
+          type: boolean
         proxy_host:
           type: string
         proxy_port:
@@ -729,7 +729,7 @@ components:
           type: integer
           format: int64
         flag_online:
-          type: string
+          type: boolean
         npm_service:
           type: string
         notice_number:
