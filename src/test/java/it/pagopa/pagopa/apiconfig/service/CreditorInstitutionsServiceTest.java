@@ -14,7 +14,6 @@ import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +48,7 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getECs_empty() throws IOException, JSONException {
-        List<Pa> ts = Lists.emptyList();
-        Page<Pa> page = Mockito.mock(Page.class);
-        when(page.getTotalPages()).thenReturn(0);
-        when(page.getNumberOfElements()).thenReturn(0);
-        when(page.getNumber()).thenReturn(0);
-        when(page.getSize()).thenReturn(0);
-        when(page.stream()).thenReturn(ts.stream());
-
+        Page<Pa> page = TestUtil.mockPage(Lists.emptyList(), 50, 0);
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
@@ -65,23 +57,11 @@ class CreditorInstitutionsServiceTest {
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
+
     @Test
     void getECs_ok1() throws IOException, JSONException {
-        List<Pa> ts = Lists.newArrayList(Pa.builder()
-                .idDominio("00168480242")
-                .enabled(true)
-                .ragioneSociale("Comune di Bassano del Grappa")
-                .pagamentoPressoPsp(true)
-                .rendicontazioneFtp(false)
-                .rendicontazioneZip(false)
-                .build());
-        Page<Pa> page = Mockito.mock(Page.class);
-        when(page.getTotalPages()).thenReturn(1);
-        when(page.getNumberOfElements()).thenReturn(1);
-        when(page.getNumber()).thenReturn(0);
-        when(page.getSize()).thenReturn(1);
-        when(page.stream()).thenReturn(ts.stream());
-
+        List<Pa> content = Lists.newArrayList(getMockPa());
+        Page<Pa> page = TestUtil.mockPage(content, 50, 0);
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
@@ -93,12 +73,7 @@ class CreditorInstitutionsServiceTest {
     @Test
     void getECs_ok2() throws IOException, JSONException {
         List<Pa> ts = Lists.newArrayList(getMockPa());
-        Page<Pa> page = Mockito.mock(Page.class);
-        when(page.getTotalPages()).thenReturn(1);
-        when(page.getNumberOfElements()).thenReturn(1);
-        when(page.getNumber()).thenReturn(0);
-        when(page.getSize()).thenReturn(1);
-        when(page.stream()).thenReturn(ts.stream());
+        Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
@@ -111,6 +86,7 @@ class CreditorInstitutionsServiceTest {
     void getEC_ok() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(paStazionePaRepository.findAllByFkPa(1L)).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+
         CreditorInstitutionDetails result = creditorInstitutionsService.getCreditorInstitution("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ok.json");

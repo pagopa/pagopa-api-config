@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +49,7 @@ public class StationsService {
      */
     private List<Station> getStationsList(Page<Stazioni> page) {
         return page.stream()
+                .filter(Objects::nonNull)
                 .map(elem -> modelMapper.map(elem, Station.class))
                 .collect(Collectors.toList());
     }
