@@ -1,13 +1,27 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-@Entity
 @Table(name = "PA_STAZIONE_PA", schema = "NODO4_CFG")
-@Setter
+@Entity
 @Getter
+@Setter
 @ToString
 @Builder
 @NoArgsConstructor
@@ -21,12 +35,15 @@ public class PaStazionePa {
     @Column(name = "PROGRESSIVO")
     private Long progressivo;
 
-    @JoinColumn(name = "FK_PA")
+    @Column(name = "FK_PA", nullable = false)
     private Long fkPa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_STAZIONE", referencedColumnName = "OBJ_ID")
-    private Stazioni fkStazioni;
+    private Pa pa;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "FK_STAZIONE", nullable = false)
+    private Stazioni fkStazione;
 
     @Column(name = "AUX_DIGIT")
     private Long auxDigit;
@@ -34,24 +51,20 @@ public class PaStazionePa {
     @Column(name = "SEGREGAZIONE")
     private Long segregazione;
 
-    @Column(name = "QUARTO_MODELLO", columnDefinition = "CHAR")
-    private String quartoModello;
+    @Column(name = "QUARTO_MODELLO", nullable = false)
+    private Boolean quartoModello = false;
 
     /**
      * @deprecated not used
      */
     @Deprecated(forRemoval = true)
-    @Column(name = "STAZIONE_NODO", columnDefinition = "CHAR")
-    private String stazioneNodo;
+    @Column(name = "STAZIONE_NODO", nullable = false)
+    private Boolean stazioneNodo = false;
 
-    /**
-     * @deprecated not used
-     */
-    @Deprecated(forRemoval = true)
-    @Column(name = "STAZIONE_AVV", columnDefinition = "CHAR")
-    private String stazioneAvv;
+    @Column(name = "STAZIONE_AVV", nullable = false)
+    private Boolean stazioneAvv = false;
 
-    @Column(name = "BROADCAST", columnDefinition = "CHAR")
-    private String broadcast;
+    @Column(name = "BROADCAST", nullable = false)
+    private Boolean broadcast = false;
 
 }

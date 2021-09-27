@@ -1,6 +1,5 @@
 package it.pagopa.pagopa.apiconfig.util;
 
-import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
@@ -32,7 +31,7 @@ public class CommonUtil {
      * @param page Page returned from the database
      * @return return the page info
      */
-    public PageInfo buildPageInfo(Page<Pa> page) {
+    public <T> PageInfo buildPageInfo(Page<T> page) {
         return PageInfo.builder()
                 .page(page.getNumber())
                 .limit(page.getSize())

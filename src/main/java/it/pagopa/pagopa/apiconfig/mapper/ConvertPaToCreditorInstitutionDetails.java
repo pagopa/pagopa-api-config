@@ -9,8 +9,6 @@ import org.modelmapper.spi.MappingContext;
 
 import javax.validation.Valid;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.flagToBoolean;
-
 public class ConvertPaToCreditorInstitutionDetails implements Converter<Pa, CreditorInstitutionDetails> {
 
     @Override
@@ -18,7 +16,7 @@ public class ConvertPaToCreditorInstitutionDetails implements Converter<Pa, Cred
         @Valid Pa pa = context.getSource();
         return CreditorInstitutionDetails.builder()
                 .creditorInstitutionCode(pa.getIdDominio())
-                .enabled(flagToBoolean(pa.getEnabled()))
+                .enabled(pa.getEnabled())
                 .businessName(pa.getRagioneSociale())
                 .address(CreditorInstitutionAddress.builder()
                         .city(pa.getComuneDomicilioFiscale())
@@ -27,9 +25,9 @@ public class ConvertPaToCreditorInstitutionDetails implements Converter<Pa, Cred
                         .zipCode(CommonUtil.numberToZipCode(pa.getCapDomicilioFiscale()))
                         .taxDomicile(pa.getDenominazioneDomicilioFiscale())
                         .build())
-                .pspPayment(flagToBoolean(pa.getPagamentoPressoPsp()))
-                .reportingFtp(flagToBoolean(pa.getRendicontazioneFtp()))
-                .reportingZip(flagToBoolean(pa.getRendicontazioneZip()))
+                .pspPayment(pa.getPagamentoPressoPsp())
+                .reportingFtp(pa.getRendicontazioneFtp())
+                .reportingZip(pa.getRendicontazioneZip())
                 .description(pa.getDescrizione())
                 .fkQuadrature(pa.getFkIntQuadrature())
                 .build();
