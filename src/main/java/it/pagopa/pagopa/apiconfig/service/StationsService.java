@@ -44,7 +44,7 @@ public class StationsService {
                 .build();
     }
 
-    public StationDetails getStation(String stationCode) {
+    public StationDetails getStation(@NotNull String stationCode) {
         Optional<Stazioni> result = stazioniRepository.findByIdStazione(stationCode);
         if (result.isPresent()) {
             Stazioni stazione = result.get();
