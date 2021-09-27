@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PaRepository extends PagingAndSortingRepository<Pa, Long> {
 
-    Optional<Pa> findByIdDominio(String idDominio);
+    Optional<Pa> findByIdDominio(String creditorInstitutionCode);
 }

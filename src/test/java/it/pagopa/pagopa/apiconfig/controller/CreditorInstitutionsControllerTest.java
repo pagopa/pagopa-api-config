@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.StationCIList;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ class CreditorInstitutionsControllerTest {
     void setUp() {
         when(creditorInstitutionsService.getCreditorInstitutions(50, 0)).thenReturn(CreditorInstitutions.builder().build());
         when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
+        when(creditorInstitutionsService.getStationsCI("1234")).thenReturn(StationCIList.builder().build());
     }
 
     @Test

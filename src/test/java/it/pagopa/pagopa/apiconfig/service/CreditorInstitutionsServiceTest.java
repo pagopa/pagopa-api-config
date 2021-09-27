@@ -3,11 +3,10 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.StationCIList;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import org.assertj.core.util.Lists;
@@ -27,9 +26,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -85,12 +87,10 @@ class CreditorInstitutionsServiceTest {
     @Test
     void getEC_ok() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
-        when(paStazionePaRepository.findAllByFkPa(1L)).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
 
         CreditorInstitutionDetails result = creditorInstitutionsService.getCreditorInstitution("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ok.json");
-        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
@@ -107,24 +107,15 @@ class CreditorInstitutionsServiceTest {
         }
     }
 
+    @Test
+    void getStationsCI() throws IOException, JSONException {
+        when(paStazionePaRepository.findAllFilterByPa(anyString())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
 
-    private Pa getMockPa() {
-        return Pa.builder()
-                .objId(1L)
-                .idDominio("00168480242")
-                .enabled(true)
-                .ragioneSociale("Comune di Bassano del Grappa")
-                .capDomicilioFiscale(123L)
-                .pagamentoPressoPsp(true)
-                .rendicontazioneFtp(false)
-                .rendicontazioneZip(false)
-                .build();
+        StationCIList result = creditorInstitutionsService.getStationsCI("1234");
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_stations_ok1.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
-    private PaStazionePa getMockPaStazionePa() {
-        return PaStazionePa.builder()
-                .fkPa(1L)
-                .fkStazione(Stazioni.builder().idStazione("1").build())
-                .build();
-    }
+
 }

@@ -33,9 +33,9 @@ public class StationCI extends StationDetails {
     private Long segregationNumber;
 
     @JsonProperty("fourth_model")
-    private String fourthModel;
+    private Boolean fourthModel;
 
     @JsonProperty("broadcast")
-    private String broadcast;
+    private Boolean broadcast;
 
 }

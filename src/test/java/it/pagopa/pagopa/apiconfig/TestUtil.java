@@ -3,6 +3,10 @@ package it.pagopa.pagopa.apiconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
+import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -59,4 +63,57 @@ public class TestUtil {
         return page;
     }
 
+    public static Stazioni getMockStazioni() {
+        return Stazioni.builder()
+                .idStazione("80007580279_01")
+                .enabled(true)
+                .versione(1L)
+                .ip("NodoDeiPagamentiDellaPATest.sia.eu")
+                .password("password")
+                .porta(80L)
+                .redirectIp("paygov.collaudo.regione.veneto.it")
+                .redirectPath("nodo-regionale-fesp/paaInviaRispostaPagamento.html")
+                .redirectPorta(443L)
+                .servizio("openspcoop/PD/RT6TPDREGVENETO")
+                .rtEnabled(true)
+                .servizioPof("openspcoop/PD/CCP6TPDREGVENETO")
+                .fkIntermediarioPa(IntermediariPa.builder().objId(2L).build())
+                .redirectProtocollo("HTTPS")
+                .proxyEnabled(true)
+                .proxyHost("10.101.1.95")
+                .proxyPort(8080L)
+                .protocolloAvv("HTTP")
+                .numThread(2L)
+                .timeoutA(15L)
+                .timeoutB(30L)
+                .timeoutC(120L)
+                .flagOnline(true)
+                .build();
+    }
+
+
+    public static Pa getMockPa() {
+        return Pa.builder()
+                .objId(1L)
+                .idDominio("00168480242")
+                .enabled(true)
+                .ragioneSociale("Comune di Bassano del Grappa")
+                .capDomicilioFiscale(123L)
+                .pagamentoPressoPsp(true)
+                .rendicontazioneFtp(false)
+                .rendicontazioneZip(false)
+                .build();
+    }
+
+    public static PaStazionePa getMockPaStazionePa() {
+        return PaStazionePa.builder()
+                .fkPa(1L)
+                .fkStazione(getMockStazioni())
+                .broadcast(false)
+                .auxDigit(1L)
+                .progressivo(2L)
+                .quartoModello(true)
+                .segregazione(3L)
+                .build();
+    }
 }

@@ -46,12 +46,11 @@ public class StationsService {
 
     public StationDetails getStation(@NotNull String stationCode) {
         Optional<Stazioni> result = stazioniRepository.findByIdStazione(stationCode);
-        if (result.isPresent()) {
-            Stazioni stazione = result.get();
-            return modelMapper.map(stazione, StationDetails.class);
-        } else {
-            throw new AppException(HttpStatus.NOT_FOUND, "Station not found", "No station found with the provided code", null);
+        if (result.isEmpty()) {
+            throw new AppException(HttpStatus.NOT_FOUND, "Station not found", "No station found with the provided code");
         }
+        Stazioni stazione = result.get();
+        return modelMapper.map(stazione, StationDetails.class);
     }
 
     /**

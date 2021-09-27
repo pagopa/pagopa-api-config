@@ -38,4 +38,15 @@ public class AppException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
+    /**
+     * @param httpStatus HTTP status returned to the response
+     * @param title      title returned to the response when this exception occurred
+     * @param message    the detail message returend to the response
+     */
+    public AppException(@NotNull HttpStatus httpStatus, @NotNull String title, @NotNull String message) {
+        super(message);
+        this.title = title;
+        this.httpStatus = httpStatus;
+    }
+
 }
