@@ -132,6 +132,32 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-webapp-maven-plugin</artifactId>
+                <version>2.1.0</version>
+                <configuration>
+                    <schemaVersion>v2</schemaVersion>
+                    <subscriptionId>${env.DEV_AZURE_SUBSCRIPTION}</subscriptionId>
+                    <resourceGroup>${env.DEV_WEB_APP_RESOURCE_GROUP_NAME}</resourceGroup>
+                    <appName>${env.DEV_WEB_APP_NAME}</appName>
+                    <runtime>
+                        <os>Linux</os>
+                        <javaVersion>Java 11</javaVersion>
+                        <webContainer>Tomcat</webContainer>
+                    </runtime>
+                    <deployment>
+                        <resources>
+                            <resource>
+                                <directory>${project.basedir}/target</directory>
+                                <includes>
+                                    <include>*.jar</include>
+                                </includes>
+                            </resource>
+                        </resources>
+                    </deployment>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
