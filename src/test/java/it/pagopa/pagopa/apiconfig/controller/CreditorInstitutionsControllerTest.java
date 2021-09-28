@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.StationCIList;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
@@ -35,6 +36,7 @@ class CreditorInstitutionsControllerTest {
         when(creditorInstitutionsService.getCreditorInstitutions(50, 0)).thenReturn(CreditorInstitutions.builder().build());
         when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
         when(creditorInstitutionsService.getStationsCI("1234")).thenReturn(StationCIList.builder().build());
+        when(creditorInstitutionsService.getCreditorInstitutionEncodings("1234")).thenReturn(CreditorInstitutionEncodings.builder().build());
     }
 
     @Test
