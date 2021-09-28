@@ -3,6 +3,8 @@ package it.pagopa.pagopa.apiconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.pagopa.pagopa.apiconfig.entity.Codifiche;
+import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
@@ -114,6 +116,17 @@ public class TestUtil {
                 .progressivo(2L)
                 .quartoModello(true)
                 .segregazione(3L)
+                .build();
+    }
+
+    public static CodifichePa getMockCodifichePa() {
+        return CodifichePa.builder()
+                .id(1L)
+                .codicePa("1234")
+                .fkCodifica(Codifiche.builder()
+                        .id(2L)
+                        .idCodifica("QR-CODE")
+                        .build())
                 .build();
     }
 }

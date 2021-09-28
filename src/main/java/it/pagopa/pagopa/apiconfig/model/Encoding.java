@@ -4,11 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
 
 /**
  * Encoding
@@ -42,6 +46,12 @@ public class Encoding {
             this.value = value;
         }
 
+        public static CodeTypeEnum fromValue(String value) {
+            return Arrays.stream(CodeTypeEnum.values())
+                    .filter(elem -> elem.value.equals(value))
+                    .findFirst()
+                    .orElseThrow(() -> new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "CodeTypeEnum not found", "Cannot convert string " + value + " into enum"));
+        }
     }
 
 
