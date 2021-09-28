@@ -35,7 +35,7 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  # Create a release on Github
+  # Create a release
   - stage: release_service
     #  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'),
     #    ne('${{ parameters.REPOSITORY }}', 'auth'))
@@ -67,7 +67,7 @@ stages:
 
           - script: |
               HEAD_SHA=$(git rev-parse HEAD)
-              TAG="$(pomversion.next)"
+              TAG="$$(pomversion.next)"
               TITLE="Release $(pomversion.next)"
               echo "##vso[task.setvariable variable=title]$TITLE"
               echo "##vso[task.setvariable variable=sha]$HEAD_SHA"
@@ -99,7 +99,7 @@ stages:
               title: $(title)
               addChangelog: true
 
-  # Deploy on Azure
+  # Create a release
   - stage: deploy
     condition: not(failed('releaseService'))
     pool:
