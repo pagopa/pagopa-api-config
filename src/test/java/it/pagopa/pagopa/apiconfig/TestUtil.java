@@ -107,7 +107,7 @@ public class TestUtil {
 
     public static PaStazionePa getMockPaStazionePa() {
         return PaStazionePa.builder()
-                .fkPa(1L)
+                .fkPa(getMockPa())
                 .fkStazione(getMockStazioni())
                 .broadcast(false)
                 .auxDigit(1L)
