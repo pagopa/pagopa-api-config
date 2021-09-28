@@ -5,8 +5,10 @@ import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.StationCIList;
+import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import org.assertj.core.util.Lists;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +45,9 @@ class CreditorInstitutionsServiceTest {
 
     @MockBean
     private PaStazionePaRepository paStazionePaRepository;
+
+    @MockBean
+    private CodifichePaRepository codifichePaRepository;
 
     @Autowired
     @InjectMocks
@@ -118,4 +124,13 @@ class CreditorInstitutionsServiceTest {
     }
 
 
+    @Test
+    void getCreditorInstitutionEncodings() throws IOException, JSONException {
+        when(codifichePaRepository.findAllByCodicePa(anyString())).thenReturn(Lists.newArrayList(getMockCodifichePa()));
+
+        CreditorInstitutionEncodings result = creditorInstitutionsService.getCreditorInstitutionEncodings("1234");
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_encondings.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
 }

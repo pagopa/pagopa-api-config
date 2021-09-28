@@ -1,13 +1,17 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.Encoding;
 import it.pagopa.pagopa.apiconfig.model.StationCI;
 import it.pagopa.pagopa.apiconfig.model.StationCIList;
+import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -33,6 +37,9 @@ public class CreditorInstitutionsService {
 
     @Autowired
     private PaStazionePaRepository paStazionePaRepository;
+
+    @Autowired
+    private CodifichePaRepository codifichePaRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -63,6 +70,13 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
+    public CreditorInstitutionEncodings getCreditorInstitutionEncodings(String creditorInstitutionCode) {
+        List<CodifichePa> encodings = codifichePaRepository.findAllByCodicePa(creditorInstitutionCode);
+        return CreditorInstitutionEncodings.builder()
+                .encodings(getEncodingList(encodings))
+                .build();
+    }
+
     /**
      * Maps a list of PaStazionePa into a list of StationCI
      *
@@ -88,4 +102,18 @@ public class CreditorInstitutionsService {
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * @param encodings list of {@link CodifichePa}
+     * @return maps into a list of {@link Encoding}
+     */
+    private List<Encoding> getEncodingList(List<CodifichePa> encodings) {
+        return encodings.stream()
+                .filter(Objects::nonNull)
+                .filter(elem -> elem.getFkCodifica() != null)
+                .map(elem -> Encoding.builder()
+                        .codeType(Encoding.CodeTypeEnum.fromValue(elem.getFkCodifica().getIdCodifica()))
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
