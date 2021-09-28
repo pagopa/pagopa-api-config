@@ -35,8 +35,9 @@ public class PaStazionePa {
     @Column(name = "PROGRESSIVO")
     private Long progressivo;
 
-    @Column(name = "FK_PA", nullable = false)
-    private Long fkPa;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "FK_PA", nullable = false)
+    private Pa fkPa;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_STAZIONE", nullable = false)
