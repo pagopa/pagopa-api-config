@@ -1,0 +1,17 @@
+# Azure DevOps pipeline template used to setup the Java project:
+
+parameters:
+  - name: 'cache_version_id'
+    type: string
+    default: $(CACHE_VERSION_ID)
+
+  # the branch, tag or commit to deploy
+  - name: 'gitReference'
+    type: string
+    default: '$(Build.SourceVersion)'
+
+steps:
+  - checkout: self
+    displayName: 'Checkout'
+    clean: true
+    persistCredentials: true

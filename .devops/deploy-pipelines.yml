@@ -1,0 +1,160 @@
+parameters:
+  - name: SEMVER
+    displayName: "When packing a release, define the version bump to apply"
+    type: string
+    values:
+      - major
+      - minor
+      - patch
+    default: patch
+  - name: ENV
+    displayName: Target Environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - uat
+
+variables:
+  ${{ if eq(parameters['ENV'], 'dev') }}:
+    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
+  ${{ if eq(parameters['ENV'], 'uat') }}:
+    AZURE_SUBSCRIPTION: $(UAT_AZURE_SUBSCRIPTION)
+
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+  MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
+  title: ""
+  sha: ""
+  tag: ""
+
+# Only manual triggers
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  # Create a release
+  - stage: release_service
+    #  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+    #    ne('${{ parameters.REPOSITORY }}', 'auth'))
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+      - job: releaseService
+        steps:
+          - checkout: self
+            clean: true
+            persistCredentials: true
+
+          - script: |
+              git config --global user.name "$(GIT_USERNAME)"
+              git config --global user.email "$(GIT_EMAIL)"
+
+          - template: azure-templates/maven-versioning.yml
+            parameters:
+              semver: "${{ parameters.SEMVER }}"
+
+          - task: Bash@3
+            name: pomversion
+            inputs:
+              targetType: "inline"
+              script: |
+                version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
+                echo "##vso[task.setvariable variable=next;isOutput=true]$version"
+              failOnStderr: true
+
+          - script: |
+              HEAD_SHA=$(git rev-parse HEAD)
+              TAG="$$(pomversion.next)"
+              TITLE="Release $(pomversion.next)"
+              echo "##vso[task.setvariable variable=title]$TITLE"
+              echo "##vso[task.setvariable variable=sha]$HEAD_SHA"
+              echo "##vso[task.setvariable variable=tag]$TAG"
+
+          - script: |
+              git checkout ${{variables['Build.SourceBranchName']}}
+
+          - script: |
+              echo $(tag)
+              echo $(title)
+              echo $(sha)
+
+          - script: |
+              git add pom.xml
+              git commit -m "Bump version [skip ci]"
+              git push origin ${{variables['Build.SourceBranchName']}}
+              git push --tags
+
+          # create new releae
+          - task: GitHubRelease@0
+            inputs:
+              gitHubConnection: $(GITHUB_CONNECTION)
+              repositoryName: $(Build.Repository.Name)
+              action: create
+              target: $(sha)
+              tagSource: manual
+              tag: $(tag)
+              title: $(title)
+              addChangelog: true
+
+  # Create a release
+  - stage: deploy
+    condition: not(failed('releaseService'))
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+      - job: deployJava
+        steps:
+          - checkout: self
+            clean: true
+            persistCredentials: true
+            submodules: true
+
+          - task: Cache@2
+            inputs:
+              key: 'maven | "$(Agent.OS)" | pom.xml'
+              restoreKeys: |
+                maven | "$(Agent.OS)"
+                maven
+              path: $(MAVEN_CACHE_FOLDER)
+            displayName: Set Maven Cache
+
+          - task: Bash@3
+            name: pomversion
+            inputs:
+              targetType: "inline"
+              script: |
+                version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
+                echo "##vso[task.setvariable variable=next;isOutput=true]$version"
+              failOnStderr: true
+
+          - task: Bash@3
+            # When the maven task is installed, mvn can be used in a script
+            name: mvn_get_version
+            inputs:
+              targetType: "inline"
+              script: |
+                mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout
+              failOnStderr: true
+
+          - task: Maven@3
+            displayName: Build
+            inputs:
+              mavenPomFile: "./pom.xml"
+              mavenOptions: "-Xmx3072m $(MAVEN_OPTS)"
+              javaHomeOption: "JDKVersion"
+              jdkVersionOption: "1.11"
+              jdkArchitectureOption: "x64"
+              publishJUnitResults: false
+              testResultsFiles: "**/surefire-reports/TEST-*.xml"
+              goals: "install"
+
+          - task: Bash@3
+            name: deploy
+            inputs:
+              targetType: "inline"
+              script: |
+                mvn -f pom.xml azure-webapp:deploy
+              failOnStderr: true
