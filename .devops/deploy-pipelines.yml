@@ -6,6 +6,7 @@ parameters:
       - major
       - minor
       - patch
+      - snapshot
     default: patch
   - name: ENV
     displayName: Target Environment
@@ -35,7 +36,7 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  # Create a release
+  # Create a release on Github
   - stage: release_service
     #  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'),
     #    ne('${{ parameters.REPOSITORY }}', 'auth'))
@@ -99,7 +100,7 @@ stages:
               title: $(title)
               addChangelog: true
 
-  # Create a release
+  # Deploy on Azure
   - stage: deploy
     condition: not(failed('releaseService'))
     pool:
