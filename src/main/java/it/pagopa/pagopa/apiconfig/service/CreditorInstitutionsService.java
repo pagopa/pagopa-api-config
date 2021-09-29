@@ -139,10 +139,7 @@ public class CreditorInstitutionsService {
         return encodings.stream()
                 .filter(Objects::nonNull)
                 .filter(elem -> elem.getFkCodifica() != null)
-                .map(elem -> Encoding.builder()
-                        .codeType(Encoding.CodeTypeEnum.fromValue(elem.getFkCodifica().getIdCodifica()))
-                        .code(elem.getCodicePa())
-                        .build())
+                .map(elem -> modelMapper.map(elem.getFkCodifica(), Encoding.class))
                 .collect(Collectors.toList());
     }
 
