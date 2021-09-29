@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
@@ -9,9 +10,12 @@ import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Encoding;
+import it.pagopa.pagopa.apiconfig.model.Iban;
+import it.pagopa.pagopa.apiconfig.model.Ibans;
 import it.pagopa.pagopa.apiconfig.model.StationCI;
 import it.pagopa.pagopa.apiconfig.model.StationCIList;
 import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -29,6 +33,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toOffsetDateTime;
+
 @Service
 public class CreditorInstitutionsService {
 
@@ -40,6 +46,9 @@ public class CreditorInstitutionsService {
 
     @Autowired
     private CodifichePaRepository codifichePaRepository;
+
+    @Autowired
+    private IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -76,6 +85,14 @@ public class CreditorInstitutionsService {
                 .encodings(getEncodingList(encodings))
                 .build();
     }
+
+    public Ibans getCreditorInstitutionsIbans(String creditorInstitutionCode) {
+        List<IbanValidiPerPa> iban = ibanValidiPerPaRepository.findAllByIdDominio(creditorInstitutionCode);
+        return Ibans.builder()
+                .ibanList(getIbanList(iban))
+                .build();
+    }
+
 
     /**
      * Maps a list of PaStazionePa into a list of StationCI
@@ -116,4 +133,22 @@ public class CreditorInstitutionsService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+
+    /**
+     * @param ibans List of valid ibans
+     * @return map elements into a list of {@link Iban}
+     */
+    private List<Iban> getIbanList(List<IbanValidiPerPa> ibans) {
+        return ibans.stream()
+                .filter(Objects::nonNull)
+                .map(elem -> Iban.builder()
+                        .ibanValue(elem.getIbanAccredito())
+                        .publicationDate(toOffsetDateTime(elem.getDataPubblicazione()))
+                        .validityDate(toOffsetDateTime(elem.getDataInizioValidita()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+
 }
