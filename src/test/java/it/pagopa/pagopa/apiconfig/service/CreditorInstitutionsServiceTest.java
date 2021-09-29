@@ -37,6 +37,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -121,7 +122,8 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getStationsCI() throws IOException, JSONException {
-        when(paStazionePaRepository.findAllFilterByPa(anyString())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(paStazionePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
 
         StationCIList result = creditorInstitutionsService.getStationsCI("1234");
         String actual = TestUtil.toJson(result);
@@ -132,6 +134,7 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getCreditorInstitutionEncodings() throws IOException, JSONException {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(codifichePaRepository.findAllByCodicePa(anyString())).thenReturn(Lists.newArrayList(getMockCodifichePa()));
 
         CreditorInstitutionEncodings result = creditorInstitutionsService.getCreditorInstitutionEncodings("1234");
@@ -143,7 +146,8 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getCreditorInstitutionIbans() throws IOException, JSONException {
-        when(ibanValidiPerPaRepository.findAllByIdDominio(anyString())).thenReturn(Lists.newArrayList(getMockIbanValidiPerPa()));
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(ibanValidiPerPaRepository.findAllByFkPa(anyLong())).thenReturn(Lists.newArrayList(getMockIbanValidiPerPa()));
 
         Ibans result = creditorInstitutionsService.getCreditorInstitutionsIbans("1234");
         String actual = TestUtil.toJson(result);
