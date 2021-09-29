@@ -83,7 +83,7 @@ public class BrokerController {
             produces = {"application/json"}
     )
     public ResponseEntity<BrokerDetails> getBroker(@Size(max = 50) @Parameter(description = "broker code.", required = true) @PathVariable("brokercode") String brokerCode) {
-        return ResponseEntity.ok(BrokerDetails.builder().build());
+        return ResponseEntity.ok(brokersService.getBroker(brokerCode));
     }
 
 }

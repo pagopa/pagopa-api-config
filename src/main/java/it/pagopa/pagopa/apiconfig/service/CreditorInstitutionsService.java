@@ -74,7 +74,7 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
-    public CreditorInstitutionEncodings getCreditorInstitutionEncodings(String creditorInstitutionCode) {
+    public CreditorInstitutionEncodings getCreditorInstitutionEncodings(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
         return CreditorInstitutionEncodings.builder()
@@ -119,7 +119,7 @@ public class CreditorInstitutionsService {
     }
 
     /**
-     * Maps all PAs in a page stored in the DB in a List of CreditorInstitution
+     * Maps PA objects stored in the DB in a List of CreditorInstitution
      *
      * @param page page of PA returned from the database
      * @return a list of {@link CreditorInstitutionDetails}.
