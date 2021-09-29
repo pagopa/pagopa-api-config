@@ -138,4 +138,14 @@ public class TestUtil {
                 .dataPubblicazione(Timestamp.valueOf("2017-03-08 00:00:00"))
                 .build();
     }
+
+    public static IntermediariPa getMockIntermediariePa() {
+        return IntermediariPa.builder()
+                .objId(1L)
+                .codiceIntermediario("1234")
+                .enabled(true)
+                .faultBeanEsteso(true)
+                .idIntermediarioPa("1234")
+                .build();
+    }
 }
