@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.Brokers;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.service.BrokersService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,9 @@ import javax.validation.constraints.Size;
 @RequestMapping(path = "/brokers")
 @Tag(name = "Creditor Institutions", description = "Everything about Creditor Institution")
 public class BrokerController {
+
+    @Autowired
+    BrokersService brokersService;
 
     /**
      * GET /brokers : Get paginated list of creditor brokers
@@ -52,7 +57,7 @@ public class BrokerController {
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
             @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
             @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
-        return ResponseEntity.ok(Brokers.builder().build());
+        return ResponseEntity.ok(brokersService.getBrokers(limit, page, creditorInstitutionCode));
     }
 
 
