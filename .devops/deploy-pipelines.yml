@@ -6,7 +6,6 @@ parameters:
       - major
       - minor
       - patch
-      - snapshot
     default: patch
   - name: ENV
     displayName: Target Environment
