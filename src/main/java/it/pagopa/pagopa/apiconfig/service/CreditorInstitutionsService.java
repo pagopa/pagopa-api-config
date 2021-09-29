@@ -62,33 +62,46 @@ public class CreditorInstitutionsService {
     }
 
     public CreditorInstitutionDetails getCreditorInstitution(@NotNull String creditorInstitutionCode) {
-        Optional<Pa> result = paRepository.findByIdDominio(creditorInstitutionCode);
-        if (result.isEmpty()) {
-            throw new AppException(HttpStatus.NOT_FOUND, "Organization not found", "No organization found with the provided fiscal code");
-        }
-        Pa pa = result.get();
+        Pa pa = getPaIfExists(creditorInstitutionCode);
         return modelMapper.map(pa, CreditorInstitutionDetails.class);
     }
 
     public StationCIList getStationsCI(@NotNull String creditorInstitutionCode) {
-        List<PaStazionePa> result = paStazionePaRepository.findAllFilterByPa(creditorInstitutionCode);
+        Pa pa = getPaIfExists(creditorInstitutionCode);
+        List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa_ObjId(pa.getObjId());
         return StationCIList.builder()
                 .stationsList(getStationsList(result))
                 .build();
     }
 
     public CreditorInstitutionEncodings getCreditorInstitutionEncodings(String creditorInstitutionCode) {
-        List<CodifichePa> encodings = codifichePaRepository.findAllByCodicePa(creditorInstitutionCode);
+        Pa pa = getPaIfExists(creditorInstitutionCode);
+        List<CodifichePa> encodings = codifichePaRepository.findAllByCodicePa(pa.getIdDominio());
         return CreditorInstitutionEncodings.builder()
                 .encodings(getEncodingList(encodings))
                 .build();
     }
 
     public Ibans getCreditorInstitutionsIbans(String creditorInstitutionCode) {
-        List<IbanValidiPerPa> iban = ibanValidiPerPaRepository.findAllByIdDominio(creditorInstitutionCode);
+        Pa pa = getPaIfExists(creditorInstitutionCode);
+        List<IbanValidiPerPa> iban = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
         return Ibans.builder()
                 .ibanList(getIbanList(iban))
                 .build();
+    }
+
+
+    /**
+     * @param creditorInstitutionCode idDominio
+     * @return return the PA record from DB if Exists
+     * @throws AppException if not found
+     */
+    private Pa getPaIfExists(String creditorInstitutionCode) throws AppException{
+        Optional<Pa> result = paRepository.findByIdDominio(creditorInstitutionCode);
+        if (result.isEmpty()) {
+            throw new AppException(HttpStatus.NOT_FOUND, "Creditor Institution not found", "No creditor institution found with the provided code");
+        }
+        return result.get();
     }
 
 
