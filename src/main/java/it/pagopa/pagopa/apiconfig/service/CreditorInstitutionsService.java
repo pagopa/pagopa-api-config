@@ -33,8 +33,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toOffsetDateTime;
-
 @Service
 public class CreditorInstitutionsService {
 
@@ -142,11 +140,7 @@ public class CreditorInstitutionsService {
     private List<Iban> getIbanList(List<IbanValidiPerPa> ibans) {
         return ibans.stream()
                 .filter(Objects::nonNull)
-                .map(elem -> Iban.builder()
-                        .ibanValue(elem.getIbanAccredito())
-                        .publicationDate(toOffsetDateTime(elem.getDataPubblicazione()))
-                        .validityDate(toOffsetDateTime(elem.getDataInizioValidita()))
-                        .build())
+                .map(elem -> modelMapper.map(elem, Iban.class))
                 .collect(Collectors.toList());
     }
 
