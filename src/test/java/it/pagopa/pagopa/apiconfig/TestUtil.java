@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
@@ -127,6 +129,14 @@ public class TestUtil {
                         .id(2L)
                         .idCodifica("QR-CODE")
                         .build())
+                .build();
+    }
+
+    public static IbanValidiPerPa getMockIbanValidiPerPa() {
+        return IbanValidiPerPa.builder()
+                .fkPa(1L)
+                .dataInizioValidita(Timestamp.valueOf("2017-03-09 00:00:00"))
+                .dataPubblicazione(Timestamp.valueOf("2017-03-08 00:00:00"))
                 .build();
     }
 }

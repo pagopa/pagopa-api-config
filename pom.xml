@@ -28,7 +28,7 @@
         <springdoc-version>1.5.10</springdoc-version>
         <springfox-version>3.0.0</springfox-version>
         <validation-version>2.0.1.Final</validation-version>
-        <modelmapper-version>2.4.0</modelmapper-version>
+        <modelmapper-version>2.4.4</modelmapper-version>
     </properties>
 
     <dependencies>
@@ -91,8 +91,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
