@@ -153,7 +153,7 @@ public class CreditorInstitutionsController {
             produces = {"application/json"}
     )
     public ResponseEntity<Ibans> getCreditorInstitutionsIbans(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
-        return ResponseEntity.ok(Ibans.builder().build());
+        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionsIbans(creditorInstitutionCode));
     }
 
 }

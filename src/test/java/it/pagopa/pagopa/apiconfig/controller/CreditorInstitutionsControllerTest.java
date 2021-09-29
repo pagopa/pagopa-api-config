@@ -4,10 +4,12 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.Ibans;
 import it.pagopa.pagopa.apiconfig.model.StationCIList;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,45 +39,20 @@ class CreditorInstitutionsControllerTest {
         when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
         when(creditorInstitutionsService.getStationsCI("1234")).thenReturn(StationCIList.builder().build());
         when(creditorInstitutionsService.getCreditorInstitutionEncodings("1234")).thenReturn(CreditorInstitutionEncodings.builder().build());
+        when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234")).thenReturn(Ibans.builder().build());
     }
 
-    @Test
-    void getCreditorInstitutions() throws Exception {
-        String url = "/creditorinstitutions?page=0";
+    @ParameterizedTest
+    @CsvSource({
+            "/creditorinstitutions?page=0",
+            "/creditorinstitutions/1234",
+            "/creditorinstitutions/1234/stations",
+            "/creditorinstitutions/1234/encodings",
+            "/creditorinstitutions/1234/ibans",
+    })
+    void testGets(String url) throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));    }
 
-    @Test
-    void getCreditorInstitution() throws Exception {
-        String url = "/creditorinstitutions/1234";
-        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
-    void getStationsCI() throws Exception {
-        String url = "/creditorinstitutions/1234/stations";
-        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
-    void getCreditorInstitutionEncodings() throws Exception {
-        String url = "/creditorinstitutions/1234/encodings";
-        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
-    void getCreditorInstitutionsIbans() throws Exception {
-        String url = "/creditorinstitutions/1234/ibans";
-        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
 }

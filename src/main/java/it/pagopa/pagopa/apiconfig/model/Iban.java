@@ -1,9 +1,13 @@
 package it.pagopa.pagopa.apiconfig.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
+import it.pagopa.pagopa.apiconfig.util.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,11 +36,15 @@ public class Iban {
     private String ibanValue;
 
     @JsonProperty("validity_date")
+    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+    @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(required = true)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime validityDate;
 
     @JsonProperty("publication_date")
+    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+    @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(required = true)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime publicationDate;

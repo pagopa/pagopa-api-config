@@ -4,6 +4,10 @@ import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 @UtilityClass
 public class CommonUtil {
 
@@ -38,5 +42,13 @@ public class CommonUtil {
                 .totalPages(page.getTotalPages())
                 .itemsFound(page.getNumberOfElements())
                 .build();
+    }
+
+    /**
+     * @param timestamp {@link Timestamp} to convert
+     * @return convert timestamp to {@link OffsetDateTime}
+     */
+    public static OffsetDateTime toOffsetDateTime(Timestamp timestamp) {
+        return OffsetDateTime.of(timestamp.toLocalDateTime(), ZoneOffset.UTC);
     }
 }
