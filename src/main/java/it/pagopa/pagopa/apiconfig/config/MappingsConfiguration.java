@@ -10,12 +10,15 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCodificheToEncoding;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBroker;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIbanValidiPerPaToIban;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBrokerDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToStationCI;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStationDetails;
 import it.pagopa.pagopa.apiconfig.model.Broker;
+import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.Encoding;
@@ -46,6 +49,7 @@ public class MappingsConfiguration {
         Converter<Codifiche, Encoding> convertCodificheToEncoding = new ConvertCodificheToEncoding();
         Converter<IntermediariPa, Broker> convertIntermediariPaToBroker = new ConvertIntermediariPaToBroker();
         Converter<IbanValidiPerPa, Iban> convertIbanValidiPerPaToIban = new ConvertIbanValidiPerPaToIban();
+        Converter<IntermediariPa, BrokerDetails> convertIntermediariPaToBrokerDetails = new ConvertIntermediariPaToBrokerDetails();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -56,6 +60,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(Codifiche.class, Encoding.class).setConverter(convertCodificheToEncoding);
         mapper.createTypeMap(IntermediariPa.class, Broker.class).setConverter(convertIntermediariPaToBroker);
         mapper.createTypeMap(IbanValidiPerPa.class, Iban.class).setConverter(convertIbanValidiPerPaToIban);
+        mapper.createTypeMap(IntermediariPa.class, BrokerDetails.class).setConverter(convertIntermediariPaToBrokerDetails);
 
         return mapper;
     }
