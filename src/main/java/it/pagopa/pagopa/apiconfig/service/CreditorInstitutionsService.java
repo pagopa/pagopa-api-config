@@ -76,7 +76,7 @@ public class CreditorInstitutionsService {
 
     public CreditorInstitutionEncodings getCreditorInstitutionEncodings(String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
-        List<CodifichePa> encodings = codifichePaRepository.findAllByCodicePa(pa.getIdDominio());
+        List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
         return CreditorInstitutionEncodings.builder()
                 .encodings(getEncodingList(encodings))
                 .build();
