@@ -116,6 +116,14 @@ stages:
             persistCredentials: true
             submodules: true
 
+          - task: Bash@3
+            name: application-properties
+            inputs:
+              targetType: "inline"
+              script: |
+                cp src/main/resources/application-azure-temp.properties src/main/resources/application.properties
+              failOnStderr: true
+
           - task: Cache@2
             inputs:
               key: 'maven | "$(Agent.OS)" | pom.xml'
@@ -156,4 +164,4 @@ stages:
               azureSubscription: $(AZURE_SUBSCRIPTION)
               scriptLocation: inlineScript
               inlineScript: |
-                az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/pm-mock-$(pomversion.next).jar  --type jar
+                az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
