@@ -18,8 +18,12 @@ parameters:
 variables:
   ${{ if eq(parameters['ENV'], 'dev') }}:
     AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
+    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
+    APP_NAME: $(DEV_WEB_APP_NAME)
   ${{ if eq(parameters['ENV'], 'uat') }}:
     AZURE_SUBSCRIPTION: $(UAT_AZURE_SUBSCRIPTION)
+    RESOURCE_GROUP: $(UAT_WEB_APP_RESOURCE_GROUP_NAME)
+    APP_NAME: $(UAT_WEB_APP_NAME)
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
@@ -37,7 +41,7 @@ pool:
 stages:
   # Create a release on Github
   - stage: release_service
-    #  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+    #  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
     #    ne('${{ parameters.REPOSITORY }}', 'auth'))
     pool:
       vmImage: "ubuntu-latest"
@@ -131,30 +135,25 @@ stages:
               failOnStderr: true
 
           - task: Bash@3
-            # When the maven task is installed, mvn can be used in a script
-            name: mvn_get_version
+            name: build
             inputs:
               targetType: "inline"
               script: |
-                mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout
+                mvn package
               failOnStderr: true
-
-          - task: Maven@3
-            displayName: Build
-            inputs:
-              mavenPomFile: "./pom.xml"
-              mavenOptions: "-Xmx3072m $(MAVEN_OPTS)"
-              javaHomeOption: "JDKVersion"
-              jdkVersionOption: "1.11"
-              jdkArchitectureOption: "x64"
-              publishJUnitResults: false
-              testResultsFiles: "**/surefire-reports/TEST-*.xml"
-              goals: "install"
 
           - task: Bash@3
-            name: deploy
+            name: testLs
             inputs:
               targetType: "inline"
               script: |
-                mvn -f pom.xml azure-webapp:deploy
+                pwd && ls */
               failOnStderr: true
+
+          - task: AzureCLI@1
+            displayName: 'Deploy'
+            inputs:
+              azureSubscription: $(AZURE_SUBSCRIPTION)
+              scriptLocation: inlineScript
+              inlineScript: |
+                az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/pm-mock-$(pomversion.next).jar  --type jar
