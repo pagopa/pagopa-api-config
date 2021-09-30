@@ -117,7 +117,7 @@ stages:
             submodules: true
 
           - task: Bash@3
-            name: application-properties
+            name: application_properties
             inputs:
               targetType: "inline"
               script: |
