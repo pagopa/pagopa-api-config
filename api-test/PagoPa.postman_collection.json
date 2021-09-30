@@ -1,0 +1,352 @@
+{
+	"info": {
+		"_postman_id": "572772b8-a7c7-41a2-a974-c6989c87cf9e",
+		"name": "PagoPa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api config",
+			"item": [
+				{
+					"name": "swagger",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/swagger-ui/index.html",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"swagger-ui",
+								"index.html"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "health check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/info",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creditor institutions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions?limit=1&page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"creditorinstitutions"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creditor institution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creditor institution stations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions/:code/stations",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"creditorinstitutions",
+								":code",
+								"stations"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creditor institution encodings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions/:code/encodings",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"creditorinstitutions",
+								":code",
+								"encodings"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creditor institution ibans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions/:code/ibans",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"creditorinstitutions",
+								":code",
+								"ibans"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/stations?limit=1&page=0&creditorinstitutioncode=00168480242&intermediarycode=80007580279",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"stations"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "creditorinstitutioncode",
+									"value": "00168480242"
+								},
+								{
+									"key": "intermediarycode",
+									"value": "80007580279"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "station",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/apiconfig/api/v1/stations/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"apiconfig",
+								"api",
+								"v1",
+								"stations",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "80007580279_01"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
