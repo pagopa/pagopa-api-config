@@ -38,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -135,7 +134,7 @@ class CreditorInstitutionsServiceTest {
     @Test
     void getCreditorInstitutionEncodings() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
-        when(codifichePaRepository.findAllByCodicePa(anyString())).thenReturn(Lists.newArrayList(getMockCodifichePa()));
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.newArrayList(getMockCodifichePa()));
 
         CreditorInstitutionEncodings result = creditorInstitutionsService.getCreditorInstitutionEncodings("1234");
         String actual = TestUtil.toJson(result);

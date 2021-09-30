@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CodifichePaRepository extends JpaRepository<CodifichePa, Long> {
 
-    List<CodifichePa> findAllByCodicePa(String creditorInstitutionCode);
+    List<CodifichePa> findAllByFkPa_ObjId(Long fkPa);
 }
