@@ -8,7 +8,7 @@ import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Ibans;
-import it.pagopa.pagopa.apiconfig.model.StationCIList;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -124,7 +124,7 @@ class CreditorInstitutionsServiceTest {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(paStazionePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
 
-        StationCIList result = creditorInstitutionsService.getStationsCI("1234");
+        CreditorInstitutionStationList result = creditorInstitutionsService.getCreditorInstitutionStations("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_stations_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -151,7 +151,6 @@ class CreditorInstitutionsServiceTest {
         Ibans result = creditorInstitutionsService.getCreditorInstitutionsIbans("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans.json");
-        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 }

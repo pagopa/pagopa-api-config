@@ -14,7 +14,7 @@ public class ConvertStazioniToStation implements Converter<Stazioni, Station> {
         @Valid Stazioni source = context.getSource();
         return Station.builder()
                 .enabled(source.getEnabled())
-                .idStation(source.getIdStazione())
+                .stationCode(source.getIdStazione())
                 .version(source.getVersione())
                 .build();
     }

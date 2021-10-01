@@ -12,8 +12,8 @@ import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Encoding;
 import it.pagopa.pagopa.apiconfig.model.Iban;
 import it.pagopa.pagopa.apiconfig.model.Ibans;
-import it.pagopa.pagopa.apiconfig.model.StationCI;
-import it.pagopa.pagopa.apiconfig.model.StationCIList;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStation;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -66,15 +66,15 @@ public class CreditorInstitutionsService {
         return modelMapper.map(pa, CreditorInstitutionDetails.class);
     }
 
-    public StationCIList getStationsCI(@NotNull String creditorInstitutionCode) {
+    public CreditorInstitutionStationList getCreditorInstitutionStations(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa_ObjId(pa.getObjId());
-        return StationCIList.builder()
+        return CreditorInstitutionStationList.builder()
                 .stationsList(getStationsList(result))
                 .build();
     }
 
-    public CreditorInstitutionEncodings getCreditorInstitutionEncodings(String creditorInstitutionCode) {
+    public CreditorInstitutionEncodings getCreditorInstitutionEncodings(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
         return CreditorInstitutionEncodings.builder()
@@ -82,7 +82,7 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
-    public Ibans getCreditorInstitutionsIbans(String creditorInstitutionCode) {
+    public Ibans getCreditorInstitutionsIbans(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<IbanValidiPerPa> iban = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
         return Ibans.builder()
@@ -106,20 +106,20 @@ public class CreditorInstitutionsService {
 
 
     /**
-     * Maps a list of PaStazionePa into a list of StationCI
+     * Maps a list of PaStazionePa into a list of CreditorInstitutionStation
      *
      * @param paStazionePaList list of {@link PaStazionePa}
-     * @return the list of {@link StationCI}
+     * @return the list of {@link CreditorInstitutionStation}
      */
-    private List<StationCI> getStationsList(List<PaStazionePa> paStazionePaList) {
+    private List<CreditorInstitutionStation> getStationsList(List<PaStazionePa> paStazionePaList) {
         return paStazionePaList.stream()
                 .filter(Objects::nonNull)
-                .map(elem -> modelMapper.map(elem, StationCI.class))
+                .map(elem -> modelMapper.map(elem, CreditorInstitutionStation.class))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Maps all PAs in a page stored in the DB in a List of CreditorInstitution
+     * Maps PA objects stored in the DB in a List of CreditorInstitution
      *
      * @param page page of PA returned from the database
      * @return a list of {@link CreditorInstitutionDetails}.
@@ -139,9 +139,7 @@ public class CreditorInstitutionsService {
         return encodings.stream()
                 .filter(Objects::nonNull)
                 .filter(elem -> elem.getFkCodifica() != null)
-                .map(elem -> Encoding.builder()
-                        .codeType(Encoding.CodeTypeEnum.fromValue(elem.getFkCodifica().getIdCodifica()))
-                        .build())
+                .map(elem -> modelMapper.map(elem, Encoding.class))
                 .collect(Collectors.toList());
     }
 

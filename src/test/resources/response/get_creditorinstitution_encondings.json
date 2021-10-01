@@ -1,7 +1,8 @@
 {
   "encodings": [
     {
-      "code_type": "QR_CODE"
+      "code_type": "QR_CODE",
+      "code": "1234"
     }
   ]
 }

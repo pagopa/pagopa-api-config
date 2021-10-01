@@ -86,7 +86,6 @@ public class TestUtil {
                 .proxyEnabled(true)
                 .proxyHost("10.101.1.95")
                 .proxyPort(8080L)
-                .protocolloAvv("HTTP")
                 .numThread(2L)
                 .timeoutA(15L)
                 .timeoutB(30L)
@@ -137,6 +136,16 @@ public class TestUtil {
                 .fkPa(1L)
                 .dataInizioValidita(Timestamp.valueOf("2017-03-09 00:00:00"))
                 .dataPubblicazione(Timestamp.valueOf("2017-03-08 00:00:00"))
+                .build();
+    }
+
+    public static IntermediariPa getMockIntermediariePa() {
+        return IntermediariPa.builder()
+                .objId(1L)
+                .codiceIntermediario("1234")
+                .enabled(true)
+                .faultBeanEsteso(true)
+                .idIntermediarioPa("1234")
                 .build();
     }
 }
