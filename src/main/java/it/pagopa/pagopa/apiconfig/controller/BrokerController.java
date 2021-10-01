@@ -37,7 +37,6 @@ public class BrokerController {
      *
      * @param limit                   Number of elements on one page. Default = 50
      * @param page                    Page number. Page value starts from 0
-     * @param creditorInstitutionCode Filter by creditor institution
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Too many requests (status code 429)
@@ -55,9 +54,8 @@ public class BrokerController {
     )
     public ResponseEntity<Brokers> getBrokers(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
-            @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
-        return ResponseEntity.ok(brokersService.getBrokers(limit, page, creditorInstitutionCode));
+            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
+        return ResponseEntity.ok(brokersService.getBrokers(limit, page));
     }
 
 

@@ -32,7 +32,7 @@ class BrokerControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(brokersService.getBrokers(50, 0, null)).thenReturn(Brokers.builder().build());
+        when(brokersService.getBrokers(50, 0)).thenReturn(Brokers.builder().build());
         when(brokersService.getBroker(anyString())).thenReturn(BrokerDetails.builder().build());
     }
 
