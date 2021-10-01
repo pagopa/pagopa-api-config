@@ -86,7 +86,6 @@ public class TestUtil {
                 .proxyEnabled(true)
                 .proxyHost("10.101.1.95")
                 .proxyPort(8080L)
-                .protocolloAvv("HTTP")
                 .numThread(2L)
                 .timeoutA(15L)
                 .timeoutB(30L)

@@ -36,7 +36,7 @@ public class StationsController {
      *
      * @param limit                   Number of elements on one page. Default = 50
      * @param page                    Page number. Page value starts from 0
-     * @param intermediaryCode        Filter by intermediary
+     * @param brokerCode        Filter by broker
      * @param creditorInstitutionCode Filter by creditor institution
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
@@ -56,9 +56,9 @@ public class StationsController {
     public ResponseEntity<Stations> getStations(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
             @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
-            @Parameter(description = "Filter by intermediary") @RequestParam(name = "intermediarycode", required = false) String intermediaryCode,
+            @Parameter(description = "Filter by broker") @RequestParam(name = "brokercode", required = false) String brokerCode,
             @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
-        return ResponseEntity.ok(stationsService.getStations(limit, page, intermediaryCode, creditorInstitutionCode));
+        return ResponseEntity.ok(stationsService.getStations(limit, page, brokerCode, creditorInstitutionCode));
     }
 
 

@@ -30,6 +30,13 @@ public class Encoding {
     @Schema(required = true)
     private CodeTypeEnum codeType;
 
+
+    @JsonProperty("code")
+    @Schema(required = true)
+    private String code;
+
+
+
     /**
      * Gets or Sets codeType
      */
