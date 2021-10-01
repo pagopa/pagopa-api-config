@@ -16,7 +16,7 @@ public interface StazioniRepository extends PagingAndSortingRepository<Stazioni,
     Optional<Stazioni> findByIdStazione(String stationCode);
 
     @Query("select distinct s from PaStazionePa r join r.fkPa p join r.fkStazione s join s.fkIntermediarioPa i " +
-            "where (:intermediaryCode is null or i.idIntermediarioPa = :intermediaryCode) and (:creditorInstitutionCode is null or p.idDominio = :creditorInstitutionCode)")
-    Page<Stazioni> findAllFilterByIntermediarioAndPa(@Param("intermediaryCode") String intermediaryCode, @Param("creditorInstitutionCode") String creditorInstitutionCode, Pageable pageable);
+            "where (:brokerCode is null or i.idIntermediarioPa = :brokerCode) and (:creditorInstitutionCode is null or p.idDominio = :creditorInstitutionCode)")
+    Page<Stazioni> findAllFilterByIntermediarioAndPa(@Param("brokerCode") String brokerCode, @Param("creditorInstitutionCode") String creditorInstitutionCode, Pageable pageable);
 
 }

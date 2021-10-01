@@ -52,13 +52,6 @@ public class PaStazionePa {
     @Column(name = "QUARTO_MODELLO", nullable = false)
     private Boolean quartoModello = false;
 
-    /**
-     * @deprecated not used
-     */
-    @Deprecated(forRemoval = true)
-    @Column(name = "STAZIONE_NODO", nullable = false)
-    private Boolean stazioneNodo = false;
-
     @Column(name = "STAZIONE_AVV", nullable = false)
     private Boolean stazioneAvv = false;
 

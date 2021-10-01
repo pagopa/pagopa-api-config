@@ -21,19 +21,19 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StationCI extends StationDetails {
+public class CreditorInstitutionStation extends Station {
 
-    @JsonProperty("notice_number")
-    private Long noticeNumber;
+    @JsonProperty("application_code")
+    private Long applicationCode;
 
     @JsonProperty("aux_digit")
     private Long auxDigit;
 
-    @JsonProperty("segregation_number")
-    private Long segregationNumber;
+    @JsonProperty("segregation_code")
+    private Long segregationCode;
 
-    @JsonProperty("fourth_model")
-    private Boolean fourthModel;
+    @JsonProperty("mod4")
+    private Boolean mod4;
 
     @JsonProperty("broadcast")
     private Boolean broadcast;

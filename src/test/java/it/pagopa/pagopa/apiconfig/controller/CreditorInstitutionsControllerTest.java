@@ -5,7 +5,7 @@ import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Ibans;
-import it.pagopa.pagopa.apiconfig.model.StationCIList;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +37,7 @@ class CreditorInstitutionsControllerTest {
     void setUp() {
         when(creditorInstitutionsService.getCreditorInstitutions(50, 0)).thenReturn(CreditorInstitutions.builder().build());
         when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
-        when(creditorInstitutionsService.getStationsCI("1234")).thenReturn(StationCIList.builder().build());
+        when(creditorInstitutionsService.getCreditorInstitutionStations("1234")).thenReturn(CreditorInstitutionStationList.builder().build());
         when(creditorInstitutionsService.getCreditorInstitutionEncodings("1234")).thenReturn(CreditorInstitutionEncodings.builder().build());
         when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234")).thenReturn(Ibans.builder().build());
     }

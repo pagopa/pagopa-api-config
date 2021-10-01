@@ -22,10 +22,10 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StationCIList {
+public class CreditorInstitutionStationList {
 
     @JsonProperty("stations_list")
     @Schema(required = true)
-    private List<StationCI> stationsList;
+    private List<CreditorInstitutionStation> stationsList;
 
 }
