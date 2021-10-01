@@ -13,7 +13,7 @@ import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Ibans;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
-import it.pagopa.pagopa.apiconfig.model.StationCIList;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +91,7 @@ public class CreditorInstitutionsController {
      */
     @Operation(summary = "Get station details and relation info with creditor institution", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StationCIList.class))),
+            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreditorInstitutionStationList.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
@@ -100,8 +100,8 @@ public class CreditorInstitutionsController {
             value = "/{creditorinstitutioncode}/stations",
             produces = {"application/json"}
     )
-    public ResponseEntity<StationCIList> getStationsCI(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
-        return ResponseEntity.ok(creditorInstitutionsService.getStationsCI(creditorInstitutionCode));
+    public ResponseEntity<CreditorInstitutionStationList> getCreditorInstitutionStations(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
+        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionStations(creditorInstitutionCode));
 
     }
 

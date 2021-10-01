@@ -35,9 +35,9 @@ public class StationsService {
     @Autowired
     ModelMapper modelMapper;
 
-    public Stations getStations(@NotNull Integer limit, @NotNull Integer pageNumber, String intermediaryCode, String creditorInstitutionCode) {
+    public Stations getStations(@NotNull Integer limit, @NotNull Integer pageNumber, String brokerCode, String creditorInstitutionCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<Stazioni> page = stazioniRepository.findAllFilterByIntermediarioAndPa(intermediaryCode, creditorInstitutionCode, pageable);
+        Page<Stazioni> page = stazioniRepository.findAllFilterByIntermediarioAndPa(brokerCode, creditorInstitutionCode, pageable);
         return Stations.builder()
                 .stationsList(getStationsList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

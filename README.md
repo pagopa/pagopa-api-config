@@ -4,7 +4,7 @@
 
 Spring application to manage configuration Api for EC/PSP on the Nodo component.
 
-See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-api-config/main/openapi/swagger.yaml)
+See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-api-config/main/openapi/openapi.json)
 
 ---
 
