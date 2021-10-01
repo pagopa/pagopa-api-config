@@ -29,7 +29,7 @@ public class BrokersService {
     @Autowired
     ModelMapper modelMapper;
 
-    public Brokers getBrokers(@NotNull Integer limit, @NotNull Integer pageNumber, String creditorInstitutionCode) {
+    public Brokers getBrokers(@NotNull Integer limit, @NotNull Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
         Page<IntermediariPa> page = intermediariPaRepository.findAll(pageable);
         return Brokers.builder()
