@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface IntermediariPaRepository extends PagingAndSortingRepository<IntermediariPa, Long> {
 
-    Optional<IntermediariPa> findByCodiceIntermediario(String brokerCode);
+    Optional<IntermediariPa> findByIdIntermediarioPa(String brokerCode);
 }
