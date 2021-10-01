@@ -158,7 +158,7 @@ stages:
               inlineScript: |
                 az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
 
-      - job: newmanTests
+      - job: integrationTests
         dependsOn: deployJava
         steps:
           - script: |
@@ -175,3 +175,25 @@ stages:
               testResultsFormat: 'JUnit'
               testResultsFiles: '**/*-TEST.xml'
               searchFolder: '$(System.DefaultWorkingDirectory)'
+
+      - job: loadTests
+        dependsOn: deployJava
+        steps:
+          - script: |
+              yarn global add postman-to-k6
+            displayName: 'postman-to-k6 installation'
+          - script: |
+              yarn global add k6
+            displayName: 'k6 installation'
+
+          - script: |
+              postman-to-k6  api-test/ApiConfig.postman_collection.json -e api-test/Azure.postman_environment.json -o api-test/k6-script.js
+            displayName: 'Generate load test'
+            continueOnError: true
+
+          - script: |
+              k6 run --vus 10 --duration 5s api-test/k6-script.js
+            displayName: 'Run load test'
+            continueOnError: true
+
+

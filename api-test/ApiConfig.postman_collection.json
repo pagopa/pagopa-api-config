@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "572772b8-a7c7-41a2-a974-c6989c87cf9e",
+		"_postman_id": "d2eb18d9-7430-4e71-b52a-1c401e0dbf2d",
 		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -8,25 +8,6 @@
 		{
 			"name": "creditor institutions",
 			"item": [
-				{
-					"name": "swagger",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/swagger-ui/index.html",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"swagger-ui",
-								"index.html"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "health check",
 					"request": {
@@ -46,7 +27,7 @@
 					"response": []
 				},
 				{
-					"name": "creditor institutions",
+					"name": "getCreditorInstitutions",
 					"event": [
 						{
 							"listen": "test",
@@ -87,7 +68,7 @@
 					"response": []
 				},
 				{
-					"name": "creditor institution",
+					"name": "getCreditorInstitution",
 					"event": [
 						{
 							"listen": "test",
@@ -125,7 +106,7 @@
 					"response": []
 				},
 				{
-					"name": "creditor institution stations",
+					"name": "getCreditorInstitutionStations",
 					"event": [
 						{
 							"listen": "test",
@@ -164,7 +145,7 @@
 					"response": []
 				},
 				{
-					"name": "creditor institution encodings",
+					"name": "getCreditorInstitutionEncodings",
 					"event": [
 						{
 							"listen": "test",
@@ -203,7 +184,7 @@
 					"response": []
 				},
 				{
-					"name": "creditor institution ibans",
+					"name": "getCreditorInstitutionsIbans",
 					"event": [
 						{
 							"listen": "test",
@@ -242,7 +223,7 @@
 					"response": []
 				},
 				{
-					"name": "stations",
+					"name": "getStations",
 					"event": [
 						{
 							"listen": "test",
@@ -291,7 +272,7 @@
 					"response": []
 				},
 				{
-					"name": "station",
+					"name": "getStation",
 					"event": [
 						{
 							"listen": "test",
@@ -322,6 +303,85 @@
 								{
 									"key": "code",
 									"value": "80007580279_01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBrokers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers?limit=1&page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBroker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "80007580279"
 								}
 							]
 						}

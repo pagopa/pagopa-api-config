@@ -14,7 +14,7 @@ public class ConvertIntermediariPaToBrokerDetails implements Converter<Intermedi
         @Valid IntermediariPa source = context.getSource();
         return BrokerDetails.builder()
                 .enabled(source.getEnabled())
-                .idBroker(source.getIdIntermediarioPa())
+                .brokerCode(source.getIdIntermediarioPa())
                 .description(source.getCodiceIntermediario())
                 .extendedFaultBean(source.getFaultBeanEsteso())
                 .build();
