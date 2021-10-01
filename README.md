@@ -4,6 +4,24 @@
 
 Spring application to manage configuration Api for EC/PSP on the Nodo component.
 
+- [pagoPa Api Config](#pagopa-api-config)
+  - [Technology Stack](#technology-stack)
+  - [Start Project Locally](#start-project-locally)
+    - [Prerequisites](#prerequisites)
+    - [Run docker container](#run-docker-container)
+  - [Develop Locally](#develop-locally)
+    - [Prerequisites](#prerequisites-1)
+    - [Run the project](#run-the-project)
+    - [Spring Profiles](#spring-profiles)
+    - [Oracle Docker Container](#oracle-docker-container)
+    - [Testing 🧪](#testing-)
+      - [Unit testing](#unit-testing)
+      - [Integration testing](#integration-testing)
+      - [Load testing](#load-testing)
+  - [Contributors](#contributors)
+    - [Mainteiners:](#mainteiners)
+
+
 See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-api-config/main/openapi/openapi.json)
 
 ---
@@ -111,6 +129,31 @@ If you want to connect to DB from your local PC replace `oracle-db-12c` with `lo
 ```
 local url = jdbc:oracle:thin:@localhost:1521:ORCLCDB
 ``` 
+
+### Testing 🧪
+
+#### Unit testing
+
+by `junit` typing `mvn clean verify`
+#### Integration testing
+
+by `newman` & `postman` collection 🚀
+- automatically  via Azure pipeline ( see `.devops` folder )
+- manual typing `bash api-test/run_api_test.sh <YOUR_STAGE> int` example for `localhost`, where `YOUR_STAGE` shoud be one of `{l,d,i,p}`
+
+```
+bash api-test/run_api_test.sh l int
+```
+
+#### Load testing
+
+by `k6` & `postman` collection 🚀
+- automatically  via Azure pipeline ( see `.devops` folder )
+- manual typing `bash api-test/run_api_test.sh <YOUR_STAGE> load` example for `localhost`, where `YOUR_STAGE` shoud be one of `{l,d,i,p}`
+
+```
+bash api-test/run_api_test.sh l load
+```
 
 ---
 
