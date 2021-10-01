@@ -1,12 +1,12 @@
 {
 	"info": {
 		"_postman_id": "572772b8-a7c7-41a2-a974-c6989c87cf9e",
-		"name": "PagoPa",
+		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "api config",
+			"name": "creditor institutions",
 			"item": [
 				{
 					"name": "swagger",
@@ -14,14 +14,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/swagger-ui/index.html",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/swagger-ui/index.html",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"swagger-ui",
 								"index.html"
 							]
@@ -35,14 +33,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/info",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/info",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"info"
 							]
 						}
@@ -68,14 +64,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions?limit=1&page=0",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions?limit=1&page=0",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"creditorinstitutions"
 							],
 							"query": [
@@ -111,14 +105,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions/:code",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"creditorinstitutions",
 								":code"
 							],
@@ -151,14 +143,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions/:code/stations",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"creditorinstitutions",
 								":code",
 								"stations"
@@ -192,14 +182,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions/:code/encodings",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"creditorinstitutions",
 								":code",
 								"encodings"
@@ -233,14 +221,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/creditorinstitutions/:code/ibans",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/ibans",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"creditorinstitutions",
 								":code",
 								"ibans"
@@ -274,14 +260,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/stations?limit=1&page=0&creditorinstitutioncode=00168480242&intermediarycode=80007580279",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations?limit=1&page=0&creditorinstitutioncode=00168480242&intermediarycode=80007580279",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"stations"
 							],
 							"query": [
@@ -325,14 +309,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/apiconfig/api/v1/stations/:code",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:code",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
-								"apiconfig",
-								"api",
-								"v1",
+								"{{api-config-base-path}}",
 								"stations",
 								":code"
 							],
