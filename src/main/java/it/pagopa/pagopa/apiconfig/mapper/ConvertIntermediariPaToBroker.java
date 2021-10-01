@@ -14,7 +14,7 @@ public class ConvertIntermediariPaToBroker implements Converter<IntermediariPa, 
         @Valid IntermediariPa source = context.getSource();
         return Broker.builder()
                 .enabled(source.getEnabled())
-                .idBroker(source.getIdIntermediarioPa())
+                .brokerCode(source.getIdIntermediarioPa())
                 .description(source.getCodiceIntermediario())
                 .build();
     }
