@@ -39,7 +39,7 @@ public class BrokersService {
     }
 
     public BrokerDetails getBroker(String brokerCode) {
-        Optional<IntermediariPa> result = intermediariPaRepository.findByCodiceIntermediario(brokerCode);
+        Optional<IntermediariPa> result = intermediariPaRepository.findByIdIntermediarioPa(brokerCode);
         if (result.isEmpty()) {
             throw new AppException(HttpStatus.NOT_FOUND, "Broker not found", "No broker found with the provided code");
         }

@@ -49,7 +49,7 @@ class BrokersServiceTest {
 
     @Test
     void getBroker() throws IOException, JSONException {
-        when(intermediariPaRepository.findByCodiceIntermediario("1234")).thenReturn(Optional.of(getMockIntermediariePa()));
+        when(intermediariPaRepository.findByIdIntermediarioPa("1234")).thenReturn(Optional.of(getMockIntermediariePa()));
 
         BrokerDetails result = brokersService.getBroker("1234");
         String actual = TestUtil.toJson(result);
