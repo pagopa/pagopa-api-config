@@ -150,14 +150,6 @@ stages:
                 mvn package
               failOnStderr: true
 
-          - task: Bash@3
-            name: testLs
-            inputs:
-              targetType: "inline"
-              script: |
-                pwd && ls */
-              failOnStderr: true
-
           - task: AzureCLI@1
             displayName: 'Deploy'
             inputs:
