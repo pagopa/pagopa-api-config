@@ -1,53 +1,53 @@
-# Azure DevOps pipeline to build, check source codes and run tests.
+## Azure DevOps pipeline to build, check source codes and run tests.
+##
+## To make Danger JS run on a pull request you need to add the following pipeline
+## variable and set it with a GitHub access token (scope public_repo); otherwise
+## set its value to 'skip' without marking it secret:
+## - DANGER_GITHUB_API_TOKEN
+##
 #
-# To make Danger JS run on a pull request you need to add the following pipeline
-# variable and set it with a GitHub access token (scope public_repo); otherwise
-# set its value to 'skip' without marking it secret:
-# - DANGER_GITHUB_API_TOKEN
+## Only manual triggers
+#trigger: none
+#pr: none
 #
-
-# Only manual triggers
-trigger: none
-pr: none
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-parameters:
-  # the branch, tag or commit to deploy
-  - name: 'gitReference'
-    type: string
-    default: '$(Build.SourceVersion)'
-
-stages:
-  - stage: Setup_Project
-    dependsOn: []
-    jobs:
-      - job: setup
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - checkout: self
-            displayName: 'Checkout'
-
-  - stage: Api_Config_Tests
-    pool:
-      vmImage: 'ubuntu-latest'
-    dependsOn: Setup_Project
-    jobs:
-      - job: newman_tests
-        steps:
-          - script: |
-              yarn global add newman
-            displayName: 'newman installation'
-
-          - script: |
-              newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml
-            displayName: 'Run api test'
-            continueOnError: true
-
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '**/*-TEST.xml'
-              searchFolder: '$(System.DefaultWorkingDirectory)'
+#pool:
+#  vmImage: 'ubuntu-latest'
+#
+#parameters:
+#  # the branch, tag or commit to deploy
+#  - name: 'gitReference'
+#    type: string
+#    default: '$(Build.SourceVersion)'
+#
+#stages:
+#  - stage: Setup_Project
+#    dependsOn: []
+#    jobs:
+#      - job: setup
+#        pool:
+#          vmImage: 'ubuntu-latest'
+#        steps:
+#          - checkout: self
+#            displayName: 'Checkout'
+#
+#  - stage: Api_Config_Tests
+#    pool:
+#      vmImage: 'ubuntu-latest'
+#    dependsOn: Setup_Project
+#    jobs:
+#      - job: newman_tests
+#        steps:
+#          - script: |
+#              yarn global add newman
+#            displayName: 'newman installation'
+#
+#          - script: |
+#              newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml
+#            displayName: 'Run api test'
+#            continueOnError: true
+#
+#          - task: PublishTestResults@2
+#            inputs:
+#              testResultsFormat: 'JUnit'
+#              testResultsFiles: '**/*-TEST.xml'
+#              searchFolder: '$(System.DefaultWorkingDirectory)'
