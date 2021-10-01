@@ -82,7 +82,7 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
-    public Ibans getCreditorInstitutionsIbans(String creditorInstitutionCode) {
+    public Ibans getCreditorInstitutionsIbans(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<IbanValidiPerPa> iban = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
         return Ibans.builder()
@@ -139,7 +139,7 @@ public class CreditorInstitutionsService {
         return encodings.stream()
                 .filter(Objects::nonNull)
                 .filter(elem -> elem.getFkCodifica() != null)
-                .map(elem -> modelMapper.map(elem.getFkCodifica(), Encoding.class))
+                .map(elem -> modelMapper.map(elem, Encoding.class))
                 .collect(Collectors.toList());
     }
 
