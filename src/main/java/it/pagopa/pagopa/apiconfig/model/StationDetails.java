@@ -50,15 +50,6 @@ public class StationDetails extends Station {
     @JsonProperty("service")
     private String service;
 
-    @JsonProperty("rt_enabled")
-    private Boolean rtEnabled;
-
-    @JsonProperty("pof_service")
-    private String pofService;
-
-    @JsonProperty("intermediary_id")
-    private Long intermediaryId;
-
     @JsonProperty("redirect_protocol")
     private String redirectProtocol;
 
@@ -89,8 +80,8 @@ public class StationDetails extends Station {
     @JsonProperty("proxy_password")
     private String proxyPassword;
 
-    @JsonProperty("protocol_avv")
-    private String protocolAvv;
+    @JsonProperty("protocol")
+    private String protocol;
 
     @JsonProperty("thread_number")
     private Long threadNumber;
@@ -106,9 +97,5 @@ public class StationDetails extends Station {
 
     @JsonProperty("flag_online")
     private Boolean flagOnline;
-
-    @JsonProperty("npm_service")
-    private String npmService;
-
 
 }

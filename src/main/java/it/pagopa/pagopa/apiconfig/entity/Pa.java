@@ -32,28 +32,11 @@ public class Pa {
     @Column(name = "ENABLED")
     private Boolean enabled;
 
-    @Column(name = "DESCRIZIONE")
-    private String descrizione;
-
     @Column(name = "RAGIONE_SOCIALE")
     private String ragioneSociale;
 
     @Column(name = "FK_INT_QUADRATURE")
     private Long fkIntQuadrature;
-
-    /**
-     * @deprecated not used
-     */
-    @Deprecated(forRemoval = true)
-    @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
-    private Boolean flagRepoCommissioneCaricoPa;
-
-    /**
-     * @deprecated not used
-     */
-    @Deprecated(forRemoval = true)
-    @Column(name = "EMAIL_REPO_COMMISSIONE_CARICO_PA")
-    private String emailRepoCommissioneCaricoPa;
 
     @Column(name = "INDIRIZZO_DOMICILIO_FISCALE")
     private String indirizzoDomicilioFiscale;
@@ -78,13 +61,5 @@ public class Pa {
 
     @Column(name = "RENDICONTAZIONE_ZIP")
     private Boolean rendicontazioneZip;
-
-    /**
-     * @deprecated not used
-     */
-    @Deprecated(forRemoval = true)
-    @Column(name = "REVOCA_PAGAMENTO")
-    private Long revocaPagamento;
-
 
 }

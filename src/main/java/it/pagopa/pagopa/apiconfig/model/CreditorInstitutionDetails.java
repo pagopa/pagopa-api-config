@@ -26,10 +26,6 @@ import javax.validation.constraints.NotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutionDetails extends CreditorInstitution {
 
-    @JsonProperty("description")
-    @Schema(example = "Comune di Lorem Ipsum", required = true)
-    private String description;
-
     @JsonProperty("address")
     @Schema(required = true)
     @NotNull

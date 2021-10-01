@@ -28,7 +28,7 @@ public class Station {
     @Schema(example = "1234567890100", required = true)
     @NotNull
     @Size(max = 35)
-    private String idStation;
+    private String stationCode;
 
     @JsonProperty("enabled")
     @Schema(required = true, description = "station enabled", defaultValue = "true")
