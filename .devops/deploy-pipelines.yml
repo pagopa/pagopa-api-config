@@ -161,8 +161,14 @@ stages:
                 az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
 
 
+
+
+  - stage: test
+    condition: not(failed('deployJava'))
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
       - job: waitStartup
-        dependsOn: deployJava
         pool: Server
         steps:
           - task: Delay@1
@@ -217,5 +223,6 @@ stages:
               k6 run --vus 2 --duration 30s api-test/k6-script.js
             displayName: 'Run load test'
             continueOnError: true
+
 
 
