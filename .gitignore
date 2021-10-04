@@ -38,3 +38,4 @@ Results/
 **/generated
 **/node_modules
 **/tmp.json
+**/k6-script.js
