@@ -169,7 +169,7 @@ stages:
 
           - script: |
               yarn add jquery
-              bash ./api-test/setup_env_api_test.sh $(STAGE)
+              bash api-test/setup_env_api_test.sh $(STAGE)
 
           - script: |
               newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml
@@ -185,6 +185,10 @@ stages:
       - job: loadTests
         dependsOn: deployJava
         steps:
+          - script: |
+              yarn add jquery
+              bash api-test/setup_env_api_test.sh $(STAGE)
+
           - script: |
               yarn global add postman-to-k6
             displayName: 'postman-to-k6 installation'
