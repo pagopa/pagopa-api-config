@@ -9,24 +9,6 @@
 			"name": "api test suite - creditor institutions",
 			"item": [
 				{
-					"name": "health check",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/info",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "getCreditorInstitutions",
 					"event": [
 						{

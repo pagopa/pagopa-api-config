@@ -1,7 +1,7 @@
 #!/bin/bash
 
 STAGE=$1
-#EXEC=$2
+EXEC=$2
 case $STAGE in
 
   d) # develop
@@ -29,22 +29,22 @@ esac
 jq ".values[0].value = \"${HOSTPORT}\" | .values[1].value = \"${BASEPATH}\"" api-test/Azure.postman_environment.json > api-test/tmp.json && mv api-test/tmp.json api-test/Azure.postman_environment.json
 
 
-#if [ -z "$EXEC" ]
-#then
-#  echo "No test run !"
-#else
-#  if [[ "$EXEC" =~ ^(int|load)$ ]]; then
-#      if [ "$EXEC" = "load" ]
-#      then
-#          postman-to-k6 api-test/ApiConfig.postman_collection.json --environment api-test/Azure.postman_environment.json -o generated/script.js
-#          k6 run --vus 10 --duration 5s generated/script.js
-#      else
-#          newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml
-#      fi
-#  else
-#      echo "Error: Argument for '$EXEC' is no allowed (typing 'int' : (integration test by newman) or 'load' : (loading test by k6) )" >&2
-#      exit 1
-#  fi
-#fi
+if [ -z "$EXEC" ]
+then
+  echo "No test run !"
+else
+  if [[ "$EXEC" =~ ^(int|load)$ ]]; then
+      if [ "$EXEC" = "load" ]
+      then
+          postman-to-k6 api-test/ApiConfig.postman_collection.json --environment api-test/Azure.postman_environment.json -o generated/script.js
+          k6 run --vus 10 --duration 5s generated/script.js
+      else
+          newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml
+      fi
+  else
+      echo "Warning: No test run!"
+      exit 0
+  fi
+fi
 
 
