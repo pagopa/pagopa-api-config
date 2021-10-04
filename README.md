@@ -139,20 +139,20 @@ by `junit` typing `mvn clean verify`
 
 by `newman` & `postman` collection 🚀
 - automatically  via Azure pipeline ( see `.devops` folder )
-- manual typing `bash api-test/run_api_test.sh <YOUR_STAGE> int` example for `localhost`, where `YOUR_STAGE` shoud be one of `{l,d,i,p}`
+- manual typing `bash api-test/setup_env_api_test.sh <YOUR_STAGE> int` example for `localhost`, where `YOUR_STAGE` shoud be one of `{l,d,i,p}`
 
 ```
-bash api-test/run_api_test.sh l int
+bash api-test/setup_env_api_test.sh l int
 ```
 
 #### Load testing
 
 by `k6` & `postman` collection 🚀
 - automatically  via Azure pipeline ( see `.devops` folder )
-- manual typing `bash api-test/run_api_test.sh <YOUR_STAGE> load` example for `localhost`, where `YOUR_STAGE` shoud be one of `{l,d,i,p}`
+- manual typing `bash api-test/setup_env_api_test.sh <YOUR_STAGE> load` example for `localhost`, where `YOUR_STAGE` shoud be one of `{l,d,i,p}`
 
 ```
-bash api-test/run_api_test.sh l load
+bash api-test/setup_env_api_test.sh l load
 ```
 
 ---
