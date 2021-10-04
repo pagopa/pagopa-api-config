@@ -160,13 +160,18 @@ stages:
               inlineScript: |
                 az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
 
-      - job: integrationTests
+
+      - job: waitStartup
         dependsOn: deployJava
+        pool: Server
         steps:
           - task: Delay@1
             inputs:
               delayForMinutes: '2'
 
+      - job: integrationTests
+        dependsOn: waitStartup
+        steps:
           - script: |
               yarn global add newman
             displayName: 'newman installation'
@@ -187,12 +192,8 @@ stages:
               searchFolder: '$(System.DefaultWorkingDirectory)'
 
       - job: loadTests
-        dependsOn: deployJava
+        dependsOn: waitStartup
         steps:
-          - task: Delay@1
-            inputs:
-              delayForMinutes: '2'
-
           - script: |
               yarn add jquery
               bash api-test/setup_env_api_test.sh $(STAGE)
