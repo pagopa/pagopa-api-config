@@ -34,3 +34,7 @@ hs_err_pid*
 **/.DS_Store
 **/api-test/generated
 Results/
+**/libs
+**/generated
+**/node_modules
+**/tmp.json
