@@ -24,7 +24,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"health check\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -55,7 +55,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getCreditorInstitutions\", function () {",
 									"  pm.response.to.have.status(200);",
 									"  const responseJson = pm.response.json();",
 									"  pm.expect(responseJson.page_info).to.be.exist",
@@ -98,7 +98,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getCreditorInstitution\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -136,7 +136,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getCreditorInstitutionStations\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -175,7 +175,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getCreditorInstitutionEncodings\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -214,7 +214,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getCreditorInstitutionsIbans\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -253,7 +253,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getStations\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -302,7 +302,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getStation\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -340,7 +340,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getBrokers\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -381,7 +381,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"getBroker\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
