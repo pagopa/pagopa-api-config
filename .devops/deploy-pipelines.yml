@@ -163,6 +163,10 @@ stages:
       - job: integrationTests
         dependsOn: deployJava
         steps:
+          - task: Delay@1
+            inputs:
+              delayForMinutes: '2'
+
           - script: |
               yarn global add newman
             displayName: 'newman installation'
@@ -185,6 +189,10 @@ stages:
       - job: loadTests
         dependsOn: deployJava
         steps:
+          - task: Delay@1
+            inputs:
+              delayForMinutes: '2'
+
           - script: |
               yarn add jquery
               bash api-test/setup_env_api_test.sh $(STAGE)
