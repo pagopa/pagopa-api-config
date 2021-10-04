@@ -37,7 +37,7 @@ else
       if [ "$EXEC" = "load" ]
       then
           postman-to-k6 api-test/ApiConfig.postman_collection.json --environment api-test/Azure.postman_environment.json -o generated/script.js
-          k6 run --vus 10 --duration 5s generated/script.js
+          k6 run --vus 2 --duration 30s generated/script.js
       else
           newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml
       fi

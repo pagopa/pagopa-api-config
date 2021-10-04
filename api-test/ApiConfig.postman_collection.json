@@ -9,6 +9,47 @@
 			"name": "api test suite - creditor institutions",
 			"item": [
 				{
+					"name": "health check",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(function(){}, 90000);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/info",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getCreditorInstitutions",
 					"event": [
 						{
@@ -17,7 +58,8 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"  pm.response.to.have.status(200);",
-									"  pm.response.to.have.body(\"creditor_institutions\");",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.page_info).to.be.exist",
 									"});"
 								],
 								"type": "text/javascript"

@@ -205,7 +205,7 @@ stages:
             continueOnError: true
 
           - script: |
-              k6 run --vus 10 --duration 5s api-test/k6-script.js
+              k6 run --vus 2 --duration 30s api-test/k6-script.js
             displayName: 'Run load test'
             continueOnError: true
 
