@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "creditor institutions",
+			"name": "api test suitte - creditor institutions",
 			"item": [
 				{
 					"name": "health check",
@@ -35,6 +35,7 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"  pm.response.to.have.status(200);",
+									"  pm.response.to.have.body(\"creditor_institutions\");",
 									"});"
 								],
 								"type": "text/javascript"
