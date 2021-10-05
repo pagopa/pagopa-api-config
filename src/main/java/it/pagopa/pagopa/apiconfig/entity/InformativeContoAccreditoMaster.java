@@ -1,7 +1,10 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -20,7 +23,9 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class InformativeContoAccreditoMaster {
     @Id
