@@ -3,9 +3,11 @@ package it.pagopa.pagopa.apiconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
+import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
@@ -146,6 +148,22 @@ public class TestUtil {
                 .enabled(true)
                 .faultBeanEsteso(true)
                 .idIntermediarioPa("1234")
+                .build();
+    }
+
+    public static InformativeContoAccreditoMaster getMockInformativeContoAccreditoMaster(){
+        return InformativeContoAccreditoMaster.builder()
+                .idInformativaContoAccreditoPa("111")
+                .fkPa(getMockPa())
+                .fkBinaryFile(getMockBinaryFile())
+                .dataInizioValidita(Timestamp.valueOf("2017-03-09 00:00:00"))
+                .dataPubblicazione(Timestamp.valueOf("2017-03-09 00:00:00"))
+                .build();
+    }
+
+    private static BinaryFile getMockBinaryFile() {
+        return BinaryFile.builder()
+                .fileContent(new byte[]{1, 11})
                 .build();
     }
 }
