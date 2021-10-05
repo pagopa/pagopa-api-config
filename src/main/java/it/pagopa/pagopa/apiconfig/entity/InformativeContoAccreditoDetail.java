@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Table(name = "INFORMATIVE_CONTO_ACCREDITO_DETAIL")
+@Table(name = "INFORMATIVE_CONTO_ACCREDITO_DETAIL", schema = "NODO4_CFG")
 @Entity
 @Getter
 @Setter
