@@ -1,0 +1,17 @@
+{
+  "icas": [
+    {
+      "id_ica": "111",
+      "creditor_institution_code": "00168480242",
+      "business_name": "Comune di Bassano del Grappa",
+      "validity_date": "2017-03-09T00:00:00.000Z",
+      "publication_date": "2017-03-09T00:00:00.000Z"
+    }
+  ],
+  "page_info": {
+    "page": 0,
+    "limit": 50,
+    "items_found": 1,
+    "total_pages": 1
+  }
+}
