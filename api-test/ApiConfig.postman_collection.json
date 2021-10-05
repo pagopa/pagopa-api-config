@@ -411,6 +411,86 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "getIcas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getIcas\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas?page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"icas"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getIca",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getIca\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"icas",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "C_A703-IBAN-20170308000000"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
