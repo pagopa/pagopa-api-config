@@ -3,12 +3,14 @@ package it.pagopa.pagopa.apiconfig.config;
 
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
+import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCodifichePaToEncoding;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIbanValidiPerPaToIban;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertInformativeContoAccreditoMasterRepositoryToIca;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBroker;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBrokerDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
@@ -23,6 +25,7 @@ import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.model.Encoding;
 import it.pagopa.pagopa.apiconfig.model.Iban;
+import it.pagopa.pagopa.apiconfig.model.Ica;
 import it.pagopa.pagopa.apiconfig.model.Station;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import org.modelmapper.Converter;
@@ -48,6 +51,7 @@ public class MappingsConfiguration {
         Converter<IntermediariPa, Broker> convertIntermediariPaToBroker = new ConvertIntermediariPaToBroker();
         Converter<IbanValidiPerPa, Iban> convertIbanValidiPerPaToIban = new ConvertIbanValidiPerPaToIban();
         Converter<IntermediariPa, BrokerDetails> convertIntermediariPaToBrokerDetails = new ConvertIntermediariPaToBrokerDetails();
+        Converter<InformativeContoAccreditoMaster, Ica> convertInformativeContoAccreditoMasterRepositoryToIca = new ConvertInformativeContoAccreditoMasterRepositoryToIca();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -58,6 +62,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(IntermediariPa.class, Broker.class).setConverter(convertIntermediariPaToBroker);
         mapper.createTypeMap(IbanValidiPerPa.class, Iban.class).setConverter(convertIbanValidiPerPaToIban);
         mapper.createTypeMap(IntermediariPa.class, BrokerDetails.class).setConverter(convertIntermediariPaToBrokerDetails);
+        mapper.createTypeMap(InformativeContoAccreditoMaster.class, Ica.class).setConverter(convertInformativeContoAccreditoMasterRepositoryToIca);
 
         return mapper;
     }
