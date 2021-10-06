@@ -39,3 +39,4 @@ Results/
 **/node_modules
 **/tmp.json
 **/k6-script.js
+/src/main/resources/application-sia.properties
