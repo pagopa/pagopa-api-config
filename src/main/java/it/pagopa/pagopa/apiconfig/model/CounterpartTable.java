@@ -33,15 +33,15 @@ public class CounterpartTable {
     @NotNull
     private String idCounterpartTable;
 
-    @JsonProperty("creditor_institution_code")
-    @Schema(required = true, example = "1234567890100")
-    @NotNull
-    private String creditorInstitutionCode;
-
     @JsonProperty("business_name")
     @Schema(required = true, example = "Comune di Lorem Ipsum")
     @NotNull
     private String businessName;
+
+    @JsonProperty("creditor_institution_code")
+    @Schema(required = true, example = "1234567890100")
+    @NotNull
+    private String creditorInstitutionCode;
 
     @JsonProperty("publication_date")
     @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
