@@ -38,8 +38,8 @@ public class CounterpartService {
     }
 
 
-    public byte[] getCounterpartTable(@NotNull String id, @NotNull String creditorInstitutionCode) {
-        Optional<InformativePaMaster> result = informativePaMasterRepository.findByIdInformativaPaAndFkPa_IdDominio(id, creditorInstitutionCode);
+    public byte[] getCounterpartTable(@NotNull String idCounterpartTable, @NotNull String creditorInstitutionCode) {
+        Optional<InformativePaMaster> result = informativePaMasterRepository.findByIdInformativaPaAndFkPa_IdDominio(idCounterpartTable, creditorInstitutionCode);
         if (result.isEmpty()) {
             throw new AppException(HttpStatus.NOT_FOUND, "Counterpart Table not found", "No Counterpart Table found with the provided IDs");
         }
