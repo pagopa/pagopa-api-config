@@ -8,6 +8,7 @@ import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
+import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
@@ -52,15 +53,15 @@ public class TestUtil {
     /**
      * Prepare a Mock for the class {@link Page}
      *
-     * @param content list of elements in the page to return by mock
-     * @param limit number of elements per page to return by mock
+     * @param content    list of elements in the page to return by mock
+     * @param limit      number of elements per page to return by mock
      * @param pageNumber number of page to return by mock
-     * @param <T> Class of the elements
+     * @param <T>        Class of the elements
      * @return a Mock of {@link Page}
      */
     public <T> Page<T> mockPage(List<T> content, int limit, int pageNumber) {
         Page<T> page = Mockito.mock(Page.class);
-        when(page.getTotalPages()).thenReturn((int) Math.ceil((double) content.size()/limit));
+        when(page.getTotalPages()).thenReturn((int) Math.ceil((double) content.size() / limit));
         when(page.getNumberOfElements()).thenReturn(content.size());
         when(page.getNumber()).thenReturn(pageNumber);
         when(page.getSize()).thenReturn(limit);
@@ -151,7 +152,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static InformativeContoAccreditoMaster getMockInformativeContoAccreditoMaster(){
+    public static InformativeContoAccreditoMaster getMockInformativeContoAccreditoMaster() {
         return InformativeContoAccreditoMaster.builder()
                 .idInformativaContoAccreditoPa("111")
                 .fkPa(getMockPa())
@@ -166,4 +167,16 @@ public class TestUtil {
                 .fileContent(new byte[]{1, 11})
                 .build();
     }
+
+    public static InformativePaMaster getMockInformativePaMaster() {
+        return InformativePaMaster.builder()
+                .idInformativaPa("111")
+                .fkPa(getMockPa())
+                .fkBinaryFile(getMockBinaryFile())
+                .dataInizioValidita(Timestamp.valueOf("2017-03-09 00:00:00"))
+                .dataPubblicazione(Timestamp.valueOf("2017-03-09 00:00:00"))
+                .build();
+    }
+
+
 }
