@@ -43,18 +43,18 @@ public class CounterpartTable {
     @NotNull
     private String businessName;
 
-    @JsonProperty("validity_date")
-    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
-    @JsonSerialize(using = OffsetDateTimeSerializer.class)
-    @Schema(required = true)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime validityDate;
-
     @JsonProperty("publication_date")
     @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
     @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(required = true)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime publicationDate;
+
+    @JsonProperty("validity_date")
+    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+    @JsonSerialize(using = OffsetDateTimeSerializer.class)
+    @Schema(required = true)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private OffsetDateTime validityDate;
 
 }
