@@ -4,6 +4,7 @@ package it.pagopa.pagopa.apiconfig.config;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
+import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
@@ -11,6 +12,7 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCodifichePaToEncoding;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIbanValidiPerPaToIban;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertInformativeContoAccreditoMasterRepositoryToIca;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertInformativePaMasterToCounterpartTable;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBroker;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBrokerDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
@@ -20,6 +22,7 @@ import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStationDetails;
 import it.pagopa.pagopa.apiconfig.model.Broker;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
+import it.pagopa.pagopa.apiconfig.model.CounterpartTable;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStation;
@@ -52,6 +55,7 @@ public class MappingsConfiguration {
         Converter<IbanValidiPerPa, Iban> convertIbanValidiPerPaToIban = new ConvertIbanValidiPerPaToIban();
         Converter<IntermediariPa, BrokerDetails> convertIntermediariPaToBrokerDetails = new ConvertIntermediariPaToBrokerDetails();
         Converter<InformativeContoAccreditoMaster, Ica> convertInformativeContoAccreditoMasterRepositoryToIca = new ConvertInformativeContoAccreditoMasterRepositoryToIca();
+        Converter<InformativePaMaster, CounterpartTable> convertInformativePaMasterToCounterpartTable = new ConvertInformativePaMasterToCounterpartTable();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -63,6 +67,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(IbanValidiPerPa.class, Iban.class).setConverter(convertIbanValidiPerPaToIban);
         mapper.createTypeMap(IntermediariPa.class, BrokerDetails.class).setConverter(convertIntermediariPaToBrokerDetails);
         mapper.createTypeMap(InformativeContoAccreditoMaster.class, Ica.class).setConverter(convertInformativeContoAccreditoMasterRepositoryToIca);
+        mapper.createTypeMap(InformativePaMaster.class, CounterpartTable.class).setConverter(convertInformativePaMasterToCounterpartTable);
 
         return mapper;
     }

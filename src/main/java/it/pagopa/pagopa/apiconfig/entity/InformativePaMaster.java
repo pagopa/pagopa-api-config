@@ -16,7 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.Instant;
+import java.sql.Timestamp;
 
 @Table(name = "INFORMATIVE_PA_MASTER", schema = "NODO4_CFG")
 @Entity
@@ -37,10 +37,10 @@ public class InformativePaMaster {
     private String idInformativaPa;
 
     @Column(name = "DATA_INIZIO_VALIDITA")
-    private Instant dataInizioValidita;
+    private Timestamp dataInizioValidita;
 
     @Column(name = "DATA_PUBBLICAZIONE")
-    private Instant dataPubblicazione;
+    private Timestamp dataPubblicazione;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "FK_PA", nullable = false)
