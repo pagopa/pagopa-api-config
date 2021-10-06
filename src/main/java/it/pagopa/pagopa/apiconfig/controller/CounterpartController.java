@@ -63,7 +63,7 @@ public class CounterpartController {
     )
     public ResponseEntity<Resource> getCounterpartTable(
             @Parameter(description = "Id counterpart table", required = true) @PathVariable("idcounterparttable") String idCounterpartTable,
-            @Parameter(description = "Creditor institution code", required = true) @RequestParam("creditorinstitutioncode}") String creditorInstitutionCode) {
+            @Parameter(description = "Creditor institution code", required = true) @RequestParam("creditorinstitutioncode") String creditorInstitutionCode) {
         byte[] file = counterpartService.getCounterpartTable(idCounterpartTable, creditorInstitutionCode);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_XML)
