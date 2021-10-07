@@ -41,7 +41,9 @@ See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercon
 - docker 
 - account on dockerhub
 
-> 👀 The docker account is needed to be able to pull the image oracle-db-ee and for which accept the Terms of Service via web. [Open this link](https://hub.docker.com/_/oracle-database-enterprise-edition) and click on "Proceed to Checkout" button.
+> 👀 The docker account is needed to be able to pull the image oracle-db-ee and for which accept the Terms of Service via web. [Open this link](https://hub.docker.com/_/oracle-database-enterprise-edition) and click on "Proceed to Checkout" button. 
+
+Remember to login to the local docker with `docker login` command
 
 ### Run docker container
 `docker-compose up --build`
