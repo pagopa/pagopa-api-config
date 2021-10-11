@@ -13,6 +13,8 @@ import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -175,6 +177,19 @@ public class TestUtil {
                 .fkBinaryFile(getMockBinaryFile())
                 .dataInizioValidita(Timestamp.valueOf("2017-03-09 00:00:00"))
                 .dataPubblicazione(Timestamp.valueOf("2017-03-09 00:00:00"))
+                .build();
+    }
+
+    public static CreditorInstitutionDetails getMockCreditorInstitutionDetails(){
+        return CreditorInstitutionDetails.builder()
+                .pspPayment(false)
+                .fkQuadrature(0L)
+                .creditorInstitutionCode("1234")
+                .businessName("Città di Roma")
+                .enabled(true)
+                .address(CreditorInstitutionAddress.builder()
+                        .city("Roma")
+                        .build())
                 .build();
     }
 
