@@ -20,6 +20,7 @@ import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStationDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertToCreditorInstitutionDetailsToPa;
 import it.pagopa.pagopa.apiconfig.model.Broker;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.CounterpartTable;
@@ -56,6 +57,7 @@ public class MappingsConfiguration {
         Converter<IntermediariPa, BrokerDetails> convertIntermediariPaToBrokerDetails = new ConvertIntermediariPaToBrokerDetails();
         Converter<InformativeContoAccreditoMaster, Ica> convertInformativeContoAccreditoMasterRepositoryToIca = new ConvertInformativeContoAccreditoMasterRepositoryToIca();
         Converter<InformativePaMaster, CounterpartTable> convertInformativePaMasterToCounterpartTable = new ConvertInformativePaMasterToCounterpartTable();
+        Converter<CreditorInstitutionDetails, Pa> convertToCreditorInstitutionDetailsToPa = new ConvertToCreditorInstitutionDetailsToPa();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -68,6 +70,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(IntermediariPa.class, BrokerDetails.class).setConverter(convertIntermediariPaToBrokerDetails);
         mapper.createTypeMap(InformativeContoAccreditoMaster.class, Ica.class).setConverter(convertInformativeContoAccreditoMasterRepositoryToIca);
         mapper.createTypeMap(InformativePaMaster.class, CounterpartTable.class).setConverter(convertInformativePaMasterToCounterpartTable);
+        mapper.createTypeMap(CreditorInstitutionDetails.class, Pa.class).setConverter(convertToCreditorInstitutionDetailsToPa);
 
         return mapper;
     }
