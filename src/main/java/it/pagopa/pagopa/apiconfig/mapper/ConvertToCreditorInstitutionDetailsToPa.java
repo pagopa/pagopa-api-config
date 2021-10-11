@@ -25,6 +25,7 @@ public class ConvertToCreditorInstitutionDetailsToPa implements Converter<Credit
                 .rendicontazioneFtp(source.getReportingFtp())
                 .rendicontazioneZip(source.getReportingZip())
                 .fkIntQuadrature(source.getFkQuadrature())
+                .flagRepoCommissioneCaricoPa(false)
                 .build();
     }
 }
