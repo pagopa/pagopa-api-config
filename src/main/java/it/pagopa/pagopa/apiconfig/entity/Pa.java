@@ -25,7 +25,7 @@ import javax.persistence.Table;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Pa {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
 
@@ -64,5 +64,9 @@ public class Pa {
 
     @Column(name = "RENDICONTAZIONE_ZIP")
     private Boolean rendicontazioneZip;
+
+    // TODO: deprecato ma not_null nel DB
+    @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
+    private Boolean flagRepoCommissioneCaricoPa = false;
 
 }
