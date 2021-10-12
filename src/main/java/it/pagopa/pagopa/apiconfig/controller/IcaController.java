@@ -59,7 +59,7 @@ public class IcaController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
             value = "/{idica}",
-            produces = {"application/xml"}
+            produces = {"application/xml", "application/json"}
     )
     public ResponseEntity<Resource> getIca(@Parameter(description = "Id ICA", required = true) @PathVariable("idica") String idIca) {
         byte[] file = icaService.getIca(idIca);
