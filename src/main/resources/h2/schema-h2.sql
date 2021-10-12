@@ -1,11 +1,11 @@
 -- create tables
 
 create table NODO4_CFG.INTERMEDIARI_PA (
-                                           OBJ_ID numeric not null,
+                                           OBJ_ID numeric not null IDENTITY,
                                            ID_INTERMEDIARIO_PA varchar(35) not null,
-                                           ENABLED char(1) not null,
+                                           ENABLED boolean not null,
                                            CODICE_INTERMEDIARIO varchar(255),
-                                           FAULT_BEAN_ESTESO char(1) not null default 'N',
+                                           FAULT_BEAN_ESTESO boolean not null default 'N',
                                            constraint PK_INTERMEDIARI_PA
                                                primary key (OBJ_ID),
                                            constraint UQ_ID_INTERMEDIARIO_PA
@@ -13,7 +13,7 @@ create table NODO4_CFG.INTERMEDIARI_PA (
 );
 
 create table NODO4_CFG.QUADRATURE_SCHED (
-                                            OBJ_ID numeric not null,
+                                            OBJ_ID numeric not null IDENTITY,
                                             ID_SOGGETTO varchar(35),
                                             MODALITA varchar(35),
                                             TIPO_QUAD varchar(35),
@@ -27,27 +27,27 @@ create table NODO4_CFG.QUADRATURE_SCHED (
                                             TIMESTAMP_END timestamp(6),
                                             TIMESTAMP_BEGIN timestamp(6),
                                             QUAD_LAST_DATE timestamp(6),
-                                            TYPE_INIZIO_GIORNATA char(1) not null default 'N',
+                                            TYPE_INIZIO_GIORNATA boolean not null default 'N',
                                             constraint PK_QUADRATURE_SCHED
                                                 primary key (OBJ_ID)
 );
 create table NODO4_CFG.PA (
-                              OBJ_ID numeric not null,
+                              OBJ_ID numeric not null IDENTITY,
                               ID_DOMINIO varchar(35) not null,
-                              ENABLED char(1) not null,
+                              ENABLED boolean not null,
                               DESCRIZIONE varchar(70),
                               RAGIONE_SOCIALE varchar(70),
                               FK_INT_QUADRATURE numeric,
-                              FLAG_REPO_COMMISSIONE_CARICO_PA char(1) not null,
+                              FLAG_REPO_COMMISSIONE_CARICO_PA boolean not null,
                               EMAIL_REPO_COMMISSIONE_CARICO_PA varchar(255),
                               INDIRIZZO_DOMICILIO_FISCALE varchar(255),
                               CAP_DOMICILIO_FISCALE numeric(5),
                               SIGLA_PROVINCIA_DOMICILIO_FISCALE varchar(2),
                               COMUNE_DOMICILIO_FISCALE varchar(255),
                               DENOMINAZIONE_DOMICILIO_FISCALE varchar(255),
-                              PAGAMENTO_PRESSO_PSP char(1) not null,
-                              RENDICONTAZIONE_FTP char(1) not null,
-                              RENDICONTAZIONE_ZIP char(1) not null,
+                              PAGAMENTO_PRESSO_PSP boolean not null,
+                              RENDICONTAZIONE_FTP boolean not null,
+                              RENDICONTAZIONE_ZIP boolean not null,
                               REVOCA_PAGAMENTO numeric not null default 0,
                               constraint PK_PA
                                   primary key (OBJ_ID),
@@ -58,9 +58,9 @@ create table NODO4_CFG.PA (
                                       references NODO4_CFG.INTERMEDIARI_PA
 );
 create table NODO4_CFG.STAZIONI (
-                                    OBJ_ID numeric not null,
+                                    OBJ_ID numeric not null IDENTITY,
                                     ID_STAZIONE varchar(35) not null,
-                                    ENABLED char(1) not null,
+                                    ENABLED boolean not null,
                                     IP varchar(100),
                                     NEW_PASSWORD varchar(15),
                                     PASSWORD varchar(15),
@@ -71,7 +71,7 @@ create table NODO4_CFG.STAZIONI (
                                     REDIRECT_PORTA numeric,
                                     REDIRECT_QUERY_STRING varchar(255),
                                     SERVIZIO varchar(100),
-                                    RT_ENABLED char(1) not null,
+                                    RT_ENABLED boolean not null,
                                     SERVIZIO_POF varchar(100),
                                     FK_INTERMEDIARIO_PA numeric not null,
                                     REDIRECT_PROTOCOLLO varchar(35),
@@ -79,7 +79,7 @@ create table NODO4_CFG.STAZIONI (
                                     IP_4MOD varchar(100),
                                     PORTA_4MOD numeric,
                                     SERVIZIO_4MOD varchar(255),
-                                    PROXY_ENABLED char(1),
+                                    PROXY_ENABLED boolean,
                                     PROXY_HOST varchar(100),
                                     PROXY_PORT numeric,
                                     PROXY_USERNAME varchar(15),
@@ -105,15 +105,15 @@ create table NODO4_CFG.STAZIONI (
                                             references NODO4_CFG.INTERMEDIARI_PA
 );
 create table NODO4_CFG.PA_STAZIONE_PA (
-                                          OBJ_ID numeric not null,
+                                          OBJ_ID numeric not null IDENTITY,
                                           PROGRESSIVO numeric,
                                           FK_PA numeric not null,
                                           FK_STAZIONE numeric not null,
                                           AUX_DIGIT numeric,
                                           SEGREGAZIONE numeric,
-                                          QUARTO_MODELLO char(1) not null,
-                                          STAZIONE_NODO char(1) not null default 'N',
-                                          STAZIONE_AVV char(1) not null default 'N',
+                                          QUARTO_MODELLO boolean not null,
+                                          STAZIONE_NODO boolean not null default 'N',
+                                          STAZIONE_AVV boolean not null default 'N',
                                           BROADCAST char not null default 'N',
                                           constraint PK_PA_STAZIONE_PA
                                               primary key (OBJ_ID),
@@ -126,7 +126,7 @@ create table NODO4_CFG.PA_STAZIONE_PA (
 );
 
 create table NODO4_CFG.CODIFICHE (
-                                     OBJ_ID numeric not null,
+                                     OBJ_ID numeric not null IDENTITY,
                                      ID_CODIFICA varchar(35) not null,
                                      DESCRIZIONE varchar(35),
                                      constraint PK_CODIFICHE
@@ -135,7 +135,7 @@ create table NODO4_CFG.CODIFICHE (
                                          unique (ID_CODIFICA)
 );
 create table NODO4_CFG.CODIFICHE_PA (
-                                        OBJ_ID numeric not null,
+                                        OBJ_ID numeric not null IDENTITY,
                                         CODICE_PA varchar(35) not null,
                                         FK_CODIFICA numeric not null,
                                         FK_PA numeric not null,
@@ -149,7 +149,7 @@ create table NODO4_CFG.CODIFICHE_PA (
                                                 references NODO4_CFG.PA
 );
 create table NODO4_CFG.BINARY_FILE (
-                                       OBJ_ID numeric not null,
+                                       OBJ_ID numeric not null IDENTITY,
                                        FILE_CONTENT blob not null,
                                        FILE_HASH blob not null,
                                        FILE_SIZE numeric not null,
@@ -159,7 +159,7 @@ create table NODO4_CFG.BINARY_FILE (
                                            primary key (OBJ_ID)
 );
 create table NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER (
-                                                              OBJ_ID numeric not null,
+                                                              OBJ_ID numeric not null IDENTITY,
                                                               DATA_INIZIO_VALIDITA timestamp(6),
                                                               DATA_PUBBLICAZIONE timestamp(6),
                                                               ID_INFORMATIVA_CONTO_ACCREDITO_PA varchar(35) not null,
@@ -179,7 +179,7 @@ create table NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER (
                                                                   unique (FK_PA, ID_INFORMATIVA_CONTO_ACCREDITO_PA)
 );
 create table NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_DETAIL (
-                                                              OBJ_ID numeric not null,
+                                                              OBJ_ID numeric not null IDENTITY,
                                                               IBAN_ACCREDITO varchar(35),
                                                               FK_INFORMATIVA_CONTO_ACCREDITO_MASTER numeric,
                                                               ID_MERCHANT varchar(15),
@@ -221,7 +221,7 @@ from NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER MAS
 
 
 create table NODO4_CFG.INFORMATIVE_PA_MASTER (
-                                                 OBJ_ID numeric not null,
+                                                 OBJ_ID numeric not null IDENTITY,
                                                  ID_INFORMATIVA_PA varchar(35) not null,
                                                  DATA_INIZIO_VALIDITA timestamp(6),
                                                  DATA_PUBBLICAZIONE timestamp(6),
