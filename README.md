@@ -2,14 +2,15 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa_pagopa-api-config&metric=alert_status)](https://sonarcloud.io/dashboard?id=pagopa_pagopa-api-config)
 
-Spring application to manage configuration Api for EC/PSP on the Nodo component.
+Spring Application exposes Api to manage configuration for EC/PSP on the _Nodo dei Pagamenti_.
 
 - [pagoPa Api Config](#pagopa-api-config)
+  - [Api Documentation 📖](#api-documentation-)
   - [Technology Stack](#technology-stack)
-  - [Start Project Locally](#start-project-locally)
+  - [Start Project Locally 🚀](#start-project-locally-)
     - [Prerequisites](#prerequisites)
     - [Run docker container](#run-docker-container)
-  - [Develop Locally](#develop-locally)
+  - [Develop Locally 💻](#develop-locally-)
     - [Prerequisites](#prerequisites-1)
     - [Run the project](#run-the-project)
     - [Spring Profiles](#spring-profiles)
@@ -18,11 +19,14 @@ Spring application to manage configuration Api for EC/PSP on the Nodo component.
       - [Unit testing](#unit-testing)
       - [Integration testing](#integration-testing)
       - [Load testing](#load-testing)
-  - [Contributors](#contributors)
+  - [Contributors 👥](#contributors-)
     - [Mainteiners:](#mainteiners)
 
+---
+## Api Documentation 📖
+See the [Swagger 2 here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-api-config/main/openapi/swagger.json)
 
-See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-api-config/main/openapi/openapi.json)
+See the [OpenApi 3 here.](https://editor.swagger.io/?url=https://raw.githubusercontent.com/pagopa/pagopa-api-config/main/openapi/openapi.json)
 
 ---
 
@@ -35,7 +39,7 @@ See the [Swagger here.](https://editor.swagger.io/?url=https://raw.githubusercon
 
 ---
 
-## Start Project Locally
+## Start Project Locally 🚀
 
 ### Prerequisites
 - docker 
@@ -48,7 +52,9 @@ Remember to login to the local docker with `docker login` command
 ### Run docker container
 `docker-compose up --build`
 
-if all right you'll see something like that :
+🔴 **Don't worry about error messages, read the whole paragraph**
+
+If all right, eventually you'll see something like that:
 ```sh
 oracle-db-12c | /u01/app/oracle/diag/rdbms/orclcdb/ORCLCDB/trace/ORCLCDB_vktm_29.trc
 flyway        | Flyway Community Edition 7.15.0 by Redgate
@@ -87,7 +93,7 @@ To details see `RetryableDataSource.java` and `RetryableDatabasePostProcessor.ja
 
 ---
 
-## Develop Locally
+## Develop Locally 💻
 
 ### Prerequisites
 - git
@@ -159,9 +165,9 @@ bash api-test/setup_env_api_test.sh l load
 
 ---
 
-## Contributors
-Make with ❤️ from PagoPa S.p.A.
+## Contributors 👥
+Made with ❤️ from PagoPa S.p.A.
 
-### Mainteiners:
+### Mainteiners
 See `CODEOWNERS` file
 
