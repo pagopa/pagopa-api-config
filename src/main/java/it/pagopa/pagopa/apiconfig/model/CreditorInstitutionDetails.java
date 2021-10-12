@@ -32,8 +32,7 @@ public class CreditorInstitutionDetails extends CreditorInstitution {
     private CreditorInstitutionAddress address;
 
     @JsonProperty("fk_int_quadrature")
-    @Schema(required = true)
-    @NotNull
+    @Schema()
     private Long fkQuadrature;
 
     @JsonProperty("psp_payment")
