@@ -43,7 +43,7 @@ pool:
 stages:
   # Create a release on Github
   - stage: release_service
-    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.REPOSITORY }}', 'auth'))
+#    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.REPOSITORY }}', 'auth'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
