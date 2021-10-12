@@ -43,7 +43,7 @@ pool:
 stages:
   # Create a release on Github
   - stage: release_service
-#    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.REPOSITORY }}', 'auth'))
+#    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -148,7 +148,7 @@ stages:
             inputs:
               targetType: "inline"
               script: |
-                mvn package -Dmaven.test.skip=true
+                mvn package
                 echo "##vso[task.setvariable variable=spring_profiles_active;isOutput=true]azure-${{ parameters.ENV }}"
               failOnStderr: true
 
