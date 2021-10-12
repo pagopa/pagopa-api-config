@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
@@ -83,7 +85,6 @@ public class CreditorInstitutionsController {
         return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitution(creditorInstitutionCode));
     }
 
-
     @Operation(summary = "Create creditor institution", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreditorInstitutionDetails.class))),
@@ -93,7 +94,7 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @PostMapping(value = "", produces = {"application/json"})
-    public ResponseEntity<CreditorInstitutionDetails> createCreditorInstitution(@RequestBody CreditorInstitutionDetails creditorInstitutionDetails) {
+    public ResponseEntity<CreditorInstitutionDetails> createCreditorInstitution(@RequestBody @Valid @NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
         return ResponseEntity.status(HttpStatus.CREATED).body(creditorInstitutionsService.createCreditorInstitution(creditorInstitutionDetails));
     }
 
@@ -105,8 +106,8 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/{creditorinstitutioncode}", produces = {"application/json"})
-    public ResponseEntity<CreditorInstitutionDetails> updateCreditorInstitution(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
-                                                                                @RequestBody CreditorInstitutionDetails creditorInstitutionDetails) {
+    public ResponseEntity<CreditorInstitutionDetails> updateCreditorInstitution(@Size(max = 50) @Parameter(description = "The fiscal code of the Organization to update", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
+                                                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The values to update of the organization", required = true) @RequestBody @Valid @NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
         return ResponseEntity.ok(creditorInstitutionsService.updateCreditorInstitution(creditorInstitutionCode, creditorInstitutionDetails));
     }
 
