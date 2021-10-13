@@ -20,7 +20,7 @@ Spring Application exposes Api to manage configuration for EC/PSP on the _Nodo d
       - [Integration testing](#integration-testing)
       - [Load testing](#load-testing)
   - [Contributors 👥](#contributors-)
-    - [Mainteiners:](#mainteiners)
+    - [Mainteiners](#mainteiners)
 
 ---
 ## Api Documentation 📖
@@ -118,7 +118,7 @@ Using the spring profile `local`, the Spring application connects to the docker 
 ### Spring Profiles
 
 - _no-profile_: to run on Azure production environment
-- **azure-dev**: to run with H2 (used on Azure dev environment)
+- **azure-d**: to run with H2 (used on Azure dev environment)
 - **local**: to develop locally using the docker DB.
 - **docker**: profile used by the app inside the container (see: `/.env` file)
 - **sia**: to develop locally if you want to connect to SIA database (using VPN)
