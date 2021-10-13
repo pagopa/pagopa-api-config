@@ -43,6 +43,7 @@ pool:
 stages:
   # Create a release on Github
   - stage: release_service
+    # TODO: decomment this
 #    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     pool:
       vmImage: "ubuntu-latest"
@@ -149,7 +150,6 @@ stages:
               targetType: "inline"
               script: |
                 mvn package
-                echo "##vso[task.setvariable variable=spring_profiles_active;isOutput=true]azure-${{ parameters.ENV }}"
               failOnStderr: true
 
           - task: AzureCLI@1
@@ -159,7 +159,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
-
+              arguments: spring_profiles_active=azure-$(STAGE)
 
 
   - stage: test
