@@ -49,6 +49,46 @@
 					"response": []
 				},
 				{
+					"name": "createCreditorInstitution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"creditor_institution_code\": \"0010101010\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"fk_int_quadrature\": null,\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getCreditorInstitutions",
 					"event": [
 						{
@@ -59,6 +99,7 @@
 									"  pm.response.to.have.status(200);",
 									"  const responseJson = pm.response.json();",
 									"  pm.expect(responseJson.page_info).to.be.exist",
+									"  pm.expect(responseJson.creditor_institutions).to.be.exist",
 									"});"
 								],
 								"type": "text/javascript"
@@ -69,7 +110,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions?limit=1&page=0",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions?limit=50&page=0",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -80,7 +121,7 @@
 							"query": [
 								{
 									"key": "limit",
-									"value": "1"
+									"value": "50"
 								},
 								{
 									"key": "page",
@@ -122,7 +163,92 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "00168480242"
+									"value": "1234567890100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateCreditorInstitution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"creditor_institution_code\": \"0010101010\",\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "0010101010"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "0010101010"
 								}
 							]
 						}
@@ -334,6 +460,46 @@
 					"response": []
 				},
 				{
+					"name": "createBroker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createBroker\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_code\": \"80000580202\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio\",\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getBrokers",
 					"event": [
 						{
@@ -352,7 +518,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers?limit=1&page=0",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers?limit=50&page=0",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -363,7 +529,7 @@
 							"query": [
 								{
 									"key": "limit",
-									"value": "1"
+									"value": "50"
 								},
 								{
 									"key": "page",
@@ -406,6 +572,91 @@
 								{
 									"key": "code",
 									"value": "80007580279"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBroker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateBroker\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_code\": \"80000580202\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio 2\",\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "80000580202"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBroker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteBroker\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "80000580202"
 								}
 							]
 						}
@@ -571,6 +822,261 @@
 								{
 									"key": "id",
 									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "api test error",
+			"item": [
+				{
+					"name": "createCreditorInstitution Error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitution_error\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"creditor_institution_code\": \"1234567890100\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"fk_int_quadrature\": null,\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateCreditorInstitution Error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateCreditorInstitution_error\", function () {",
+									"  pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "0010101010"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitution Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitution_error\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "axz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createBroker Error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createBroker_error\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_code\": \"80007580279\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio\",\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBroker Error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateBroker_error\", function () {",
+									"  pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enabled\": true,\n    \"description\": \"Regione Lazio 2\",\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "80000580202"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBroker Error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteBroker_error\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "zxx"
 								}
 							]
 						}
