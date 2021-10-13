@@ -69,7 +69,7 @@ public class CreditorInstitutionsService {
 
     public CreditorInstitutionDetails createCreditorInstitution(@NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
         if (paRepository.findByIdDominio(creditorInstitutionDetails.getCreditorInstitutionCode()).isPresent()) {
-            throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "creditor_institution_code already exists", null);
+            throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "creditor_institution_code already presents");
         }
         Pa pa = paRepository.save(modelMapper.map(creditorInstitutionDetails, Pa.class));
         return modelMapper.map(pa, CreditorInstitutionDetails.class);
