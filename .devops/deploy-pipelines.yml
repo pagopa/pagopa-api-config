@@ -118,13 +118,13 @@ stages:
             persistCredentials: true
             submodules: true
 
-          - task: Bash@3
-            name: application_properties
-            inputs:
-              targetType: "inline"
-              script: |
-                cp src/main/resources/application-azure-d.properties src/main/resources/application.properties
-              failOnStderr: true
+#          - task: Bash@3
+#            name: application_properties
+#            inputs:
+#              targetType: "inline"
+#              script: |
+#                cp src/main/resources/application-azure-d.properties src/main/resources/application.properties
+#              failOnStderr: true
 
           - task: Cache@2
             inputs:
