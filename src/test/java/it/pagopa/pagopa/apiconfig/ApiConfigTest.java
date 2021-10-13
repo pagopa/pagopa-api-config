@@ -2,7 +2,7 @@ package it.pagopa.pagopa.apiconfig;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApiConfigTest {
 
@@ -13,7 +13,7 @@ class ApiConfigTest {
 
     @Test
     void applicationContextTest() {
-        ApiConfig.main(new String[] {});
+        ApiConfig.main(new String[]{});
         assertTrue(true); // it just tests that an error has not occurred
     }
 }

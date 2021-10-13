@@ -42,8 +42,8 @@ public class BrokerController {
     /**
      * GET /brokers : Get paginated list of creditor brokers
      *
-     * @param limit                   Number of elements on one page. Default = 50
-     * @param page                    Page number. Page value starts from 0
+     * @param limit Number of elements on one page. Default = 50
+     * @param page  Page number. Page value starts from 0
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
      * or Too many requests (status code 429)
@@ -114,7 +114,7 @@ public class BrokerController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/{brokercode}", produces = {"application/json"})
     public ResponseEntity<BrokerDetails> updateBroker(@Size(max = 50) @Parameter(description = "broker code", required = true) @PathVariable("brokercode") String brokerCode,
-                                                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The values to update of the broker", required = true) @RequestBody @Valid @NotNull BrokerDetails brokerDetails) {
+                                                      @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The values to update of the broker", required = true) @RequestBody @Valid @NotNull BrokerDetails brokerDetails) {
         return ResponseEntity.ok(brokersService.updateBroker(brokerCode, brokerDetails));
     }
 

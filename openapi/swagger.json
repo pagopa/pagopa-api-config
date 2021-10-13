@@ -66,9 +66,118 @@
         ],
         "operationId": "getBrokers",
         "summary": "Get paginated list of creditor brokers"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BrokerDetails"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/BrokerDetails"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "createBroker",
+        "summary": "Create a broker"
       }
     },
     "/brokers/{brokercode}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "broker code",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "brokercode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "deleteBroker",
+        "summary": "Delete a broker"
+      },
       "get": {
         "produces": [
           "application/json"
@@ -95,7 +204,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -117,6 +229,70 @@
         ],
         "operationId": "getBroker",
         "summary": "Get creditor broker details "
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "broker code",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "brokercode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The values to update of the broker",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BrokerDetails"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/BrokerDetails"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "updateBroker",
+        "summary": "Update a broker"
       }
     },
     "/counterparttables": {
@@ -209,7 +385,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -316,7 +495,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "409": {
             "description": "Conflict",
@@ -364,16 +546,16 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
-            "schema": {
-              "$ref": "#/definitions/CreditorInstitutionDetails"
-            }
+            "description": "OK."
           },
           "403": {
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -422,7 +604,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -483,7 +668,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -534,7 +722,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -585,7 +776,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -636,7 +830,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -743,7 +940,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -899,7 +1099,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"

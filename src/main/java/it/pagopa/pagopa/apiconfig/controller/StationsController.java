@@ -36,7 +36,7 @@ public class StationsController {
      *
      * @param limit                   Number of elements on one page. Default = 50
      * @param page                    Page number. Page value starts from 0
-     * @param brokerCode        Filter by broker
+     * @param brokerCode              Filter by broker
      * @param creditorInstitutionCode Filter by creditor institution
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)

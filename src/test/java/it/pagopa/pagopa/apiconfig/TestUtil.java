@@ -181,7 +181,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static CreditorInstitutionDetails getMockCreditorInstitutionDetails(){
+    public static CreditorInstitutionDetails getMockCreditorInstitutionDetails() {
         return CreditorInstitutionDetails.builder()
                 .pspPayment(false)
                 .fkQuadrature(0L)
@@ -194,7 +194,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static BrokerDetails getMockBrokerDetails(){
+    public static BrokerDetails getMockBrokerDetails() {
         return BrokerDetails.builder()
                 .brokerCode("1234")
                 .enabled(true)
