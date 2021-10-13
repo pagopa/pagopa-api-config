@@ -43,8 +43,7 @@ pool:
 stages:
   # Create a release on Github
   - stage: release_service
-    # TODO: decomment this
-#    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -118,13 +117,13 @@ stages:
             persistCredentials: true
             submodules: true
 
-#          - task: Bash@3
-#            name: application_properties
-#            inputs:
-#              targetType: "inline"
-#              script: |
-#                cp src/main/resources/application-azure-d.properties src/main/resources/application.properties
-#              failOnStderr: true
+          - task: Bash@3
+            name: application_properties
+            inputs:
+              targetType: "inline"
+              script: |
+                cp src/main/resources/application-azure-$(STAGE).properties src/main/resources/application.properties
+              failOnStderr: true
 
           - task: Cache@2
             inputs:
@@ -159,7 +158,6 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
-              arguments: spring_profiles_active=azure-$(STAGE)
 
 
   - stage: test
