@@ -59,7 +59,7 @@ public class CounterpartController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
             value = "/{idcounterparttable}",
-            produces = {"application/xml"}
+            produces = {"application/xml", "application/json"}
     )
     public ResponseEntity<Resource> getCounterpartTable(
             @Parameter(description = "Id counterpart table", required = true) @PathVariable("idcounterparttable") String idCounterpartTable,

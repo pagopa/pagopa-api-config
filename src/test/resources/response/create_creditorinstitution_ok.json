@@ -1,0 +1,11 @@
+{
+  "creditor_institution_code": "00168480242",
+  "enabled": true,
+  "business_name": "Comune di Bassano del Grappa",
+  "address": {
+    "zip_code": "00123"
+  },
+  "psp_payment": true,
+  "reporting_ftp": false,
+  "reporting_zip": false
+}

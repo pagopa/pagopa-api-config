@@ -43,7 +43,7 @@ pool:
 stages:
   # Create a release on Github
   - stage: release_service
-    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.REPOSITORY }}', 'auth'))
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -122,7 +122,7 @@ stages:
             inputs:
               targetType: "inline"
               script: |
-                cp src/main/resources/application-azure-temp.properties src/main/resources/application.properties
+                cp src/main/resources/application-azure-$(STAGE).properties src/main/resources/application.properties
               failOnStderr: true
 
           - task: Cache@2
@@ -158,8 +158,6 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
-
-
 
 
   - stage: test

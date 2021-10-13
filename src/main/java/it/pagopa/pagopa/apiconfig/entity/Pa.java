@@ -10,6 +10,8 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -18,15 +20,16 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @ToString
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Pa {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
 
-    @Column(name = "ID_DOMINIO")
+    @Column(name = "ID_DOMINIO", unique = true)
     private String idDominio;
 
     @Column(name = "ENABLED")
@@ -61,5 +64,9 @@ public class Pa {
 
     @Column(name = "RENDICONTAZIONE_ZIP")
     private Boolean rendicontazioneZip;
+
+    // default false because it is deprecated but not_null in the DB
+    @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
+    private Boolean flagRepoCommissioneCaricoPa = false;
 
 }

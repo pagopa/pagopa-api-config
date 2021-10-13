@@ -8,12 +8,12 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStation;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Encoding;
 import it.pagopa.pagopa.apiconfig.model.Iban;
 import it.pagopa.pagopa.apiconfig.model.Ibans;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStation;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -66,6 +67,28 @@ public class CreditorInstitutionsService {
         return modelMapper.map(pa, CreditorInstitutionDetails.class);
     }
 
+    public CreditorInstitutionDetails createCreditorInstitution(@NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
+        if (paRepository.findByIdDominio(creditorInstitutionDetails.getCreditorInstitutionCode()).isPresent()) {
+            throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "creditor_institution_code already presents");
+        }
+        Pa pa = paRepository.save(modelMapper.map(creditorInstitutionDetails, Pa.class));
+        return modelMapper.map(pa, CreditorInstitutionDetails.class);
+    }
+
+    public CreditorInstitutionDetails updateCreditorInstitution(@Size(max = 50) String creditorInstitutionCode, @NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
+        Long objId = getPaIfExists(creditorInstitutionCode).getObjId();
+        Pa pa = modelMapper.map(creditorInstitutionDetails, Pa.class).toBuilder()
+                .objId(objId)
+                .build();
+        Pa result = paRepository.save(pa);
+        return modelMapper.map(result, CreditorInstitutionDetails.class);
+    }
+
+    public void deleteCreditorInstitution(@NotNull String creditorInstitutionCode) {
+        Pa pa = getPaIfExists(creditorInstitutionCode);
+        paRepository.delete(pa);
+    }
+
     public CreditorInstitutionStationList getCreditorInstitutionStations(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa_ObjId(pa.getObjId());
@@ -96,7 +119,7 @@ public class CreditorInstitutionsService {
      * @return return the PA record from DB if Exists
      * @throws AppException if not found
      */
-    private Pa getPaIfExists(String creditorInstitutionCode) throws AppException{
+    private Pa getPaIfExists(String creditorInstitutionCode) throws AppException {
         Optional<Pa> result = paRepository.findByIdDominio(creditorInstitutionCode);
         if (result.isEmpty()) {
             throw new AppException(HttpStatus.NOT_FOUND, "Creditor Institution not found", "No creditor institution found with the provided code");
