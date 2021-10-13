@@ -13,6 +13,7 @@ import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -145,7 +146,7 @@ public class TestUtil {
     public static IntermediariPa getMockIntermediariePa() {
         return IntermediariPa.builder()
                 .objId(1L)
-                .codiceIntermediario("1234")
+                .codiceIntermediario("Regione Lazio")
                 .enabled(true)
                 .faultBeanEsteso(true)
                 .idIntermediarioPa("1234")
@@ -175,6 +176,15 @@ public class TestUtil {
                 .fkBinaryFile(getMockBinaryFile())
                 .dataInizioValidita(Timestamp.valueOf("2017-03-09 00:00:00"))
                 .dataPubblicazione(Timestamp.valueOf("2017-03-09 00:00:00"))
+                .build();
+    }
+
+    public static BrokerDetails getMockBrokerDetails(){
+        return BrokerDetails.builder()
+                .brokerCode("1234")
+                .enabled(true)
+                .description("Regione Lazio")
+                .extendedFaultBean(false)
                 .build();
     }
 

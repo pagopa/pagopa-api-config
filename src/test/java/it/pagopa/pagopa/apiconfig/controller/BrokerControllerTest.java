@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.Brokers;
 import it.pagopa.pagopa.apiconfig.service.BrokersService;
@@ -13,9 +14,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokerDetails;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,6 +40,8 @@ class BrokerControllerTest {
     void setUp() {
         when(brokersService.getBrokers(50, 0)).thenReturn(Brokers.builder().build());
         when(brokersService.getBroker(anyString())).thenReturn(BrokerDetails.builder().build());
+        when(brokersService.createBroker(any(BrokerDetails.class))).thenReturn(BrokerDetails.builder().build());
+        when(brokersService.updateBroker(anyString(), any(BrokerDetails.class))).thenReturn(BrokerDetails.builder().build());
     }
 
     @Test
@@ -52,4 +60,27 @@ class BrokerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
+    @Test
+    void createBroker() throws Exception {
+        mvc.perform(post("/brokers")
+                        .content(TestUtil.toJson(getMockBrokerDetails()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void updateBroker() throws Exception {
+        mvc.perform(put("/brokers/1234")
+                        .content(TestUtil.toJson(getMockBrokerDetails()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void deleteBroker() throws Exception {
+        mvc.perform(delete("/brokers/1234").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }

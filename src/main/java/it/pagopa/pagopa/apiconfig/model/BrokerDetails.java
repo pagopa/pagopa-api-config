@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * BrokerDetails
@@ -28,7 +28,7 @@ public class BrokerDetails extends Broker {
 
     @JsonProperty("extended_fault_bean")
     @Schema(required = true)
-    @Valid
+    @NotNull
     private Boolean extendedFaultBean;
 
 }

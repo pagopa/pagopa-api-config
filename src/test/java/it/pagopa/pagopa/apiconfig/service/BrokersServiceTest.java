@@ -21,7 +21,9 @@ import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokerDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePa;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +45,6 @@ class BrokersServiceTest {
         Brokers result = brokersService.getBrokers(50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_brokers_ok1.json");
-        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
@@ -54,8 +55,37 @@ class BrokersServiceTest {
         BrokerDetails result = brokersService.getBroker("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_broker_ok1.json");
-        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createBroker() throws IOException, JSONException {
+        when(intermediariPaRepository.findByIdIntermediarioPa("1234")).thenReturn(Optional.empty());
+        when(intermediariPaRepository.save(any(IntermediariPa.class))).thenReturn(getMockIntermediariePa());
+
+        BrokerDetails result = brokersService.createBroker(getMockBrokerDetails());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_broker_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updateBroker() throws IOException, JSONException {
+        when(intermediariPaRepository.findByIdIntermediarioPa("1234")).thenReturn(Optional.of(getMockIntermediariePa()));
+        when(intermediariPaRepository.save(any(IntermediariPa.class))).thenReturn(getMockIntermediariePa());
+
+        BrokerDetails result = brokersService.updateBroker("1234", getMockBrokerDetails());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_broker_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void deleteBroker() {
+        when(intermediariPaRepository.findByIdIntermediarioPa("1234")).thenReturn(Optional.of(getMockIntermediariePa()));
+
+        brokersService.deleteBroker("1234");
+        assertTrue(true);
     }
 
 }
