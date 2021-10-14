@@ -20,14 +20,14 @@ public class RetryableDataSource extends AbstractDataSource {
     @Override
     @Retryable(maxAttempts = 10, backoff = @Backoff(delay = 8000, multiplier = 2, maxDelay = 600000))
     public Connection getConnection() throws SQLException {
-        log.info("Trying to connect to the database...");
+        log.debug("Trying to connect to the database...");
         return dataSource.getConnection();
     }
 
     @Override
     @Retryable(maxAttempts = 10, backoff = @Backoff(delay = 8000, multiplier = 2, maxDelay = 600000))
     public Connection getConnection(String username, String password) throws SQLException {
-        log.info("Trying to connect to the database by username and password ...");
+        log.debug("Trying to connect to the database by username and password ...");
         return dataSource.getConnection(username, password);
     }
 }

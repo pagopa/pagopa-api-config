@@ -52,7 +52,7 @@ Remember to login to the local docker with `docker login` command
 ### Run docker container
 `docker-compose up --build`
 
-🔴 **Don't worry about error messages, read the whole paragraph**
+🔴 **Don't worry about connection error messages like this `The Network Adapter could not establish the connection`, read the whole paragraph**
 
 If all right, eventually you'll see something like that:
 ```sh
@@ -118,7 +118,7 @@ Using the spring profile `local`, the Spring application connects to the docker 
 ### Spring Profiles
 
 - _no-profile_: to run on Azure production environment
-- **azure-d**: to run with H2 (used on Azure dev environment)
+- **azure-d**: to run with H2 (temporarily used on Azure dev environment)
 - **local**: to develop locally using the docker DB.
 - **docker**: profile used by the app inside the container (see: `/.env` file)
 - **sia**: to develop locally if you want to connect to SIA database (using VPN)
