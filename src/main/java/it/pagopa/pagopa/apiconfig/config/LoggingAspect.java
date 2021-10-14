@@ -4,7 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Aspect
 @Component
@@ -13,6 +16,7 @@ public class LoggingAspect {
 
     @Before("@within(org.springframework.web.bind.annotation.RestController)")
     public void logApiInvocation(JoinPoint joinPoint) {
+        MDC.put("requestId", UUID.randomUUID().toString());
         log.info("Invoking API operation: " + joinPoint.getSignature().getName());
     }
 }

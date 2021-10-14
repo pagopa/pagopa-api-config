@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -77,11 +78,34 @@ class CreditorInstitutionsControllerTest {
     }
 
     @Test
+    void createCreditorInstitution_400() throws Exception {
+        mvc.perform(post("/creditorinstitutions")
+                        .content(TestUtil.toJson(getMockCreditorInstitutionDetails().toBuilder()
+                                        .creditorInstitutionCode("")
+                                .build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
     void updateCreditorInstitution() throws Exception {
         mvc.perform(put("/creditorinstitutions/1234")
                         .content(TestUtil.toJson(getMockCreditorInstitutionDetails()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+    }
+
+    @Test
+    void updateCreditorInstitution_400() throws Exception {
+        mvc.perform(put("/creditorinstitutions/1234")
+                        .content(TestUtil.toJson(getMockCreditorInstitutionDetails().toBuilder()
+                                .creditorInstitutionCode("")
+                                .build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
     }

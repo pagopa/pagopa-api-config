@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,7 +27,7 @@ import javax.validation.constraints.Size;
 public class Station {
     @JsonProperty("station_code")
     @Schema(example = "1234567890100", required = true)
-    @NotNull
+    @NotEmpty
     @Size(max = 35)
     private String stationCode;
 

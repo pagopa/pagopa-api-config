@@ -81,7 +81,7 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/{creditorinstitutioncode}", produces = {"application/json"})
-    public ResponseEntity<CreditorInstitutionDetails> getCreditorInstitution(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
+    public ResponseEntity<CreditorInstitutionDetails> getCreditorInstitution(@Size(min = 1, max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
         return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitution(creditorInstitutionCode));
     }
 
@@ -106,7 +106,7 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/{creditorinstitutioncode}", produces = {"application/json"})
-    public ResponseEntity<CreditorInstitutionDetails> updateCreditorInstitution(@Size(max = 50) @Parameter(description = "The fiscal code of the Organization to update", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
+    public ResponseEntity<CreditorInstitutionDetails> updateCreditorInstitution(@Size(min=1, max = 50) @Parameter(description = "The fiscal code of the Organization to update", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
                                                                                 @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The values to update of the organization", required = true) @RequestBody @Valid @NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
         return ResponseEntity.ok(creditorInstitutionsService.updateCreditorInstitution(creditorInstitutionCode, creditorInstitutionDetails));
     }
@@ -119,7 +119,7 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/{creditorinstitutioncode}", produces = {"application/json"})
-    public ResponseEntity<Void> deleteCreditorInstitution(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
+    public ResponseEntity<Void> deleteCreditorInstitution(@Size(min=1, max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
         creditorInstitutionsService.deleteCreditorInstitution(creditorInstitutionCode);
         return ResponseEntity.ok().build();
     }

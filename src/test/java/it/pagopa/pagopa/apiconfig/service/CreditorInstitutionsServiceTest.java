@@ -36,7 +36,6 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -133,6 +132,20 @@ class CreditorInstitutionsServiceTest {
     }
 
     @Test
+    void createCreditorInstitution_conflict() {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(paRepository.save(any(Pa.class))).thenReturn(getMockPa());
+
+        try {
+            creditorInstitutionsService.createCreditorInstitution(getMockCreditorInstitutionDetails());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
     void updateCreditorInstitution() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(paRepository.save(any(Pa.class))).thenReturn(getMockPa());
@@ -144,11 +157,40 @@ class CreditorInstitutionsServiceTest {
     }
 
     @Test
+    void updateCreditorInstitution_notFound() {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.empty());
+        when(paRepository.save(any(Pa.class))).thenReturn(getMockPa());
+        try {
+            creditorInstitutionsService.updateCreditorInstitution("1234", getMockCreditorInstitutionDetails());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
     void deleteCreditorInstitution() {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
 
-        creditorInstitutionsService.deleteCreditorInstitution("1234");
-        assertTrue(true);
+        try {
+            creditorInstitutionsService.deleteCreditorInstitution("1234");
+        } catch (Exception e) {
+            fail("Should not have thrown any exception");
+        }
+    }
+
+    @Test
+    void deleteCreditorInstitution_notfound() {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.empty());
+
+        try {
+            creditorInstitutionsService.deleteCreditorInstitution("1234");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     @Test
