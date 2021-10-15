@@ -38,5 +38,5 @@ Results/
 **/generated
 **/node_modules
 **/tmp.json
-**/k6-script.js
+api-test/k6-script.old.js
 /src/main/resources/application-sia.properties
