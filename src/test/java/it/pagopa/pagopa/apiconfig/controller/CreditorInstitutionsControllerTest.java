@@ -81,7 +81,7 @@ class CreditorInstitutionsControllerTest {
     void createCreditorInstitution_400() throws Exception {
         mvc.perform(post("/creditorinstitutions")
                         .content(TestUtil.toJson(getMockCreditorInstitutionDetails().toBuilder()
-                                        .creditorInstitutionCode("")
+                                .creditorInstitutionCode("")
                                 .build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))

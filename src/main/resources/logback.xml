@@ -6,12 +6,24 @@
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
-                %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m %clr(%mdc){magenta}%n%wEx
+                %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %clr(%mdc){magenta} %m%n%wEx
             </Pattern>
         </layout>
     </appender>
 
-    <root level="INFO">
-        <appender-ref ref="stdout"/>
-    </root>
+    <!--no profile-->
+    <springProfile name="!local &amp; !azure-d &amp; !docker">
+        <root level="INFO">
+            <appender-ref ref="stdout"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="local | azure-d">
+        <root level="INFO">
+            <appender-ref ref="stdout"/>
+        </root>
+        <logger name="it.pagopa.pagopa" level="DEBUG" additivity="false">
+            <appender-ref ref="stdout"/>
+        </logger>
+    </springProfile>
 </configuration>

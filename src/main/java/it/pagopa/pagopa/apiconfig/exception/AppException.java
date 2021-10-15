@@ -49,4 +49,8 @@ public class AppException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
+    @Override
+    public String toString() {
+        return "AppException(" + httpStatus + ", " + title + ")" + super.toString();
+    }
 }

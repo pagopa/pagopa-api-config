@@ -495,10 +495,7 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
+            "description": "Not Found"
           },
           "409": {
             "description": "Conflict",
@@ -538,7 +535,7 @@
             "description": "Organization fiscal code, the fiscal code of the Organization.",
             "in": "path",
             "maxLength": 50,
-            "minLength": 0,
+            "minLength": 1,
             "name": "creditorinstitutioncode",
             "required": true,
             "type": "string"
@@ -552,10 +549,7 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
+            "description": "Not Found"
           },
           "429": {
             "description": "Too many requests"
@@ -587,7 +581,7 @@
             "description": "Organization fiscal code, the fiscal code of the Organization.",
             "in": "path",
             "maxLength": 50,
-            "minLength": 0,
+            "minLength": 1,
             "name": "creditorinstitutioncode",
             "required": true,
             "type": "string"
@@ -642,7 +636,7 @@
             "description": "The fiscal code of the Organization to update",
             "in": "path",
             "maxLength": 50,
-            "minLength": 0,
+            "minLength": 1,
             "name": "creditorinstitutioncode",
             "required": true,
             "type": "string"
@@ -668,10 +662,7 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
+            "description": "Not Found"
           },
           "429": {
             "description": "Too many requests"

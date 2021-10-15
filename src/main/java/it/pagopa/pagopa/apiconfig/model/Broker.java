@@ -30,7 +30,6 @@ public class Broker {
     @Schema(example = "223344556677889900", required = true)
     @NotEmpty
     @Size(max = 35)
-    @NotNull
     private String brokerCode;
 
     @JsonProperty("enabled")
