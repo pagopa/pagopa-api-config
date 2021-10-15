@@ -13,6 +13,8 @@ import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
@@ -181,7 +183,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static CreditorInstitutionDetails getMockCreditorInstitutionDetails() {
+    public static CreditorInstitutionDetails getMockCreditorInstitutionDetails(){
         return CreditorInstitutionDetails.builder()
                 .pspPayment(false)
                 .fkQuadrature(0L)

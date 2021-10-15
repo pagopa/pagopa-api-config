@@ -15,6 +15,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
@@ -30,7 +31,7 @@ public class CounterpartTable {
 
     @JsonProperty("id_counterpart_table")
     @Schema(example = "123456789", required = true)
-    @NotNull
+    @NotEmpty
     private String idCounterpartTable;
 
     @JsonProperty("business_name")

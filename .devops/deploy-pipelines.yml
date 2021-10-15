@@ -14,6 +14,7 @@ parameters:
     values:
       - dev
       - uat
+      - prod
 
 variables:
   ${{ if eq(parameters['ENV'], 'dev') }}:
@@ -26,6 +27,11 @@ variables:
     RESOURCE_GROUP: $(UAT_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(UAT_WEB_APP_NAME)
     STAGE: "u"
+  ${{ if eq(parameters['ENV'], 'prod') }}:
+    AZURE_SUBSCRIPTION: $(PROD_AZURE_SUBSCRIPTION)
+    RESOURCE_GROUP: $(PROD_WEB_APP_RESOURCE_GROUP_NAME)
+    APP_NAME: $(PROD_WEB_APP_NAME)
+    STAGE: "p"
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"

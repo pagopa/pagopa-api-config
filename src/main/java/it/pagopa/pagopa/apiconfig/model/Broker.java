@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -27,6 +28,7 @@ public class Broker {
 
     @JsonProperty("broker_code")
     @Schema(example = "223344556677889900", required = true)
+    @NotEmpty
     @Size(max = 35)
     @NotNull
     private String brokerCode;

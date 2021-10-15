@@ -49,46 +49,6 @@
 					"response": []
 				},
 				{
-					"name": "createCreditorInstitution",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createCreditorInstitution\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"creditor_institution_code\": \"0010101010\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"fk_int_quadrature\": null,\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "getCreditorInstitutions",
 					"event": [
 						{
@@ -133,6 +93,71 @@
 					"response": []
 				},
 				{
+					"name": "createCreditorInstitution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"creditor_institution_code\", makeid(35));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"fk_int_quadrature\": null,\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getCreditorInstitution",
 					"event": [
 						{
@@ -163,7 +188,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "0010101010"
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -190,7 +215,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"creditor_institution_code\": \"0010101010\",\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
+							"raw": "{\n    \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -210,7 +235,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "0010101010"
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -248,7 +273,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "0010101010"
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -460,46 +485,6 @@
 					"response": []
 				},
 				{
-					"name": "createBroker",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createBroker\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"broker_code\": \"80000580202\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio\",\n    \"extended_fault_bean\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "getBrokers",
 					"event": [
 						{
@@ -541,6 +526,65 @@
 					"response": []
 				},
 				{
+					"name": "createBroker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createBroker\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"broker_code\", makeid(35));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_code\": \"{{broker_code}}\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio\",\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getBroker",
 					"event": [
 						{
@@ -571,7 +615,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "80007580279"
+									"value": "{{broker_code}}"
 								}
 							]
 						}
@@ -598,7 +642,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"broker_code\": \"80000580202\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio 2\",\n    \"extended_fault_bean\": false\n}",
+							"raw": "{\n    \"broker_code\": \"{{broker_code}}\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio 2\",\n    \"extended_fault_bean\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -618,7 +662,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "80000580202"
+									"value": "{{broker_code}}"
 								}
 							]
 						}
@@ -656,7 +700,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "80000580202"
+									"value": "{{broker_code}}"
 								}
 							]
 						}
@@ -831,16 +875,16 @@
 			]
 		},
 		{
-			"name": "api test error",
+			"name": "api test error - creditor institutions",
 			"item": [
 				{
-					"name": "createCreditorInstitution Error",
+					"name": "createCreditorInstitution Conflict",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createCreditorInstitution_error\", function () {",
+									"pm.test(\"createCreditorInstitution_conflict\", function () {",
 									"  pm.response.to.have.status(409);",
 									"});"
 								],
@@ -874,13 +918,13 @@
 					"response": []
 				},
 				{
-					"name": "updateCreditorInstitution Error",
+					"name": "updateCreditorInstitution BadRequest",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updateCreditorInstitution_error\", function () {",
+									"pm.test(\"updateCreditorInstitution_badRequest\", function () {",
 									"  pm.response.to.have.status(400);",
 									"});"
 								],
@@ -921,13 +965,13 @@
 					"response": []
 				},
 				{
-					"name": "deleteCreditorInstitution Copy",
+					"name": "deleteCreditorInstitution NotFound",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"deleteCreditorInstitution_error\", function () {",
+									"pm.test(\"deleteCreditorInstitution_notFound\", function () {",
 									"  pm.response.to.have.status(404);",
 									"});"
 								],
@@ -959,13 +1003,13 @@
 					"response": []
 				},
 				{
-					"name": "createBroker Error",
+					"name": "createBroker Conflict",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createBroker_error\", function () {",
+									"pm.test(\"createBroker_conflict\", function () {",
 									"  pm.response.to.have.status(409);",
 									"});"
 								],
@@ -999,13 +1043,13 @@
 					"response": []
 				},
 				{
-					"name": "updateBroker Error",
+					"name": "updateBroker BadRequest",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updateBroker_error\", function () {",
+									"pm.test(\"updateBroker_badRequest\", function () {",
 									"  pm.response.to.have.status(400);",
 									"});"
 								],
@@ -1046,13 +1090,13 @@
 					"response": []
 				},
 				{
-					"name": "deleteBroker Error",
+					"name": "deleteBroker NotFound",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"deleteBroker_error\", function () {",
+									"pm.test(\"deleteBroker_notFound\", function () {",
 									"  pm.response.to.have.status(404);",
 									"});"
 								],
