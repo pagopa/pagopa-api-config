@@ -19,6 +19,7 @@ import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBrokerDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertStationDetailsToStazioni;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStationDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertToCreditorInstitutionDetailsToPa;
@@ -60,6 +61,7 @@ public class MappingsConfiguration {
         Converter<InformativePaMaster, CounterpartTable> convertInformativePaMasterToCounterpartTable = new ConvertInformativePaMasterToCounterpartTable();
         Converter<CreditorInstitutionDetails, Pa> convertToCreditorInstitutionDetailsToPa = new ConvertToCreditorInstitutionDetailsToPa();
         Converter<BrokerDetails, IntermediariPa> convertBrokerDetailsToIntermediariPa = new ConvertBrokerDetailsToIntermediariPa();
+        Converter<StationDetails, Stazioni> convertStationDetailsToStazioni = new ConvertStationDetailsToStazioni();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -74,6 +76,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(InformativePaMaster.class, CounterpartTable.class).setConverter(convertInformativePaMasterToCounterpartTable);
         mapper.createTypeMap(CreditorInstitutionDetails.class, Pa.class).setConverter(convertToCreditorInstitutionDetailsToPa);
         mapper.createTypeMap(BrokerDetails.class, IntermediariPa.class).setConverter(convertBrokerDetailsToIntermediariPa);
+        mapper.createTypeMap(StationDetails.class, Stazioni.class).setConverter(convertStationDetailsToStazioni);
 
         return mapper;
     }

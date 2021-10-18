@@ -45,12 +45,45 @@ public class StationsService {
     }
 
     public StationDetails getStation(@NotNull String stationCode) {
+        Stazioni stazione = getStationIfExists(stationCode);
+        return modelMapper.map(stazione, StationDetails.class);
+    }
+
+    public StationDetails createStation(StationDetails stationDetails) {
+        if (stazioniRepository.findByIdStazione(stationDetails.getStationCode()).isPresent()) {
+            throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "station_code already presents");
+        }
+        Stazioni stazioni = modelMapper.map(stationDetails, Stazioni.class);
+        Stazioni result = stazioniRepository.save(stazioni);
+        return modelMapper.map(result, StationDetails.class);
+    }
+
+    public StationDetails updateStation(String stationCode, StationDetails stationDetails) {
+        Long objId = getStationIfExists(stationCode).getObjId();
+        Stazioni stazioni = modelMapper.map(stationDetails, Stazioni.class)
+                .toBuilder()
+                .objId(objId)
+                .build();
+        Stazioni result = stazioniRepository.save(stazioni);
+        return modelMapper.map(result, StationDetails.class);
+    }
+
+    public void deleteStation(String stationCode) {
+        Stazioni stazioni = getStationIfExists(stationCode);
+        stazioniRepository.delete(stazioni);
+    }
+
+    /**
+     * @param stationCode code of the station
+     * @return search on DB using the {@code stationCode} and return the Stazioni if it is present
+     * @throws AppException if not found
+     */
+    private Stazioni getStationIfExists(String stationCode) {
         Optional<Stazioni> result = stazioniRepository.findByIdStazione(stationCode);
         if (result.isEmpty()) {
             throw new AppException(HttpStatus.NOT_FOUND, "Station not found", "No station found with the provided code");
         }
-        Stazioni stazione = result.get();
-        return modelMapper.map(stazione, StationDetails.class);
+        return result.get();
     }
 
     /**
@@ -65,4 +98,5 @@ public class StationsService {
                 .map(elem -> modelMapper.map(elem, Station.class))
                 .collect(Collectors.toList());
     }
+
 }

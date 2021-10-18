@@ -21,7 +21,9 @@ import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -57,5 +59,35 @@ class StationsServiceTest {
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
+
+    @Test
+    void createStation() throws IOException, JSONException {
+        when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.empty());
+        when(stazioniRepository.save(any(Stazioni.class))).thenReturn(getMockStazioni());
+
+        StationDetails result = stationsService.createStation(getMockStationDetails());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_station_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updateStation() throws IOException, JSONException {
+        when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
+        when(stazioniRepository.save(any(Stazioni.class))).thenReturn(getMockStazioni());
+
+        StationDetails result = stationsService.updateStation("1234", getMockStationDetails());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_station_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void deleteStation() {
+        when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
+
+        stationsService.deleteStation("1234");
+        assertTrue(true);
+    }
 
 }

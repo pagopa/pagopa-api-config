@@ -53,6 +53,9 @@ public class StationDetails extends Station {
     @JsonProperty("redirect_protocol")
     private String redirectProtocol;
 
+    @JsonProperty("fk_intermediario_pa")
+    private Long fkIntermediarioPa;
+
     @JsonProperty("protocol_4mod")
     private String protocol4Mod;
 

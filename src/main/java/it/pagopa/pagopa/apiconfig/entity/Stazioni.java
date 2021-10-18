@@ -23,7 +23,7 @@ import javax.persistence.Table;
 @Setter
 @Getter
 @ToString
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Stazioni {
@@ -69,7 +69,7 @@ public class Stazioni {
     private String servizio;
 
     @Column(name = "RT_ENABLED")
-    private Boolean rtEnabled;
+    private Boolean rtEnabled = true;
 
     @Column(name = "SERVIZIO_POF")
     private String servizioPof;

@@ -16,6 +16,7 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -203,5 +204,21 @@ public class TestUtil {
                 .build();
     }
 
+
+    public static StationDetails getMockStationDetails() {
+        return StationDetails.builder()
+                .stationCode("1234")
+                .ip("1.1.1.1")
+                .protocol("http")
+                .timeoutA(1L)
+                .timeoutB(1L)
+                .timeoutC(1L)
+                .version(1L)
+                .enabled(true)
+                .fkIntermediarioPa(1L)
+                .flagOnline(true)
+                .ip4Mod("2.2.2.2")
+                .build();
+    }
 
 }
