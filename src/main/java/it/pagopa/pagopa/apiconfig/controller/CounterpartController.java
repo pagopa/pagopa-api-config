@@ -54,7 +54,7 @@ public class CounterpartController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(schema = @Schema(implementation = Resource.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(

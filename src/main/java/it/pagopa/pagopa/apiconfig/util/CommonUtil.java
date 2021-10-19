@@ -13,13 +13,6 @@ public class CommonUtil {
 
     public static final String YES = "Y";
 
-    /**
-     * @param value string value: Y or N
-     * @return true if value is equals to Y, false if N
-     */
-    public static Boolean flagToBoolean(String value) {
-        return YES.equals(value);
-    }
 
     /**
      * @param zipcode zip code in long

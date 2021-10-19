@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @ToString
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class IntermediariPa {

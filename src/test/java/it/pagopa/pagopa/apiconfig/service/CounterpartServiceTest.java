@@ -45,7 +45,6 @@ class CounterpartServiceTest {
         CounterpartTables result = counterpartService.getCounterpartTables(50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_counterparttables_ok.json");
-        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 

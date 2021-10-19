@@ -13,6 +13,7 @@ import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import lombok.experimental.UtilityClass;
@@ -147,7 +148,7 @@ public class TestUtil {
     public static IntermediariPa getMockIntermediariePa() {
         return IntermediariPa.builder()
                 .objId(1L)
-                .codiceIntermediario("1234")
+                .codiceIntermediario("Regione Lazio")
                 .enabled(true)
                 .faultBeanEsteso(true)
                 .idIntermediarioPa("1234")
@@ -180,7 +181,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static CreditorInstitutionDetails getMockCreditorInstitutionDetails(){
+    public static CreditorInstitutionDetails getMockCreditorInstitutionDetails() {
         return CreditorInstitutionDetails.builder()
                 .pspPayment(false)
                 .fkQuadrature(0L)
@@ -190,6 +191,15 @@ public class TestUtil {
                 .address(CreditorInstitutionAddress.builder()
                         .city("Roma")
                         .build())
+                .build();
+    }
+
+    public static BrokerDetails getMockBrokerDetails() {
+        return BrokerDetails.builder()
+                .brokerCode("1234")
+                .enabled(true)
+                .description("Regione Lazio")
+                .extendedFaultBean(false)
                 .build();
     }
 

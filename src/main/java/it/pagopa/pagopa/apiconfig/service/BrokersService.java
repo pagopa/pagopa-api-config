@@ -39,12 +39,47 @@ public class BrokersService {
     }
 
     public BrokerDetails getBroker(String brokerCode) {
+        IntermediariPa intermediariPa = getIntermediarioIfExists(brokerCode);
+        return modelMapper.map(intermediariPa, BrokerDetails.class);
+    }
+
+
+    public BrokerDetails createBroker(BrokerDetails brokerDetails) {
+        if (intermediariPaRepository.findByIdIntermediarioPa(brokerDetails.getBrokerCode()).isPresent()) {
+            throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "broker_code already presents");
+        }
+        IntermediariPa intermediariPa = modelMapper.map(brokerDetails, IntermediariPa.class);
+        IntermediariPa result = intermediariPaRepository.save(intermediariPa);
+        return modelMapper.map(result, BrokerDetails.class);
+    }
+
+    public BrokerDetails updateBroker(String brokerCode, BrokerDetails brokerDetails) {
+        Long objId = getIntermediarioIfExists(brokerCode).getObjId();
+        IntermediariPa intermediariPa = modelMapper.map(brokerDetails, IntermediariPa.class)
+                .toBuilder()
+                .objId(objId)
+                .build();
+        IntermediariPa result = intermediariPaRepository.save(intermediariPa);
+        return modelMapper.map(result, BrokerDetails.class);
+    }
+
+    public void deleteBroker(String brokerCode) {
+        IntermediariPa intermediariPa = getIntermediarioIfExists(brokerCode);
+        intermediariPaRepository.delete(intermediariPa);
+    }
+
+
+    /**
+     * @param brokerCode code of the broker
+     * @return search on DB using the {@code brokerCode} and return the IntermediariPa if it is present
+     * @throws AppException if not found
+     */
+    private IntermediariPa getIntermediarioIfExists(String brokerCode) {
         Optional<IntermediariPa> result = intermediariPaRepository.findByIdIntermediarioPa(brokerCode);
         if (result.isEmpty()) {
             throw new AppException(HttpStatus.NOT_FOUND, "Broker not found", "No broker found with the provided code");
         }
-        IntermediariPa intermediariPa = result.get();
-        return modelMapper.map(intermediariPa, BrokerDetails.class);
+        return result.get();
     }
 
     /**

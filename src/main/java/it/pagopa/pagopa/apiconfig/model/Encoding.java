@@ -36,7 +36,6 @@ public class Encoding {
     private String code;
 
 
-
     /**
      * Gets or Sets codeType
      */

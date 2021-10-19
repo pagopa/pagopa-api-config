@@ -36,7 +36,7 @@ public class StationsController {
      *
      * @param limit                   Number of elements on one page. Default = 50
      * @param page                    Page number. Page value starts from 0
-     * @param brokerCode        Filter by broker
+     * @param brokerCode              Filter by broker
      * @param creditorInstitutionCode Filter by creditor institution
      * @return OK. (status code 200)
      * or Forbidden client error status. (status code 403)
@@ -76,7 +76,7 @@ public class StationsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StationDetails.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(

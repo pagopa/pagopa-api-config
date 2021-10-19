@@ -34,6 +34,7 @@ public class Broker {
 
     @JsonProperty("enabled")
     @Schema(required = true)
+    @NotNull
     private Boolean enabled;
 
     @JsonProperty("description")

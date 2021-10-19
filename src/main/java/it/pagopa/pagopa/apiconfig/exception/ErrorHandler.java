@@ -105,9 +105,9 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({AppException.class})
     public ResponseEntity<ProblemJson> handleAppException(final AppException ex, final WebRequest request) {
         if (ex.getCause() != null) {
-            log.warn("Cause of the App Exception:", ex.getCause());
+            log.warn("App Exception raised: " + ex.getMessage() + "\nCause of the App Exception: ", ex.getCause());
         } else {
-            log.warn("App Exception raised:", ex);
+            log.warn("App Exception raised: " + ex.getMessage());
         }
         var errorResponse = ProblemJson.builder()
                 .status(ex.getHttpStatus().value())
