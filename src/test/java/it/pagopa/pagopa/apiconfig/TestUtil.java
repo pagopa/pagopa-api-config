@@ -204,7 +204,6 @@ public class TestUtil {
                 .build();
     }
 
-
     public static StationDetails getMockStationDetails() {
         return StationDetails.builder()
                 .stationCode("1234")

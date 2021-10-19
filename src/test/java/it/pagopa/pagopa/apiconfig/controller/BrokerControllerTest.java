@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -69,12 +70,35 @@ class BrokerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
+
+    @Test
+    void createBroker_400() throws Exception {
+        mvc.perform(post("/brokers")
+                        .content(TestUtil.toJson(getMockBrokerDetails().toBuilder()
+                                .brokerCode("")
+                                .build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
     @Test
     void updateBroker() throws Exception {
         mvc.perform(put("/brokers/1234")
                         .content(TestUtil.toJson(getMockBrokerDetails()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void updateBroker_400() throws Exception {
+        mvc.perform(put("/brokers/1234")
+                        .content(TestUtil.toJson(getMockBrokerDetails().toBuilder()
+                                .brokerCode("")
+                                .build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
