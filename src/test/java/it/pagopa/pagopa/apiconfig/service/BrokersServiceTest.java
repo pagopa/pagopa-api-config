@@ -98,7 +98,7 @@ class BrokersServiceTest {
     }
 
     @Test
-    void updateCreditorInstitution_notFound() {
+    void updateBroker_notFound() {
         when(intermediariPaRepository.findByIdIntermediarioPa("1234")).thenReturn(Optional.empty());
         try {
             brokersService.updateBroker("1234", getMockBrokerDetails());
@@ -118,7 +118,7 @@ class BrokersServiceTest {
     }
 
     @Test
-    void deleteCreditorInstitution_notfound() {
+    void deleteBroker_notfound() {
         when(intermediariPaRepository.findByIdIntermediarioPa("1234")).thenReturn(Optional.empty());
 
         try {
