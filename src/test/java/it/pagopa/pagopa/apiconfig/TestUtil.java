@@ -208,7 +208,9 @@ public class TestUtil {
         return StationDetails.builder()
                 .stationCode("1234")
                 .ip("1.1.1.1")
+                .port(80L)
                 .protocol("http")
+                .password("pass")
                 .timeoutA(1L)
                 .timeoutB(1L)
                 .timeoutC(1L)
@@ -217,6 +219,8 @@ public class TestUtil {
                 .brokerCode("4321")
                 .flagOnline(true)
                 .ip4Mod("2.2.2.2")
+                .service("/api")
+                .threadNumber(2L)
                 .build();
     }
 
