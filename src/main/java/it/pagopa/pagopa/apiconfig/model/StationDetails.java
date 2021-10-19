@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * StationDetails
  */
@@ -24,16 +27,23 @@ import lombok.experimental.SuperBuilder;
 public class StationDetails extends Station {
 
     @JsonProperty("ip")
+    @NotNull
     private String ip;
 
     @JsonProperty("new_password")
     private String newPassword;
 
     @JsonProperty("password")
+    @NotNull
     private String password;
 
     @JsonProperty("port")
+    @NotNull
     private Long port;
+
+    @JsonProperty("protocol")
+    @NotNull
+    private String protocol;
 
     @JsonProperty("redirect_ip")
     private String redirectIp;
@@ -47,13 +57,15 @@ public class StationDetails extends Station {
     @JsonProperty("redirect_query_string")
     private String redirectQueryString;
 
-    @JsonProperty("service")
-    private String service;
-
     @JsonProperty("redirect_protocol")
     private String redirectProtocol;
 
+    @JsonProperty("service")
+    @NotNull
+    private String service;
+
     @JsonProperty("broker_code")
+    @NotEmpty
     private String brokerCode;
 
     @JsonProperty("protocol_4mod")
@@ -83,19 +95,20 @@ public class StationDetails extends Station {
     @JsonProperty("proxy_password")
     private String proxyPassword;
 
-    @JsonProperty("protocol")
-    private String protocol;
-
     @JsonProperty("thread_number")
+    @NotNull
     private Long threadNumber;
 
     @JsonProperty("timeout_a")
+    @NotNull
     private Long timeoutA;
 
     @JsonProperty("timeout_b")
+    @NotNull
     private Long timeoutB;
 
     @JsonProperty("timeout_c")
+    @NotNull
     private Long timeoutC;
 
     @JsonProperty("flag_online")

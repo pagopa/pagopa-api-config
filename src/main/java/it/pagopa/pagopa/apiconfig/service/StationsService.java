@@ -53,7 +53,7 @@ public class StationsService {
         return modelMapper.map(stazione, StationDetails.class);
     }
 
-    public StationDetails createStation(StationDetails stationDetails) {
+    public StationDetails createStation(@NotNull StationDetails stationDetails) {
         if (stazioniRepository.findByIdStazione(stationDetails.getStationCode()).isPresent()) {
             throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "station_code already presents");
         }
@@ -62,7 +62,7 @@ public class StationsService {
         return modelMapper.map(result, StationDetails.class);
     }
 
-    public StationDetails updateStation(String stationCode, StationDetails stationDetails) {
+    public StationDetails updateStation(@NotNull String stationCode, @NotNull StationDetails stationDetails) {
         Long objId = getStationIfExists(stationCode).getObjId();
         Stazioni stazioni = modelMapper.map(stationDetails, Stazioni.class)
                 .toBuilder()
@@ -72,7 +72,7 @@ public class StationsService {
         return modelMapper.map(result, StationDetails.class);
     }
 
-    public void deleteStation(String stationCode) {
+    public void deleteStation(@NotNull String stationCode) {
         Stazioni stazioni = getStationIfExists(stationCode);
         stazioniRepository.delete(stazioni);
     }
