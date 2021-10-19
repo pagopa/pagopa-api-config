@@ -4,9 +4,11 @@ import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.model.Broker;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
+@Component
 public class ConvertIntermediariPaToBroker implements Converter<IntermediariPa, Broker> {
 
     @Override

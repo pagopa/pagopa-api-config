@@ -18,5 +18,5 @@
   "timeout_b": 30,
   "timeout_c": 120,
   "flag_online": true,
-  "fk_intermediario_pa": 2
+  "broker_code": "4321"
 }

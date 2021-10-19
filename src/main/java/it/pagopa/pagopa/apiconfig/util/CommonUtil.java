@@ -11,9 +11,6 @@ import java.time.ZoneOffset;
 @UtilityClass
 public class CommonUtil {
 
-    public static final String YES = "Y";
-
-
     /**
      * @param zipcode zip code in long
      * @return zip code in string with the format %05d (add leading zeroes to number)

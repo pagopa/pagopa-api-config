@@ -4,11 +4,13 @@ import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
 import it.pagopa.pagopa.apiconfig.model.CounterpartTable;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toOffsetDateTime;
 
+@Component
 public class ConvertInformativePaMasterToCounterpartTable implements Converter<InformativePaMaster, CounterpartTable> {
 
     @Override

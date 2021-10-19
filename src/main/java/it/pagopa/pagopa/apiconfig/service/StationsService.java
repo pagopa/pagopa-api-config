@@ -5,6 +5,7 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.Station;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.Stations;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -24,6 +25,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationsService {
+
+    @Autowired
+    IntermediariPaRepository intermediariPaRepository;
 
     @Autowired
     StazioniRepository stazioniRepository;

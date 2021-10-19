@@ -4,9 +4,11 @@ import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.model.Encoding;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
+@Component
 public class ConvertCodifichePaToEncoding implements Converter<CodifichePa, Encoding> {
 
     @Override

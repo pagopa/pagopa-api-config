@@ -6,9 +6,11 @@ import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
+@Component
 public class ConvertPaToCreditorInstitutionDetails implements Converter<Pa, CreditorInstitutionDetails> {
 
     @Override

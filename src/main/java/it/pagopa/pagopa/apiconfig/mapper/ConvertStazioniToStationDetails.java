@@ -4,9 +4,11 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
+@Component
 public class ConvertStazioniToStationDetails implements Converter<Stazioni, StationDetails> {
 
     @Override
@@ -23,7 +25,7 @@ public class ConvertStazioniToStationDetails implements Converter<Stazioni, Stat
                 .port(source.getPorta())
                 .service(source.getServizio())
                 .protocol4Mod(source.getProtocollo4Mod())
-                .fkIntermediarioPa(source.getFkIntermediarioPa() != null ? source.getFkIntermediarioPa().getObjId() : null)
+                .brokerCode(source.getFkIntermediarioPa() != null ? source.getFkIntermediarioPa().getIdIntermediarioPa() : null)
                 .ip4Mod(source.getIp4Mod())
                 .port4Mod(source.getPorta4Mod())
                 .service4Mod(source.getServizio4Mod())

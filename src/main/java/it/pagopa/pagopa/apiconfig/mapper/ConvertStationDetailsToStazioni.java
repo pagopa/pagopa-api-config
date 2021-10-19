@@ -2,17 +2,28 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
+@Component
 public class ConvertStationDetailsToStazioni implements Converter<StationDetails, Stazioni> {
+
+    @Autowired
+    private IntermediariPaRepository intermediariPaRepository;
 
     @Override
     public Stazioni convert(MappingContext<StationDetails, Stazioni> context) {
         @Valid StationDetails source = context.getSource();
+        IntermediariPa intermediariPa = intermediariPaRepository.findByIdIntermediarioPa(source.getBrokerCode())
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Broker not found", "No broker found with the provided code"));
         return Stazioni.builder()
                 .idStazione(source.getStationCode())
                 .enabled(source.getEnabled())
@@ -23,9 +34,7 @@ public class ConvertStationDetailsToStazioni implements Converter<StationDetails
                 .ip(source.getIp())
                 .porta(source.getPort())
                 .servizio(source.getService())
-                .fkIntermediarioPa(IntermediariPa.builder()
-                        .objId(source.getFkIntermediarioPa())
-                        .build())
+                .fkIntermediarioPa(intermediariPa)
                 .protocollo4Mod(source.getProtocol4Mod())
                 .ip4Mod(source.getIp4Mod())
                 .porta4Mod(source.getPort4Mod())

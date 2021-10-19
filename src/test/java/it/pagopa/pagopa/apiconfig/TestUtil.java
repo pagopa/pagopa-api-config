@@ -215,7 +215,7 @@ public class TestUtil {
                 .timeoutC(1L)
                 .version(1L)
                 .enabled(true)
-                .fkIntermediarioPa(1L)
+                .brokerCode("4321")
                 .flagOnline(true)
                 .ip4Mod("2.2.2.2")
                 .build();
