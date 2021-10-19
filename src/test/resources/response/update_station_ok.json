@@ -10,7 +10,7 @@
   "redirect_port": 443,
   "service": "openspcoop/PD/RT6TPDREGVENETO",
   "redirect_protocol": "HTTPS",
-  "fk_intermediario_pa": 2,
+  "broker_code": "1234",
   "proxy_enabled": true,
   "proxy_host": "10.101.1.95",
   "proxy_port": 8080,

@@ -6,6 +6,7 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.Stations;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +39,9 @@ class StationsServiceTest {
 
     @MockBean
     private StazioniRepository stazioniRepository;
+
+    @MockBean
+    private IntermediariPaRepository intermediariPaRepository;
 
     @Autowired
     @InjectMocks
@@ -68,6 +73,7 @@ class StationsServiceTest {
     void createStation() throws IOException, JSONException {
         when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.empty());
         when(stazioniRepository.save(any(Stazioni.class))).thenReturn(getMockStazioni());
+        when(intermediariPaRepository.findByIdIntermediarioPa(anyString())).thenReturn(Optional.of(getMockIntermediariePa()));
 
         StationDetails result = stationsService.createStation(getMockStationDetails());
         String actual = TestUtil.toJson(result);
@@ -92,6 +98,7 @@ class StationsServiceTest {
     void updateStation() throws IOException, JSONException {
         when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
         when(stazioniRepository.save(any(Stazioni.class))).thenReturn(getMockStazioni());
+        when(intermediariPaRepository.findByIdIntermediarioPa(anyString())).thenReturn(Optional.of(getMockIntermediariePa()));
 
         StationDetails result = stationsService.updateStation("1234", getMockStationDetails());
         String actual = TestUtil.toJson(result);

@@ -22,8 +22,10 @@ public class ConvertStationDetailsToStazioni implements Converter<StationDetails
     @Override
     public Stazioni convert(MappingContext<StationDetails, Stazioni> context) {
         @Valid StationDetails source = context.getSource();
+
         IntermediariPa intermediariPa = intermediariPaRepository.findByIdIntermediarioPa(source.getBrokerCode())
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Broker not found", "No broker found with the provided code"));
+
         return Stazioni.builder()
                 .idStazione(source.getStationCode())
                 .enabled(source.getEnabled())
