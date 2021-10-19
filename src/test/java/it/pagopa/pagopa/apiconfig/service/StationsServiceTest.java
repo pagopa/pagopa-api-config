@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.Stations;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
@@ -17,13 +18,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -72,6 +76,19 @@ class StationsServiceTest {
     }
 
     @Test
+    void createBroker_conflict() {
+        when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
+
+        try {
+            stationsService.createStation(getMockStationDetails());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
     void updateStation() throws IOException, JSONException {
         when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
         when(stazioniRepository.save(any(Stazioni.class))).thenReturn(getMockStazioni());
@@ -83,11 +100,36 @@ class StationsServiceTest {
     }
 
     @Test
+    void updateBroker_notFound() {
+        when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.empty());
+        try {
+            stationsService.updateStation("1234", getMockStationDetails());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
     void deleteStation() {
         when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
 
         stationsService.deleteStation("1234");
         assertTrue(true);
+    }
+
+    @Test
+    void deleteBroker_notfound() {
+        when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.empty());
+
+        try {
+            stationsService.deleteStation("1234");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
 }
