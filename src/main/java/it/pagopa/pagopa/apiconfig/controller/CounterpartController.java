@@ -16,13 +16,20 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 @RestController()
 @RequestMapping(path = "/counterparttables")
@@ -67,12 +74,39 @@ public class CounterpartController {
     )
     public ResponseEntity<Resource> getCounterpartTable(
             @Parameter(description = "Id counterpart table", required = true) @PathVariable("idcounterparttable") String idCounterpartTable,
-            @Parameter(description = "Creditor institution code", required = true) @RequestParam("creditorinstitutioncode") String creditorInstitutionCode) {
+            @Parameter(description = "Creditor institution code", required = true) @RequestParam("creditorinstitutioncode") @NotEmpty String creditorInstitutionCode) {
         byte[] file = counterpartService.getCounterpartTable(idCounterpartTable, creditorInstitutionCode);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_XML)
                 .contentLength(file.length)
                 .body(new ByteArrayResource(file));
+    }
+
+    @Operation(summary = "Update a counterpart table", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "multipart/form-data", schema = @Schema(implementation = MultipartFile.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
+    @PostMapping(value = "", produces = {"application/json"})
+    public ResponseEntity<Void> uploadCounterpartTable(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The file to upload", required = true) @RequestBody @NotNull MultipartFile file) {
+        counterpartService.uploadCounterpartTable(file);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Delete a counterpart table", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/{idcounterparttable}", produces = {"application/json"})
+    public ResponseEntity<Void> deleteCounterpartTable(@Size(max = 50) @Parameter(description = "ID of a counterpart table", required = true) @PathVariable("idcounterparttable") String idCounterpartTable,
+                                                       @Parameter(description = "Creditor institution code", required = true) @RequestParam("creditorinstitutioncode") @NotEmpty String creditorInstitutionCode) {
+        counterpartService.deleteCounterpartTable(idCounterpartTable, creditorInstitutionCode);
+        return ResponseEntity.ok().build();
     }
 
 

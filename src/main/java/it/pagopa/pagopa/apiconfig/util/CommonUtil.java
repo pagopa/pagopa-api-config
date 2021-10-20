@@ -137,4 +137,12 @@ public class CommonUtil {
     public static String getCcFromIban(String iban) {
         return iban.substring(15, 27);
     }
+
+    /**
+     * @param offsetDateTime to convert
+     * @return convert offsetDateTime to {@link Timestamp}
+     */
+    public static Timestamp toTimestamp(OffsetDateTime offsetDateTime) {
+        return Timestamp.from(offsetDateTime.toInstant());
+    }
 }
