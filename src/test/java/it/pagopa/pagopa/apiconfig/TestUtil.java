@@ -16,6 +16,7 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -87,7 +88,7 @@ public class TestUtil {
                 .servizio("openspcoop/PD/RT6TPDREGVENETO")
                 .rtEnabled(true)
                 .servizioPof("openspcoop/PD/CCP6TPDREGVENETO")
-                .fkIntermediarioPa(IntermediariPa.builder().objId(2L).build())
+                .fkIntermediarioPa(getMockIntermediariePa())
                 .redirectProtocollo("HTTPS")
                 .proxyEnabled(true)
                 .proxyHost("10.101.1.95")
@@ -203,5 +204,24 @@ public class TestUtil {
                 .build();
     }
 
+    public static StationDetails getMockStationDetails() {
+        return StationDetails.builder()
+                .stationCode("1234")
+                .ip("1.1.1.1")
+                .port(80L)
+                .protocol("http")
+                .password("pass")
+                .timeoutA(1L)
+                .timeoutB(1L)
+                .timeoutC(1L)
+                .version(1L)
+                .enabled(true)
+                .brokerCode("4321")
+                .flagOnline(true)
+                .ip4Mod("2.2.2.2")
+                .service("/api")
+                .threadNumber(2L)
+                .build();
+    }
 
 }

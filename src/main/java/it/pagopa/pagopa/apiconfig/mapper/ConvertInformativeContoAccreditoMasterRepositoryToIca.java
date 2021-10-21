@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toOffsetDateTime;
 
+
 public class ConvertInformativeContoAccreditoMasterRepositoryToIca implements Converter<InformativeContoAccreditoMaster, Ica> {
 
     @Override

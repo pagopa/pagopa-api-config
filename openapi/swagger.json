@@ -494,9 +494,6 @@
           "403": {
             "description": "Forbidden client error status."
           },
-          "404": {
-            "description": "Not Found"
-          },
           "409": {
             "description": "Conflict",
             "schema": {
@@ -549,7 +546,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -662,7 +662,10 @@
             "description": "Forbidden client error status."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
           "429": {
             "description": "Too many requests"
@@ -1061,9 +1064,118 @@
         ],
         "operationId": "getStations",
         "summary": "Get paginated list of stations"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationDetails"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/StationDetails"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "createStation",
+        "summary": "Create a station"
       }
     },
     "/stations/{stationcode}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "station code",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "stationcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "deleteStation",
+        "summary": "Delete a station"
+      },
       "get": {
         "produces": [
           "application/json"
@@ -1115,6 +1227,70 @@
         ],
         "operationId": "getStation",
         "summary": "Get station details"
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "station code",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "stationcode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The values to update of the station",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StationDetails"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/StationDetails"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "updateStation",
+        "summary": "Update a station"
       }
     }
   },
@@ -1634,6 +1810,9 @@
     },
     "StationDetails": {
       "properties": {
+        "broker_code": {
+          "type": "string"
+        },
         "enabled": {
           "default": true,
           "description": "station enabled",
@@ -1735,8 +1914,18 @@
         }
       },
       "required": [
+        "broker_code",
         "enabled",
+        "ip",
+        "password",
+        "port",
+        "protocol",
+        "service",
         "station_code",
+        "thread_number",
+        "timeout_a",
+        "timeout_b",
+        "timeout_c",
         "version"
       ],
       "type": "object"

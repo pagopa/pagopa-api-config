@@ -7,6 +7,7 @@ import org.modelmapper.spi.MappingContext;
 
 import javax.validation.Valid;
 
+
 public class ConvertCodifichePaToEncoding implements Converter<CodifichePa, Encoding> {
 
     @Override

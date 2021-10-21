@@ -10,6 +10,7 @@
   "redirect_port": 443,
   "service": "openspcoop/PD/RT6TPDREGVENETO",
   "redirect_protocol": "HTTPS",
+  "broker_code": "1234",
   "proxy_enabled": true,
   "proxy_host": "10.101.1.95",
   "proxy_port": 8080,
@@ -17,6 +18,5 @@
   "timeout_a": 15,
   "timeout_b": 30,
   "timeout_c": 120,
-  "flag_online": true,
-  "broker_code": "1234"
+  "flag_online": true
 }

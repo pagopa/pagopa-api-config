@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import org.modelmapper.Converter;
@@ -7,30 +8,31 @@ import org.modelmapper.spi.MappingContext;
 
 import javax.validation.Valid;
 
-
-public class ConvertStazioniToStationDetails implements Converter<Stazioni, StationDetails> {
+public class ConvertStationDetailsToStazioni implements Converter<StationDetails, Stazioni> {
 
     @Override
-    public StationDetails convert(MappingContext<Stazioni, StationDetails> context) {
-        @Valid Stazioni source = context.getSource();
-        return StationDetails.builder()
-                .stationCode(source.getIdStazione())
+    public Stazioni convert(MappingContext<StationDetails, Stazioni> context) {
+        @Valid StationDetails source = context.getSource();
+        return Stazioni.builder()
+                .idStazione(source.getStationCode())
                 .enabled(source.getEnabled())
-                .version(source.getVersione())
+                .versione(source.getVersion())
                 .newPassword(source.getNewPassword())
                 .password(source.getPassword())
-                .protocol(source.getProtocollo())
+                .protocollo(source.getProtocol())
                 .ip(source.getIp())
-                .port(source.getPorta())
-                .service(source.getServizio())
-                .protocol4Mod(source.getProtocollo4Mod())
-                .brokerCode(source.getFkIntermediarioPa() != null ? source.getFkIntermediarioPa().getIdIntermediarioPa() : null)
+                .porta(source.getPort())
+                .servizio(source.getService())
+                .fkIntermediarioPa(IntermediariPa.builder()
+                        .objId(source.getBrokerObjId())
+                        .build())
+                .protocollo4Mod(source.getProtocol4Mod())
                 .ip4Mod(source.getIp4Mod())
-                .port4Mod(source.getPorta4Mod())
-                .service4Mod(source.getServizio4Mod())
-                .redirectProtocol(source.getRedirectProtocollo())
+                .porta4Mod(source.getPort4Mod())
+                .servizio4Mod(source.getService4Mod())
+                .redirectProtocollo(source.getRedirectProtocol())
                 .redirectIp(source.getRedirectIp())
-                .redirectPort(source.getRedirectPorta())
+                .redirectPorta(source.getRedirectPort())
                 .redirectPath(source.getRedirectPath())
                 .redirectQueryString(source.getRedirectQueryString())
                 .proxyEnabled(source.getProxyEnabled())
@@ -39,10 +41,11 @@ public class ConvertStazioniToStationDetails implements Converter<Stazioni, Stat
                 .proxyUsername(source.getProxyUsername())
                 .proxyPassword(source.getProxyPassword())
                 .flagOnline(source.getFlagOnline())
-                .threadNumber(source.getNumThread())
+                .numThread(source.getThreadNumber())
                 .timeoutA(source.getTimeoutA())
                 .timeoutB(source.getTimeoutB())
                 .timeoutC(source.getTimeoutC())
+                .rtEnabled(true)
                 .build();
     }
 }
