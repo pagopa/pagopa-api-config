@@ -4,13 +4,12 @@ import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.model.Ica;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
-import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toOffsetDateTime;
 
-@Component
+
 public class ConvertInformativeContoAccreditoMasterRepositoryToIca implements Converter<InformativeContoAccreditoMaster, Ica> {
 
     @Override

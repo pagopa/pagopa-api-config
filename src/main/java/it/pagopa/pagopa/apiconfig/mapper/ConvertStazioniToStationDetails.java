@@ -4,11 +4,10 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
-import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
-@Component
+
 public class ConvertStazioniToStationDetails implements Converter<Stazioni, StationDetails> {
 
     @Override

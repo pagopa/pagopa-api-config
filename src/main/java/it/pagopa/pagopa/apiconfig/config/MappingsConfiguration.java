@@ -34,9 +34,9 @@ import it.pagopa.pagopa.apiconfig.model.Iban;
 import it.pagopa.pagopa.apiconfig.model.Ica;
 import it.pagopa.pagopa.apiconfig.model.Station;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,24 +45,25 @@ public class MappingsConfiguration {
 
 
     @Bean
-    @Autowired
-    public ModelMapper modelMapper(ConvertStazioniToStation convertStazioniToStation,
-                                   ConvertStationDetailsToStazioni convertStationDetailsToStazioni,
-                                   ConvertPaToCreditorInstitutionDetails convertPaToCreditorInstitutionDetails,
-                                   ConvertPaToCreditorInstitution convertPaToCreditorInstitution,
-                                   ConvertBrokerDetailsToIntermediariPa convertBrokerDetailsToIntermediariPa,
-                                   ConvertStazioniToStationDetails convertStazioniToStationDetails,
-                                   ConvertPaStazionePaToCreditorInstitutionStation convertPaStazionePaToCreditorInstitutionStation,
-                                   ConvertCodifichePaToEncoding convertCodifichePaToEncoding,
-                                   ConvertToCreditorInstitutionDetailsToPa convertToCreditorInstitutionDetailsToPa,
-                                   ConvertIntermediariPaToBroker convertIntermediariPaToBroker,
-                                   ConvertIbanValidiPerPaToIban convertIbanValidiPerPaToIban,
-                                   ConvertIntermediariPaToBrokerDetails convertIntermediariPaToBrokerDetails,
-                                   ConvertInformativePaMasterToCounterpartTable convertInformativePaMasterToCounterpartTable,
-                                   ConvertInformativeContoAccreditoMasterRepositoryToIca convertInformativeContoAccreditoMasterRepositoryToIca) {
+    public ModelMapper modelMapper() {
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        Converter<Pa, CreditorInstitutionDetails> convertPaToCreditorInstitutionDetails = new ConvertPaToCreditorInstitutionDetails();
+        Converter<Pa, CreditorInstitution> convertPaToCreditorInstitution = new ConvertPaToCreditorInstitution();
+        Converter<Stazioni, Station> convertStazioniToStation = new ConvertStazioniToStation();
+        Converter<Stazioni, StationDetails> convertStazioniToStationDetails = new ConvertStazioniToStationDetails();
+        Converter<PaStazionePa, CreditorInstitutionStation> convertPaStazionePaToCreditorInstitutionStation = new ConvertPaStazionePaToCreditorInstitutionStation();
+        Converter<CodifichePa, Encoding> convertCodifichePaToEncoding = new ConvertCodifichePaToEncoding();
+        Converter<IntermediariPa, Broker> convertIntermediariPaToBroker = new ConvertIntermediariPaToBroker();
+        Converter<IbanValidiPerPa, Iban> convertIbanValidiPerPaToIban = new ConvertIbanValidiPerPaToIban();
+        Converter<IntermediariPa, BrokerDetails> convertIntermediariPaToBrokerDetails = new ConvertIntermediariPaToBrokerDetails();
+        Converter<InformativeContoAccreditoMaster, Ica> convertInformativeContoAccreditoMasterRepositoryToIca = new ConvertInformativeContoAccreditoMasterRepositoryToIca();
+        Converter<InformativePaMaster, CounterpartTable> convertInformativePaMasterToCounterpartTable = new ConvertInformativePaMasterToCounterpartTable();
+        Converter<CreditorInstitutionDetails, Pa> convertToCreditorInstitutionDetailsToPa = new ConvertToCreditorInstitutionDetailsToPa();
+        Converter<BrokerDetails, IntermediariPa> convertBrokerDetailsToIntermediariPa = new ConvertBrokerDetailsToIntermediariPa();
+        Converter<StationDetails, Stazioni> convertStationDetailsToStazioni = new ConvertStationDetailsToStazioni();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);

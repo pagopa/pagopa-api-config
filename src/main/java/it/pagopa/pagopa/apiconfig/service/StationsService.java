@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.Station;
@@ -57,6 +58,7 @@ public class StationsService {
         if (stazioniRepository.findByIdStazione(stationDetails.getStationCode()).isPresent()) {
             throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "station_code already presents");
         }
+        brokerCodeToObjId(stationDetails);
         Stazioni stazioni = modelMapper.map(stationDetails, Stazioni.class);
         Stazioni result = stazioniRepository.save(stazioni);
         return modelMapper.map(result, StationDetails.class);
@@ -64,6 +66,7 @@ public class StationsService {
 
     public StationDetails updateStation(@NotNull String stationCode, @NotNull StationDetails stationDetails) {
         Long objId = getStationIfExists(stationCode).getObjId();
+        brokerCodeToObjId(stationDetails);
         Stazioni stazioni = modelMapper.map(stationDetails, Stazioni.class)
                 .toBuilder()
                 .objId(objId)
@@ -75,6 +78,18 @@ public class StationsService {
     public void deleteStation(@NotNull String stationCode) {
         Stazioni stazioni = getStationIfExists(stationCode);
         stazioniRepository.delete(stazioni);
+    }
+
+
+    /**
+     * Converts brokerCode in the stationDetails into objId and sets it in the stationDetails
+     *
+     * @param stationDetails details of station
+     */
+    private void brokerCodeToObjId(@NotNull StationDetails stationDetails) {
+        IntermediariPa intermediariPa = intermediariPaRepository.findByIdIntermediarioPa(stationDetails.getBrokerCode())
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Broker not found", "No broker found with the provided code"));
+        stationDetails.setBrokerObjId(intermediariPa.getObjId());
     }
 
     /**

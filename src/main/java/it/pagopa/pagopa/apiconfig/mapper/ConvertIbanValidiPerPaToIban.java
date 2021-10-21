@@ -4,13 +4,12 @@ import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.model.Iban;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
-import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toOffsetDateTime;
 
-@Component
+
 public class ConvertIbanValidiPerPaToIban implements Converter<IbanValidiPerPa, Iban> {
 
     @Override
