@@ -56,7 +56,7 @@ public class Encoding {
             return Arrays.stream(CodeTypeEnum.values())
                     .filter(elem -> elem.value.equals(value))
                     .findFirst()
-                    .orElseThrow(() -> new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "CodeTypeEnum not found", "Cannot convert string " + value + " into enum"));
+                    .orElseThrow(() -> new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "CodeTypeEnum not found", "Cannot convert string '" + value + "' into enum"));
         }
     }
 

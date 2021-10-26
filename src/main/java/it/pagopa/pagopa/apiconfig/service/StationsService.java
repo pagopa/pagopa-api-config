@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.Station;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -56,7 +56,7 @@ public class StationsService {
 
     public StationDetails createStation(@NotNull StationDetails stationDetails) {
         if (stazioniRepository.findByIdStazione(stationDetails.getStationCode()).isPresent()) {
-            throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "station_code already presents");
+            throw new AppException(AppError.STATION_CONFLICT, stationDetails.getStationCode());
         }
         brokerCodeToObjId(stationDetails);
         Stazioni stazioni = modelMapper.map(stationDetails, Stazioni.class);
@@ -88,7 +88,7 @@ public class StationsService {
      */
     private void brokerCodeToObjId(@NotNull StationDetails stationDetails) {
         IntermediariPa intermediariPa = intermediariPaRepository.findByIdIntermediarioPa(stationDetails.getBrokerCode())
-                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Broker not found", "No broker found with the provided code"));
+                .orElseThrow(() -> new AppException(AppError.BROKER_NOT_FOUND, stationDetails.getBrokerCode()));
         stationDetails.setBrokerObjId(intermediariPa.getObjId());
     }
 
@@ -100,7 +100,7 @@ public class StationsService {
     private Stazioni getStationIfExists(String stationCode) {
         Optional<Stazioni> result = stazioniRepository.findByIdStazione(stationCode);
         if (result.isEmpty()) {
-            throw new AppException(HttpStatus.NOT_FOUND, "Station not found", "No station found with the provided code");
+            throw new AppException(AppError.STATION_NOT_FOUND, stationCode);
         }
         return result.get();
     }

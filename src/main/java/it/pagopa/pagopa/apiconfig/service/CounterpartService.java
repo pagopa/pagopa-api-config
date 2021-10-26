@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CounterpartTable;
 import it.pagopa.pagopa.apiconfig.model.CounterpartTables;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -41,7 +41,7 @@ public class CounterpartService {
     public byte[] getCounterpartTable(@NotNull String idCounterpartTable, @NotNull String creditorInstitutionCode) {
         Optional<InformativePaMaster> result = informativePaMasterRepository.findByIdInformativaPaAndFkPa_IdDominio(idCounterpartTable, creditorInstitutionCode);
         if (result.isEmpty()) {
-            throw new AppException(HttpStatus.NOT_FOUND, "Counterpart Table not found", "No Counterpart Table found with the provided IDs");
+            throw new AppException(AppError.COUNTERPART_NOT_FOUND, idCounterpartTable, creditorInstitutionCode);
         }
         return result.get().getFkBinaryFile().getFileContent();
     }

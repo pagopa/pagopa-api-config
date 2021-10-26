@@ -34,6 +34,7 @@ import javax.validation.constraints.Size;
 @RestController()
 @RequestMapping(path = "/brokers")
 @Tag(name = "Creditor Institutions", description = "Everything about Creditor Institution")
+@Tag(name = "Brokers", description = "Everything about Creditor Institution")
 public class BrokerController {
 
     @Autowired
