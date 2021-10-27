@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,10 +9,12 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Arrays;
 
 /**
@@ -31,14 +34,22 @@ public class Encoding {
     private CodeTypeEnum codeType;
 
 
-    @JsonProperty("code")
-    @Schema(required = true)
-    private String code;
+    @JsonProperty("encoding_code")
+    @Schema(required = true, example = "0000111")
+    @NotEmpty
+    private String encodingCode;
+
+    @JsonIgnore
+    private Long paObjId;
+
+    @JsonIgnore
+    private Long codificheObjId;
 
 
     /**
      * Gets or Sets codeType
      */
+    @Getter
     public enum CodeTypeEnum {
         BARCODE_GS1_128("BARCODE-GS1-128"),
 

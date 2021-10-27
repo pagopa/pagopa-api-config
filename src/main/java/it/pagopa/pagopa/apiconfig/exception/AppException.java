@@ -80,8 +80,6 @@ public class AppException extends RuntimeException {
     }
 
     private static String formatDetails(AppError appError, Object[] args) {
-        try (Formatter formatter = new Formatter()) {
-            return String.valueOf(formatter.format(appError.details, args));
-        }
+        return String.format(appError.details, args);
     }
 }

@@ -15,7 +15,7 @@ public class ConvertCodifichePaToEncoding implements Converter<CodifichePa, Enco
         @Valid CodifichePa source = context.getSource();
         return Encoding.builder()
                 .codeType(getCodeType(source))
-                .code(source.getCodicePa())
+                .encodingCode(source.getCodicePa())
                 .build();
     }
 
