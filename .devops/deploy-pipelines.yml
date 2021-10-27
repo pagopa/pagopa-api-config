@@ -49,7 +49,7 @@ pool:
 stages:
   # Create a release on Github
   - stage: release_service
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+#    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     pool:
       vmImage: "ubuntu-latest"
     jobs:
