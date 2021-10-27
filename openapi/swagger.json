@@ -741,6 +741,127 @@
         ],
         "operationId": "getCreditorInstitutionEncodings",
         "summary": "Get creditor institution encodings"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Organization fiscal code, the fiscal code of the Organization.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "creditorinstitutioncode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Encoding"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/Encoding"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "createCreditorInstitutionEncoding",
+        "summary": "Delete a creditor institution encoding"
+      }
+    },
+    "/creditorinstitutions/{creditorinstitutioncode}/encodings/{encodingcode}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Organization fiscal code, the fiscal code of the Organization.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "creditorinstitutioncode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Code of the Encoding",
+            "in": "path",
+            "name": "encodingcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "deleteCreditorInstitutionEncoding",
+        "summary": "Delete a creditor institution encoding"
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/ibans": {
@@ -1612,9 +1733,6 @@
     },
     "Encoding": {
       "properties": {
-        "code": {
-          "type": "string"
-        },
         "code_type": {
           "enum": [
             "BARCODE_GS1_128",
@@ -1622,11 +1740,15 @@
             "BARCODE_128_AIM"
           ],
           "type": "string"
+        },
+        "encoding_code": {
+          "example": "0000111",
+          "type": "string"
         }
       },
       "required": [
-        "code",
-        "code_type"
+        "code_type",
+        "encoding_code"
       ],
       "type": "object"
     },
