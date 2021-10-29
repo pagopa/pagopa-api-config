@@ -27,7 +27,7 @@ public class Codifiche {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)
-    private Long id;
+    private Long objId;
 
     @Column(name = "ID_CODIFICA", nullable = false, length = 35)
     private String idCodifica;

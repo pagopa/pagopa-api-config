@@ -16,6 +16,7 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.Encoding;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
@@ -132,7 +133,7 @@ public class TestUtil {
                 .id(1L)
                 .codicePa("1234")
                 .fkCodifica(Codifiche.builder()
-                        .id(2L)
+                        .objId(2L)
                         .idCodifica("QR-CODE")
                         .build())
                 .build();
@@ -221,6 +222,23 @@ public class TestUtil {
                 .ip4Mod("2.2.2.2")
                 .service("/api")
                 .threadNumber(2L)
+                .build();
+    }
+
+    public  static Encoding getMockEncoding() {
+        return Encoding.builder()
+                .paObjId(1L)
+                .codeType(Encoding.CodeTypeEnum.QR_CODE)
+                .encodingCode("000111")
+                .codificheObjId(1L)
+                .paObjId(2L)
+                .build();
+    }
+
+    public static Codifiche getMockCodifiche() {
+        return Codifiche.builder()
+                .idCodifica("000111")
+                .objId(1L)
                 .build();
     }
 

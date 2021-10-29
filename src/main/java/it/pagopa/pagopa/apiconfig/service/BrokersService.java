@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.Broker;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -46,7 +46,7 @@ public class BrokersService {
 
     public BrokerDetails createBroker(BrokerDetails brokerDetails) {
         if (intermediariPaRepository.findByIdIntermediarioPa(brokerDetails.getBrokerCode()).isPresent()) {
-            throw new AppException(HttpStatus.CONFLICT, "Conflict: integrity violation", "broker_code already presents");
+            throw new AppException(AppError.BROKER_CONFLICT, brokerDetails.getBrokerCode());
         }
         IntermediariPa intermediariPa = modelMapper.map(brokerDetails, IntermediariPa.class);
         IntermediariPa result = intermediariPaRepository.save(intermediariPa);
@@ -77,7 +77,7 @@ public class BrokersService {
     private IntermediariPa getIntermediarioIfExists(String brokerCode) {
         Optional<IntermediariPa> result = intermediariPaRepository.findByIdIntermediarioPa(brokerCode);
         if (result.isEmpty()) {
-            throw new AppException(HttpStatus.NOT_FOUND, "Broker not found", "No broker found with the provided code");
+            throw new AppException(AppError.BROKER_NOT_FOUND, brokerCode);
         }
         return result.get();
     }

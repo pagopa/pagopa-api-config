@@ -359,6 +359,126 @@
 					"response": []
 				},
 				{
+					"name": "createCreditorInstitutionEncoding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitutionEncoding\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"encoding_code\", makeid(35));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code_type\": \"QR_CODE\",\n    \"encoding_code\": \"{{encoding_code}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitutionEncoding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitutionEncoding\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings",
+								":encoding_code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								},
+								{
+									"key": "encoding_code",
+									"value": "{{encoding_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getCreditorInstitutionsIbans",
 					"event": [
 						{
@@ -1163,6 +1283,113 @@
 								{
 									"key": "code",
 									"value": "axz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createCreditorInstitutionEncoding Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitutionEncoding_conflict\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code_type\": \"QR_CODE\",\n    \"encoding_code\": \"00168480242\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitutionEncoding NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitutionEncoding_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings",
+								":encoding_code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								},
+								{
+									"key": "encoding_code",
+									"value": "asdz"
 								}
 							]
 						}

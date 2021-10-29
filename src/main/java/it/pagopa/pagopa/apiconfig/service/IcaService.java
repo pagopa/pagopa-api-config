@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.Ica;
 import it.pagopa.pagopa.apiconfig.model.Icas;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -41,7 +41,7 @@ public class IcaService {
     public byte[] getIca(@NotNull String idIca) {
         Optional<InformativeContoAccreditoMaster> result = informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPa(idIca);
         if (result.isEmpty()) {
-            throw new AppException(HttpStatus.NOT_FOUND, "ICA not found", "No ICA found with the provided id");
+            throw new AppException(AppError.ICA_NOT_FOUND, idIca);
         }
         return result.get().getFkBinaryFile().getFileContent();
     }

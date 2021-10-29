@@ -5,11 +5,9 @@ import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Ibans;
-import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -30,7 +28,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
@@ -49,9 +46,6 @@ class CreditorInstitutionsServiceTest {
 
     @MockBean
     private PaStazionePaRepository paStazionePaRepository;
-
-    @MockBean
-    private CodifichePaRepository codifichePaRepository;
 
     @MockBean
     private IbanValidiPerPaRepository ibanValidiPerPaRepository;
@@ -201,18 +195,6 @@ class CreditorInstitutionsServiceTest {
         CreditorInstitutionStationList result = creditorInstitutionsService.getCreditorInstitutionStations("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_stations_ok1.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
-    }
-
-
-    @Test
-    void getCreditorInstitutionEncodings() throws IOException, JSONException {
-        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
-        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.newArrayList(getMockCodifichePa()));
-
-        CreditorInstitutionEncodings result = creditorInstitutionsService.getCreditorInstitutionEncodings("1234");
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_encondings.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 

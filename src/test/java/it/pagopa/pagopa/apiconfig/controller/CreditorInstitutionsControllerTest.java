@@ -3,7 +3,6 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Ibans;
@@ -47,7 +46,6 @@ class CreditorInstitutionsControllerTest {
         when(creditorInstitutionsService.getCreditorInstitutions(50, 0)).thenReturn(CreditorInstitutions.builder().build());
         when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
         when(creditorInstitutionsService.getCreditorInstitutionStations("1234")).thenReturn(CreditorInstitutionStationList.builder().build());
-        when(creditorInstitutionsService.getCreditorInstitutionEncodings("1234")).thenReturn(CreditorInstitutionEncodings.builder().build());
         when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234")).thenReturn(Ibans.builder().build());
         when(creditorInstitutionsService.createCreditorInstitution(any(CreditorInstitutionDetails.class))).thenReturn(CreditorInstitutionDetails.builder().build());
         when(creditorInstitutionsService.updateCreditorInstitution(anyString(), any(CreditorInstitutionDetails.class))).thenReturn(CreditorInstitutionDetails.builder().build());
@@ -58,7 +56,6 @@ class CreditorInstitutionsControllerTest {
             "/creditorinstitutions?page=0",
             "/creditorinstitutions/1234",
             "/creditorinstitutions/1234/stations",
-            "/creditorinstitutions/1234/encodings",
             "/creditorinstitutions/1234/ibans",
     })
     void testGets(String url) throws Exception {
