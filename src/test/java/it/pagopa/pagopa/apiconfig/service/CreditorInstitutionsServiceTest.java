@@ -5,12 +5,14 @@ import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Ibans;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -28,10 +30,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,6 +53,9 @@ class CreditorInstitutionsServiceTest {
 
     @MockBean
     private IbanValidiPerPaRepository ibanValidiPerPaRepository;
+
+    @MockBean
+    private StazioniRepository stazioniRepository;
 
     @Autowired
     @InjectMocks
@@ -198,6 +205,72 @@ class CreditorInstitutionsServiceTest {
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
+    @Test
+    void createStationsCI() throws IOException, JSONException {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit result = creditorInstitutionsService.createCreditorInstitutionStation("1234", getCreditorInstitutionStationEdit());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_creditorinstitution_stations_ok1.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createStationsCI_conflict() {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", getCreditorInstitutionStationEdit());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updateStationsCI() throws IOException, JSONException {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+
+        CreditorInstitutionStationEdit result = creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", getCreditorInstitutionStationEdit());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_creditorinstitution_stations_ok1.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void deleteStationsCI() {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+
+        try {
+            creditorInstitutionsService.deleteCreditorInstitutionStation("1234", "80007580279_01");
+        } catch (Exception e) {
+            fail("Should not have thrown any exception");
+        }
+    }
+
+    @Test
+    void deleteStationsCI_notfound() {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        try {
+            creditorInstitutionsService.deleteCreditorInstitutionStation("1234", "80007580279_01");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
 
     @Test
     void getCreditorInstitutionIbans() throws IOException, JSONException {
