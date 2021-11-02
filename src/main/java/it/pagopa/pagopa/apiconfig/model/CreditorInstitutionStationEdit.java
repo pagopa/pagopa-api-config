@@ -32,11 +32,11 @@ public class CreditorInstitutionStationEdit {
     @Size(max = 35)
     private String stationCode;
 
-    @JsonProperty("application_code")
-    private Long applicationCode;
-
     @JsonProperty("aux_digit")
     private Long auxDigit;
+
+    @JsonProperty("application_code")
+    private Long applicationCode;
 
     @JsonProperty("segregation_code")
     private Long segregationCode;
