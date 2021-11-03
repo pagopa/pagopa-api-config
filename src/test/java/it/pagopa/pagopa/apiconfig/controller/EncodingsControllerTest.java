@@ -2,8 +2,8 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionEncodings;
-import it.pagopa.pagopa.apiconfig.model.Encoding;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionEncodings;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.service.EncodingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

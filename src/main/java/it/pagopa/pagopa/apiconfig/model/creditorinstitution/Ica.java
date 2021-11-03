@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,7 +15,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
@@ -30,7 +30,7 @@ import java.time.OffsetDateTime;
 public class Ica {
     @JsonProperty("id_ica")
     @Schema(example = "123456789", required = true)
-    @NotEmpty
+    @NotBlank
     private String idIca;
 
     @JsonProperty("creditor_institution_code")

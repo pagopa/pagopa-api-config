@@ -37,10 +37,12 @@ public class PaStazionePa {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_PA", nullable = false)
+    @ToString.Exclude
     private Pa fkPa;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_STAZIONE", nullable = false)
+    @ToString.Exclude
     private Stazioni fkStazione;
 
     @Column(name = "AUX_DIGIT")

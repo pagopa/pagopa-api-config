@@ -1,34 +1,36 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
- * BrokerDetails
+ * CreditorInstitutions
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-@SuperBuilder(toBuilder = true)
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BrokerDetails extends Broker {
-
-    @JsonProperty("extended_fault_bean")
+public class CreditorInstitutions {
+    @JsonProperty("creditor_institutions")
     @Schema(required = true)
-    @NotNull
-    private Boolean extendedFaultBean;
+    @Valid
+    private List<CreditorInstitution> creditorInstitutionList;
 
+    @JsonProperty("page_info")
+    @Schema(required = true)
+    @Valid
+    private PageInfo pageInfo;
 }

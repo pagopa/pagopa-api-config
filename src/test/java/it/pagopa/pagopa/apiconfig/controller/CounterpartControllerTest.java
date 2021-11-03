@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.model.CounterpartTables;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
 import it.pagopa.pagopa.apiconfig.service.CounterpartService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

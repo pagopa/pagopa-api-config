@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.model.Iban;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 

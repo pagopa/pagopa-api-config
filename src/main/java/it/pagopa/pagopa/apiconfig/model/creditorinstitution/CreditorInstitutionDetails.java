@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,17 +38,17 @@ public class CreditorInstitutionDetails extends CreditorInstitution {
     @JsonProperty("psp_payment")
     @Schema(required = true, defaultValue = "true")
     @NotNull
-    private Boolean pspPayment = true;
+    private Boolean pspPayment;
 
     @JsonProperty("reporting_ftp")
     @Schema(required = true, defaultValue = "false")
     @NotNull
-    private Boolean reportingFtp = false;
+    private Boolean reportingFtp;
 
     @JsonProperty("reporting_zip")
     @Schema(required = true, defaultValue = "false")
     @NotNull
-    private Boolean reportingZip = false;
+    private Boolean reportingZip;
 
 
 }

@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
-import it.pagopa.pagopa.apiconfig.model.Broker;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Broker;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 

@@ -251,3 +251,46 @@ create table NODO4_CFG.INFORMATIVE_PA_MASTER
         unique (FK_PA, ID_INFORMATIVA_PA)
 );
 
+create table NODO4_CFG.INTERMEDIARI_PSP
+(
+    OBJ_ID               numeric     not null identity,
+    ID_INTERMEDIARIO_PSP varchar(35) not null,
+    ENABLED              char(1)     not null,
+    CODICE_INTERMEDIARIO varchar(255),
+    INTERMEDIARIO_AVV    char(1)     not null default 'N',
+    INTERMEDIARIO_NODO   char(1)     not null default 'N',
+    FAULT_BEAN_ESTESO    char(1)     not null default 'N',
+    constraint PK_INTERMEDIARI_PSP
+        primary key (OBJ_ID),
+    constraint UQ_ID_INTERMEDIARIO_PSP
+        unique (ID_INTERMEDIARIO_PSP)
+);
+
+create table NODO4_CFG.PSP
+(
+    OBJ_ID                           numeric     not null identity,
+    ID_PSP                           varchar(35) not null,
+    ENABLED                          char(1)     not null,
+    ABI                              varchar(5),
+    BIC                              varchar(11),
+    DESCRIZIONE                      varchar(70),
+    RAGIONE_SOCIALE                  varchar(70),
+    FK_INT_QUADRATURE                numeric(19),
+    STORNO_PAGAMENTO                 numeric(19) not null default '0',
+    FLAG_REPO_COMMISSIONE_CARICO_PA  char(1),
+    EMAIL_REPO_COMMISSIONE_CARICO_PA varchar(255),
+    CODICE_MYBANK                    varchar(35),
+    MARCA_BOLLO_DIGITALE             numeric     not null,
+    AGID_PSP                         char(1)     not null,
+    PSP_NODO                         char(1)     not null default 'N',
+    PSP_AVV                          char(1)     not null default 'N',
+    CODICE_FISCALE                   varchar(16),
+    VAT_NUMBER                       varchar(20),
+    constraint PK_PSP
+        primary key (OBJ_ID),
+    constraint UQ_ID_PSP
+        unique (ID_PSP),
+    constraint FK_PSP_INT_QUADRATURE
+        foreign key (FK_INT_QUADRATURE)
+            references NODO4_CFG.INTERMEDIARI_PSP
+);
