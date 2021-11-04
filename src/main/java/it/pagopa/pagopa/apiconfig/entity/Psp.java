@@ -1,7 +1,10 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -19,19 +22,21 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(onlyExplicitlyIncluded = true)
 public class Psp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)
-    private Long id;
+    private Long objId;
 
     @Column(name = "ID_PSP", nullable = false, length = 35)
     private String idPsp;
 
     @Column(name = "ENABLED", nullable = false)
-    private Boolean enabled = false;
+    private Boolean enabled;
 
     @Column(name = "ABI", length = 5)
     private String abi;
@@ -65,13 +70,13 @@ public class Psp {
     private Long marcaBolloDigitale;
 
     @Column(name = "AGID_PSP", nullable = false)
-    private Boolean agidPsp = false;
+    private Boolean agidPsp;
 
     @Column(name = "PSP_NODO", nullable = false)
-    private Boolean pspNodo = false;
+    private Boolean pspNodo;
 
     @Column(name = "PSP_AVV", nullable = false)
-    private Boolean pspAvv = false;
+    private Boolean pspAvv;
 
     @Column(name = "CODICE_FISCALE", length = 16)
     private String codiceFiscale;

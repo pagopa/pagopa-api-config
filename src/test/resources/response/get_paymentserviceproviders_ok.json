@@ -1,0 +1,15 @@
+{
+  "payment_service_providers": [
+    {
+      "psp_code": "50",
+      "enabled": true,
+      "business_name": "Banca"
+    }
+  ],
+  "page_info": {
+    "page": 0,
+    "limit": 50,
+    "items_found": 1,
+    "total_pages": 1
+  }
+}

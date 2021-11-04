@@ -1,7 +1,10 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -16,11 +19,13 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(onlyExplicitlyIncluded = true)
 public class IntermediariPsp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)
-    private Long id;
+    private Long objId;
 }
