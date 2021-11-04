@@ -34,7 +34,7 @@ steps:
       extraProperties: |
         sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
         sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
-        sonar.coverage.exclusions=**/config/*,**/*Mock*,**/model/*,**/entity/*
+        sonar.coverage.exclusions=**/config/*,**/*Mock*,**/model/**,**/entity/*
       #  sonar.coverage.jacoco.xmlReportPaths=./report/target/site/jacoco-aggregate/jacoco.xml
       #  sonar.junit.reportPaths=target/surefire-reports/
 
