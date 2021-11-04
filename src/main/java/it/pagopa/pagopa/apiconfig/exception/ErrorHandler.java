@@ -2,6 +2,8 @@ package it.pagopa.pagopa.apiconfig.exception;
 
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,6 +96,31 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<ProblemJson> handleAppException(final DataIntegrityViolationException ex, final WebRequest request) {
+        ProblemJson errorResponse = null;
+        if (ex.getCause() instanceof ConstraintViolationException) {
+            String constraintName = ((ConstraintViolationException) ex.getCause()).getConstraintName();
+            if (constraintName.contains("REFERENCES")) {
+                log.warn("Can't delete from Database", ex);
+                errorResponse = ProblemJson.builder()
+                        .status(HttpStatus.CONFLICT.value())
+                        .title("The element is referenced")
+                        .detail("There is a relation with other resource. Delete it first.")
+                        .build();
+            } else {
+                log.warn("Data Integrity Violation", ex);
+                errorResponse = ProblemJson.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .title(INTERNAL_SERVER_ERROR)
+                        .detail(ex.getMessage())
+                        .build();
+            }
+        }
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
 
     /**
      * Handle if a {@link AppException} is raised
