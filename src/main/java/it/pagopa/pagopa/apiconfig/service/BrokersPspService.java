@@ -1,0 +1,61 @@
+package it.pagopa.pagopa.apiconfig.service;
+
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokerPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class BrokersPspService {
+
+    @Autowired
+    IntermediariPspRepository intermediariPspRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
+
+
+    public BrokersPsp getBrokersPsp(@NotNull Integer limit, @NotNull Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Page<IntermediariPsp> page = intermediariPspRepository.findAll(pageable);
+        return BrokersPsp.builder()
+                .brokerPspList(getBrokerPspList(page))
+                .pageInfo(CommonUtil.buildPageInfo(page))
+                .build();
+    }
+
+    public BrokerPspDetails getBrokerPsp(@NotBlank String brokerPspCode) {
+        IntermediariPsp intermediariPsp = intermediariPspRepository.findByIdIntermediarioPsp(brokerPspCode)
+                .orElseThrow(() -> new AppException(AppError.BROKER_PSP_NOT_FOUND, brokerPspCode));
+        return modelMapper.map(intermediariPsp, BrokerPspDetails.class);
+    }
+
+
+    /**
+     * Maps IntermediariPsp objects stored in the DB in a List of BrokerPsp
+     *
+     * @param page page of {@link IntermediariPsp} returned from the database
+     * @return a list of {@link BrokerPsp}.
+     */
+    private List<BrokerPsp> getBrokerPspList(Page<IntermediariPsp> page) {
+        return page.stream()
+                .map(elem -> modelMapper.map(elem, BrokerPsp.class))
+                .collect(Collectors.toList());
+    }
+
+}

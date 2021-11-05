@@ -27,6 +27,8 @@ public enum AppError {
 
     PSP_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment Service Provider not found", "No Payment Service Provider found with code: %s"),
 
+    BROKER_PSP_NOT_FOUND(HttpStatus.NOT_FOUND, "Broker PSP not found", "No Broker PSP found with code: %s"),
+
     UNKNOWN(null, null, null);
 
 

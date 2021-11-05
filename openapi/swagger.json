@@ -301,6 +301,116 @@
         "summary": "Update a broker"
       }
     },
+    "/brokerspsp": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "default": 50,
+            "description": "Number of elements on one page. Default = 50",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "format": "int32",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/BrokersPsp"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getBrokersPsp",
+        "summary": "Get paginated list of PSP brokers"
+      }
+    },
+    "/brokerspsp/{brokerpspcode}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Broker code of a PSP.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "brokerpspcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/BrokerPspDetails"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getBrokerPsp",
+        "summary": "Get creditor broker details "
+      }
+    },
     "/counterparttables": {
       "get": {
         "produces": [
@@ -1799,6 +1909,54 @@
       ],
       "type": "object"
     },
+    "BrokerPsp": {
+      "properties": {
+        "broker_psp_code": {
+          "example": "223344556677889900",
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "broker_psp_code",
+        "description",
+        "enabled"
+      ],
+      "type": "object"
+    },
+    "BrokerPspDetails": {
+      "properties": {
+        "broker_psp_code": {
+          "example": "223344556677889900",
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "extended_fault_bean": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "broker_psp_code",
+        "description",
+        "enabled",
+        "extended_fault_bean"
+      ],
+      "type": "object"
+    },
     "Brokers": {
       "properties": {
         "brokers_list": {
@@ -1813,6 +1971,24 @@
       },
       "required": [
         "brokers_list",
+        "page_info"
+      ],
+      "type": "object"
+    },
+    "BrokersPsp": {
+      "properties": {
+        "brokers_psp_list": {
+          "items": {
+            "$ref": "#/definitions/BrokerPsp"
+          },
+          "type": "array"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        }
+      },
+      "required": [
+        "brokers_psp_list",
         "page_info"
       ],
       "type": "object"
