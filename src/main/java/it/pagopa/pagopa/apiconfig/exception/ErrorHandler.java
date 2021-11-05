@@ -97,28 +97,38 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * @param ex      {@link DataIntegrityViolationException} exception raised when the SQL statement cannot be executed
+     * @param request from frontend
+     * @return a {@link ProblemJson} as response with the cause and with an appropriated HTTP status
+     */
     @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity<ProblemJson> handleAppException(final DataIntegrityViolationException ex, final WebRequest request) {
+    public ResponseEntity<ProblemJson> handleDataIntegrityViolationException(final DataIntegrityViolationException ex, final WebRequest request) {
         ProblemJson errorResponse = null;
+
         if (ex.getCause() instanceof ConstraintViolationException) {
             String constraintName = ((ConstraintViolationException) ex.getCause()).getConstraintName();
             if (constraintName.contains("REFERENCES")) {
                 log.warn("Can't delete from Database", ex);
                 errorResponse = ProblemJson.builder()
                         .status(HttpStatus.CONFLICT.value())
-                        .title("The element is referenced")
+                        .title("Conflict with the current state of the resource")
                         .detail("There is a relation with other resource. Delete it first.")
-                        .build();
-            } else {
-                log.warn("Data Integrity Violation", ex);
-                errorResponse = ProblemJson.builder()
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                        .title(INTERNAL_SERVER_ERROR)
-                        .detail(ex.getMessage())
                         .build();
             }
         }
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+
+        // default response
+        if (errorResponse == null) {
+            log.warn("Data Integrity Violation", ex);
+            errorResponse = ProblemJson.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .title(INTERNAL_SERVER_ERROR)
+                    .detail(ex.getMessage())
+                    .build();
+        }
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));
     }
 
 
