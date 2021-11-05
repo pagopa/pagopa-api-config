@@ -312,7 +312,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1234567890100"
+									"value": "00168480242"
 								}
 							]
 						}
@@ -360,7 +360,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1234567890100"
+									"value": "00168480242"
 								}
 							]
 						}
@@ -409,51 +409,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1234567890100"
-								},
-								{
-									"key": "stationcode",
-									"value": "80007580279_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitutionStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitutionStation\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"stations",
-								":stationcode"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "1234567890100"
+									"value": "00168480242"
 								},
 								{
 									"key": "stationcode",
@@ -1767,6 +1723,44 @@
 								{
 									"key": "code",
 									"value": "zxx"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBroker Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteBroker_notFound\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "80007580279"
 								}
 							]
 						}

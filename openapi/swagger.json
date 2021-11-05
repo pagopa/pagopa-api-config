@@ -157,6 +157,12 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
           "429": {
             "description": "Too many requests"
           },
@@ -551,6 +557,12 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
           "429": {
             "description": "Too many requests"
           },
@@ -838,6 +850,12 @@
           },
           "404": {
             "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1577,6 +1595,12 @@
           },
           "404": {
             "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
