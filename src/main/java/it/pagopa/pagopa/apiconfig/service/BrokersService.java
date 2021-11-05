@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class BrokersService {
                 .build();
     }
 
-    public BrokerDetails getBroker(String brokerCode) {
+    public BrokerDetails getBroker(@NotBlank String brokerCode) {
         IntermediariPa intermediariPa = getIntermediarioIfExists(brokerCode);
         return modelMapper.map(intermediariPa, BrokerDetails.class);
     }

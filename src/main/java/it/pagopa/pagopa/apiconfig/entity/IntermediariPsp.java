@@ -28,4 +28,23 @@ public class IntermediariPsp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
+
+    @Column(name = "ID_INTERMEDIARIO_PSP", nullable = false, length = 35)
+    private String idIntermediarioPsp;
+
+    @Column(name = "ENABLED", nullable = false)
+    private Boolean enabled;
+
+    @Column(name = "CODICE_INTERMEDIARIO")
+    private String codiceIntermediario;
+
+    @Column(name = "INTERMEDIARIO_AVV", nullable = false)
+    private Boolean intermediarioAvv;
+
+    @Column(name = "INTERMEDIARIO_NODO", nullable = false)
+    private Boolean intermediarioNodo;
+
+    @Column(name = "FAULT_BEAN_ESTESO", nullable = false)
+    private Boolean faultBeanEsteso;
+
 }

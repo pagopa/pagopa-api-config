@@ -360,7 +360,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "00168480242"
+									"value": "1110001"
 								}
 							]
 						}
@@ -409,7 +409,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "00168480242"
+									"value": "1110001"
 								},
 								{
 									"key": "stationcode",
@@ -421,61 +421,13 @@
 					"response": []
 				},
 				{
-					"name": "createCreditorInstitutionStation",
+					"name": "deleteCreditorInstitutionStation",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createCreditorInstitutionStation\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"mod4\": false,\n    \"broadcast\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"stations"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updateCreditorInstitutionStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updateCreditorInstitutionStation\", function () {",
+									"pm.test(\"deleteCreditorInstitutionStation\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -484,17 +436,8 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"aux_digit\": \"10\",\n    \"mod4\": true,\n    \"broadcast\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
 							"host": [
@@ -510,7 +453,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "00168480242"
+									"value": "1110001"
 								},
 								{
 									"key": "stationcode",
@@ -1984,6 +1927,81 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "getBrokersPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getBrokersPsp\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp?page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBrokerPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getBrokerPsp\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "17103880000"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1991,13 +2009,13 @@
 			"name": "api test error - psp",
 			"item": [
 				{
-					"name": "getPaymentServiceProvider",
+					"name": "getPaymentServiceProvider NotFound",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getPaymentServiceProvider\", function () {",
+									"pm.test(\"getPaymentServiceProvider_notFound\", function () {",
 									"  pm.response.to.have.status(404);",
 									"});"
 								],
@@ -2022,6 +2040,44 @@
 								{
 									"key": "code",
 									"value": "zzz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBrokerPsp NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getBrokerPsp_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "ggg"
 								}
 							]
 						}

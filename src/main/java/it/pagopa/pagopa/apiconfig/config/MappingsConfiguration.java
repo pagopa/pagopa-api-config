@@ -6,6 +6,7 @@ import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
@@ -19,6 +20,8 @@ import it.pagopa.pagopa.apiconfig.mapper.ConvertInformativeContoAccreditoMasterR
 import it.pagopa.pagopa.apiconfig.mapper.ConvertInformativePaMasterToCounterpartTable;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBroker;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBrokerDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPspToBrokerPsp;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPspToBrokerPspDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionDetails;
@@ -40,6 +43,8 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokerPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import org.modelmapper.Converter;
@@ -76,6 +81,8 @@ public class MappingsConfiguration {
         Converter<Psp, PaymentServiceProvider> convertPspToPaymentServiceProvider = new ConvertPspToPaymentServiceProvider();
         Converter<Psp, PaymentServiceProviderDetails> convertPspToPaymentServiceProviderDetails = new ConvertPspToPaymentServiceProviderDetails();
         Converter<CreditorInstitutionStationEdit, PaStazionePa> convertCreditorInstitutionStationPostToPaStazionePa = new ConvertCreditorInstitutionStationPostToPaStazionePa();
+        Converter<IntermediariPsp, BrokerPsp> convertIntermediariPspToBrokerPsp = new ConvertIntermediariPspToBrokerPsp();
+        Converter<IntermediariPsp, BrokerPspDetails> convertIntermediariPspToBrokerPspDetails = new ConvertIntermediariPspToBrokerPspDetails();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -95,6 +102,8 @@ public class MappingsConfiguration {
         mapper.createTypeMap(Psp.class, PaymentServiceProvider.class).setConverter(convertPspToPaymentServiceProvider);
         mapper.createTypeMap(Psp.class, PaymentServiceProviderDetails.class).setConverter(convertPspToPaymentServiceProviderDetails);
         mapper.createTypeMap(CreditorInstitutionStationEdit.class, PaStazionePa.class).setConverter(convertCreditorInstitutionStationPostToPaStazionePa);
+        mapper.createTypeMap(IntermediariPsp.class, BrokerPsp.class).setConverter(convertIntermediariPspToBrokerPsp);
+        mapper.createTypeMap(IntermediariPsp.class, BrokerPspDetails.class).setConverter(convertIntermediariPspToBrokerPspDetails);
 
         return mapper;
     }

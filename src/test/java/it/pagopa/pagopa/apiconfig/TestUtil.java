@@ -284,4 +284,15 @@ public class TestUtil {
                 .fkStazioni(Stazioni.builder().objId(40L).build())
                 .build();
     }
+
+    public static IntermediariPsp getMockIntermediariePsp() {
+        return IntermediariPsp.builder()
+                .objId(1L)
+                .idIntermediarioPsp("1234")
+                .codiceIntermediario("Regione Lazio")
+                .enabled(true)
+                .faultBeanEsteso(true)
+                .build();
+    }
+
 }

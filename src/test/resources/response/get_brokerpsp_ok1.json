@@ -1,0 +1,6 @@
+{
+  "broker_psp_code": "1234",
+  "description": "Regione Lazio",
+  "enabled": true,
+  "extended_fault_bean": true
+}
