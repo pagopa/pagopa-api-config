@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -29,6 +30,7 @@ public class CreditorInstitutionDetails extends CreditorInstitution {
     @JsonProperty("address")
     @Schema(required = true)
     @NotNull
+    @Valid
     private CreditorInstitutionAddress address;
 
     @JsonProperty("fk_int_quadrature")

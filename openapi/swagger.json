@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.18"
+    "version": "0.2.19"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -988,6 +988,201 @@
         ],
         "operationId": "getCreditorInstitutionStations",
         "summary": "Get station details and relation info with creditor institution"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Organization fiscal code, the fiscal code of the Organization.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "creditorinstitutioncode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreditorInstitutionStationEdit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/CreditorInstitutionStationEdit"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "createCreditorInstitutionStation",
+        "summary": "Create station details and relation info with creditor institution"
+      }
+    },
+    "/creditorinstitutions/{creditorinstitutioncode}/stations/{stationcode}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Organization fiscal code, the fiscal code of the Organization.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
+            "name": "creditorinstitutioncode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "station code.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "stationcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "deleteCreditorInstitutionStation",
+        "summary": "Delete a relation between creditor institution and station"
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "The fiscal code of the Organization to update",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
+            "name": "creditorinstitutioncode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "station code.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "stationcode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreditorInstitutionStationEdit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/CreditorInstitutionStationEdit"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "updateCreditorInstitutionStation",
+        "summary": "Update a relation between creditor institution and station"
       }
     },
     "/icas": {
@@ -1720,6 +1915,38 @@
         "enabled",
         "station_code",
         "version"
+      ],
+      "type": "object"
+    },
+    "CreditorInstitutionStationEdit": {
+      "properties": {
+        "application_code": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "aux_digit": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "broadcast": {
+          "type": "boolean"
+        },
+        "mod4": {
+          "type": "boolean"
+        },
+        "segregation_code": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "station_code": {
+          "example": "1234567890100",
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        }
+      },
+      "required": [
+        "station_code"
       ],
       "type": "object"
     },
