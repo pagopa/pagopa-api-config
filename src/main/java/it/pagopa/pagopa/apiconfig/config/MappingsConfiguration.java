@@ -11,6 +11,7 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertBrokerDetailsToIntermediariPa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCodifichePaToEncoding;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCreditorInstitutionStationPostToPaStazionePa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertEncodingToCodifichePa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIbanValidiPerPaToIban;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertInformativeContoAccreditoMasterRepositoryToIca;
@@ -30,6 +31,7 @@ import it.pagopa.pagopa.apiconfig.model.CounterpartTable;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStation;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.Encoding;
 import it.pagopa.pagopa.apiconfig.model.Iban;
 import it.pagopa.pagopa.apiconfig.model.Ica;
@@ -66,6 +68,7 @@ public class MappingsConfiguration {
         Converter<BrokerDetails, IntermediariPa> convertBrokerDetailsToIntermediariPa = new ConvertBrokerDetailsToIntermediariPa();
         Converter<StationDetails, Stazioni> convertStationDetailsToStazioni = new ConvertStationDetailsToStazioni();
         Converter<Encoding, CodifichePa> convertEncodingToCodifichePa = new ConvertEncodingToCodifichePa();
+        Converter<CreditorInstitutionStationEdit, PaStazionePa> convertCreditorInstitutionStationPostToPaStazionePa = new ConvertCreditorInstitutionStationPostToPaStazionePa();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -82,6 +85,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(BrokerDetails.class, IntermediariPa.class).setConverter(convertBrokerDetailsToIntermediariPa);
         mapper.createTypeMap(StationDetails.class, Stazioni.class).setConverter(convertStationDetailsToStazioni);
         mapper.createTypeMap(Encoding.class, CodifichePa.class).setConverter(convertEncodingToCodifichePa);
+        mapper.createTypeMap(CreditorInstitutionStationEdit.class, PaStazionePa.class).setConverter(convertCreditorInstitutionStationPostToPaStazionePa);
 
         return mapper;
     }

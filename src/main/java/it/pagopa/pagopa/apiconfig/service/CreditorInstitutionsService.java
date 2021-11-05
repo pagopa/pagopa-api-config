@@ -3,11 +3,13 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
+import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStation;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.Iban;
@@ -15,6 +17,7 @@ import it.pagopa.pagopa.apiconfig.model.Ibans;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,9 @@ public class CreditorInstitutionsService {
 
     @Autowired
     private PaRepository paRepository;
+
+    @Autowired
+    private StazioniRepository stazioniRepository;
 
     @Autowired
     private PaStazionePaRepository paStazionePaRepository;
@@ -90,6 +96,49 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
+    public CreditorInstitutionStationEdit createCreditorInstitutionStation(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        // check if the relation already exists
+        Pa pa = getPaIfExists(creditorInstitutionCode);
+        Stazioni stazioni = getStazioniIfExists(creditorInstitutionStationEdit.getStationCode());
+        if (paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId()).isPresent()) {
+            throw new AppException(AppError.RELATION_STATION_NOT_CONFLICT, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode());
+        }
+        // add info into object for model mapper
+        creditorInstitutionStationEdit.setFkPa(pa);
+        creditorInstitutionStationEdit.setFkStazioni(stazioni);
+
+        // convert and save
+        PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class);
+        paStazionePaRepository.save(entity);
+        return creditorInstitutionStationEdit;
+    }
+
+    public CreditorInstitutionStationEdit updateCreditorInstitutionStation(String creditorInstitutionCode, String stationCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        // check if the relation exists
+        Pa pa = getPaIfExists(creditorInstitutionCode);
+        Stazioni stazioni = getStazioniIfExists(stationCode);
+        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
+                .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
+        // add info into object for model mapper
+        creditorInstitutionStationEdit.setFkPa(pa);
+        creditorInstitutionStationEdit.setFkStazioni(stazioni);
+
+        // convert and save
+        PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class).toBuilder()
+                .objId(paStazionePa.getObjId())
+                .build();
+        paStazionePaRepository.save(entity);
+        return creditorInstitutionStationEdit;
+    }
+
+    public void deleteCreditorInstitutionStation(String creditorInstitutionCode, String stationCode) {
+        Pa pa = getPaIfExists(creditorInstitutionCode);
+        Stazioni stazioni = getStazioniIfExists(stationCode);
+        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
+                .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
+        paStazionePaRepository.delete(paStazionePa);
+    }
+
     public Ibans getCreditorInstitutionsIbans(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<IbanValidiPerPa> iban = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
@@ -98,6 +147,15 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
+    /**
+     * @param stationCode idStazione
+     * @return return the Stazioni record from DB if Exists
+     * @throws AppException if not found
+     */
+    private Stazioni getStazioniIfExists(String stationCode) {
+        return stazioniRepository.findByIdStazione(stationCode)
+                .orElseThrow(() -> new AppException(AppError.STATION_NOT_FOUND, stationCode));
+    }
 
     /**
      * @param creditorInstitutionCode idDominio

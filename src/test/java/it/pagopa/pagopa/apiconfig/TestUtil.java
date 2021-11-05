@@ -16,6 +16,7 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.Encoding;
 import it.pagopa.pagopa.apiconfig.model.StationDetails;
 import lombok.experimental.UtilityClass;
@@ -77,6 +78,7 @@ public class TestUtil {
 
     public static Stazioni getMockStazioni() {
         return Stazioni.builder()
+                .objId(2L)
                 .idStazione("80007580279_01")
                 .enabled(true)
                 .versione(1L)
@@ -242,4 +244,15 @@ public class TestUtil {
                 .build();
     }
 
+    public static CreditorInstitutionStationEdit getCreditorInstitutionStationEdit(){
+        return CreditorInstitutionStationEdit.builder()
+                .applicationCode(1L)
+                .auxDigit(23L)
+                .stationCode("80007580279_01")
+                .broadcast(true)
+                .segregationCode(5L)
+                .fkPa(Pa.builder().objId(195L).build())
+                .fkStazioni(Stazioni.builder().objId(40L).build())
+                .build();
+    }
 }
