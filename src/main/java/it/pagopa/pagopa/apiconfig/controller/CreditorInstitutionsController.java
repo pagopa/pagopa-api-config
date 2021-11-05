@@ -149,6 +149,51 @@ public class CreditorInstitutionsController {
 
     }
 
+    @Operation(summary = "Create station details and relation info with creditor institution", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreditorInstitutionStationEdit.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
+    @PostMapping(
+            value = "/{creditorinstitutioncode}/stations",
+            produces = {"application/json"}
+    )
+    public ResponseEntity<CreditorInstitutionStationEdit> createCreditorInstitutionStation(@Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
+                                                                                           @RequestBody @Valid @NotNull CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        return  ResponseEntity.status(HttpStatus.CREATED).body(creditorInstitutionsService.createCreditorInstitutionStation(creditorInstitutionCode, creditorInstitutionStationEdit));
+    }
+
+    @Operation(summary = "Update a relation between creditor institution and station", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreditorInstitutionStationEdit.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
+    @PutMapping(value = "/{creditorinstitutioncode}/stations/{stationcode}", produces = {"application/json"})
+    public ResponseEntity<CreditorInstitutionStationEdit> updateCreditorInstitutionStation(@Size(min = 1, max = 50) @Parameter(description = "The fiscal code of the Organization to update", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
+                                                                                       @Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode,
+                                                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true) @RequestBody @Valid @NotNull CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        return ResponseEntity.ok(creditorInstitutionsService.updateCreditorInstitutionStation(creditorInstitutionCode, stationCode, creditorInstitutionStationEdit));
+    }
+
+
+    @Operation(summary = "Delete a relation between creditor institution and station", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/{creditorinstitutioncode}/stations/{stationcode}", produces = {"application/json"})
+    public ResponseEntity<Void> deleteCreditorInstitutionStation(@Size(min = 1, max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
+                                                          @Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode) {
+        creditorInstitutionsService.deleteCreditorInstitutionStation(creditorInstitutionCode, stationCode);
+        return ResponseEntity.ok().build();
+    }
+
 
     /**
      * GET /{creditorinstitutioncode}/ibans : Get creditor institution ibans

@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -49,6 +50,8 @@ class CreditorInstitutionsControllerTest {
         when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234")).thenReturn(Ibans.builder().build());
         when(creditorInstitutionsService.createCreditorInstitution(any(CreditorInstitutionDetails.class))).thenReturn(CreditorInstitutionDetails.builder().build());
         when(creditorInstitutionsService.updateCreditorInstitution(anyString(), any(CreditorInstitutionDetails.class))).thenReturn(CreditorInstitutionDetails.builder().build());
+        when(creditorInstitutionsService.createCreditorInstitutionStation(anyString(), any(CreditorInstitutionStationEdit.class))).thenReturn(CreditorInstitutionStationEdit.builder().build());
+        when(creditorInstitutionsService.updateCreditorInstitutionStation(anyString(), anyString(), any(CreditorInstitutionStationEdit.class))).thenReturn(CreditorInstitutionStationEdit.builder().build());
     }
 
     @ParameterizedTest
@@ -111,6 +114,37 @@ class CreditorInstitutionsControllerTest {
     void deleteCreditorInstitution() throws Exception {
         mvc.perform(delete("/creditorinstitutions/1234").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void createCreditorInstitutionStation() throws Exception {
+        mvc.perform(post("/creditorinstitutions/123/stations")
+                        .content(TestUtil.toJson(getCreditorInstitutionStationEdit()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void updateCreditorInstitutionStation() throws Exception {
+        mvc.perform(put("/creditorinstitutions/1234/stations/21")
+                        .content(TestUtil.toJson(getCreditorInstitutionStationEdit().toBuilder().build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+    }
+
+    @Test
+    void updateCreditorInstitutionStation_badRequest() throws Exception {
+        mvc.perform(put("/creditorinstitutions/1234/stations/21")
+                        .content(TestUtil.toJson(getCreditorInstitutionStationEdit().toBuilder()
+                                .stationCode("")
+                                .build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
     }
 
 }
