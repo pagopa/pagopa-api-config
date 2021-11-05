@@ -1,8 +1,9 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
-import it.pagopa.pagopa.apiconfig.service.IcaService;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
+import it.pagopa.pagopa.apiconfig.service.PspService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,34 +21,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
-class IcaControllerTest {
+class PspControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
-    private IcaService icaService;
+    PspService pspService;
 
     @BeforeEach
     void setUp() {
-        when(icaService.getIcas(50, 0)).thenReturn(Icas.builder().build());
-        when(icaService.getIca(anyString())).thenReturn(new byte[]{});
+        when(pspService.getPaymentServiceProviders(50, 0)).thenReturn(PaymentServiceProviders.builder().build());
+        when(pspService.getPaymentServiceProvider(anyString())).thenReturn(PaymentServiceProviderDetails.builder().build());
     }
 
     @Test
-    void getIcas() throws Exception {
-        String url = "/icas?page=0";
+    void getPaymentServiceProviders() throws Exception {
+        String url = "/paymentserviceproviders?page=0";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    void getIca() throws Exception {
-        String url = "/icas/123";
+    void getPaymentServiceProvider() throws Exception {
+        String url = "/paymentserviceproviders/1234";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_XML));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
-
 }

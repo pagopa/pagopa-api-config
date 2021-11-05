@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,16 +21,17 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Icas {
+public class CounterpartTables {
 
-    @JsonProperty("icas")
+    @JsonProperty("counterpart_tables")
     @Schema(required = true)
     @Valid
-    private List<Ica> icaList = null;
+    private List<CounterpartTable> counterpartTableList;
 
 
     @JsonProperty("page_info")
     @Schema(required = true)
     @Valid
     private PageInfo pageInfo;
+
 }

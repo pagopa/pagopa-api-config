@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,9 +13,7 @@ import lombok.ToString;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * Brokers
- */
+
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -23,16 +21,16 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Brokers {
+public class Icas {
 
-    @JsonProperty("brokers_list")
+    @JsonProperty("icas")
     @Schema(required = true)
     @Valid
-    private List<Broker> brokerList = null;
+    private List<Ica> icaList;
+
 
     @JsonProperty("page_info")
     @Schema(required = true)
     @Valid
     private PageInfo pageInfo;
-
 }

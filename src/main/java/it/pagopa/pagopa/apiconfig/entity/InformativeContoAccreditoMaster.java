@@ -47,10 +47,12 @@ public class InformativeContoAccreditoMaster {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_PA")
+    @ToString.Exclude
     private Pa fkPa;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_BINARY_FILE")
+    @ToString.Exclude
     private BinaryFile fkBinaryFile;
 
     @Column(name = "VERSIONE", length = 35)

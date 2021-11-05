@@ -10,15 +10,17 @@ import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
+import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionAddress;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationEdit;
-import it.pagopa.pagopa.apiconfig.model.Encoding;
-import it.pagopa.pagopa.apiconfig.model.StationDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionAddress;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -194,7 +196,10 @@ public class TestUtil {
                 .enabled(true)
                 .address(CreditorInstitutionAddress.builder()
                         .city("Roma")
+                        .zipCode("00111")
                         .build())
+                .reportingFtp(true)
+                .reportingZip(true)
                 .build();
     }
 
@@ -241,6 +246,31 @@ public class TestUtil {
         return Codifiche.builder()
                 .idCodifica("000111")
                 .objId(1L)
+                .build();
+    }
+
+    public static Psp getMockPsp() {
+        return Psp.builder()
+                .objId(1L)
+                .abi("123")
+                .bic("4321")
+                .agidPsp(true)
+                .codiceFiscale("AAABBB000X1A")
+                .codiceMybank("7")
+                .descrizione("Banca")
+                .idPsp("50")
+                .enabled(true)
+                .fkIntQuadrature(IntermediariPsp.builder()
+                        .objId(1L)
+                        .build())
+                .pspAvv(true)
+                .emailRepoCommissioneCaricoPa("email@email.com")
+                .flagRepoCommissioneCaricoPa(false)
+                .pspNodo(true)
+                .marcaBolloDigitale(22L)
+                .ragioneSociale("Banca")
+                .stornoPagamento(2L)
+                .vatNumber("123123123")
                 .build();
     }
 

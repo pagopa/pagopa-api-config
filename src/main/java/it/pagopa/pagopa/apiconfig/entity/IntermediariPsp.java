@@ -10,39 +10,22 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Table(name = "CODIFICHE_PA", schema = "NODO4_CFG")
+@Table(name = "INTERMEDIARI_PSP", schema = "NODO4_CFG")
 @Entity
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
-public class CodifichePa {
+@ToString(onlyExplicitlyIncluded = true)
+public class IntermediariPsp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)
-    private Long id;
-
-    @Column(name = "CODICE_PA", nullable = false, length = 35)
-    private String codicePa;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "FK_CODIFICA", nullable = false)
-    @ToString.Exclude
-    private Codifiche fkCodifica;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "FK_PA", nullable = false)
-    @ToString.Exclude
-    private Pa fkPa;
-
+    private Long objId;
 }

@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
-import it.pagopa.pagopa.apiconfig.model.CounterpartTable;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 

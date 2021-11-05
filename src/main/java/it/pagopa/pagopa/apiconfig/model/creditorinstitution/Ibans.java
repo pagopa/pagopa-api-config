@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,7 +13,9 @@ import lombok.ToString;
 import javax.validation.Valid;
 import java.util.List;
 
-
+/**
+ * Ibans
+ */
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -21,17 +23,12 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CounterpartTables {
+public class Ibans {
 
-    @JsonProperty("counterpart_tables")
+    @JsonProperty("ibans")
     @Schema(required = true)
     @Valid
-    private List<CounterpartTable> counterpartTableList = null;
+    private List<Iban> ibanList = null;
 
-
-    @JsonProperty("page_info")
-    @Schema(required = true)
-    @Valid
-    private PageInfo pageInfo;
 
 }

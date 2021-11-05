@@ -1330,6 +1330,116 @@
         "summary": "Return OK if application is started"
       }
     },
+    "/paymentserviceproviders": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "default": 50,
+            "description": "Number of elements on one page. Default = 50",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "format": "int32",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/PaymentServiceProviders"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getPaymentServiceProviders",
+        "summary": "Get paginated list of Payment Service Providers"
+      }
+    },
+    "/paymentserviceproviders/{pspcode}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Code of the payment service provider",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
+            "name": "pspcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/PaymentServiceProviderDetails"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getPaymentServiceProvider",
+        "summary": "Get payment service provider details"
+      }
+    },
     "/stations": {
       "get": {
         "produces": [
@@ -2122,6 +2232,90 @@
       ],
       "type": "object"
     },
+    "PaymentServiceProvider": {
+      "properties": {
+        "business_name": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "psp_code": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "business_name",
+        "enabled",
+        "psp_code"
+      ],
+      "type": "object"
+    },
+    "PaymentServiceProviderDetails": {
+      "properties": {
+        "abi": {
+          "type": "string"
+        },
+        "agid_psp": {
+          "description": "True if the PSP is internal",
+          "type": "boolean"
+        },
+        "bic": {
+          "type": "string"
+        },
+        "business_name": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "my_bank_code": {
+          "description": "MyBank code",
+          "type": "string"
+        },
+        "psp_code": {
+          "type": "string"
+        },
+        "stamp": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "tax_code": {
+          "type": "string"
+        },
+        "transfer": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "vat_number": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "business_name",
+        "enabled",
+        "psp_code"
+      ],
+      "type": "object"
+    },
+    "PaymentServiceProviders": {
+      "properties": {
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "payment_service_providers": {
+          "items": {
+            "$ref": "#/definitions/PaymentServiceProvider"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "page_info",
+        "payment_service_providers"
+      ],
+      "type": "object"
+    },
     "ProblemJson": {
       "properties": {
         "detail": {
@@ -2331,6 +2525,10 @@
     }
   },
   "tags": [
+    {
+      "description": "Everything about Payment Service Providers",
+      "name": "Payment Service Providers"
+    },
     {
       "description": "Everything about Creditor Institution",
       "name": "Creditor Institutions"

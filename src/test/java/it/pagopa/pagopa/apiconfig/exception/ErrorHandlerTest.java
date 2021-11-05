@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.exception;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.ProblemJson;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

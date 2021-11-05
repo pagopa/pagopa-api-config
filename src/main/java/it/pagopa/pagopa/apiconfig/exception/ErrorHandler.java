@@ -1,6 +1,6 @@
 package it.pagopa.pagopa.apiconfig.exception;
 
-import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.ProblemJson;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;

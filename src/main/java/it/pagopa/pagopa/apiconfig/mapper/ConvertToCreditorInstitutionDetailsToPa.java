@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 

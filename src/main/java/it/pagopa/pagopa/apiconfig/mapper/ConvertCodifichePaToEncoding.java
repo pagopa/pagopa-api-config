@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.model.Encoding;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 

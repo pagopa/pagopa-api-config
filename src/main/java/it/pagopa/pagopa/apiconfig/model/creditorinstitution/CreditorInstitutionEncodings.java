@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -28,7 +28,7 @@ public class CreditorInstitutionEncodings {
     @JsonProperty("encodings")
     @Schema(required = true)
     @Valid
-    private List<Encoding> encodings = null;
+    private List<Encoding> encodings;
 
 
 }

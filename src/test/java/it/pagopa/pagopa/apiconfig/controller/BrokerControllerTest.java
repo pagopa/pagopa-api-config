@@ -2,8 +2,8 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.model.BrokerDetails;
-import it.pagopa.pagopa.apiconfig.model.Brokers;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.service.BrokersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

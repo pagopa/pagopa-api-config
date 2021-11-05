@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 
 /**
@@ -36,7 +36,7 @@ public class Encoding {
 
     @JsonProperty("encoding_code")
     @Schema(required = true, example = "0000111")
-    @NotEmpty
+    @NotBlank
     private String encodingCode;
 
     @JsonIgnore

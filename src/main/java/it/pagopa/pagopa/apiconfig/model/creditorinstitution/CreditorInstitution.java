@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * BrokerDetails
+ * CreditorInstitution
  */
 @Data
 @SuperBuilder(toBuilder = true)
@@ -24,23 +24,24 @@ import javax.validation.constraints.Size;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Broker {
+public class CreditorInstitution {
 
-    @JsonProperty("broker_code")
-    @Schema(example = "223344556677889900", required = true)
-    @NotEmpty
+    @JsonProperty("creditor_institution_code")
+    @Schema(example = "1234567890100", required = true)
+    @NotBlank
     @Size(max = 35)
-    private String brokerCode;
+    private String creditorInstitutionCode;
 
     @JsonProperty("enabled")
-    @Schema(required = true)
+    @Schema(required = true, description = "creditor institution enabled", defaultValue = "true")
     @NotNull
     private Boolean enabled;
 
-    @JsonProperty("description")
-    @Schema(example = "Lorem ipsum dolor sit amet", required = true)
+    @JsonProperty("business_name")
+    @Schema(example = "Comune di Lorem Ipsum", required = true)
     @NotNull
-    @Size(max = 255)
-    private String description;
+    @Size(max = 70)
+    private String businessName;
+
 
 }

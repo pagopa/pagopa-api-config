@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.model.CreditorInstitutionStationEdit;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 

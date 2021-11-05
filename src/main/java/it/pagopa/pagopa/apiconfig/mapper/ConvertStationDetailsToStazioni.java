@@ -2,7 +2,7 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.model.StationDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 

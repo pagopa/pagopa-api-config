@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
-import it.pagopa.pagopa.apiconfig.model.Ica;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 

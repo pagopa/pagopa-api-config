@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -23,16 +22,10 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Stations {
+public class CreditorInstitutionStationList {
 
-    @JsonProperty("stations")
+    @JsonProperty("stations_list")
     @Schema(required = true)
-    @Valid
-    private List<Station> stationsList = null;
+    private List<CreditorInstitutionStation> stationsList;
 
-
-    @JsonProperty("page_info")
-    @Schema(required = true)
-    @Valid
-    private PageInfo pageInfo;
 }
