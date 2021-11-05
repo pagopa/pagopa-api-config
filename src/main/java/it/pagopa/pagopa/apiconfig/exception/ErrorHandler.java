@@ -30,6 +30,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     public static final String INTERNAL_SERVER_ERROR = "INTERNAL SERVER ERROR";
     public static final String BAD_REQUEST = "BAD REQUEST";
+    public static final String FOREIGN_KEY_VIOLATION = "23503";
 
 
     /**
@@ -107,8 +108,10 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         ProblemJson errorResponse = null;
 
         if (ex.getCause() instanceof ConstraintViolationException) {
-            String constraintName = ((ConstraintViolationException) ex.getCause()).getConstraintName();
-            if (constraintName.contains("REFERENCES")) {
+            String sqlState = ((ConstraintViolationException) ex.getCause()).getSQLState();
+            // check the reason of ConstraintViolationException: is true if the object is referenced by a foreign key
+            // more info: https://docs.oracle.com/javadb/10.8.3.0/ref/rrefexcept71493.html
+            if (sqlState.equals(FOREIGN_KEY_VIOLATION)) {
                 log.warn("Can't delete from Database", ex);
                 errorResponse = ProblemJson.builder()
                         .status(HttpStatus.CONFLICT.value())

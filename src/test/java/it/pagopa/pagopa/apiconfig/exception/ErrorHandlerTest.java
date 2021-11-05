@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -68,7 +70,7 @@ class ErrorHandlerTest {
 
     @Test
     void handleDataIntegrityViolationException2(){
-        ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(new DataIntegrityViolationException("", new ConstraintViolationException("A REFERENCES B", null, "A REFERENCES B")), null);
+        ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(new DataIntegrityViolationException("", new ConstraintViolationException("A REFERENCES B", new SQLException("foreign key", "23503"), "A REFERENCES B")), null);
         assertEquals(HttpStatus.CONFLICT, actual.getStatusCode());
         assertEquals("Conflict with the current state of the resource", actual.getBody().getTitle());
         assertEquals(HttpStatus.CONFLICT.value(), actual.getBody().getStatus());

@@ -312,7 +312,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1234567890100"
+									"value": "00168480242"
 								}
 							]
 						}
@@ -360,7 +360,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1234567890100"
+									"value": "00168480242"
 								}
 							]
 						}
@@ -409,51 +409,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1234567890100"
-								},
-								{
-									"key": "stationcode",
-									"value": "80007580279_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitutionStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitutionStation\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"stations",
-								":stationcode"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "1234567890100"
+									"value": "00168480242"
 								},
 								{
 									"key": "stationcode",
@@ -1673,6 +1629,44 @@
 					"response": []
 				},
 				{
+					"name": "deleteBroker Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteBroker_notFound\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "80007580279"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "createStation Conflict",
 					"event": [
 						{
@@ -1797,6 +1791,136 @@
 								{
 									"key": "code",
 									"value": "zxx"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "api test suite - psp",
+			"item": [
+				{
+					"name": "getPaymentServiceProviders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProviders\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.page_info).to.be.exist",
+									"  pm.expect(responseJson.payment_service_providers).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders?limit=50&page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPaymentServiceProvider",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProvider\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "BPPIITRRZZZ"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "api test error - psp",
+			"item": [
+				{
+					"name": "getPaymentServiceProvider",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProvider\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "zzz"
 								}
 							]
 						}
