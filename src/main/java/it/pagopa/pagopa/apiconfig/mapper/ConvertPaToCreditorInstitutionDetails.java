@@ -29,7 +29,6 @@ public class ConvertPaToCreditorInstitutionDetails implements Converter<Pa, Cred
                 .pspPayment(pa.getPagamentoPressoPsp())
                 .reportingFtp(pa.getRendicontazioneFtp())
                 .reportingZip(pa.getRendicontazioneZip())
-                .fkQuadrature(pa.getFkIntQuadrature())
                 .build();
     }
 }
