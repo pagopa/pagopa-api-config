@@ -79,6 +79,7 @@ class BrokersServiceTest {
 
         try {
             brokersService.createBroker(getMockBrokerDetails());
+            fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
         } catch (Exception e) {
