@@ -1942,10 +1942,6 @@
           "description": "creditor institution enabled",
           "type": "boolean"
         },
-        "fk_int_quadrature": {
-          "format": "int64",
-          "type": "integer"
-        },
         "psp_payment": {
           "default": true,
           "type": "boolean"
