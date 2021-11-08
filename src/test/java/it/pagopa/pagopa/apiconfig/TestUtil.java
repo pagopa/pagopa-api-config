@@ -190,7 +190,6 @@ public class TestUtil {
     public static CreditorInstitutionDetails getMockCreditorInstitutionDetails() {
         return CreditorInstitutionDetails.builder()
                 .pspPayment(false)
-                .fkQuadrature(0L)
                 .creditorInstitutionCode("1234")
                 .businessName("Città di Roma")
                 .enabled(true)
