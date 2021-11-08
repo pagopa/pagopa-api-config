@@ -12,13 +12,13 @@
     </appender>
 
     <!--no profile-->
-    <springProfile name="!local &amp; !azure-d &amp; !docker">
+    <springProfile name="!local &amp; !docker">
         <root level="INFO">
             <appender-ref ref="stdout"/>
         </root>
     </springProfile>
 
-    <springProfile name="local | azure-d">
+    <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="stdout"/>
         </root>
