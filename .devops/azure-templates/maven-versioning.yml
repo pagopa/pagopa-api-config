@@ -8,6 +8,7 @@ parameters:
       - major
       - minor
       - patch
+      - skip
 
 steps:
   - ${{ if eq(parameters.semver, 'patch') }}:

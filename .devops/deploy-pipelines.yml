@@ -6,6 +6,7 @@ parameters:
       - major
       - minor
       - patch
+      - skip
     default: patch
   - name: ENV
     displayName: Target Environment
@@ -15,6 +16,7 @@ parameters:
       - dev
       - uat
       - prod
+      - test # test: deploy on develop with H2
 
 variables:
   ${{ if eq(parameters['ENV'], 'dev') }}:
@@ -32,6 +34,11 @@ variables:
     RESOURCE_GROUP: $(PROD_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(PROD_WEB_APP_NAME)
     STAGE: "p"
+  ${{ if eq(parameters['ENV'], 'test') }}:
+    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
+    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
+    APP_NAME: $(DEV_WEB_APP_NAME)
+    STAGE: "t"
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
@@ -49,7 +56,8 @@ pool:
 stages:
   # Create a release on Github
   - stage: release_service
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    # bump version on main branch and if SEMVER is not 'skip'
+    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.SEMVER }}', 'skip'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -163,11 +171,12 @@ stages:
               azureSubscription: $(AZURE_SUBSCRIPTION)
               scriptLocation: inlineScript
               inlineScript: |
-                az webapp deploy --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
+                az webapp deploy --clean true --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
 
 
   - stage: test
-    condition: not(failed('deployJava'))
+    # run stage 'test' only if ENV is equal to 'test'
+    condition: and(not(failed('deployJava')), eq('${{ parameters.ENV }}', 'test'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
