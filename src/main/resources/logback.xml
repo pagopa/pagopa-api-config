@@ -12,13 +12,13 @@
     </appender>
 
     <!--no profile-->
-    <springProfile name="!local &amp; !docker">
+    <springProfile name="!local &amp; !docker &amp; !h2">
         <root level="INFO">
             <appender-ref ref="stdout"/>
         </root>
     </springProfile>
 
-    <springProfile name="local">
+    <springProfile name="local || h2">
         <root level="INFO">
             <appender-ref ref="stdout"/>
         </root>

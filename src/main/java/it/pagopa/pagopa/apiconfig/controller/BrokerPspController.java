@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
 import it.pagopa.pagopa.apiconfig.service.BrokersPspService;

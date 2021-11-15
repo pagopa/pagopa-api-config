@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
+package it.pagopa.pagopa.apiconfig.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
