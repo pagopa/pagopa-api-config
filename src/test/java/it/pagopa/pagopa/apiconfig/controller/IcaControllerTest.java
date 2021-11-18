@@ -31,7 +31,7 @@ class IcaControllerTest {
     @BeforeEach
     void setUp() {
         when(icaService.getIcas(50, 0)).thenReturn(Icas.builder().build());
-        when(icaService.getIca(anyString())).thenReturn(new byte[]{});
+        when(icaService.getIca(anyString(), anyString())).thenReturn(new byte[]{});
     }
 
     @Test
@@ -44,7 +44,7 @@ class IcaControllerTest {
 
     @Test
     void getIca() throws Exception {
-        String url = "/icas/123";
+        String url = "/icas/123?creditorinstitutioncode=1";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_XML));

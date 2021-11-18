@@ -53,9 +53,9 @@ class IcaServiceTest {
 
     @Test
     void getIca() {
-        when(informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPa(anyString())).thenReturn(Optional.of(getMockInformativeContoAccreditoMaster()));
+        when(informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(anyString(), anyString())).thenReturn(Optional.of(getMockInformativeContoAccreditoMaster()));
 
-        byte[] result = icaService.getIca("111");
+        byte[] result = icaService.getIca("111", "1234");
         assertNotNull(result);
         assertEquals(2, result.length);
     }
@@ -63,9 +63,9 @@ class IcaServiceTest {
 
     @Test
     void getEC_NotFound() {
-        when(informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPa(anyString())).thenReturn(Optional.empty());
+        when(informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(anyString(), anyString())).thenReturn(Optional.empty());
         try {
-            icaService.getIca("111");
+            icaService.getIca("111", "1234");
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
