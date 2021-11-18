@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.service.IcaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -61,8 +61,9 @@ public class IcaController {
             value = "/{idica}",
             produces = {"application/xml", "application/json"}
     )
-    public ResponseEntity<Resource> getIca(@Parameter(description = "Id ICA", required = true) @PathVariable("idica") String idIca) {
-        byte[] file = icaService.getIca(idIca);
+    public ResponseEntity<Resource> getIca(@Parameter(description = "Id ICA", required = true) @PathVariable("idica") String idIca,
+                                           @Parameter(description = "Creditor institution code", required = true) @RequestParam("creditorinstitutioncode") String creditorInstitutionCode) {
+        byte[] file = icaService.getIca(idIca, creditorInstitutionCode);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_XML)
                 .contentLength(file.length)

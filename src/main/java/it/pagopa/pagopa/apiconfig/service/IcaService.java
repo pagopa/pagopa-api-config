@@ -38,8 +38,8 @@ public class IcaService {
     }
 
 
-    public byte[] getIca(@NotNull String idIca) {
-        Optional<InformativeContoAccreditoMaster> result = informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPa(idIca);
+    public byte[] getIca(@NotNull String idIca, String creditorInstitutionCode) {
+        Optional<InformativeContoAccreditoMaster> result = informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(idIca, creditorInstitutionCode);
         if (result.isEmpty()) {
             throw new AppException(AppError.ICA_NOT_FOUND, idIca);
         }

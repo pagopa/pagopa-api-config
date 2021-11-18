@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface InformativeContoAccreditoMasterRepository extends PagingAndSortingRepository<InformativeContoAccreditoMaster, Long> {
 
-    Optional<InformativeContoAccreditoMaster> findByIdInformativaContoAccreditoPa(String idIca);
+    Optional<InformativeContoAccreditoMaster> findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(String idIca, String creditorInstitutionCode);
 
 }

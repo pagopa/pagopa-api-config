@@ -34,7 +34,14 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Ocp-Apim-Subscription-Key",
+								"value": "{{apikey-jacopo}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/info",
 							"host": [
@@ -68,7 +75,20 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Ocp-Apim-Subscription-Key",
+								"value": "{{apikey-admin}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Referer",
+								"value": "https://config.dev.platform.pagopa.it/creditor-institutions",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions?limit=50&page=0",
 							"host": [
@@ -133,6 +153,12 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Ocp-Apim-Subscription-Key",
+								"value": "{{apikey-admin}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -1185,7 +1211,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id?creditorinstitutioncode=00168480242",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -1193,6 +1219,12 @@
 								"{{api-config-base-path}}",
 								"icas",
 								":id"
+							],
+							"query": [
+								{
+									"key": "creditorinstitutioncode",
+									"value": "00168480242"
+								}
 							],
 							"variable": [
 								{
