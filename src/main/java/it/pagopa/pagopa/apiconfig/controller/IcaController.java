@@ -33,7 +33,7 @@ public class IcaController {
     IcaService icaService;
 
 
-    @Operation(summary = "Get the list of ICAs", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
+    @Operation(summary = "Get the list of ICAs", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Icas.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
@@ -50,7 +50,7 @@ public class IcaController {
     }
 
 
-    @Operation(summary = "Download a XML file containing the details of an ICA", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
+    @Operation(summary = "Download a XML file containing the details of an ICA", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(schema = @Schema(implementation = Resource.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),

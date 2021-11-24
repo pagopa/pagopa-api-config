@@ -4,9 +4,9 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.21"
+    "version": "0.2.23"
   },
-  "host": "127.0.0.1:8080",
+  "host": "localhost:8080",
   "basePath": "/apiconfig/api/v1",
   "schemes": [
     "http"
@@ -59,6 +59,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -119,6 +122,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -176,6 +182,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -228,6 +237,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -292,6 +304,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -348,6 +363,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -402,6 +420,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -458,6 +479,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -519,6 +543,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -575,6 +602,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -629,6 +659,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -686,6 +719,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -738,6 +774,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -802,6 +841,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -856,6 +898,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -919,6 +964,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -983,6 +1031,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1037,6 +1088,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1091,6 +1145,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1154,6 +1211,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1214,6 +1274,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1286,6 +1349,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1342,6 +1408,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1403,6 +1472,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1438,6 +1510,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1494,6 +1569,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1548,6 +1626,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1618,6 +1699,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1678,6 +1762,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1735,6 +1822,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1787,6 +1877,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1851,6 +1944,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -2699,7 +2795,13 @@
     "ApiKey": {
       "description": "The API key to access this function app.",
       "in": "header",
-      "name": "X-Functions-Key",
+      "name": "Ocp-Apim-Subscription-Key",
+      "type": "apiKey"
+    },
+    "Authorization": {
+      "description": "JWT token get after Azure B2C Login",
+      "in": "header",
+      "name": "Authorization",
       "type": "apiKey"
     }
   },
