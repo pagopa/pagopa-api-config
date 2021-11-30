@@ -2799,9 +2799,11 @@
       "type": "apiKey"
     },
     "Authorization": {
+      "bearerFormat": "JWT",
       "description": "JWT token get after Azure B2C Login",
       "in": "header",
       "name": "Authorization",
+      "scheme": "Bearer",
       "type": "apiKey"
     }
   },

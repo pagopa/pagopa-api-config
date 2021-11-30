@@ -3,3 +3,7 @@
 
 # how install api-spec-converter https://www.npmjs.com/package/api-spec-converter
 api-spec-converter  --from=openapi_3 --to=swagger_2 ./openapi.json > swagger.json
+
+# BugFix for api-spec-converter: swagger 2 not support http as type
+sed -i '' 's/\"type\": \"http\"/\"type\": \"apiKey\"/g' swagger.json
+
