@@ -6,6 +6,7 @@ import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -80,11 +81,11 @@ public class IcaService {
                 .collect(Collectors.toList());
     }
 
-    public Map verifyXSD(File xml) {
+    public XSDValidation verifyXSD(File xml) {
         boolean xsdEvaluated = false;
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         String lineNumber = "";
-        String detail = "";
+        String detail;
         String xsdSchema = xsdProperties.getIca();
         try {
             javax.xml.validation.Schema schema = factory.newSchema(new URL(xsdSchema));
@@ -104,23 +105,19 @@ public class IcaService {
                 lineNumber = matcher.group(0);
             }
             detail = stringException.substring(stringException.lastIndexOf(":")+1).trim();
-            e.printStackTrace();
         }
-
-
-        Map response = new HashMap<>();
-        response.put("xsdCompliant", xsdEvaluated);
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(detail);
         if (lineNumber.length() > 0) {
-            stringBuilder.append(" Error at " + lineNumber);
+            stringBuilder.append(" Error at ").append(lineNumber);
         }
-        response.put("detail", stringBuilder);
-        response.put("xsdSchema", xsdSchema);
-        System.out.println("DETAIL " + stringBuilder);
-        System.out.println("XSD SCHEMA " + xsdSchema);
-        System.out.println("XSD COMPLIANT " + xsdEvaluated);
+
+        XSDValidation response = new XSDValidation();
+        response.setXsdCompliant(xsdEvaluated);
+        response.setXsdSchema(xsdSchema);
+        response.setDetail(stringBuilder.toString());
+
         return response;
     }
 }

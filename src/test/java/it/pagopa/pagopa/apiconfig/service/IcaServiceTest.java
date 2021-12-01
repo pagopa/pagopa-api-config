@@ -6,6 +6,7 @@ import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
@@ -83,7 +84,7 @@ class IcaServiceTest {
     @Test
     void checkValidXML() throws IOException, JSONException {
         File xml = TestUtil.readFile("file/ica_valid.xml");
-        Map result = icaService.verifyXSD(xml);
+        XSDValidation result = icaService.verifyXSD(xml);
         String expected = TestUtil.readJsonFromFile("response/ica_valid_xml.json");
         JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
     }
@@ -91,7 +92,7 @@ class IcaServiceTest {
     @Test
     void checkNotValidXML() throws IOException, JSONException {
         File xml = TestUtil.readFile("file/ica_not_valid.xml");
-        Map result = icaService.verifyXSD(xml);
+        XSDValidation result = icaService.verifyXSD(xml);
         String expected = TestUtil.readJsonFromFile("response/ica_not_valid_xml.json");
         JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
     }

@@ -10,8 +10,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.service.IcaService;
 import it.pagopa.pagopa.apiconfig.service.StorageService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -23,9 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Positive;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
+@Slf4j
 @RestController()
 @RequestMapping(path = "/icas")
 @Tag(name = "Creditor Institutions", description = "Everything about Creditor Institution")
@@ -76,7 +77,7 @@ public class IcaController {
 
     @Operation(summary = "Validate XML against XSD", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HashMap.class))),
+            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = XSDValidation.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
@@ -84,15 +85,16 @@ public class IcaController {
             value = "/xsd",
             produces = {"application/json"}
     )
-    public ResponseEntity<Map> checkXSD(@Parameter(description = "XML file regarding ICA to check", required = true) @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<XSDValidation> checkXSD(@Parameter(description = "XML file regarding ICA to check", required = true) @RequestParam("file") MultipartFile file) {
         File xml = storageService.store(file);
 
-        Map response = icaService.verifyXSD(xml);
+        XSDValidation response = icaService.verifyXSD(xml);
 
         try {
             FileUtils.forceDelete(xml);
         } catch (IOException e) {
             e.printStackTrace();
+            log.warn("Problem to remove file: " + xml.getAbsolutePath());
         }
         return ResponseEntity.ok(response);
     }
