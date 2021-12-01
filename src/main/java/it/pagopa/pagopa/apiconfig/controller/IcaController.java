@@ -94,7 +94,6 @@ public class IcaController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return ResponseEntity.ok(response);
     }
 

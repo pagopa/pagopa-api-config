@@ -118,6 +118,9 @@ public class IcaService {
         }
         response.put("detail", stringBuilder);
         response.put("xsdSchema", xsdSchema);
+        System.out.println("DETAIL " + stringBuilder);
+        System.out.println("XSD SCHEMA " + xsdSchema);
+        System.out.println("XSD COMPLIANT " + xsdEvaluated);
         return response;
     }
 }
