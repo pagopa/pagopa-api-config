@@ -83,14 +83,23 @@ public class IcaService {
 
     public XSDValidation verifyXSD(File xml) {
         boolean xsdEvaluated = false;
-        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         String lineNumber = "";
         String detail;
         String xsdSchema = xsdProperties.getIca();
+
+        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
         try {
+            // to be compliant, completely disable DOCTYPE declaration:
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+
             javax.xml.validation.Schema schema = factory.newSchema(new URL(xsdSchema));
             Validator validator = schema.newValidator();
+
             XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+            // to be compliant, completely disable DOCTYPE declaration:
+            factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+
             FileInputStream inputStream = new FileInputStream(xml);
             XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
             StAXSource source = new StAXSource(xmlStreamReader);

@@ -93,7 +93,6 @@ public class IcaController {
         try {
             FileUtils.forceDelete(xml);
         } catch (IOException e) {
-            e.printStackTrace();
             log.warn("Problem to remove file: " + xml.getAbsolutePath());
         }
         return ResponseEntity.ok(response);
