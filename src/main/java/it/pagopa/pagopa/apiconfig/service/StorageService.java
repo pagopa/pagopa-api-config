@@ -17,6 +17,7 @@ import java.nio.file.*;
 public class StorageService {
 
     private final Path rootLocation;
+    private final String storageService = "Storage Service";
 
     @Autowired
     public StorageService(StorageProperties properties) {
@@ -28,7 +29,7 @@ public class StorageService {
             Files.createDirectories(rootLocation);
         }
         catch (IOException e) {
-            throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "StorageService", "Could not initialize storage", e);
+            throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, storageService, "Could not initialize storage", e);
         }
     }
 
@@ -40,14 +41,14 @@ public class StorageService {
         File savedFile = null;
         try {
             if (file.isEmpty()) {
-                throw new AppException(HttpStatus.BAD_REQUEST, "Storage Service", "Failed to store empty file.", null);
+                throw new AppException(HttpStatus.BAD_REQUEST, storageService, "Failed to store empty file.", null);
             }
             Path destinationFile = this.rootLocation.resolve(
                     Paths.get(file.getOriginalFilename()))
                     .normalize().toAbsolutePath();
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 // This is a security check
-                throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Storage Service", "Cannot store file outside current directory.", null);
+                throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, storageService, "Cannot store file outside current directory.", null);
             }
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
@@ -55,7 +56,7 @@ public class StorageService {
             }
         }
         catch (IOException e) {
-            throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Storage Service", "Failed to store file.", e);
+            throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, storageService, "Failed to store file.", e);
         }
         return savedFile;
     }
