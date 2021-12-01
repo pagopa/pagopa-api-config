@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.service.IcaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +19,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.print.attribute.standard.Media;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -44,6 +47,7 @@ class IcaControllerTest {
     void setUp() {
         when(icaService.getIcas(50, 0)).thenReturn(Icas.builder().build());
         when(icaService.getIca(anyString(), anyString())).thenReturn(new byte[]{});
+        when(icaService.verifyXSD(any())).thenReturn(XSDValidation.builder().build());
     }
 
     @Test
@@ -67,11 +71,13 @@ class IcaControllerTest {
         File xml = TestUtil.readFile("file/ica_valid.xml");
         MockMultipartFile multipartFile = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
         String url = "/icas/xsd";
+
         mvc.perform(multipart(url)
                 .file(multipartFile)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
     }
 
 }
