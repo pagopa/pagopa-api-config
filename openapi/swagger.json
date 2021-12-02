@@ -6,7 +6,7 @@
     "title": "PagoPA API configuration",
     "version": "0.2.24"
   },
-  "host": "127.0.0.1:8080",
+  "host": "localhost:8080",
   "basePath": "/apiconfig/api/v1",
   "schemes": [
     "http"
@@ -1459,6 +1459,65 @@
         ],
         "operationId": "getIcas",
         "summary": "Get the list of ICAs"
+      }
+    },
+    "/icas/xsd": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "file": {
+                  "description": "XML file regarding ICA to check",
+                  "format": "binary",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "file"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/XSDValidation"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "checkXSD",
+        "summary": "Validate XML against XSD"
       }
     },
     "/icas/{idica}": {
@@ -2978,6 +3037,28 @@
       "required": [
         "page_info",
         "stations"
+      ],
+      "type": "object"
+    },
+    "XSDValidation": {
+      "properties": {
+        "detail": {
+          "example": "Invalid content was found starting with element 'idBancaSeller'. One of '{ibanAccredito}' is expected. Error at lineNumber: 10",
+          "type": "string"
+        },
+        "xsdCompliant": {
+          "example": false,
+          "type": "boolean"
+        },
+        "xsdSchema": {
+          "example": "https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/InformativaContoAccredito_1_2_1.xsd",
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "xsdCompliant",
+        "xsdSchema"
       ],
       "type": "object"
     }

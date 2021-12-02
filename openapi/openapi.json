@@ -6,59 +6,59 @@
     "termsOfService": "https://www.pagopa.gov.it/",
     "version": "0.2.24"
   },
-  "servers": [
-    {
-      "url": "http://127.0.0.1:8080/apiconfig/api/v1",
-      "description": "Generated server url"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Payment Service Providers",
-      "description": "Everything about Payment Service Providers"
-    },
-    {
-      "name": "Creditor Institutions",
-      "description": "Everything about Creditor Institution"
-    }
-  ],
+  "servers": [{
+    "url": "http://localhost:8080/apiconfig/api/v1",
+    "description": "Generated server url"
+  }],
+  "tags": [{
+    "name": "Payment Service Providers",
+    "description": "Everything about Payment Service Providers"
+  }, {
+    "name": "Creditor Institutions",
+    "description": "Everything about Creditor Institution"
+  }],
   "paths": {
     "/brokers": {
       "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Get paginated list of creditor brokers",
         "operationId": "getBrokers",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of elements on one page. Default = 50",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number. Page value starts from 0",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+        "parameters": [{
+          "name": "limit",
+          "in": "query",
+          "description": "Number of elements on one page. Default = 50",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": 50
           }
-        ],
+        }, {
+          "name": "page",
+          "in": "query",
+          "description": "Page number. Page value starts from 0",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }],
         "responses": {
-          "429": {
-            "description": "Too many requests"
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "200": {
             "description": "OK.",
@@ -69,28 +69,14 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       },
       "post": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Create a broker",
         "operationId": "createBroker",
         "requestBody": {
@@ -104,12 +90,12 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Not Found",
+          "201": {
+            "description": "OK.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
+                  "$ref": "#/components/schemas/BrokerDetails"
                 }
               }
             }
@@ -124,12 +110,12 @@
               }
             }
           },
-          "201": {
-            "description": "OK.",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BrokerDetails"
+                  "$ref": "#/components/schemas/ProblemJson"
                 }
               }
             }
@@ -140,12 +126,45 @@
               "application/json": {}
             }
           },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too many requests",
             "content": {
               "application/json": {}
             }
-          },
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/brokers/{brokercode}": {
+      "get": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Get creditor broker details ",
+        "operationId": "getBroker",
+        "parameters": [{
+          "name": "brokercode",
+          "in": "path",
+          "description": "broker code.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -155,36 +174,20 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/brokers/{brokercode}": {
-      "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Get creditor broker details ",
-        "operationId": "getBroker",
-        "parameters": [
-          {
-            "name": "brokercode",
-            "in": "path",
-            "description": "broker code.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
             }
-          }
-        ],
-        "responses": {
+          },
           "429": {
             "description": "Too many requests"
           },
@@ -197,56 +200,27 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       },
       "put": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Update a broker",
         "operationId": "updateBroker",
-        "parameters": [
-          {
-            "name": "brokercode",
-            "in": "path",
-            "description": "broker code",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "brokercode",
+          "in": "path",
+          "description": "broker code",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
           }
-        ],
+        }],
         "requestBody": {
           "description": "The values to update of the broker",
           "content": {
@@ -259,6 +233,22 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -279,67 +269,45 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
           "429": {
             "description": "Too many requests",
             "content": {
               "application/json": {}
             }
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      },
+      "delete": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Delete a broker",
+        "operationId": "deleteBroker",
+        "parameters": [{
+          "name": "brokercode",
+          "in": "path",
+          "description": "broker code",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           },
           "500": {
             "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Delete a broker",
-        "operationId": "deleteBroker",
-        "parameters": [
-          {
-            "name": "brokercode",
-            "in": "path",
-            "description": "broker code",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -357,12 +325,54 @@
               "application/json": {}
             }
           },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too many requests",
             "content": {
               "application/json": {}
             }
-          },
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/brokerspsp": {
+      "get": {
+        "tags": ["Payment Service Providers"],
+        "summary": "Get paginated list of PSP brokers",
+        "operationId": "getBrokersPsp",
+        "parameters": [{
+          "name": "limit",
+          "in": "query",
+          "description": "Number of elements on one page. Default = 50",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": 50
+          }
+        }, {
+          "name": "page",
+          "in": "query",
+          "description": "Page number. Page value starts from 0",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -372,48 +382,9 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/brokerspsp": {
-      "get": {
-        "tags": [
-          "Payment Service Providers"
-        ],
-        "summary": "Get paginated list of PSP brokers",
-        "operationId": "getBrokersPsp",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of elements on one page. Default = 50",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
           },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number. Page value starts from 0",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "429": {
-            "description": "Too many requests"
+          "403": {
+            "description": "Forbidden client error status."
           },
           "200": {
             "description": "OK.",
@@ -425,9 +396,32 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status."
-          },
+          "429": {
+            "description": "Too many requests"
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/brokerspsp/{brokerpspcode}": {
+      "get": {
+        "tags": ["Payment Service Providers"],
+        "summary": "Get creditor broker details ",
+        "operationId": "getBrokerPsp",
+        "parameters": [{
+          "name": "brokerpspcode",
+          "in": "path",
+          "description": "Broker code of a PSP.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -437,36 +431,20 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/brokerspsp/{brokerpspcode}": {
-      "get": {
-        "tags": [
-          "Payment Service Providers"
-        ],
-        "summary": "Get creditor broker details ",
-        "operationId": "getBrokerPsp",
-        "parameters": [
-          {
-            "name": "brokerpspcode",
-            "in": "path",
-            "description": "Broker code of a PSP.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
             }
-          }
-        ],
-        "responses": {
+          },
           "200": {
             "description": "OK.",
             "content": {
@@ -479,199 +457,55 @@
           },
           "429": {
             "description": "Too many requests"
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/channels": {
-      "get": {
-        "tags": [
-          "Payment Service Providers"
-        ],
-        "summary": "Get paginated list of channels",
-        "operationId": "getChannels",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of elements on one page. Default = 50",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number. Page value starts from 0",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "429": {
-            "description": "Too many requests"
-          },
-          "200": {
-            "description": "OK.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Channels"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/channels/{channelcode}": {
-      "get": {
-        "tags": [
-          "Payment Service Providers"
-        ],
-        "summary": "Get channel details ",
-        "operationId": "getChannel",
-        "parameters": [
-          {
-            "name": "channelcode",
-            "in": "path",
-            "description": "channel code.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "429": {
-            "description": "Too many requests"
-          },
-          "200": {
-            "description": "OK.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ChannelDetails"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/counterparttables": {
       "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Get the counterparties table",
         "operationId": "getCounterpartTables",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of elements on one page. Default = 50",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
+        "parameters": [{
+          "name": "limit",
+          "in": "query",
+          "description": "Number of elements on one page. Default = 50",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": 50
+          }
+        }, {
+          "name": "page",
+          "in": "query",
+          "description": "Page number. Page value starts from 0",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }],
+        "responses": {
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
             }
           },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number. Page value starts from 0",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "200": {
             "description": "OK.",
             "content": {
@@ -681,62 +515,36 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Too many requests"
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/counterparttables/{idcounterparttable}": {
       "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Download a XML file containing the details of a counterpart table",
         "operationId": "getCounterpartTable",
-        "parameters": [
-          {
-            "name": "idcounterparttable",
-            "in": "path",
-            "description": "Id counterpart table",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "creditorinstitutioncode",
-            "in": "query",
-            "description": "Creditor institution code",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "idcounterparttable",
+          "in": "path",
+          "description": "Id counterpart table",
+          "required": true,
+          "schema": {
+            "type": "string"
           }
-        ],
+        }, {
+          "name": "creditorinstitutioncode",
+          "in": "query",
+          "description": "Creditor institution code",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
         "responses": {
-          "429": {
-            "description": "Too many requests"
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -754,8 +562,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -767,8 +575,11 @@
           "403": {
             "description": "Forbidden client error status."
           },
-          "500": {
-            "description": "Service unavailable.",
+          "429": {
+            "description": "Too many requests"
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -778,44 +589,47 @@
             }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/creditorinstitutions": {
       "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Get paginated list of creditor institutions",
         "operationId": "getCreditorInstitutions",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of elements on one page. Default = 50",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
+        "parameters": [{
+          "name": "limit",
+          "in": "query",
+          "description": "Number of elements on one page. Default = 50",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": 50
+          }
+        }, {
+          "name": "page",
+          "in": "query",
+          "description": "Page number. Page value starts from 0",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }],
+        "responses": {
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
             }
           },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number. Page value starts from 0",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
           "200": {
             "description": "OK.",
             "content": {
@@ -837,28 +651,14 @@
             "content": {
               "application/json": {}
             }
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       },
       "post": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Create creditor institution",
         "operationId": "createCreditorInstitution",
         "requestBody": {
@@ -892,6 +692,16 @@
               }
             }
           },
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
           "403": {
             "description": "Forbidden client error status.",
             "content": {
@@ -903,56 +713,30 @@
             "content": {
               "application/json": {}
             }
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}": {
       "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Get creditor institution details",
         "operationId": "getCreditorInstitution",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 1,
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
           }
-        ],
+        }],
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -963,18 +747,6 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -984,33 +756,49 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      },
-      "put": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Update creditor institution",
-        "operationId": "updateCreditorInstitution",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "The fiscal code of the Organization to update",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 1,
-              "type": "string"
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
             }
           }
-        ],
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      },
+      "put": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Update creditor institution",
+        "operationId": "updateCreditorInstitution",
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "The fiscal code of the Organization to update",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          }
+        }],
         "requestBody": {
           "description": "The values to update of the organization",
           "content": {
@@ -1023,16 +811,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -1043,18 +821,6 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1064,36 +830,9 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Delete creditor institution",
-        "operationId": "deleteCreditorInstitution",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 1,
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK.",
+          },
+          "403": {
+            "description": "Forbidden client error status.",
             "content": {
               "application/json": {}
             }
@@ -1108,6 +847,33 @@
               }
             }
           },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      },
+      "delete": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Delete creditor institution",
+        "operationId": "deleteCreditorInstitution",
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "409": {
             "description": "Conflict",
             "content": {
@@ -1116,18 +882,6 @@
                   "$ref": "#/components/schemas/ProblemJson"
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
             }
           },
           "500": {
@@ -1139,35 +893,57 @@
                 }
               }
             }
+          },
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/encodings": {
       "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Get creditor institution encodings",
         "operationId": "getCreditorInstitutionEncodings",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
           }
-        ],
+        }],
         "responses": {
           "200": {
             "description": "OK.",
@@ -1179,11 +955,8 @@
               }
             }
           },
-          "429": {
-            "description": "Too many requests"
-          },
-          "404": {
-            "description": "Not Found",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1195,8 +968,8 @@
           "403": {
             "description": "Forbidden client error status."
           },
-          "500": {
-            "description": "Service unavailable.",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1204,33 +977,30 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many requests"
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       },
       "post": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Delete a creditor institution encoding",
         "operationId": "createCreditorInstitutionEncoding",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
           }
-        ],
+        }],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1244,6 +1014,16 @@
         "responses": {
           "409": {
             "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1273,57 +1053,40 @@
             "content": {
               "application/json": {}
             }
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/encodings/{encodingcode}": {
       "delete": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Delete a creditor institution encoding",
         "operationId": "deleteCreditorInstitutionEncoding",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
-          },
-          {
-            "name": "encodingcode",
-            "in": "path",
-            "description": "Code of the Encoding",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
           }
-        ],
+        }, {
+          "name": "encodingcode",
+          "in": "path",
+          "description": "Code of the Encoding",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
         "responses": {
-          "404": {
-            "description": "Not Found",
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -1332,8 +1095,8 @@
               }
             }
           },
-          "409": {
-            "description": "Conflict",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1351,12 +1114,45 @@
               "application/json": {}
             }
           },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too many requests",
             "content": {
               "application/json": {}
             }
-          },
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/creditorinstitutions/{creditorinstitutioncode}/ibans": {
+      "get": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Get creditor institution ibans",
+        "operationId": "getCreditorInstitutionsIbans",
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1366,38 +1162,9 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/creditorinstitutions/{creditorinstitutioncode}/ibans": {
-      "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Get creditor institution ibans",
-        "operationId": "getCreditorInstitutionsIbans",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "429": {
-            "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
           },
           "404": {
             "description": "Not Found",
@@ -1409,8 +1176,8 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status."
+          "429": {
+            "description": "Too many requests"
           },
           "200": {
             "description": "OK.",
@@ -1421,7 +1188,30 @@
                 }
               }
             }
-          },
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/creditorinstitutions/{creditorinstitutioncode}/stations": {
+      "get": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Get station details and relation info with creditor institution",
+        "operationId": "getCreditorInstitutionStations",
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1431,36 +1221,23 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/creditorinstitutions/{creditorinstitutioncode}/stations": {
-      "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Get station details and relation info with creditor institution",
-        "operationId": "getCreditorInstitutionStations",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
             }
-          }
-        ],
-        "responses": {
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "200": {
             "description": "OK.",
             "content": {
@@ -1470,59 +1247,27 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Too many requests"
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       },
       "post": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Create station details and relation info with creditor institution",
         "operationId": "createCreditorInstitutionStation",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
           }
-        ],
+        }],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1534,9 +1279,6 @@
           "required": true
         },
         "responses": {
-          "429": {
-            "description": "Too many requests"
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -1547,8 +1289,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1560,8 +1302,8 @@
           "403": {
             "description": "Forbidden client error status."
           },
-          "500": {
-            "description": "Service unavailable.",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1569,46 +1311,42 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many requests"
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/stations/{stationcode}": {
       "put": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Update a relation between creditor institution and station",
         "operationId": "updateCreditorInstitutionStation",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "The fiscal code of the Organization to update",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 1,
-              "type": "string"
-            }
-          },
-          {
-            "name": "stationcode",
-            "in": "path",
-            "description": "station code.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "The fiscal code of the Organization to update",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
           }
-        ],
+        }, {
+          "name": "stationcode",
+          "in": "path",
+          "description": "station code.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1620,16 +1358,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -1640,18 +1368,6 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1661,47 +1377,9 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Delete a relation between creditor institution and station",
-        "operationId": "deleteCreditorInstitutionStation",
-        "parameters": [
-          {
-            "name": "creditorinstitutioncode",
-            "in": "path",
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 1,
-              "type": "string"
-            }
           },
-          {
-            "name": "stationcode",
-            "in": "path",
-            "description": "station code.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK.",
+          "403": {
+            "description": "Forbidden client error status.",
             "content": {
               "application/json": {}
             }
@@ -1716,18 +1394,43 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
           "429": {
             "description": "Too many requests",
             "content": {
               "application/json": {}
             }
-          },
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      },
+      "delete": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Delete a relation between creditor institution and station",
+        "operationId": "deleteCreditorInstitutionStation",
+        "parameters": [{
+          "name": "creditorinstitutioncode",
+          "in": "path",
+          "description": "Organization fiscal code, the fiscal code of the Organization.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          }
+        }, {
+          "name": "stationcode",
+          "in": "path",
+          "description": "station code.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1737,52 +1440,67 @@
                 }
               }
             }
+          },
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/icas": {
       "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Get the list of ICAs",
         "operationId": "getIcas",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of elements on one page. Default = 50",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number. Page value starts from 0",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+        "parameters": [{
+          "name": "limit",
+          "in": "query",
+          "description": "Number of elements on one page. Default = 50",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": 50
           }
-        ],
+        }, {
+          "name": "page",
+          "in": "query",
+          "description": "Page number. Page value starts from 0",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }],
         "responses": {
-          "429": {
-            "description": "Too many requests"
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -1802,46 +1520,97 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
           }
         },
-        "security": [
-          {
-            "ApiKey": []
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/icas/xsd": {
+      "post": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Validate XML against XSD",
+        "operationId": "checkXSD",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["file"],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "XML file regarding ICA to check",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
           }
-        ]
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/XSDValidation"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/icas/{idica}": {
       "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Download a XML file containing the details of an ICA",
         "operationId": "getIca",
-        "parameters": [
-          {
-            "name": "idica",
-            "in": "path",
-            "description": "Id ICA",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "creditorinstitutioncode",
-            "in": "query",
-            "description": "Creditor institution code",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "idica",
+          "in": "path",
+          "description": "Id ICA",
+          "required": true,
+          "schema": {
+            "type": "string"
           }
-        ],
+        }, {
+          "name": "creditorinstitutioncode",
+          "in": "query",
+          "description": "Creditor institution code",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
         "responses": {
-          "429": {
-            "description": "Too many requests"
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -1859,8 +1628,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1872,8 +1641,11 @@
           "403": {
             "description": "Forbidden client error status."
           },
-          "500": {
-            "description": "Service unavailable.",
+          "429": {
+            "description": "Too many requests"
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1883,23 +1655,29 @@
             }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     },
     "/info": {
       "get": {
-        "tags": [
-          "Home"
-        ],
+        "tags": ["Home"],
         "summary": "Return OK if application is started",
         "operationId": "healthCheck",
         "responses": {
           "200": {
             "description": "OK."
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden client error status.",
@@ -1912,7 +1690,39 @@
             "content": {
               "application/json": {}
             }
-          },
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/paymentserviceproviders": {
+      "get": {
+        "tags": ["Payment Service Providers"],
+        "summary": "Get paginated list of Payment Service Providers",
+        "operationId": "getPaymentServiceProviders",
+        "parameters": [{
+          "name": "limit",
+          "in": "query",
+          "description": "Number of elements on one page. Default = 50",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": 50
+          }
+        }, {
+          "name": "page",
+          "in": "query",
+          "description": "Page number. Page value starts from 0",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1922,51 +1732,12 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/paymentserviceproviders": {
-      "get": {
-        "tags": [
-          "Payment Service Providers"
-        ],
-        "summary": "Get paginated list of Payment Service Providers",
-        "operationId": "getPaymentServiceProviders",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of elements on one page. Default = 50",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number. Page value starts from 0",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "429": {
-            "description": "Too many requests"
           },
           "403": {
             "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "200": {
             "description": "OK.",
@@ -1977,7 +1748,30 @@
                 }
               }
             }
-          },
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/paymentserviceproviders/{pspcode}": {
+      "get": {
+        "tags": ["Payment Service Providers"],
+        "summary": "Get payment service provider details",
+        "operationId": "getPaymentServiceProvider",
+        "parameters": [{
+          "name": "pspcode",
+          "in": "path",
+          "description": "Code of the payment service provider",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1987,36 +1781,7 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/paymentserviceproviders/{pspcode}": {
-      "get": {
-        "tags": [
-          "Payment Service Providers"
-        ],
-        "summary": "Get payment service provider details",
-        "operationId": "getPaymentServiceProvider",
-        "parameters": [
-          {
-            "name": "pspcode",
-            "in": "path",
-            "description": "Code of the payment service provider",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 1,
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
+          },
           "200": {
             "description": "OK.",
             "content": {
@@ -2025,6 +1790,12 @@
                   "$ref": "#/components/schemas/PaymentServiceProviderDetails"
                 }
               }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
             }
           },
           "404": {
@@ -2037,18 +1808,60 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
           "429": {
             "description": "Too many requests",
             "content": {
               "application/json": {}
             }
-          },
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/stations": {
+      "get": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Get paginated list of stations",
+        "operationId": "getStations",
+        "parameters": [{
+          "name": "limit",
+          "in": "query",
+          "description": "Number of elements on one page. Default = 50",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "default": 50
+          }
+        }, {
+          "name": "page",
+          "in": "query",
+          "description": "Page number. Page value starts from 0",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }, {
+          "name": "brokercode",
+          "in": "query",
+          "description": "Filter by broker",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }, {
+          "name": "creditorinstitutioncode",
+          "in": "query",
+          "description": "Filter by creditor institution",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -2058,66 +1871,9 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/stations": {
-      "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Get paginated list of stations",
-        "operationId": "getStations",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of elements on one page. Default = 50",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
           },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number. Page value starts from 0",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "brokercode",
-            "in": "query",
-            "description": "Filter by broker",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "creditorinstitutioncode",
-            "in": "query",
-            "description": "Filter by creditor institution",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "429": {
-            "description": "Too many requests"
+          "403": {
+            "description": "Forbidden client error status."
           },
           "200": {
             "description": "OK.",
@@ -2129,30 +1885,16 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
+          "429": {
+            "description": "Too many requests"
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       },
       "post": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Create a station",
         "operationId": "createStation",
         "requestBody": {
@@ -2166,8 +1908,8 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Not Found",
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -2176,8 +1918,8 @@
               }
             }
           },
-          "409": {
-            "description": "Conflict",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2192,10 +1934,14 @@
               "application/json": {}
             }
           },
-          "429": {
-            "description": "Too many requests",
+          "404": {
+            "description": "Not Found",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
             }
           },
           "201": {
@@ -2208,6 +1954,35 @@
               }
             }
           },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      }
+    },
+    "/stations/{stationcode}": {
+      "get": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Get station details",
+        "operationId": "getStation",
+        "parameters": [{
+          "name": "stationcode",
+          "in": "path",
+          "description": "station code.",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -2217,36 +1992,20 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      }
-    },
-    "/stations/{stationcode}": {
-      "get": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Get station details",
-        "operationId": "getStation",
-        "parameters": [
-          {
-            "name": "stationcode",
-            "in": "path",
-            "description": "station code.",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
             }
-          }
-        ],
-        "responses": {
+          },
           "429": {
             "description": "Too many requests"
           },
@@ -2259,56 +2018,27 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       },
       "put": {
-        "tags": [
-          "Creditor Institutions"
-        ],
+        "tags": ["Creditor Institutions"],
         "summary": "Update a station",
         "operationId": "updateStation",
-        "parameters": [
-          {
-            "name": "stationcode",
-            "in": "path",
-            "description": "station code",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
+        "parameters": [{
+          "name": "stationcode",
+          "in": "path",
+          "description": "station code",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
           }
-        ],
+        }],
         "requestBody": {
           "description": "The values to update of the station",
           "content": {
@@ -2321,8 +2051,8 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Not Found",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2347,49 +2077,6 @@
               "application/json": {}
             }
           },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Delete a station",
-        "operationId": "deleteStation",
-        "parameters": [
-          {
-            "name": "stationcode",
-            "in": "path",
-            "description": "station code",
-            "required": true,
-            "schema": {
-              "maxLength": 50,
-              "minLength": 0,
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
           "404": {
             "description": "Not Found",
             "content": {
@@ -2400,8 +2087,45 @@
               }
             }
           },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "security": [{
+          "ApiKey": []
+        }]
+      },
+      "delete": {
+        "tags": ["Creditor Institutions"],
+        "summary": "Delete a station",
+        "operationId": "deleteStation",
+        "parameters": [{
+          "name": "stationcode",
+          "in": "path",
+          "description": "station code",
+          "required": true,
+          "schema": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          }
+        }],
+        "responses": {
           "409": {
             "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2419,14 +2143,8 @@
               "application/json": {}
             }
           },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "500": {
-            "description": "Service unavailable.",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2434,34 +2152,24 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          }
-        ]
+        "security": [{
+          "ApiKey": []
+        }]
       }
     }
   },
   "components": {
     "schemas": {
       "StationDetails": {
-        "required": [
-          "broker_code",
-          "enabled",
-          "ip",
-          "password",
-          "port",
-          "protocol",
-          "service",
-          "station_code",
-          "thread_number",
-          "timeout_a",
-          "timeout_b",
-          "timeout_c",
-          "version"
-        ],
+        "required": ["broker_code", "enabled", "ip", "password", "port", "protocol", "service", "station_code", "thread_number", "timeout_a", "timeout_b", "timeout_c", "version"],
         "type": "object",
         "properties": {
           "station_code": {
@@ -2628,15 +2336,7 @@
         }
       },
       "CreditorInstitutionDetails": {
-        "required": [
-          "address",
-          "business_name",
-          "creditor_institution_code",
-          "enabled",
-          "psp_payment",
-          "reporting_ftp",
-          "reporting_zip"
-        ],
+        "required": ["address", "business_name", "creditor_institution_code", "enabled", "psp_payment", "reporting_ftp", "reporting_zip"],
         "type": "object",
         "properties": {
           "creditor_institution_code": {
@@ -2674,9 +2374,7 @@
         }
       },
       "CreditorInstitutionStationEdit": {
-        "required": [
-          "station_code"
-        ],
+        "required": ["station_code"],
         "type": "object",
         "properties": {
           "station_code": {
@@ -2706,12 +2404,7 @@
         }
       },
       "BrokerDetails": {
-        "required": [
-          "broker_code",
-          "description",
-          "enabled",
-          "extended_fault_bean"
-        ],
+        "required": ["broker_code", "description", "enabled", "extended_fault_bean"],
         "type": "object",
         "properties": {
           "broker_code": {
@@ -2734,20 +2427,31 @@
           }
         }
       },
+      "XSDValidation": {
+        "required": ["detail", "xsdCompliant", "xsdSchema"],
+        "type": "object",
+        "properties": {
+          "xsdCompliant": {
+            "type": "boolean",
+            "example": false
+          },
+          "xsdSchema": {
+            "type": "string",
+            "example": "https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/InformativaContoAccredito_1_2_1.xsd"
+          },
+          "detail": {
+            "type": "string",
+            "example": "Invalid content was found starting with element 'idBancaSeller'. One of '{ibanAccredito}' is expected. Error at lineNumber: 10"
+          }
+        }
+      },
       "Encoding": {
-        "required": [
-          "code_type",
-          "encoding_code"
-        ],
+        "required": ["code_type", "encoding_code"],
         "type": "object",
         "properties": {
           "code_type": {
             "type": "string",
-            "enum": [
-              "BARCODE_GS1_128",
-              "QR_CODE",
-              "BARCODE_128_AIM"
-            ]
+            "enum": ["BARCODE_GS1_128", "QR_CODE", "BARCODE_128_AIM"]
           },
           "encoding_code": {
             "type": "string",
@@ -2756,12 +2460,7 @@
         }
       },
       "PageInfo": {
-        "required": [
-          "items_found",
-          "limit",
-          "page",
-          "total_pages"
-        ],
+        "required": ["items_found", "limit", "page", "total_pages"],
         "type": "object",
         "properties": {
           "page": {
@@ -2787,11 +2486,7 @@
         }
       },
       "Station": {
-        "required": [
-          "enabled",
-          "station_code",
-          "version"
-        ],
+        "required": ["enabled", "station_code", "version"],
         "type": "object",
         "properties": {
           "station_code": {
@@ -2813,10 +2508,7 @@
         }
       },
       "Stations": {
-        "required": [
-          "page_info",
-          "stations"
-        ],
+        "required": ["page_info", "stations"],
         "type": "object",
         "properties": {
           "stations": {
@@ -2831,11 +2523,7 @@
         }
       },
       "PaymentServiceProvider": {
-        "required": [
-          "business_name",
-          "enabled",
-          "psp_code"
-        ],
+        "required": ["business_name", "enabled", "psp_code"],
         "type": "object",
         "properties": {
           "psp_code": {
@@ -2850,10 +2538,7 @@
         }
       },
       "PaymentServiceProviders": {
-        "required": [
-          "page_info",
-          "payment_service_providers"
-        ],
+        "required": ["page_info", "payment_service_providers"],
         "type": "object",
         "properties": {
           "payment_service_providers": {
@@ -2868,11 +2553,7 @@
         }
       },
       "PaymentServiceProviderDetails": {
-        "required": [
-          "business_name",
-          "enabled",
-          "psp_code"
-        ],
+        "required": ["business_name", "enabled", "psp_code"],
         "type": "object",
         "properties": {
           "psp_code": {
@@ -2915,13 +2596,7 @@
         }
       },
       "Ica": {
-        "required": [
-          "business_name",
-          "creditor_institution_code",
-          "id_ica",
-          "publication_date",
-          "validity_date"
-        ],
+        "required": ["business_name", "creditor_institution_code", "id_ica", "publication_date", "validity_date"],
         "type": "object",
         "properties": {
           "id_ica": {
@@ -2947,10 +2622,7 @@
         }
       },
       "Icas": {
-        "required": [
-          "icas",
-          "page_info"
-        ],
+        "required": ["icas", "page_info"],
         "type": "object",
         "properties": {
           "icas": {
@@ -2965,11 +2637,7 @@
         }
       },
       "CreditorInstitution": {
-        "required": [
-          "business_name",
-          "creditor_institution_code",
-          "enabled"
-        ],
+        "required": ["business_name", "creditor_institution_code", "enabled"],
         "type": "object",
         "properties": {
           "creditor_institution_code": {
@@ -2992,10 +2660,7 @@
         }
       },
       "CreditorInstitutions": {
-        "required": [
-          "creditor_institutions",
-          "page_info"
-        ],
+        "required": ["creditor_institutions", "page_info"],
         "type": "object",
         "properties": {
           "creditor_institutions": {
@@ -3010,11 +2675,7 @@
         }
       },
       "CreditorInstitutionStation": {
-        "required": [
-          "enabled",
-          "station_code",
-          "version"
-        ],
+        "required": ["enabled", "station_code", "version"],
         "type": "object",
         "properties": {
           "station_code": {
@@ -3054,9 +2715,7 @@
         }
       },
       "CreditorInstitutionStationList": {
-        "required": [
-          "stations_list"
-        ],
+        "required": ["stations_list"],
         "type": "object",
         "properties": {
           "stations_list": {
@@ -3068,11 +2727,7 @@
         }
       },
       "Iban": {
-        "required": [
-          "iban",
-          "publication_date",
-          "validity_date"
-        ],
+        "required": ["iban", "publication_date", "validity_date"],
         "type": "object",
         "properties": {
           "iban": {
@@ -3092,9 +2747,7 @@
         }
       },
       "Ibans": {
-        "required": [
-          "ibans"
-        ],
+        "required": ["ibans"],
         "type": "object",
         "properties": {
           "ibans": {
@@ -3106,9 +2759,7 @@
         }
       },
       "CreditorInstitutionEncodings": {
-        "required": [
-          "encodings"
-        ],
+        "required": ["encodings"],
         "type": "object",
         "properties": {
           "encodings": {
@@ -3120,13 +2771,7 @@
         }
       },
       "CounterpartTable": {
-        "required": [
-          "business_name",
-          "creditor_institution_code",
-          "id_counterpart_table",
-          "publication_date",
-          "validity_date"
-        ],
+        "required": ["business_name", "creditor_institution_code", "id_counterpart_table", "publication_date", "validity_date"],
         "type": "object",
         "properties": {
           "id_counterpart_table": {
@@ -3152,10 +2797,7 @@
         }
       },
       "CounterpartTables": {
-        "required": [
-          "counterpart_tables",
-          "page_info"
-        ],
+        "required": ["counterpart_tables", "page_info"],
         "type": "object",
         "properties": {
           "counterpart_tables": {
@@ -3169,189 +2811,8 @@
           }
         }
       },
-      "Channel": {
-        "required": [
-          "channel_code",
-          "description",
-          "enabled"
-        ],
-        "type": "object",
-        "properties": {
-          "channel_code": {
-            "type": "string",
-            "example": "223344556677889900"
-          },
-          "enabled": {
-            "type": "boolean"
-          },
-          "description": {
-            "maxLength": 255,
-            "minLength": 0,
-            "type": "string",
-            "example": "Lorem ipsum dolor sit amet"
-          }
-        }
-      },
-      "Channels": {
-        "required": [
-          "channels_list",
-          "page_info"
-        ],
-        "type": "object",
-        "properties": {
-          "channels_list": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Channel"
-            }
-          },
-          "page_info": {
-            "$ref": "#/components/schemas/PageInfo"
-          }
-        }
-      },
-      "ChannelDetails": {
-        "required": [
-          "broker_psp_code",
-          "channel_code",
-          "description",
-          "enabled",
-          "ip",
-          "password",
-          "port",
-          "protocol",
-          "service",
-          "thread_number",
-          "timeout_a",
-          "timeout_b",
-          "timeout_c"
-        ],
-        "type": "object",
-        "properties": {
-          "channel_code": {
-            "type": "string",
-            "example": "223344556677889900"
-          },
-          "enabled": {
-            "type": "boolean"
-          },
-          "description": {
-            "maxLength": 255,
-            "minLength": 0,
-            "type": "string",
-            "example": "Lorem ipsum dolor sit amet"
-          },
-          "password": {
-            "type": "string"
-          },
-          "new_password": {
-            "type": "string"
-          },
-          "protocol": {
-            "type": "string"
-          },
-          "ip": {
-            "type": "string"
-          },
-          "port": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "service": {
-            "type": "string"
-          },
-          "broker_psp_code": {
-            "type": "string"
-          },
-          "proxy_enabled": {
-            "type": "boolean"
-          },
-          "proxy_host": {
-            "type": "string"
-          },
-          "proxy_port": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "proxy_username": {
-            "type": "string"
-          },
-          "proxy_password": {
-            "type": "string"
-          },
-          "thread_number": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "timeout_a": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "timeout_b": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "timeout_c": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "npm_service": {
-            "type": "string"
-          },
-          "redirect_ip": {
-            "type": "string"
-          },
-          "redirect_path": {
-            "type": "string"
-          },
-          "redirect_port": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "redirect_query_string": {
-            "type": "string"
-          },
-          "redirect_protocol": {
-            "type": "string"
-          },
-          "payment_model": {
-            "type": "string",
-            "enum": [
-              "IMMEDIATE",
-              "IMMEDIATE_MULTIBENEFICIARY",
-              "DEFERRED",
-              "ACTIVATED_AT_PSP"
-            ]
-          },
-          "serv_plugin": {
-            "type": "string"
-          },
-          "rt_push": {
-            "type": "boolean"
-          },
-          "on_us": {
-            "type": "boolean"
-          },
-          "card_chart": {
-            "type": "boolean"
-          },
-          "recovery": {
-            "type": "boolean"
-          },
-          "digital_stamp_brand": {
-            "type": "boolean"
-          },
-          "flag_io": {
-            "type": "boolean"
-          }
-        }
-      },
       "BrokerPsp": {
-        "required": [
-          "broker_psp_code",
-          "description",
-          "enabled"
-        ],
+        "required": ["broker_psp_code", "description", "enabled"],
         "type": "object",
         "properties": {
           "broker_psp_code": {
@@ -3369,10 +2830,7 @@
         }
       },
       "BrokersPsp": {
-        "required": [
-          "brokers_psp_list",
-          "page_info"
-        ],
+        "required": ["brokers_psp_list", "page_info"],
         "type": "object",
         "properties": {
           "brokers_psp_list": {
@@ -3387,12 +2845,7 @@
         }
       },
       "BrokerPspDetails": {
-        "required": [
-          "broker_psp_code",
-          "description",
-          "enabled",
-          "extended_fault_bean"
-        ],
+        "required": ["broker_psp_code", "description", "enabled", "extended_fault_bean"],
         "type": "object",
         "properties": {
           "broker_psp_code": {
@@ -3413,11 +2866,7 @@
         }
       },
       "Broker": {
-        "required": [
-          "broker_code",
-          "description",
-          "enabled"
-        ],
+        "required": ["broker_code", "description", "enabled"],
         "type": "object",
         "properties": {
           "broker_code": {
@@ -3438,10 +2887,7 @@
         }
       },
       "Brokers": {
-        "required": [
-          "brokers_list",
-          "page_info"
-        ],
+        "required": ["brokers_list", "page_info"],
         "type": "object",
         "properties": {
           "brokers_list": {
