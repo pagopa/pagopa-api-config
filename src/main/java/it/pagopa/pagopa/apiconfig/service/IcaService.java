@@ -94,9 +94,8 @@ public class IcaService {
             Validator validator = schema.newValidator();
 
             XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-            // to be compliant, prohibit the use of all protocols by external entities:
-            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            // to be compliant, completely disable DOCTYPE declaration:
+            xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 
             FileInputStream inputStream = new FileInputStream(xml);
             XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
