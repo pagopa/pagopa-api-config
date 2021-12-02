@@ -86,8 +86,9 @@ public class IcaService {
 
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            // to be compliant, completely disable DOCTYPE declaration:
-            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // to be compliant, prohibit the use of all protocols by external entities:
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 
             javax.xml.validation.Schema schema = factory.newSchema(new URL(xsdSchema));
             Validator validator = schema.newValidator();
