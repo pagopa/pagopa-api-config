@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.config;
 
 
+import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
@@ -12,7 +13,10 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertBrokerDetailsToIntermediariPa;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCanaliToChannel;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCanaliToChannelDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCodifichePaToEncoding;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCreditorInstitutionDetailsToPa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCreditorInstitutionStationPostToPaStazionePa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertEncodingToCodifichePa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertIbanValidiPerPaToIban;
@@ -30,7 +34,6 @@ import it.pagopa.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProviderDetai
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStationDetailsToStazioni;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStationDetails;
-import it.pagopa.pagopa.apiconfig.mapper.ConvertToCreditorInstitutionDetailsToPa;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Broker;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -45,6 +48,8 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPsp;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.Channel;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import org.modelmapper.Converter;
@@ -74,7 +79,7 @@ public class MappingsConfiguration {
         Converter<IntermediariPa, BrokerDetails> convertIntermediariPaToBrokerDetails = new ConvertIntermediariPaToBrokerDetails();
         Converter<InformativeContoAccreditoMaster, Ica> convertInformativeContoAccreditoMasterRepositoryToIca = new ConvertInformativeContoAccreditoMasterRepositoryToIca();
         Converter<InformativePaMaster, CounterpartTable> convertInformativePaMasterToCounterpartTable = new ConvertInformativePaMasterToCounterpartTable();
-        Converter<CreditorInstitutionDetails, Pa> convertToCreditorInstitutionDetailsToPa = new ConvertToCreditorInstitutionDetailsToPa();
+        Converter<CreditorInstitutionDetails, Pa> convertCreditorInstitutionDetailsToPa = new ConvertCreditorInstitutionDetailsToPa();
         Converter<BrokerDetails, IntermediariPa> convertBrokerDetailsToIntermediariPa = new ConvertBrokerDetailsToIntermediariPa();
         Converter<StationDetails, Stazioni> convertStationDetailsToStazioni = new ConvertStationDetailsToStazioni();
         Converter<Encoding, CodifichePa> convertEncodingToCodifichePa = new ConvertEncodingToCodifichePa();
@@ -83,6 +88,8 @@ public class MappingsConfiguration {
         Converter<CreditorInstitutionStationEdit, PaStazionePa> convertCreditorInstitutionStationPostToPaStazionePa = new ConvertCreditorInstitutionStationPostToPaStazionePa();
         Converter<IntermediariPsp, BrokerPsp> convertIntermediariPspToBrokerPsp = new ConvertIntermediariPspToBrokerPsp();
         Converter<IntermediariPsp, BrokerPspDetails> convertIntermediariPspToBrokerPspDetails = new ConvertIntermediariPspToBrokerPspDetails();
+        Converter<Canali, Channel> convertCanaliToChannel = new ConvertCanaliToChannel();
+        Converter<Canali, ChannelDetails> convertCanaliToChannelDetails = new ConvertCanaliToChannelDetails();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -95,7 +102,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(IntermediariPa.class, BrokerDetails.class).setConverter(convertIntermediariPaToBrokerDetails);
         mapper.createTypeMap(InformativeContoAccreditoMaster.class, Ica.class).setConverter(convertInformativeContoAccreditoMasterRepositoryToIca);
         mapper.createTypeMap(InformativePaMaster.class, CounterpartTable.class).setConverter(convertInformativePaMasterToCounterpartTable);
-        mapper.createTypeMap(CreditorInstitutionDetails.class, Pa.class).setConverter(convertToCreditorInstitutionDetailsToPa);
+        mapper.createTypeMap(CreditorInstitutionDetails.class, Pa.class).setConverter(convertCreditorInstitutionDetailsToPa);
         mapper.createTypeMap(BrokerDetails.class, IntermediariPa.class).setConverter(convertBrokerDetailsToIntermediariPa);
         mapper.createTypeMap(StationDetails.class, Stazioni.class).setConverter(convertStationDetailsToStazioni);
         mapper.createTypeMap(Encoding.class, CodifichePa.class).setConverter(convertEncodingToCodifichePa);
@@ -104,6 +111,8 @@ public class MappingsConfiguration {
         mapper.createTypeMap(CreditorInstitutionStationEdit.class, PaStazionePa.class).setConverter(convertCreditorInstitutionStationPostToPaStazionePa);
         mapper.createTypeMap(IntermediariPsp.class, BrokerPsp.class).setConverter(convertIntermediariPspToBrokerPsp);
         mapper.createTypeMap(IntermediariPsp.class, BrokerPspDetails.class).setConverter(convertIntermediariPspToBrokerPspDetails);
+        mapper.createTypeMap(Canali.class, Channel.class).setConverter(convertCanaliToChannel);
+        mapper.createTypeMap(Canali.class, ChannelDetails.class).setConverter(convertCanaliToChannelDetails);
 
         return mapper;
     }
