@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.21"
+    "version": "0.2.24"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -409,6 +409,116 @@
         ],
         "operationId": "getBrokerPsp",
         "summary": "Get creditor broker details "
+      }
+    },
+    "/channels": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "default": 50,
+            "description": "Number of elements on one page. Default = 50",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "format": "int32",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/Channels"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getChannels",
+        "summary": "Get paginated list of channels"
+      }
+    },
+    "/channels/{channelcode}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "channel code.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "channelcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/ChannelDetails"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getChannel",
+        "summary": "Get channel details "
       }
     },
     "/counterparttables": {
@@ -1996,6 +2106,183 @@
       },
       "required": [
         "brokers_psp_list",
+        "page_info"
+      ],
+      "type": "object"
+    },
+    "Channel": {
+      "properties": {
+        "channel_code": {
+          "example": "223344556677889900",
+          "type": "string"
+        },
+        "description": {
+          "example": "Lorem ipsum dolor sit amet",
+          "maxLength": 255,
+          "minLength": 0,
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "channel_code",
+        "description",
+        "enabled"
+      ],
+      "type": "object"
+    },
+    "ChannelDetails": {
+      "properties": {
+        "broker_psp_code": {
+          "type": "string"
+        },
+        "card_chart": {
+          "type": "boolean"
+        },
+        "channel_code": {
+          "example": "223344556677889900",
+          "type": "string"
+        },
+        "description": {
+          "example": "Lorem ipsum dolor sit amet",
+          "maxLength": 255,
+          "minLength": 0,
+          "type": "string"
+        },
+        "digital_stamp_brand": {
+          "type": "boolean"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "flag_io": {
+          "type": "boolean"
+        },
+        "ip": {
+          "type": "string"
+        },
+        "new_password": {
+          "type": "string"
+        },
+        "npm_service": {
+          "type": "string"
+        },
+        "on_us": {
+          "type": "boolean"
+        },
+        "password": {
+          "type": "string"
+        },
+        "payment_model": {
+          "enum": [
+            "IMMEDIATE",
+            "IMMEDIATE_MULTIBENEFICIARY",
+            "DEFERRED",
+            "ACTIVATED_AT_PSP"
+          ],
+          "type": "string"
+        },
+        "port": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "protocol": {
+          "type": "string"
+        },
+        "proxy_enabled": {
+          "type": "boolean"
+        },
+        "proxy_host": {
+          "type": "string"
+        },
+        "proxy_password": {
+          "type": "string"
+        },
+        "proxy_port": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "proxy_username": {
+          "type": "string"
+        },
+        "recovery": {
+          "type": "boolean"
+        },
+        "redirect_ip": {
+          "type": "string"
+        },
+        "redirect_path": {
+          "type": "string"
+        },
+        "redirect_port": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "redirect_protocol": {
+          "type": "string"
+        },
+        "redirect_query_string": {
+          "type": "string"
+        },
+        "rt_push": {
+          "type": "boolean"
+        },
+        "serv_plugin": {
+          "type": "string"
+        },
+        "service": {
+          "type": "string"
+        },
+        "thread_number": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "timeout_a": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "timeout_b": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "timeout_c": {
+          "format": "int64",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "broker_psp_code",
+        "channel_code",
+        "description",
+        "enabled",
+        "ip",
+        "password",
+        "port",
+        "protocol",
+        "service",
+        "thread_number",
+        "timeout_a",
+        "timeout_b",
+        "timeout_c"
+      ],
+      "type": "object"
+    },
+    "Channels": {
+      "properties": {
+        "channels_list": {
+          "items": {
+            "$ref": "#/definitions/Channel"
+          },
+          "type": "array"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        }
+      },
+      "required": [
+        "channels_list",
         "page_info"
       ],
       "type": "object"

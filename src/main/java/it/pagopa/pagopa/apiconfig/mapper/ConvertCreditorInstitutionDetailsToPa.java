@@ -8,7 +8,7 @@ import org.modelmapper.spi.MappingContext;
 import javax.validation.Valid;
 
 
-public class ConvertToCreditorInstitutionDetailsToPa implements Converter<CreditorInstitutionDetails, Pa> {
+public class ConvertCreditorInstitutionDetailsToPa implements Converter<CreditorInstitutionDetails, Pa> {
 
     @Override
     public Pa convert(MappingContext<CreditorInstitutionDetails, Pa> context) {

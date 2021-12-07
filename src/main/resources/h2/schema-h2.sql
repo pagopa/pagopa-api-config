@@ -294,3 +294,87 @@ create table NODO4_CFG.PSP
         foreign key (FK_INT_QUADRATURE)
             references NODO4_CFG.INTERMEDIARI_PSP
 );
+
+create table NODO4_CFG.WFESP_PLUGIN_CONF
+(
+    OBJ_ID                   numeric     not null identity,
+    ID_SERV_PLUGIN           varchar(35) not null,
+    PROFILO_PAG_CONST_STRING varchar(150),
+    PROFILO_PAG_SOAP_RULE    varchar(150),
+    PROFILO_PAG_RPT_XPATH    varchar(150),
+    ID_BEAN                  varchar(255),
+    constraint PK_WFESP_PLUGIN_CONF
+        primary key (OBJ_ID),
+    constraint UQ_ID_SERV_PLUGIN
+        unique (ID_SERV_PLUGIN)
+);
+
+create table NODO4_CFG.CANALI_NODO
+(
+    OBJ_ID                numeric      not null identity,
+    REDIRECT_IP           varchar(100),
+    REDIRECT_PATH         varchar(100),
+    REDIRECT_PORTA        numeric,
+    REDIRECT_QUERY_STRING varchar(255),
+    MODELLO_PAGAMENTO     varchar(255) not null,
+    MULTI_PAYMENT         char(1)      not null,
+    RAGIONE_SOCIALE       varchar(35),
+    RPT_RT_COMPLIANT      char(1)      not null,
+    WSAPI                 varchar(15),
+    REDIRECT_PROTOCOLLO   varchar(35),
+    ID_SERV_PLUGIN        varchar(35),
+    ID_CLUSTER            varchar(255),
+    ID_FESP_INSTANCE      varchar(275),
+    LENTO                 char(1)      not null,
+    RT_PUSH               char(1)      not null,
+    AGID_CHANNEL          char(1)      not null,
+    ON_US                 char(1)      not null,
+    CARRELLO_CARTE        char(1)      not null,
+    RECOVERY              char(1)      not null default 'N',
+    MARCA_BOLLO_DIGITALE  char         not null,
+    FLAG_IO               char                  default 'N',
+    constraint PK_CANALI_NODO
+        primary key (OBJ_ID),
+    constraint FK_CANALI_SERV_PLUGIN
+        foreign key (ID_SERV_PLUGIN)
+            references NODO4_CFG.WFESP_PLUGIN_CONF (ID_SERV_PLUGIN)
+);
+
+create table NODO4_CFG.CANALI (
+                                  OBJ_ID numeric not null identity,
+                                  ID_CANALE varchar(35) not null,
+                                  ENABLED char(1) not null,
+                                  IP varchar(100),
+                                  NEW_PASSWORD varchar(15),
+                                  PASSWORD varchar(15),
+                                  PORTA numeric not null,
+                                  PROTOCOLLO varchar(255) not null,
+                                  SERVIZIO varchar(100),
+                                  DESCRIZIONE varchar(70),
+                                  FK_INTERMEDIARIO_PSP numeric not null,
+                                  PROXY_ENABLED char(1) not null,
+                                  PROXY_HOST varchar(100),
+                                  PROXY_PASSWORD varchar(15),
+                                  PROXY_PORT numeric,
+                                  PROXY_USERNAME varchar(15),
+                                  CANALE_NODO char(1) not null default 'N',
+                                  CANALE_AVV char(1) not null default 'N',
+                                  FK_CANALI_NODO numeric,
+                                  TIMEOUT numeric not null default 120,
+                                  NUM_THREAD numeric not null,
+                                  USE_NEW_FAULT_CODE char not null,
+                                  TIMEOUT_A numeric(19) not null,
+                                  TIMEOUT_B numeric(19) not null,
+                                  TIMEOUT_C numeric(19) not null,
+                                  SERVIZIO_NMP varchar(255),
+                                  constraint PK_CANALI
+                                      primary key (OBJ_ID),
+                                  constraint UQ_ID_CANALE
+                                      unique (ID_CANALE),
+                                  constraint FK_CANALI_INTERMEDIARI_PSP
+                                      foreign key (FK_INTERMEDIARIO_PSP)
+                                          references NODO4_CFG.INTERMEDIARI_PSP,
+                                  constraint FK_CANALI_NODO
+                                      foreign key (FK_CANALI_NODO)
+                                          references NODO4_CFG.CANALI_NODO
+);

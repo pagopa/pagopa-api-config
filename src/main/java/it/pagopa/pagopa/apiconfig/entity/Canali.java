@@ -1,0 +1,113 @@
+package it.pagopa.pagopa.apiconfig.entity;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)@ToString(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "CANALI", schema = "NODO4_CFG")
+@Builder
+public class Canali {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "OBJ_ID", nullable = false)
+    private Long id;
+
+    @Column(name = "ID_CANALE", nullable = false, length = 35)
+    private String idCanale;
+
+    @Column(name = "ENABLED", nullable = false)
+    private Boolean enabled = false;
+
+    @Column(name = "IP", length = 100)
+    private String ip;
+
+    @Column(name = "NEW_PASSWORD", length = 15)
+    private String newPassword;
+
+    @Column(name = "PASSWORD", length = 15)
+    private String password;
+
+    @Column(name = "PORTA", nullable = false)
+    private Long porta;
+
+    @Column(name = "PROTOCOLLO", nullable = false)
+    private String protocollo;
+
+    @Column(name = "SERVIZIO", length = 100)
+    private String servizio;
+
+    @Column(name = "DESCRIZIONE", length = 70)
+    private String descrizione;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "FK_INTERMEDIARIO_PSP", nullable = false)
+    @NotNull
+    private IntermediariPsp fkIntermediarioPsp;
+
+    @Column(name = "PROXY_ENABLED", nullable = false)
+    private Boolean proxyEnabled = false;
+
+    @Column(name = "PROXY_HOST", length = 100)
+    private String proxyHost;
+
+    @Column(name = "PROXY_PASSWORD", length = 15)
+    private String proxyPassword;
+
+    @Column(name = "PROXY_PORT")
+    private Long proxyPort;
+
+    @Column(name = "PROXY_USERNAME", length = 15)
+    private String proxyUsername;
+
+    @Column(name = "CANALE_NODO", nullable = false)
+    private Boolean canaleNodo = false;
+
+    @Column(name = "CANALE_AVV", nullable = false)
+    private Boolean canaleAvv = false;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_CANALI_NODO")
+    private CanaliNodo fkCanaliNodo;
+
+    @Column(name = "TIMEOUT", nullable = false)
+    private Long timeout;
+
+    @Column(name = "NUM_THREAD", nullable = false)
+    private Long numThread;
+
+    @Column(name = "USE_NEW_FAULT_CODE", nullable = false)
+    private Boolean useNewFaultCode = false;
+
+    @Column(name = "TIMEOUT_A", nullable = false)
+    private Long timeoutA;
+
+    @Column(name = "TIMEOUT_B", nullable = false)
+    private Long timeoutB;
+
+    @Column(name = "TIMEOUT_C", nullable = false)
+    private Long timeoutC;
+
+    @Column(name = "SERVIZIO_NMP")
+    private String servizioNmp;
+
+}
