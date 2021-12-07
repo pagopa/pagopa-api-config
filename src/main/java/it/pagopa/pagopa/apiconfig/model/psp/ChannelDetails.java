@@ -25,24 +25,24 @@ import java.util.Arrays;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelDetails extends Channel {
 
-    @JsonProperty("ip")
-    @NotNull
-    private String ip;
-
-    @JsonProperty("new_password")
-    private String newPassword;
-
     @JsonProperty("password")
     @NotNull
     private String password;
 
-    @JsonProperty("port")
-    @NotNull
-    private Long port;
+    @JsonProperty("new_password")
+    private String newPassword;
 
     @JsonProperty("protocol")
     @NotNull
     private String protocol;
+
+    @JsonProperty("ip")
+    @NotNull
+    private String ip;
+
+    @JsonProperty("port")
+    @NotNull
+    private Long port;
 
     @JsonProperty("service")
     @NotNull
