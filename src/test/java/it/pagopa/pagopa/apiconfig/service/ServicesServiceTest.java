@@ -42,6 +42,7 @@ class ServicesServiceTest {
         when(elencoServiziRepository.findAll(any(Example.class), any(Pageable.class))).thenReturn(page);
 
         Services result = servicesService.getServices(50, 0, Service.Filter.builder().build());
+
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_services_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
