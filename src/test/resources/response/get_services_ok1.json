@@ -1,0 +1,22 @@
+{
+  "services": [
+    {
+      "channel_code": "123",
+      "service_name": "service",
+      "payment_method_channel": 2,
+      "service_description": "service",
+      "timestamp_insertion": "2021-12-13T00:00:00.000Z",
+      "validity_date": "2021-12-14T00:00:00.000Z",
+      "channel_app": true,
+      "cart_card": true,
+      "mybank_code": "mybank",
+      "flag_io": false
+    }
+  ],
+  "page_info": {
+    "page": 0,
+    "limit": 50,
+    "items_found": 1,
+    "total_pages": 1
+  }
+}

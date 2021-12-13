@@ -1,13 +1,18 @@
 package it.pagopa.pagopa.apiconfig.model.psp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
+import it.pagopa.pagopa.apiconfig.util.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
@@ -48,7 +53,7 @@ public class Service {
     private String serviceName;
 
     @JsonProperty("payment_method_channel")
-    private Long payment_method_channel;
+    private Long paymentMethodChannel;
 
     @JsonProperty("payment_type_code")
     private String paymentTypeCode;
@@ -78,9 +83,15 @@ public class Service {
     private Double fixedCost;
 
     @JsonProperty("timestamp_insertion")
+    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+    @JsonSerialize(using = OffsetDateTimeSerializer.class)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime timestampInsertion;
 
     @JsonProperty("validity_date")
+    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+    @JsonSerialize(using = OffsetDateTimeSerializer.class)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime validityDate;
 
     @JsonProperty("logo_psp")

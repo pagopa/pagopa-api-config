@@ -1,0 +1,47 @@
+package it.pagopa.pagopa.apiconfig.service;
+
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
+import it.pagopa.pagopa.apiconfig.model.psp.Services;
+import it.pagopa.pagopa.apiconfig.repository.ElencoServiziRepository;
+import org.assertj.core.util.Lists;
+import org.json.JSONException;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.io.IOException;
+
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockElencoServizi;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+@SpringBootTest(classes = ApiConfig.class)
+class ServicesServiceTest {
+
+    @MockBean
+    private ElencoServiziRepository elencoServiziRepository;
+
+    @Autowired
+    @InjectMocks
+    private ServicesService servicesService;
+
+
+    @Test
+    void getServices() throws IOException, JSONException {
+        Page<ElencoServizi> page = TestUtil.mockPage(Lists.newArrayList(getMockElencoServizi()), 50, 0);
+        when(elencoServiziRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        Services result = servicesService.getServices(50, 0);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_services_ok1.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+}
