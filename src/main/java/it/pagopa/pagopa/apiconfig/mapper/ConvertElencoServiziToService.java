@@ -22,7 +22,7 @@ public class ConvertElencoServiziToService implements Converter<ElencoServizi, S
                 .brokerPspCode(source.getIntmId())
                 .channelCode(source.getCanaleId())
                 .serviceName(source.getNomeServizio())
-                .payment_method_channel(source.getCanaleModPag())
+                .paymentMethodChannel(source.getCanaleModPag())
                 .paymentTypeCode(source.getTipoVersCod())
                 .languageCode(source.getCodiceLingua())
                 .serviceDescription(source.getNomeServizio())

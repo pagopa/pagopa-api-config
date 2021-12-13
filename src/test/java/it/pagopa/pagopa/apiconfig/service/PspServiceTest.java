@@ -63,7 +63,7 @@ class PspServiceTest {
     }
 
     @Test
-    void getPaymentServiceProvider_notFound() throws IOException, JSONException {
+    void getPaymentServiceProvider_notFound() {
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.empty());
 
         try {
