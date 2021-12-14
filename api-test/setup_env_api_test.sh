@@ -9,7 +9,7 @@ case $STAGE in
     BASEPATH="apiconfig/api/v1"
     ;;
 
-  t) # test wth H2
+  t) # test with H2
     HOSTPORT="https://api.dev.platform.pagopa.it"
     BASEPATH="apiconfig/api/v1"
     ;;
