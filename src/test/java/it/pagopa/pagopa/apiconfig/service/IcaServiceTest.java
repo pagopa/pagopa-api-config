@@ -4,7 +4,6 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
@@ -20,10 +19,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.*;
@@ -31,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -39,9 +39,6 @@ class IcaServiceTest {
 
     @MockBean
     InformativeContoAccreditoMasterRepository informativeContoAccreditoMasterRepository;
-
-    @MockBean
-    StorageService storageService;
 
     @Autowired
     @InjectMocks
@@ -84,7 +81,8 @@ class IcaServiceTest {
     @Test
     void checkValidXML() throws IOException, JSONException {
         File xml = TestUtil.readFile("file/ica_valid.xml");
-        XSDValidation result = icaService.verifyXSD(xml);
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        XSDValidation result = icaService.verifyXSD(file);
         String expected = TestUtil.readJsonFromFile("response/ica_valid_xml.json");
         JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
     }
@@ -92,7 +90,8 @@ class IcaServiceTest {
     @Test
     void checkNotValidXML() throws IOException, JSONException {
         File xml = TestUtil.readFile("file/ica_not_valid.xml");
-        XSDValidation result = icaService.verifyXSD(xml);
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        XSDValidation result = icaService.verifyXSD(file);
         String expected = TestUtil.readJsonFromFile("response/ica_not_valid_xml.json");
         JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
     }

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
@@ -28,6 +29,7 @@ import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
@@ -78,7 +80,7 @@ public class IcaService {
                 .collect(Collectors.toList());
     }
 
-    public XSDValidation verifyXSD(File xml) {
+    public XSDValidation verifyXSD(MultipartFile xml) {
         boolean xsdEvaluated = false;
         String lineNumber = "";
         String detail;
@@ -97,7 +99,7 @@ public class IcaService {
             // to be compliant, completely disable DOCTYPE declaration:
             xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 
-            FileInputStream inputStream = new FileInputStream(xml);
+            InputStream inputStream = xml.getInputStream();
             XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
             StAXSource source = new StAXSource(xmlStreamReader);
             validator.validate(source);

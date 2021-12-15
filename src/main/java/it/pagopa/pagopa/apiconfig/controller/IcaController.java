@@ -12,9 +12,8 @@ import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.service.IcaService;
-import it.pagopa.pagopa.apiconfig.service.StorageService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -23,8 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.io.*;
 
 @Slf4j
 @RestController()
@@ -34,9 +34,6 @@ public class IcaController {
 
     @Autowired
     IcaService icaService;
-
-    @Autowired
-    StorageService storageService;
 
     @Operation(summary = "Get the list of ICAs", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
@@ -83,18 +80,11 @@ public class IcaController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @PostMapping(
             value = "/xsd",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {"application/json"}
     )
-    public ResponseEntity<XSDValidation> checkXSD(@Parameter(description = "XML file regarding ICA to check", required = true) @RequestParam("file") MultipartFile file) {
-        File xml = storageService.store(file);
-
-        XSDValidation response = icaService.verifyXSD(xml);
-
-        try {
-            FileUtils.forceDelete(xml);
-        } catch (IOException e) {
-            log.warn("Problem to remove file: " + xml.getAbsolutePath());
-        }
+    public ResponseEntity<XSDValidation> checkXSD(@RequestBody @NotNull @Parameter(description = "XML file regarding ICA to check", required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("file") MultipartFile file) {
+        XSDValidation response = icaService.verifyXSD(file);
         return ResponseEntity.ok(response);
     }
 

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "11f63905-44c1-441b-a8f9-87ebfb6122b2",
+		"_postman_id": "9bd8631a-e731-418a-bb03-85553257b8d5",
 		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -34,14 +34,7 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Ocp-Apim-Subscription-Key",
-								"value": "{{apikey-jacopo}}",
-								"type": "text",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/info",
 							"host": [
@@ -75,20 +68,7 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Ocp-Apim-Subscription-Key",
-								"value": "{{apikey-admin}}",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "Referer",
-								"value": "https://config.dev.platform.pagopa.it/creditor-institutions",
-								"type": "text",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions?limit=50&page=0",
 							"host": [
@@ -153,17 +133,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "Ocp-Apim-Subscription-Key",
-								"value": "{{apikey-admin}}",
-								"type": "text",
-								"disabled": true
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
+							"raw": "{\n  \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"fk_int_quadrature\": null,\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -346,151 +320,6 @@
 					"response": []
 				},
 				{
-					"name": "createCreditorInstitutionStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createCreditorInstitutionStation\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"mod4\": false,\n    \"broadcast\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"stations"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "1110001"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updateCreditorInstitutionStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updateCreditorInstitutionStation\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"aux_digit\": \"10\",\n    \"mod4\": true,\n    \"broadcast\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"stations",
-								":stationcode"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "1110001"
-								},
-								{
-									"key": "stationcode",
-									"value": "80007580279_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitutionStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitutionStation\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"stations",
-								":stationcode"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "1110001"
-								},
-								{
-									"key": "stationcode",
-									"value": "80007580279_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "getCreditorInstitutionEncodings",
 					"event": [
 						{
@@ -523,126 +352,6 @@
 								{
 									"key": "code",
 									"value": "00168480242"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createCreditorInstitutionEncoding",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createCreditorInstitutionEncoding\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"function makeid(length) {",
-									"    var result           = '';",
-									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    var charactersLength = characters.length;",
-									"    for ( var i = 0; i < length; i++ ) {",
-									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
-									"pm.globals.set(\"encoding_code\", makeid(35));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"code_type\": \"QR_CODE\",\n    \"encoding_code\": \"{{encoding_code}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"encodings"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitutionEncoding",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitutionEncoding\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"encodings",
-								":encoding_code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
-								},
-								{
-									"key": "encoding_code",
-									"value": "{{encoding_code}}"
 								}
 							]
 						}
@@ -1211,7 +920,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id?creditorinstitutioncode=00168480242",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -1219,12 +928,6 @@
 								"{{api-config-base-path}}",
 								"icas",
 								":id"
-							],
-							"query": [
-								{
-									"key": "creditorinstitutioncode",
-									"value": "00168480242"
-								}
 							],
 							"variable": [
 								{
@@ -1320,6 +1023,62 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "checkXSD",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getIcas\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/francesco/Development/PagoPA/pagopa-api-config/src/test/resources/file/ica_valid.xml"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/xsd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"icas",
+								"xsd"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1361,7 +1120,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"creditor_institution_code\": \"00168480242\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
+							"raw": "{\n  \"creditor_institution_code\": \"00168480242\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"fk_int_quadrature\": null,\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1460,113 +1219,6 @@
 								{
 									"key": "code",
 									"value": "axz"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createCreditorInstitutionEncoding Conflict",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createCreditorInstitutionEncoding_conflict\", function () {",
-									"  pm.response.to.have.status(409);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"code_type\": \"QR_CODE\",\n    \"encoding_code\": \"00168480242\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"encodings"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitutionEncoding NotFound",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitutionEncoding_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"encodings",
-								":encoding_code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
-								},
-								{
-									"key": "encoding_code",
-									"value": "asdz"
 								}
 							]
 						}
@@ -1829,381 +1481,6 @@
 								{
 									"key": "code",
 									"value": "zxx"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "api test suite - psp",
-			"item": [
-				{
-					"name": "getPaymentServiceProviders",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getPaymentServiceProviders\", function () {",
-									"  pm.response.to.have.status(200);",
-									"  const responseJson = pm.response.json();",
-									"  pm.expect(responseJson.page_info).to.be.exist",
-									"  pm.expect(responseJson.payment_service_providers).to.be.exist",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders?limit=50&page=0",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "50"
-								},
-								{
-									"key": "page",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getPaymentServiceProvider",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getPaymentServiceProvider\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "BPPIITRRZZZ"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getBrokersPsp",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getBrokersPsp\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp?page=0",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokerspsp"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getBrokerPsp",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getBrokerPsp\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokerspsp",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "17103880000"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getChannels",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getChannels\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels?limit=50&page=0",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"channels"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "50"
-								},
-								{
-									"key": "page",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getChannel",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getChannel\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"channels",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00001060966_01"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "api test error - psp",
-			"item": [
-				{
-					"name": "getPaymentServiceProvider NotFound",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getPaymentServiceProvider_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "zzz"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getBrokerPsp NotFound",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getBrokerPsp_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokerspsp",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "ggg"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getChannel NotFound",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getChannel_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"channels",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "111"
 								}
 							]
 						}

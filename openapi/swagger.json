@@ -1464,28 +1464,24 @@
     "/icas/xsd": {
       "post": {
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "properties": {
-                "file": {
-                  "description": "XML file regarding ICA to check",
-                  "format": "binary",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "file"
-              ],
-              "type": "object"
-            }
+            "description": "XML file regarding ICA to check",
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "fileUpload",
+            "type": "object"
           }
         ],
         "responses": {
@@ -2638,6 +2634,31 @@
       ],
       "type": "object"
     },
+    "FileItemFactory": {
+      "type": "object"
+    },
+    "FileUpload": {
+      "properties": {
+        "fileItemFactory": {
+          "$ref": "#/definitions/FileItemFactory"
+        },
+        "fileSizeMax": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "headerEncoding": {
+          "type": "string"
+        },
+        "progressListener": {
+          "$ref": "#/definitions/ProgressListener"
+        },
+        "sizeMax": {
+          "format": "int64",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
     "Iban": {
       "properties": {
         "iban": {
@@ -2872,6 +2893,9 @@
           "type": "string"
         }
       },
+      "type": "object"
+    },
+    "ProgressListener": {
       "type": "object"
     },
     "Station": {
