@@ -28,6 +28,7 @@
         <springdoc-version>1.5.10</springdoc-version>
         <springfox-version>3.0.0</springfox-version>
         <modelmapper-version>2.4.4</modelmapper-version>
+        <log4j2.version>2.16.0</log4j2.version>
     </properties>
 
     <dependencies>
