@@ -1,0 +1,5 @@
+{
+  "xsdCompliant": true,
+  "xsdSchema": "https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/InformativaContoAccredito_1_2_1.xsd",
+  "detail": "XML is valid against the XSD schema."
+}

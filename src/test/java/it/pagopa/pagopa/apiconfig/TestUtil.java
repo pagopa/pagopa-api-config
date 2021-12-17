@@ -51,6 +51,16 @@ public class TestUtil {
     }
 
     /**
+     * @param relativePath Path from source root of the file
+     * @return the requested file
+     */
+    public File readFile(String relativePath) {
+        ClassLoader classLoader = TestUtil.class.getClassLoader();
+        File file = new File(classLoader.getResource(relativePath).getFile());
+        return file;
+    }
+
+    /**
      * @param object to map into the Json string
      * @return object as Json string
      * @throws JsonProcessingException if there is an error during the parsing of the object

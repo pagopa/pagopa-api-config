@@ -1461,6 +1461,56 @@
         "summary": "Get the list of ICAs"
       }
     },
+    "/icas/xsd": {
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "XML file regarding ICA to check",
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/XSDValidation"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "checkXSD",
+        "summary": "Validate XML against XSD"
+      }
+    },
     "/icas/{idica}": {
       "get": {
         "produces": [
@@ -2978,6 +3028,28 @@
       "required": [
         "page_info",
         "stations"
+      ],
+      "type": "object"
+    },
+    "XSDValidation": {
+      "properties": {
+        "detail": {
+          "example": "Invalid content was found starting with element 'idBancaSeller'. One of '{ibanAccredito}' is expected. Error at lineNumber: 10",
+          "type": "string"
+        },
+        "xsdCompliant": {
+          "example": false,
+          "type": "boolean"
+        },
+        "xsdSchema": {
+          "example": "https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/InformativaContoAccredito_1_2_1.xsd",
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "xsdCompliant",
+        "xsdSchema"
       ],
       "type": "object"
     }
