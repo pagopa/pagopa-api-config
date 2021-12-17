@@ -29,7 +29,7 @@ public class ServicesController {
     @Autowired
     ServicesService servicesService;
 
-    @Operation(summary = "Get paginated list of services", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Payment Service Providers",})
+    @Operation(summary = "Get paginated list of services", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Services.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),

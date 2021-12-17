@@ -479,6 +479,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -533,6 +536,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1823,6 +1829,112 @@
             "name": "page",
             "required": true,
             "type": "integer"
+          },
+          {
+            "in": "query",
+            "name": "pspcode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "brokerpspcode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "channelcode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "format": "int64",
+            "in": "query",
+            "name": "paymentmethodchannel",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "enum": [
+              "PAYPAL",
+              "POSTAL",
+              "TREASURY_BANK_TRANSFER",
+              "DIRECT_DEBIT",
+              "PAYMENT_CARD",
+              "PSP_PAYMENT",
+              "ONLINE_BANKING_PAYMENT",
+              "JIFFY",
+              "MYBANK"
+            ],
+            "in": "query",
+            "name": "paymentTypeCode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "pspflagftamp",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "channelapp",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "onus",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "flagio",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "flowid",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "format": "double",
+            "in": "query",
+            "name": "minimumamount",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "format": "double",
+            "in": "query",
+            "name": "maximumamount",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "default": "IT",
+            "enum": [
+              "IT",
+              "EN",
+              "FR",
+              "DE",
+              "SL"
+            ],
+            "in": "query",
+            "name": "languagecode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": ")",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -1848,6 +1960,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -3069,6 +3184,13 @@
           "type": "string"
         },
         "language_code": {
+          "enum": [
+            "IT",
+            "EN",
+            "FR",
+            "DE",
+            "SL"
+          ],
           "maxLength": 2,
           "minLength": 0,
           "type": "string"
@@ -3108,6 +3230,17 @@
           "type": "integer"
         },
         "payment_type_code": {
+          "enum": [
+            "PAYPAL",
+            "POSTAL",
+            "TREASURY_BANK_TRANSFER",
+            "DIRECT_DEBIT",
+            "PAYMENT_CARD",
+            "PSP_PAYMENT",
+            "ONLINE_BANKING_PAYMENT",
+            "JIFFY",
+            "MYBANK"
+          ],
           "type": "string"
         },
         "psp_business_name": {
