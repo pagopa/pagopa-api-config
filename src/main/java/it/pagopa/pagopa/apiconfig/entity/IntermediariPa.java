@@ -33,14 +33,14 @@ public class IntermediariPa {
     @Column(name = "ID_INTERMEDIARIO_PA", nullable = false, length = 35)
     private String idIntermediarioPa;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "ENABLED", nullable = false)
     private Boolean enabled = false;
 
     @Column(name = "CODICE_INTERMEDIARIO")
     private String codiceIntermediario;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "FAULT_BEAN_ESTESO", nullable = false)
     private Boolean faultBeanEsteso = false;
 

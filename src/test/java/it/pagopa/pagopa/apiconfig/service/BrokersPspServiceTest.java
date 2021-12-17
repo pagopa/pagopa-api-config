@@ -61,7 +61,7 @@ class BrokersPspServiceTest {
     }
 
     @Test
-    void getBroker_notFound(){
+    void getBroker_notFound() {
         when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.empty());
 
         try {

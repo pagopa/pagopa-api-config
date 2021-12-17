@@ -17,7 +17,8 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)@ToString(onlyExplicitlyIncluded = true)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "WFESP_PLUGIN_CONF", schema = "NODO4_CFG")
 public class WfespPluginConf {

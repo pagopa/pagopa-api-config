@@ -22,7 +22,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)@ToString(onlyExplicitlyIncluded = true)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "CANALI", schema = "NODO4_CFG")
 @Builder

@@ -27,11 +27,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockInformativeContoAccreditoMaster;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)

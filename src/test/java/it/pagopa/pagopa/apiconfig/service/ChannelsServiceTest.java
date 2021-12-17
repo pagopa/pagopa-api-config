@@ -62,7 +62,7 @@ class ChannelsServiceTest {
     }
 
     @Test
-    void getChannel_notFound(){
+    void getChannel_notFound() {
         when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
 
         try {

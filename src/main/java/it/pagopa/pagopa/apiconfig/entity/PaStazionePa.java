@@ -52,19 +52,19 @@ public class PaStazionePa {
     @Column(name = "SEGREGAZIONE")
     private Long segregazione;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "QUARTO_MODELLO", nullable = false)
     private Boolean quartoModello = false;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "STAZIONE_AVV", nullable = false)
     private Boolean stazioneAvv = false;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "STAZIONE_NODO", nullable = false)
     private Boolean stazioneNodo = true;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "BROADCAST", nullable = false)
     private Boolean broadcast = false;
 

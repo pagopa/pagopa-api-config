@@ -21,7 +21,8 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)@ToString(onlyExplicitlyIncluded = true)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "CANALI_NODO", schema = "NODO4_CFG")
 @Builder
