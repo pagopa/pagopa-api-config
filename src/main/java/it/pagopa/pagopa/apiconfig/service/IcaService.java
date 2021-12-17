@@ -44,7 +44,7 @@ public class IcaService {
     @Autowired
     ModelMapper modelMapper;
 
-    @Value("xsd.ica")
+    @Value("${xsd.ica}")
     private String xsdIca;
 
     public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber) {
