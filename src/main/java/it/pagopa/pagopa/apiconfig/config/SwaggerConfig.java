@@ -27,7 +27,7 @@ public class SwaggerConfig {
                         .addSecuritySchemes("Authorization",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .description("JWT token get after Azure B2C Login")
+                                        .description("JWT token get after Azure Login")
                                         .name("Authorization")
                                         .scheme("Bearer")
                                         .bearerFormat("JWT")

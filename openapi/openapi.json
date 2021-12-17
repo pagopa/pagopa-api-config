@@ -54,9 +54,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -69,6 +66,9 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
           },
           "200": {
             "description": "OK.",
@@ -84,6 +84,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -104,6 +107,32 @@
           "required": true
         },
         "responses": {
+          "201": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrokerDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
           "429": {
             "description": "Too many requests",
             "content": {
@@ -120,26 +149,6 @@
               }
             }
           },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "OK.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BrokerDetails"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -149,17 +158,14 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -185,19 +191,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -210,6 +203,19 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           },
           "200": {
             "description": "OK.",
@@ -225,6 +231,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -259,12 +268,6 @@
           "required": true
         },
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -273,6 +276,18 @@
                   "$ref": "#/components/schemas/ProblemJson"
                 }
               }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
             }
           },
           "404": {
@@ -294,17 +309,14 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -328,14 +340,8 @@
           }
         ],
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "409": {
-            "description": "Conflict",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -344,8 +350,20 @@
               }
             }
           },
-          "500": {
-            "description": "Service unavailable.",
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -364,12 +382,6 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
           "200": {
             "description": "OK."
           }
@@ -377,6 +389,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -412,9 +427,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -425,9 +437,6 @@
               }
             }
           },
-          "429": {
-            "description": "Too many requests"
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -437,11 +446,20 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -467,19 +485,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -502,11 +507,27 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -542,19 +563,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Channels"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -567,6 +575,19 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Channels"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -597,19 +618,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -629,6 +637,19 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ChannelDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
                 }
               }
             }
@@ -672,9 +693,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -685,6 +703,12 @@
               }
             }
           },
+          "429": {
+            "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
           "200": {
             "description": "OK.",
             "content": {
@@ -694,14 +718,14 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Too many requests"
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -734,6 +758,19 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "200": {
             "description": "OK.",
             "content": {
@@ -754,19 +791,6 @@
           "403": {
             "description": "Forbidden client error status."
           },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests"
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -781,6 +805,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -816,12 +843,6 @@
           }
         ],
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -830,6 +851,18 @@
                   "$ref": "#/components/schemas/ProblemJson"
                 }
               }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
             }
           },
           "200": {
@@ -841,17 +874,14 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -872,6 +902,22 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
           "429": {
             "description": "Too many requests",
             "content": {
@@ -897,27 +943,14 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -943,34 +976,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreditorInstitutionDetails"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -984,11 +991,40 @@
             "content": {
               "application/json": {}
             }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditorInstitutionDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -1023,34 +1059,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreditorInstitutionDetails"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1064,11 +1074,40 @@
             "content": {
               "application/json": {}
             }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditorInstitutionDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -1092,8 +1131,30 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
           "429": {
             "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "200": {
+            "description": "OK.",
             "content": {
               "application/json": {}
             }
@@ -1108,22 +1169,6 @@
               }
             }
           },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK.",
-            "content": {
-              "application/json": {}
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1133,17 +1178,14 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1169,19 +1211,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1204,11 +1233,27 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -1242,22 +1287,6 @@
           "required": true
         },
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1266,6 +1295,18 @@
                   "$ref": "#/components/schemas/ProblemJson"
                 }
               }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
             }
           },
           "201": {
@@ -1278,16 +1319,23 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
+          "409": {
+            "description": "Conflict",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
             }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1322,14 +1370,8 @@
           }
         ],
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "409": {
-            "description": "Conflict",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1338,8 +1380,20 @@
               }
             }
           },
-          "500": {
-            "description": "Service unavailable.",
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -1358,12 +1412,6 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
           "200": {
             "description": "OK."
           }
@@ -1371,6 +1419,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1396,19 +1447,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1431,11 +1469,27 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1461,16 +1515,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
           "200": {
             "description": "OK.",
             "content": {
@@ -1480,9 +1524,6 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden client error status."
           },
           "500": {
             "description": "Service unavailable.",
@@ -1496,11 +1537,27 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -1534,19 +1591,6 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1556,6 +1600,12 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
           },
           "200": {
             "description": "OK.",
@@ -1567,13 +1617,23 @@
               }
             }
           },
-          "429": {
-            "description": "Too many requests"
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1620,12 +1680,6 @@
           "required": true
         },
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1634,6 +1688,18 @@
                   "$ref": "#/components/schemas/ProblemJson"
                 }
               }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
             }
           },
           "200": {
@@ -1655,17 +1721,14 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -1700,12 +1763,6 @@
           }
         ],
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1714,6 +1771,18 @@
                   "$ref": "#/components/schemas/ProblemJson"
                 }
               }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
             }
           },
           "200": {
@@ -1731,17 +1800,14 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1777,9 +1843,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1792,6 +1855,9 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
           },
           "200": {
             "description": "OK.",
@@ -1807,6 +1873,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1839,9 +1908,6 @@
           "required": true
         },
         "responses": {
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1854,6 +1920,9 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
           },
           "200": {
             "description": "OK.",
@@ -1869,6 +1938,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1901,6 +1973,19 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "200": {
             "description": "OK.",
             "content": {
@@ -1921,19 +2006,6 @@
           "403": {
             "description": "Forbidden client error status."
           },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests"
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1948,6 +2020,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -1960,15 +2035,6 @@
         "summary": "Return OK if application is started",
         "operationId": "healthCheck",
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "200": {
-            "description": "OK."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -1984,11 +2050,23 @@
             "content": {
               "application/json": {}
             }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "200": {
+            "description": "OK."
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -2024,9 +2102,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -2039,6 +2114,9 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
           },
           "200": {
             "description": "OK.",
@@ -2054,6 +2132,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -2079,12 +2160,6 @@
           }
         ],
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -2093,6 +2168,18 @@
                   "$ref": "#/components/schemas/ProblemJson"
                 }
               }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
             }
           },
           "200": {
@@ -2114,17 +2201,14 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -2178,9 +2262,6 @@
           }
         ],
         "responses": {
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -2193,6 +2274,9 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
           },
           "200": {
             "description": "OK.",
@@ -2208,6 +2292,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -2228,14 +2315,20 @@
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "OK.",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StationDetails"
+                  "$ref": "#/components/schemas/ProblemJson"
                 }
               }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
             }
           },
           "429": {
@@ -2254,16 +2347,6 @@
               }
             }
           },
-          "500": {
-            "description": "Service unavailable.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -2274,16 +2357,23 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
+          "201": {
+            "description": "OK.",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationDetails"
+                }
+              }
             }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -2309,19 +2399,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status."
-          },
           "500": {
             "description": "Service unavailable.",
             "content": {
@@ -2334,6 +2411,19 @@
           },
           "429": {
             "description": "Too many requests"
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           },
           "200": {
             "description": "OK.",
@@ -2349,6 +2439,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -2383,14 +2476,30 @@
           "required": true
         },
         "responses": {
+          "500": {
+            "description": "Service unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
           "429": {
             "description": "Too many requests",
             "content": {
               "application/json": {}
             }
           },
-          "500": {
-            "description": "Service unavailable.",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2408,27 +2517,14 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
           }
         },
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       },
@@ -2452,14 +2548,8 @@
           }
         ],
         "responses": {
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "409": {
-            "description": "Conflict",
+          "500": {
+            "description": "Service unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2468,8 +2558,20 @@
               }
             }
           },
-          "500": {
-            "description": "Service unavailable.",
+          "403": {
+            "description": "Forbidden client error status.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -2488,12 +2590,6 @@
               }
             }
           },
-          "403": {
-            "description": "Forbidden client error status.",
-            "content": {
-              "application/json": {}
-            }
-          },
           "200": {
             "description": "OK."
           }
@@ -2501,6 +2597,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ]
       }
@@ -3544,8 +3643,16 @@
       "ApiKey": {
         "type": "apiKey",
         "description": "The API key to access this function app.",
-        "name": "X-Functions-Key",
+        "name": "Ocp-Apim-Subscription-Key",
         "in": "header"
+      },
+      "Authorization": {
+        "type": "http",
+        "description": "JWT token get after Azure Login",
+        "name": "Authorization",
+        "in": "header",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

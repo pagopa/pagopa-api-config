@@ -59,6 +59,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -119,6 +122,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -176,6 +182,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -228,6 +237,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -292,6 +304,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -348,6 +363,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -402,6 +420,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -568,6 +589,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -629,6 +653,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -685,6 +712,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -739,6 +769,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -796,6 +829,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -848,6 +884,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -912,6 +951,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -966,6 +1008,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1029,6 +1074,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1093,6 +1141,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1147,6 +1198,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1201,6 +1255,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1264,6 +1321,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1324,6 +1384,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1396,6 +1459,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1452,6 +1518,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1502,6 +1571,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1563,6 +1635,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1598,6 +1673,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1654,6 +1732,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1708,6 +1789,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1778,6 +1862,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1838,6 +1925,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1895,6 +1985,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -1947,6 +2040,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -2011,6 +2107,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -3058,7 +3157,15 @@
     "ApiKey": {
       "description": "The API key to access this function app.",
       "in": "header",
-      "name": "X-Functions-Key",
+      "name": "Ocp-Apim-Subscription-Key",
+      "type": "apiKey"
+    },
+    "Authorization": {
+      "bearerFormat": "JWT",
+      "description": "JWT token get after Azure Login",
+      "in": "header",
+      "name": "Authorization",
+      "scheme": "Bearer",
       "type": "apiKey"
     }
   },
