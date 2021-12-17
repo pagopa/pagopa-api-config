@@ -6,7 +6,7 @@
     "title": "PagoPA API configuration",
     "version": "0.2.24"
   },
-  "host": "localhost:8080",
+  "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
   "schemes": [
     "http"
@@ -1477,11 +1477,6 @@
             "name": "file",
             "required": true,
             "type": "string"
-          },
-          {
-            "in": "formData",
-            "name": "fileUpload",
-            "type": "object"
           }
         ],
         "responses": {
@@ -2634,31 +2629,6 @@
       ],
       "type": "object"
     },
-    "FileItemFactory": {
-      "type": "object"
-    },
-    "FileUpload": {
-      "properties": {
-        "fileItemFactory": {
-          "$ref": "#/definitions/FileItemFactory"
-        },
-        "fileSizeMax": {
-          "format": "int64",
-          "type": "integer"
-        },
-        "headerEncoding": {
-          "type": "string"
-        },
-        "progressListener": {
-          "$ref": "#/definitions/ProgressListener"
-        },
-        "sizeMax": {
-          "format": "int64",
-          "type": "integer"
-        }
-      },
-      "type": "object"
-    },
     "Iban": {
       "properties": {
         "iban": {
@@ -2893,9 +2863,6 @@
           "type": "string"
         }
       },
-      "type": "object"
-    },
-    "ProgressListener": {
       "type": "object"
     },
     "Station": {

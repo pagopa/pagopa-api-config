@@ -1,6 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.config.XSDProperties;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
@@ -11,6 +10,7 @@ import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepo
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +26,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -46,8 +44,8 @@ public class IcaService {
     @Autowired
     ModelMapper modelMapper;
 
-    @Autowired
-    XSDProperties xsdProperties;
+    @Value("xsd.ica")
+    private String xsdIca;
 
     public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
@@ -58,7 +56,6 @@ public class IcaService {
                 .build();
     }
 
-
     public byte[] getIca(@NotNull String idIca, String creditorInstitutionCode) {
         Optional<InformativeContoAccreditoMaster> result = informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(idIca, creditorInstitutionCode);
         if (result.isEmpty()) {
@@ -67,24 +64,10 @@ public class IcaService {
         return result.get().getFkBinaryFile().getFileContent();
     }
 
-
-    /**
-     * Maps InformativeContoAccreditoMaster objects stored in the DB in a List of Ica
-     *
-     * @param page page of {@link InformativeContoAccreditoMaster} returned from the database
-     * @return a list of {@link Ica}.
-     */
-    private List<Ica> getIcaList(Page<InformativeContoAccreditoMaster> page) {
-        return page.stream()
-                .map(elem -> modelMapper.map(elem, Ica.class))
-                .collect(Collectors.toList());
-    }
-
     public XSDValidation verifyXSD(MultipartFile xml) {
         boolean xsdEvaluated = false;
         String lineNumber = "";
         String detail;
-        String xsdSchema = xsdProperties.getIca();
 
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -92,7 +75,7 @@ public class IcaService {
             factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 
-            javax.xml.validation.Schema schema = factory.newSchema(new URL(xsdSchema));
+            javax.xml.validation.Schema schema = factory.newSchema(new URL(xsdIca));
             Validator validator = schema.newValidator();
 
             XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
@@ -105,14 +88,13 @@ public class IcaService {
             validator.validate(source);
             xsdEvaluated = true;
             detail = "XML is valid against the XSD schema.";
-        }
-        catch (SAXException | IOException | XMLStreamException e) {
+        } catch (SAXException | IOException | XMLStreamException e) {
             String stringException = e.getMessage();
             Matcher matcher = Pattern.compile("lineNumber: [0-9]*").matcher(stringException);
             if (matcher.find()) {
                 lineNumber = matcher.group(0);
             }
-            detail = stringException.substring(stringException.lastIndexOf(":")+1).trim();
+            detail = stringException.substring(stringException.lastIndexOf(":") + 1).trim();
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -123,9 +105,21 @@ public class IcaService {
 
         XSDValidation response = new XSDValidation();
         response.setXsdCompliant(xsdEvaluated);
-        response.setXsdSchema(xsdSchema);
+        response.setXsdSchema(xsdIca);
         response.setDetail(stringBuilder.toString());
 
         return response;
+    }
+
+    /**
+     * Maps InformativeContoAccreditoMaster objects stored in the DB in a List of Ica
+     *
+     * @param page page of {@link InformativeContoAccreditoMaster} returned from the database
+     * @return a list of {@link Ica}.
+     */
+    private List<Ica> getIcaList(Page<InformativeContoAccreditoMaster> page) {
+        return page.stream()
+                .map(elem -> modelMapper.map(elem, Ica.class))
+                .collect(Collectors.toList());
     }
 }
