@@ -82,7 +82,7 @@ public class CounterpartController {
                 .body(new ByteArrayResource(file));
     }
 
-    @Operation(summary = "Update a counterpart table", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @Operation(summary = "Update a counterpart table", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "multipart/form-data", schema = @Schema(implementation = MultipartFile.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
@@ -95,7 +95,7 @@ public class CounterpartController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Delete a counterpart table", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @Operation(summary = "Delete a counterpart table", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
