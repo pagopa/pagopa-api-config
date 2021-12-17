@@ -29,7 +29,7 @@ class ServicesControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(servicesService.getServices(50, 0)).thenReturn(Services.builder().build());
+        when(servicesService.getServices(50, 0, null)).thenReturn(Services.builder().build());
     }
 
     @Test

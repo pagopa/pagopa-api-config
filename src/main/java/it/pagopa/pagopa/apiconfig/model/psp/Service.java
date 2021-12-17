@@ -6,21 +6,26 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.util.Constants;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 
 import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -56,11 +61,11 @@ public class Service {
     private Long paymentMethodChannel;
 
     @JsonProperty("payment_type_code")
-    private String paymentTypeCode;
+    private PaymentTypeCode paymentTypeCode;
 
     @JsonProperty("language_code")
     @Size(max = 2)
-    private String languageCode;
+    private LanguageCode languageCode;
 
     @JsonProperty("service_description")
     @Size(max = 511)
@@ -127,4 +132,69 @@ public class Service {
 
     @JsonProperty("flag_io")
     private Boolean flagIo;
+
+    @Getter
+    public enum LanguageCode {
+        IT("ITALIAN"),
+        EN("ENGLISH"),
+        FR("FRENCH"),
+        DE("GERMAN"),
+        SL("SLOVENE");
+
+        private final String language;
+
+        LanguageCode(String language) {
+            this.language = language;
+        }
+
+    }
+
+    @Getter
+    public enum PaymentTypeCode {
+        PAYPAL("PPAL"),
+        POSTAL("BP"),
+        TREASURY_BANK_TRANSFER("BBT"),
+        DIRECT_DEBIT("AD"),
+        PAYMENT_CARD("CP"),
+        PSP_PAYMENT("PO"),
+        ONLINE_BANKING_PAYMENT("OBEP"),
+        JIFFY("JIF"),
+        MYBANK("MYBK");
+
+        private final String code;
+
+        PaymentTypeCode(String code) {
+            this.code = code;
+        }
+
+        public static PaymentTypeCode fromCode(String code) {
+            return Arrays.stream(PaymentTypeCode.values())
+                    .filter(elem -> elem.code.equals(code))
+                    .findFirst()
+                    .orElseThrow(() -> new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "PaymentTypeCode not found", "Cannot convert string '" + code + "' into enum"));
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Filter {
+        private String pspCode;
+        private String brokerPspCode;
+        private String channelCode;
+        private Long paymentMethodChannel;
+        private Service.PaymentTypeCode paymentTypeCode;
+        private Boolean pspFlagStamp;
+        private Boolean channelApp;
+        private Boolean onUs;
+        private Boolean flagIo;
+        private String flowId;
+        private Double minimumAmount;
+        private Double maximumAmount;
+        private Service.LanguageCode languageCode;
+        private String conventionCode;
+    }
+
+
 }

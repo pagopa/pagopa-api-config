@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.psp.Service;
 import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import it.pagopa.pagopa.apiconfig.service.ServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,38 @@ public class ServicesController {
     )
     public ResponseEntity<Services> getServices(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
-        return ResponseEntity.ok(servicesService.getServices(limit, page));
+            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @Parameter() @RequestParam(required = false, name = "pspcode") String pspCode,
+            @Parameter() @RequestParam(required = false, name = "brokerpspcode") String brokerPspCode,
+            @Parameter() @RequestParam(required = false, name = "channelcode") String channelCode,
+            @Parameter() @RequestParam(required = false, name = "paymentmethodchannel") Long paymentMethodChannel,
+            @Parameter() @RequestParam(required = false, name = "paymentTypeCode") Service.PaymentTypeCode paymentTypeCode,
+            @Parameter() @RequestParam(required = false, name = "pspflagftamp") Boolean pspFlagStamp,
+            @Parameter() @RequestParam(required = false, name = "channelapp") Boolean channelApp,
+            @Parameter() @RequestParam(required = false, name = "onus") Boolean onUs,
+            @Parameter() @RequestParam(required = false, name = "flagio") Boolean flagIo,
+            @Parameter() @RequestParam(required = false, name = "flowid") String flowId,
+            @Parameter() @RequestParam(required = false, name = "minimumamount") Double minimumAmount,
+            @Parameter() @RequestParam(required = false, name = "maximumamount") Double maximumAmount,
+            @Parameter() @RequestParam(required = false, name = "languagecode", defaultValue = "IT") Service.LanguageCode languageCode,
+            @Parameter() @RequestParam(required = false, name = ")") String conventionCode) {
+        return ResponseEntity.ok(servicesService.getServices(limit, page,
+                Service.Filter.builder()
+                        .conventionCode(conventionCode)
+                        .languageCode(languageCode)
+                        .onUs(onUs)
+                        .paymentTypeCode(paymentTypeCode)
+                        .pspCode(pspCode)
+                        .paymentMethodChannel(paymentMethodChannel)
+                        .brokerPspCode(brokerPspCode)
+                        .channelApp(channelApp)
+                        .channelCode(channelCode)
+                        .flagIo(flagIo)
+                        .flowId(flowId)
+                        .maximumAmount(maximumAmount)
+                        .minimumAmount(minimumAmount)
+                        .pspFlagStamp(pspFlagStamp)
+                        .build()));
     }
 
 }

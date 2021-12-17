@@ -7,6 +7,8 @@ import it.pagopa.pagopa.apiconfig.repository.ElencoServiziRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +26,27 @@ public class ServicesService {
     ElencoServiziRepository elencoServiziRepository;
 
 
-    public Services getServices(Integer limit, Integer pageNumber) {
+    public Services getServices(Integer limit, Integer pageNumber, Service.Filter filters) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
-        // TODO add filter
-        Page<ElencoServizi> page = elencoServiziRepository.findAll(pageable);
+        // filter only if is not null
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues();
+        Example<ElencoServizi> query = Example.of(ElencoServizi.builder()
+                .pspId(filters.getPspCode())
+                .intmId(filters.getBrokerPspCode())
+                .canaleId(filters.getChannelCode())
+                .canaleModPag(filters.getPaymentMethodChannel())
+                .tipoVersCod(filters.getPaymentTypeCode() != null ? filters.getPaymentTypeCode().getCode() : null)
+                .pspFlagBollo(filters.getPspFlagStamp())
+                .canaleApp(filters.getChannelApp())
+                .onUs(filters.getOnUs())
+                .flagIo(filters.getFlagIo())
+                .flussoId(filters.getFlowId())
+                .importoMinimo(filters.getMinimumAmount())
+                .importoMassimo(filters.getMaximumAmount())
+                .codiceLingua(String.valueOf(filters.getLanguageCode()))
+                .codiceConvenzione(filters.getConventionCode())
+                .build(), matcher);
+        Page<ElencoServizi> page = elencoServiziRepository.findAll(query, pageable);
         return Services.builder()
                 .servicesList(getServicesList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

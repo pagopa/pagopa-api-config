@@ -39,7 +39,7 @@ class ServicesServiceTest {
         Page<ElencoServizi> page = TestUtil.mockPage(Lists.newArrayList(getMockElencoServizi()), 50, 0);
         when(elencoServiziRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        Services result = servicesService.getServices(50, 0);
+        Services result = servicesService.getServices(50, 0, null);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_services_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
