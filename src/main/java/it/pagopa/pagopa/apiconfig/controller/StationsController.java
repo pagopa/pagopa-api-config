@@ -50,7 +50,7 @@ public class StationsController {
      * or Too many requests (status code 429)
      * or Service unavailable. (status code 500)
      */
-    @Operation(summary = "Get paginated list of stations", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
+    @Operation(summary = "Get paginated list of stations", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Stations.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
@@ -79,7 +79,7 @@ public class StationsController {
      * or Too many requests (status code 429)
      * or Service unavailable. (status code 500)
      */
-    @Operation(summary = "Get station details", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions",})
+    @Operation(summary = "Get station details", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StationDetails.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
@@ -94,7 +94,7 @@ public class StationsController {
         return ResponseEntity.ok(stationsService.getStation(stationCode));
     }
 
-    @Operation(summary = "Create a station", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @Operation(summary = "Create a station", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StationDetails.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
@@ -107,7 +107,7 @@ public class StationsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(stationsService.createStation(stationDetails));
     }
 
-    @Operation(summary = "Update a station", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @Operation(summary = "Update a station", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StationDetails.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
@@ -116,11 +116,11 @@ public class StationsController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/{stationcode}", produces = {"application/json"})
     public ResponseEntity<StationDetails> updateStation(@Size(max = 50) @Parameter(description = "station code", required = true) @PathVariable("stationcode") String stationCode,
-                                                      @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The values to update of the station", required = true) @RequestBody @Valid @NotNull StationDetails stationDetails) {
+                                                        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The values to update of the station", required = true) @RequestBody @Valid @NotNull StationDetails stationDetails) {
         return ResponseEntity.ok(stationsService.updateStation(stationCode, stationDetails));
     }
 
-    @Operation(summary = "Delete a station", security = {@SecurityRequirement(name = "ApiKey")}, tags = {"Creditor Institutions"})
+    @Operation(summary = "Delete a station", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
