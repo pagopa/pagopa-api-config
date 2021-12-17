@@ -29,6 +29,8 @@ public enum AppError {
 
     BROKER_PSP_NOT_FOUND(HttpStatus.NOT_FOUND, "Broker PSP not found", "No Broker PSP found with code: %s"),
 
+    CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Channel not found", "No Channel found with code: %s"),
+
     UNKNOWN(null, null, null);
 
 

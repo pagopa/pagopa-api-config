@@ -6,17 +6,22 @@ case $STAGE in
 
   d) # develop
     HOSTPORT="https://api.dev.platform.pagopa.it"
-    BASEPATH="apiconfig/api"
+    BASEPATH="apiconfig/api/v1"
+    ;;
+
+  t) # test with H2
+    HOSTPORT="https://api.dev.platform.pagopa.it"
+    BASEPATH="apiconfig/api/v1"
     ;;
 
   u) # uat
     HOSTPORT="https://api.uat.platform.pagopa.it"
-    BASEPATH="apiconfig/api"
+    BASEPATH="apiconfig/api/v1"
     ;;
 
   p) # production
     HOSTPORT="https://api.platform.pagopa.it"
-    BASEPATH="apiconfig/api"
+    BASEPATH="apiconfig/api/v1"
     ;;
 
   *) # local

@@ -4,6 +4,8 @@ package it.pagopa.pagopa.apiconfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
+import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
 import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
@@ -46,6 +48,16 @@ public class TestUtil {
         ClassLoader classLoader = TestUtil.class.getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource(relativePath)).getPath());
         return Files.readString(file.toPath());
+    }
+
+    /**
+     * @param relativePath Path from source root of the file
+     * @return the requested file
+     */
+    public File readFile(String relativePath) {
+        ClassLoader classLoader = TestUtil.class.getClassLoader();
+        File file = new File(classLoader.getResource(relativePath).getFile());
+        return file;
     }
 
     /**
@@ -295,4 +307,37 @@ public class TestUtil {
                 .build();
     }
 
+    public static Canali getMockCanali() {
+        return Canali.builder()
+                .id(1L)
+                .enabled(true)
+                .descrizione("Canale")
+                .canaleAvv(false)
+                .canaleNodo(true)
+                .fkCanaliNodo(getMockCanaliNodo())
+                .idCanale("1234")
+                .fkIntermediarioPsp(getMockIntermediariePsp())
+                .ip("1.1.1.1")
+                .newPassword("new-pass")
+                .password("pass")
+                .protocollo("HTTP")
+                .numThread(4L)
+                .porta(80L)
+                .proxyEnabled(false)
+                .timeoutA(10L)
+                .useNewFaultCode(true)
+                .servizioNmp("NPM")
+                .build();
+    }
+
+    public static CanaliNodo getMockCanaliNodo() {
+        return CanaliNodo.builder()
+                .agidChannel(false)
+                .id(1L)
+                .carrelloCarte(true)
+                .flagIo(true)
+                .marcaBolloDigitale(true)
+                .modelloPagamento("IMMEDIATO")
+                .build();
+    }
 }

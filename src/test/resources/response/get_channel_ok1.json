@@ -1,0 +1,19 @@
+{
+  "channel_code": "1234",
+  "enabled": true,
+  "description": "Canale",
+  "ip": "1.1.1.1",
+  "new_password": "new-pass",
+  "password": "pass",
+  "port": 80,
+  "protocol": "HTTP",
+  "broker_psp_code": "1234",
+  "proxy_enabled": false,
+  "thread_number": 4,
+  "timeout_a": 10,
+  "npm_service": "NPM",
+  "payment_model": "IMMEDIATE",
+  "card_chart": true,
+  "digital_stamp_brand": true,
+  "flag_io": true
+}
