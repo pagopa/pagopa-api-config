@@ -33,7 +33,7 @@ public class Pa {
     @Column(name = "ID_DOMINIO", unique = true)
     private String idDominio;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "ENABLED")
     private Boolean enabled;
 
@@ -58,15 +58,15 @@ public class Pa {
     @Column(name = "DENOMINAZIONE_DOMICILIO_FISCALE")
     private String denominazioneDomicilioFiscale;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "PAGAMENTO_PRESSO_PSP")
     private Boolean pagamentoPressoPsp;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "RENDICONTAZIONE_FTP")
     private Boolean rendicontazioneFtp;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "RENDICONTAZIONE_ZIP")
     private Boolean rendicontazioneZip;
 

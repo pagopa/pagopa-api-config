@@ -66,7 +66,7 @@ class ErrorHandlerTest {
     }
 
     @Test
-    void handleDataIntegrityViolationException(){
+    void handleDataIntegrityViolationException() {
         ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(new DataIntegrityViolationException(""), null);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode());
         assertNotNull(actual.getBody());
@@ -75,7 +75,7 @@ class ErrorHandlerTest {
     }
 
     @Test
-    void handleDataIntegrityViolationException2(){
+    void handleDataIntegrityViolationException2() {
         ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(new DataIntegrityViolationException("", new ConstraintViolationException("A REFERENCES B", new SQLException("foreign key", "23503"), "A REFERENCES B")), null);
         assertEquals(HttpStatus.CONFLICT, actual.getStatusCode());
         assertNotNull(actual.getBody());

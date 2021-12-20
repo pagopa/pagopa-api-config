@@ -14,7 +14,7 @@ public class LoggingAspect {
 
     @Before("@within(org.springframework.web.bind.annotation.RestController)")
     public void logApiInvocation(JoinPoint joinPoint) {
-        log.info("Invoking API operation: {}",  joinPoint.getSignature().getName());
+        log.info("Invoking API operation: {}", joinPoint.getSignature().getName());
     }
 
     @AfterReturning("@within(org.springframework.web.bind.annotation.RestController)")

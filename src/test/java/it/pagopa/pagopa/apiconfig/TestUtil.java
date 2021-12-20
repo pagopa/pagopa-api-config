@@ -244,7 +244,7 @@ public class TestUtil {
                 .build();
     }
 
-    public  static Encoding getMockEncoding() {
+    public static Encoding getMockEncoding() {
         return Encoding.builder()
                 .paObjId(1L)
                 .codeType(Encoding.CodeTypeEnum.QR_CODE)
@@ -286,7 +286,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static CreditorInstitutionStationEdit getCreditorInstitutionStationEdit(){
+    public static CreditorInstitutionStationEdit getCreditorInstitutionStationEdit() {
         return CreditorInstitutionStationEdit.builder()
                 .applicationCode(1L)
                 .auxDigit(23L)

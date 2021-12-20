@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PaymentServiceProviderDetails extends PaymentServiceProvider{
+public class PaymentServiceProviderDetails extends PaymentServiceProvider {
 
     @JsonProperty("abi")
     private String abi;

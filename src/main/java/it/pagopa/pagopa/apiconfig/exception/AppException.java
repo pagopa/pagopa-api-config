@@ -74,12 +74,12 @@ public class AppException extends RuntimeException {
         this.title = appError.title;
     }
 
+    private static String formatDetails(AppError appError, Object[] args) {
+        return String.format(appError.details, args);
+    }
+
     @Override
     public String toString() {
         return "AppException(" + httpStatus + ", " + title + ")" + super.toString();
-    }
-
-    private static String formatDetails(AppError appError, Object[] args) {
-        return String.format(appError.details, args);
     }
 }

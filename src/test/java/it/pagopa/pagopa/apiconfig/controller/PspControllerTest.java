@@ -23,11 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class PspControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
-
     @MockBean
     PspService pspService;
+    @Autowired
+    private MockMvc mvc;
 
     @BeforeEach
     void setUp() {
