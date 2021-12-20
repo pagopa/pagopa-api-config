@@ -14,6 +14,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.service.EncodingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,14 +50,14 @@ public class EncodingsController {
      */
     @Operation(summary = "Get creditor institution encodings", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreditorInstitutionEncodings.class))),
+            @ApiResponse(responseCode = "200", description = "OK.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = CreditorInstitutionEncodings.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
             value = "/{creditorinstitutioncode}/encodings",
-            produces = {"application/json"}
+            produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<CreditorInstitutionEncodings> getCreditorInstitutionEncodings(@NotBlank @Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
         return ResponseEntity.ok(encodingsService.getCreditorInstitutionEncodings(creditorInstitutionCode));
@@ -64,12 +65,12 @@ public class EncodingsController {
 
     @Operation(summary = "Delete a creditor institution encoding", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "OK.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Encoding.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
-            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class))),
-            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
-            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
-    @PostMapping(value = "/{creditorinstitutioncode}/encodings", produces = {"application/json"})
+            @ApiResponse(responseCode = "201", description = "OK.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Encoding.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @PostMapping(value = "/{creditorinstitutioncode}/encodings", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Encoding> createCreditorInstitutionEncoding(@NotBlank @Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
                                                                       @RequestBody @Valid @NotNull Encoding encoding) {
         return ResponseEntity.status(HttpStatus.CREATED).body(encodingsService.createCreditorInstitutionEncoding(creditorInstitutionCode, encoding));
@@ -78,12 +79,12 @@ public class EncodingsController {
     @Operation(summary = "Delete a creditor institution encoding", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK.", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = "application/json", schema = @Schema())),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class))),
-            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class))),
-            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = "application/json", schema = @Schema())),
-            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
-    @DeleteMapping(value = "/{creditorinstitutioncode}/encodings/{encodingcode}", produces = {"application/json"})
+            @ApiResponse(responseCode = "403", description = "Forbidden client error status.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/{creditorinstitutioncode}/encodings/{encodingcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> deleteCreditorInstitutionEncoding(@NotBlank @Size(max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode,
                                                                   @NotBlank @Parameter(description = "Code of the Encoding", required = true) @PathVariable("encodingcode") String encodingCode) {
         encodingsService.deleteCreditorInstitutionEncoding(creditorInstitutionCode, encodingCode);

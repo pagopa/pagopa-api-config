@@ -975,7 +975,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
+								"value": MediaType.APPLICATION_JSON_VALUE,
 								"type": "text"
 							}
 						],
@@ -1385,7 +1385,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
+								"value": MediaType.APPLICATION_JSON_VALUE,
 								"type": "text"
 							}
 						],
@@ -1525,7 +1525,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
+								"value": MediaType.APPLICATION_JSON_VALUE,
 								"type": "text"
 							}
 						],
@@ -1623,7 +1623,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
+								"value": MediaType.APPLICATION_JSON_VALUE,
 								"type": "text"
 							}
 						],
@@ -1754,7 +1754,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
+								"value": MediaType.APPLICATION_JSON_VALUE,
 								"type": "text"
 							}
 						],
@@ -2047,7 +2047,7 @@
 						"header": [
 							{
 								"key": "accept",
-								"value": "application/json"
+								"value": MediaType.APPLICATION_JSON_VALUE
 							}
 						],
 						"url": {
@@ -2093,7 +2093,7 @@
 						"header": [
 							{
 								"key": "accept",
-								"value": "application/json"
+								"value": MediaType.APPLICATION_JSON_VALUE
 							}
 						],
 						"url": {
@@ -2217,7 +2217,7 @@
 						"header": [
 							{
 								"key": "accept",
-								"value": "application/json"
+								"value": MediaType.APPLICATION_JSON_VALUE
 							}
 						],
 						"url": {

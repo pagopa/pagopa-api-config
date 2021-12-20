@@ -11,3 +11,5 @@ api-spec-converter  --from=openapi_3 --to=swagger_2 ./openapi.json > swagger.jso
 # BugFix for api-spec-converter: swagger 2 does not support http as type
 sed -i '' 's/\"type\": \"http\"/\"type\": \"apiKey\"/g' swagger.json
 
+# BugFix for multipart/form-data
+jq  '."paths"."/icas/xsd".post.parameters[0].type |= "file"' swagger.json > swagger.json.temp && mv swagger.json.temp swagger.json
