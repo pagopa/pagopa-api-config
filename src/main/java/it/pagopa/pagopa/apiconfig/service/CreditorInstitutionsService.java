@@ -25,6 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -96,12 +98,13 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
+    @Transactional(isolation = Isolation.DEFAULT)
     public CreditorInstitutionStationEdit createCreditorInstitutionStation(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
         // check if the relation already exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(creditorInstitutionStationEdit.getStationCode());
         if (paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId()).isPresent()) {
-            throw new AppException(AppError.RELATION_STATION_NOT_CONFLICT, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode());
+            throw new AppException(AppError.RELATION_STATION_CONFLICT, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode());
         }
         // add info into object for model mapper
         creditorInstitutionStationEdit.setFkPa(pa);
@@ -113,6 +116,7 @@ public class CreditorInstitutionsService {
         return creditorInstitutionStationEdit;
     }
 
+    @Transactional(isolation = Isolation.DEFAULT)
     public CreditorInstitutionStationEdit updateCreditorInstitutionStation(String creditorInstitutionCode, String stationCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
         // check if the relation exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
@@ -124,13 +128,15 @@ public class CreditorInstitutionsService {
         creditorInstitutionStationEdit.setFkStazioni(stazioni);
 
         // convert and save
-        PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class).toBuilder()
+        PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class)
+                .toBuilder()
                 .objId(paStazionePa.getObjId())
                 .build();
         paStazionePaRepository.save(entity);
         return creditorInstitutionStationEdit;
     }
 
+    @Transactional(isolation = Isolation.DEFAULT)
     public void deleteCreditorInstitutionStation(String creditorInstitutionCode, String stationCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(stationCode);

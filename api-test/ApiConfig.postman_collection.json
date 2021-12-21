@@ -1,10 +1,91 @@
 {
 	"info": {
-		"_postman_id": "11f63905-44c1-441b-a8f9-87ebfb6122b2",
+		"_postman_id": "618a0964-fcb8-453e-b456-70f5f36d256b",
 		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "login",
+			"item": [
+				{
+					"name": "Login JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"login JWT\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jwt\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "resource",
+									"value": "{{resource}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://login.microsoftonline.com/{{tenant_id}}/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"login",
+								"microsoftonline",
+								"com"
+							],
+							"path": [
+								"{{tenant_id}}",
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "api test suite - creditor institutions",
 			"item": [
@@ -33,9 +114,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -70,9 +148,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1326,7 +1401,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./src/test/resources/file/ica_valid.xml"
+									"src": "/Users/leaf/Desktop/git/pagopa/pagopa-api-config/src/test/resources/file/ica_valid.xml"
 								}
 							]
 						},
@@ -1350,6 +1425,36 @@
 						}
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -1865,6 +1970,36 @@
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -2116,6 +2251,36 @@
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -2240,57 +2405,37 @@
 					},
 					"response": []
 				}
-			]
-		},
-		{
-			"name": "Login JWT",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
 			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "grant_type",
-							"value": "client_credentials",
-							"type": "text"
-						},
-						{
-							"key": "client_id",
-							"value": "",
-							"type": "text"
-						},
-						{
-							"key": "client_secret",
-							"value": "",
-							"type": "text"
-						},
-						{
-							"key": "resource",
-							"value": "",
-							"type": "text"
-						}
-					]
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				},
-				"url": {
-					"raw": "https://login.microsoftonline.com/7788edaf-0346-4068-9d79-c868aed15b3d/oauth2/token",
-					"protocol": "https",
-					"host": [
-						"login",
-						"microsoftonline",
-						"com"
-					],
-					"path": [
-						"7788edaf-0346-4068-9d79-c868aed15b3d",
-						"oauth2",
-						"token"
-					]
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }

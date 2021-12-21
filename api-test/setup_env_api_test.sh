@@ -31,7 +31,7 @@ case $STAGE in
 esac
 
 # change env json
-jq ".values[0].value = \"${HOSTPORT}\" | .values[1].value = \"${BASEPATH}\"" api-test/Azure.postman_environment.json > api-test/tmp.json && mv api-test/tmp.json api-test/Azure.postman_environment.json
+jq ".values[0].value = \"${HOSTPORT}\" | .values[1].value = \"${BASEPATH}\" | .values[2].value = \"${TENANT_ID}\" | .values[3].value = \"${CLIENT_ID}\" | .values[4].value = \"${CLIENT_SECRET}\" | .values[5].value = \"${RESOURCE}\"" api-test/Azure.postman_environment.json > api-test/tmp.json && mv api-test/tmp.json api-test/Azure.postman_environment.json
 
 
 if [ -z "$EXEC" ]
