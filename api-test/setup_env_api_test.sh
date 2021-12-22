@@ -7,21 +7,33 @@ case $STAGE in
   d) # develop
     HOSTPORT="https://api.dev.platform.pagopa.it"
     BASEPATH="apiconfig/api/v1"
+    CLIENT_ID=$DEV_APICONFIG_CLIENT_FE_ID
+    CLIENT_SECRET=$DEV_APICONFIG_CLIENT_FE_SECRET
+    RESOURCE=$DEV_APICONFIG_CLIENT_BE_RESOURCE
     ;;
 
   t) # test with H2
     HOSTPORT="https://api.dev.platform.pagopa.it"
     BASEPATH="apiconfig/api/v1"
+    CLIENT_ID=$DEV_APICONFIG_CLIENT_FE_ID
+    CLIENT_SECRET=$DEV_APICONFIG_CLIENT_FE_SECRET
+    RESOURCE=$DEV_APICONFIG_CLIENT_BE_RESOURCE
     ;;
 
   u) # uat
     HOSTPORT="https://api.uat.platform.pagopa.it"
     BASEPATH="apiconfig/api/v1"
+    CLIENT_ID=$UAT_APICONFIG_CLIENT_FE_ID
+    CLIENT_SECRET=$UAT_APICONFIG_CLIENT_FE_SECRET
+    RESOURCE=$UAT_APICONFIG_CLIENT_BE_RESOURCE
     ;;
 
   p) # production
     HOSTPORT="https://api.platform.pagopa.it"
     BASEPATH="apiconfig/api/v1"
+    CLIENT_ID=$PROD_APICONFIG_CLIENT_FE_ID
+    CLIENT_SECRET=$PROD_APICONFIG_CLIENT_FE_SECRET
+    RESOURCE=$PROD_APICONFIG_CLIENT_BE_RESOURCE
     ;;
 
   *) # local
