@@ -68,6 +68,7 @@ public class CreditorInstitutionsService {
         return modelMapper.map(pa, CreditorInstitutionDetails.class);
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public CreditorInstitutionDetails createCreditorInstitution(@NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
         if (paRepository.findByIdDominio(creditorInstitutionDetails.getCreditorInstitutionCode()).isPresent()) {
             throw new AppException(AppError.CREDITOR_INSTITUTION_CONFLICT, creditorInstitutionDetails.getCreditorInstitutionCode());

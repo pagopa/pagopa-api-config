@@ -19,11 +19,8 @@
     </springProfile>
 
     <springProfile name="local || docker || h2">
-        <root level="INFO">
+        <root level="DEBUG">
             <appender-ref ref="stdout"/>
         </root>
-        <logger name="it.pagopa.pagopa" level="DEBUG" additivity="false">
-            <appender-ref ref="stdout"/>
-        </logger>
     </springProfile>
 </configuration>
