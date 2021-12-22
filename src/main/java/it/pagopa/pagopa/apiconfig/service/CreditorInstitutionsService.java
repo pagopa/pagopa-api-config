@@ -98,7 +98,7 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
-    @Transactional(isolation = Isolation.DEFAULT)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public CreditorInstitutionStationEdit createCreditorInstitutionStation(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
         // check if the relation already exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
@@ -116,7 +116,7 @@ public class CreditorInstitutionsService {
         return creditorInstitutionStationEdit;
     }
 
-    @Transactional(isolation = Isolation.DEFAULT)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public CreditorInstitutionStationEdit updateCreditorInstitutionStation(String creditorInstitutionCode, String stationCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
         // check if the relation exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
@@ -136,7 +136,7 @@ public class CreditorInstitutionsService {
         return creditorInstitutionStationEdit;
     }
 
-    @Transactional(isolation = Isolation.DEFAULT)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void deleteCreditorInstitutionStation(String creditorInstitutionCode, String stationCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(stationCode);
