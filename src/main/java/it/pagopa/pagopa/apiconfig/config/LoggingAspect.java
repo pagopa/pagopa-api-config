@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspect {
 
-    @Before("@within(org.springframework.web.bind.annotation.RestController)")
+    @Before(value = "@within(org.springframework.web.bind.annotation.RestController) && args(someArg)", argNames = "someArgs")
     public void logApiInvocation(JoinPoint joinPoint) {
-        log.info("Invoking API operation: {}", joinPoint.getSignature().getName());
+        log.info("Invoking API operation: {} args={}", joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
-    @AfterReturning("@within(org.springframework.web.bind.annotation.RestController)")
-    public void returnApiInvocation(JoinPoint joinPoint) {
-        log.debug("Successful API operation: {}", joinPoint.getSignature().getName());
+    @AfterReturning(value = "@within(org.springframework.web.bind.annotation.RestController)", returning = "result")
+    public void returnApiInvocation(JoinPoint joinPoint, Object result) {
+        log.info("Successful API operation: {} result={}", joinPoint.getSignature().getName(), result);
     }
 }

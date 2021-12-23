@@ -19,7 +19,7 @@
     </springProfile>
 
     <springProfile name="local || docker || h2">
-        <root level="DEBUG">
+        <root level="INFO">
             <appender-ref ref="stdout"/>
         </root>
     </springProfile>

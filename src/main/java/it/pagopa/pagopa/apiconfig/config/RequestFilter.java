@@ -37,12 +37,18 @@ public class RequestFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            String requestId = ((HttpServletRequest) request).getHeader(HEADER_REQUEST_ID);
+            HttpServletRequest httRequest = (HttpServletRequest) request;
+
+            // get requestId from header or generate one
+            String requestId = httRequest.getHeader(HEADER_REQUEST_ID);
             if (requestId == null || requestId.isEmpty()) {
                 requestId = UUID.randomUUID().toString();
             }
+
             // set requestId in MDC
             MDC.put("requestId", requestId);
+
+            log.debug("{} {}", httRequest.getMethod(), httRequest.getRequestURI());
 
             // set requestId in the response header
             ((HttpServletResponse) response).setHeader(HEADER_REQUEST_ID, requestId);
