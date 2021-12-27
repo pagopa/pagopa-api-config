@@ -56,7 +56,7 @@ public class ServicesController {
             @Parameter() @RequestParam(required = false, name = "minimumamount") Double minimumAmount,
             @Parameter() @RequestParam(required = false, name = "maximumamount") Double maximumAmount,
             @Parameter() @RequestParam(required = false, name = "languagecode", defaultValue = "IT") Service.LanguageCode languageCode,
-            @Parameter() @RequestParam(required = false, name = ")") String conventionCode) {
+            @Parameter() @RequestParam(required = false, name = "conventionCode") String conventionCode) {
         return ResponseEntity.ok(servicesService.getServices(limit, page,
                 Service.Filter.builder()
                         .conventionCode(conventionCode)
