@@ -171,6 +171,8 @@ stages:
               targetType: "inline"
               script: |
                 ls ./target/
+                echo "Deploy ... "
+                echo ./target/api-config-$(pomversion.next).jar
               failOnStderr: true
 
           - task: AzureCLI@1
