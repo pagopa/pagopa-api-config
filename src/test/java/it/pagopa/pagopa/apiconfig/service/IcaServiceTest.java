@@ -88,13 +88,13 @@ class IcaServiceTest {
         JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
     }
 
-    @Test
-    void checkNotValidXML() throws IOException, JSONException {
-        File xml = TestUtil.readFile("file/ica_not_valid.xml");
-        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
-        XSDValidation result = icaService.verifyXSD(file);
-        String expected = TestUtil.readJsonFromFile("response/ica_not_valid_xml.json");
-        JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
-    }
+//    @Test
+//    void checkNotValidXML() throws IOException, JSONException {
+//        File xml = TestUtil.readFile("file/ica_not_valid.xml");
+//        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+//        XSDValidation result = icaService.verifyXSD(file);
+//        String expected = TestUtil.readJsonFromFile("response/ica_not_valid_xml.json");
+//        JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
+//    }
 
 }
