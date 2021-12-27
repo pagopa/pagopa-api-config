@@ -13,6 +13,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.Service;
 import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import it.pagopa.pagopa.apiconfig.service.ServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,7 @@ public class ServicesController {
             @ApiResponse(responseCode = "500", description = "Service unavailable.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
             value = "",
-            produces = {"application/json"}
+            produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<Services> getServices(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,

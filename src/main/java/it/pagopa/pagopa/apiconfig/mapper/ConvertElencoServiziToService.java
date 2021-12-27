@@ -23,8 +23,8 @@ public class ConvertElencoServiziToService implements Converter<ElencoServizi, S
                 .channelCode(source.getCanaleId())
                 .serviceName(source.getNomeServizio())
                 .paymentMethodChannel(source.getCanaleModPag())
-                .paymentTypeCode(Service.PaymentTypeCode.fromCode(source.getTipoVersCod()))
-                .languageCode(Service.LanguageCode.valueOf(source.getCodiceLingua()))
+                .paymentTypeCode(getPaymentTypeCode(source))
+                .languageCode(getLanguageCode(source))
                 .serviceDescription(source.getNomeServizio())
                 .serviceAvailability(source.getInfDispServ())
                 .channelUrl(source.getInfUrlCanale())
@@ -44,5 +44,13 @@ public class ConvertElencoServiziToService implements Converter<ElencoServizi, S
                 .conventionCode(source.getCodiceConvenzione())
                 .flagIo(source.getFlagIo())
                 .build();
+    }
+
+    private Service.LanguageCode getLanguageCode(ElencoServizi source) {
+        return source.getCodiceLingua() != null ? Service.LanguageCode.valueOf(source.getCodiceLingua()): null;
+    }
+
+    private Service.PaymentTypeCode getPaymentTypeCode(ElencoServizi source) {
+        return source.getTipoVersCod() != null ? Service.PaymentTypeCode.fromCode(source.getTipoVersCod()) : null;
     }
 }

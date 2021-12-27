@@ -57,8 +57,7 @@ public class TestUtil {
      */
     public File readFile(String relativePath) {
         ClassLoader classLoader = TestUtil.class.getClassLoader();
-        File file = new File(classLoader.getResource(relativePath).getFile());
-        return file;
+        return new File(classLoader.getResource(relativePath).getFile());
     }
 
     /**
@@ -351,6 +350,8 @@ public class TestUtil {
                 .canaleId("123")
                 .flagIo(false)
                 .canaleModPag(2L)
+                .codiceLingua("IT")
+                .tipoVersCod("PPAL")
                 .nomeServizio("service")
                 .timestampIns(Timestamp.valueOf("2021-12-13 00:00:00"))
                 .dataValidita(Timestamp.valueOf("2021-12-14 00:00:00"))
