@@ -166,7 +166,7 @@ stages:
               failOnStderr: true
 
           - task: Bash@3
-            name: show target
+            name: show_target
             inputs:
               targetType: "inline"
               script: |
