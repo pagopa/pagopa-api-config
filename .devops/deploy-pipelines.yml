@@ -107,16 +107,16 @@ stages:
               git push --tags
 
           # create new releae
-#          - task: GitHubRelease@0
-#            inputs:
-#              gitHubConnection: $(GITHUB_CONNECTION)
-#              repositoryName: $(Build.Repository.Name)
-#              action: create
-#              target: $(sha)
-#              tagSource: manual
-#              tag: $(tag)
-#              title: $(title)
-#              addChangelog: true
+          - task: GitHubRelease@0
+            inputs:
+              gitHubConnection: $(GITHUB_CONNECTION)
+              repositoryName: $(Build.Repository.Name)
+              action: create
+              target: $(sha)
+              tagSource: manual
+              tag: $(tag)
+              title: $(title)
+              addChangelog: true
 
   # Deploy on Azure
   - stage: deploy
