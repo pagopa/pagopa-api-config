@@ -57,7 +57,7 @@ stages:
   # Create a release on Github
   - stage: release_service
     # bump version on main branch and if SEMVER is not 'skip'
-    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.SEMVER }}', 'skip'))
+    # condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.SEMVER }}', 'skip'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -107,16 +107,16 @@ stages:
               git push --tags
 
           # create new releae
-          - task: GitHubRelease@0
-            inputs:
-              gitHubConnection: $(GITHUB_CONNECTION)
-              repositoryName: $(Build.Repository.Name)
-              action: create
-              target: $(sha)
-              tagSource: manual
-              tag: $(tag)
-              title: $(title)
-              addChangelog: true
+#          - task: GitHubRelease@0
+#            inputs:
+#              gitHubConnection: $(GITHUB_CONNECTION)
+#              repositoryName: $(Build.Repository.Name)
+#              action: create
+#              target: $(sha)
+#              tagSource: manual
+#              tag: $(tag)
+#              title: $(title)
+#              addChangelog: true
 
   # Deploy on Azure
   - stage: deploy
