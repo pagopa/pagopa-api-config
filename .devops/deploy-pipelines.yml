@@ -173,6 +173,8 @@ stages:
                 ls ./target/
                 echo "Deploy ... "
                 echo ./target/api-config-$(pomversion.next).jar
+                echo "Prop file"
+                cat src/main/resources/application.properties
               failOnStderr: true
 
           - task: AzureCLI@1
