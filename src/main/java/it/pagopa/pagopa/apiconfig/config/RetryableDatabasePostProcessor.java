@@ -16,7 +16,7 @@ public class RetryableDatabasePostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof DataSource) {
-            log.info("---004---> configuring a retryable datasource for beanName = {}", beanName);
+            log.info("---005---> configuring a retryable datasource for beanName = {}", beanName);
             return new RetryableDataSource((DataSource) bean);
         }
         return bean;
