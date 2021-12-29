@@ -66,7 +66,7 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  # Create a release on Github
+  # Create a release on GitHub
   - stage: release_service
     # bump version on main branch and if SEMVER is not 'skip'
     condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.SEMVER }}', 'skip'))
@@ -118,7 +118,7 @@ stages:
               git push origin ${{variables['Build.SourceBranchName']}}
               git push --tags
 
-          # create new releae
+          # create new release
           - task: GitHubRelease@0
             inputs:
               gitHubConnection: $(GITHUB_CONNECTION)

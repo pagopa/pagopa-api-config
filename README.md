@@ -131,7 +131,7 @@ Connection info of DB from other docker containers:
 ```
 url = jdbc:oracle:thin:@oracle-db-12c:1521:ORCLCDB
 user = NODO4_CFG
-password = PSS_NODO4_CFG
+password = PASS_NODO4_CFG
 ```
 
 ⚠️ **Attention!** 
