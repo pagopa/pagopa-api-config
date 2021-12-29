@@ -11,16 +11,7 @@
         </layout>
     </appender>
 
-    <!--no profile-->
-    <springProfile name="!local &amp; !docker &amp; !h2">
-        <root level="INFO">
-            <appender-ref ref="stdout"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="local || docker || h2">
-        <root level="INFO">
-            <appender-ref ref="stdout"/>
-        </root>
-    </springProfile>
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+    </root>
 </configuration>
