@@ -34,7 +34,7 @@ variables:
     STAGE: "u"
     SPRING_PROFILES_ACTIVE: "azure-u"
     dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
-    dockerNamespace:$(UAT_CONTAINER_NAMESPACE)
+    dockerNamespace: $(UAT_CONTAINER_NAMESPACE)
   ${{ if eq(parameters['ENV'], 'prod') }}:
     AZURE_SUBSCRIPTION: $(PROD_AZURE_SUBSCRIPTION)
     RESOURCE_GROUP: $(PROD_WEB_APP_RESOURCE_GROUP_NAME)
@@ -42,7 +42,7 @@ variables:
     STAGE: "p"
     SPRING_PROFILES_ACTIVE: "azure-p"
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
-    dockerNamespace:$(PROD_CONTAINER_NAMESPACE)
+    dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
   ${{ if eq(parameters['ENV'], 'test') }}:
     AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
     RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
