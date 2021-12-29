@@ -76,9 +76,9 @@ class BrokersServiceTest {
     @Test
     void createBroker_conflict() {
         when(intermediariPaRepository.findByIdIntermediarioPa("1234")).thenReturn(Optional.of(getMockIntermediariePa()));
-
+        BrokerDetails mockBrokerDetails = getMockBrokerDetails();
         try {
-            brokersService.createBroker(getMockBrokerDetails());
+            brokersService.createBroker(mockBrokerDetails);
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
