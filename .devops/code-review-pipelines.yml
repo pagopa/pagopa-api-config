@@ -52,6 +52,11 @@ steps:
       goals: 'clean verify'
       sonarQubeRunAnalysis: true
 
+  - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/*-TEST.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
 
   - task: SonarCloudPublish@1
     displayName: 'Publish SonarCloud results on build summary'
