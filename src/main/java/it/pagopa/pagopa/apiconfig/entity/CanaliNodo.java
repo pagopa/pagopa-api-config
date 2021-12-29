@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "CANALI_NODO", schema = "NODO4_CFG")
 @Builder
@@ -62,6 +62,7 @@ public class CanaliNodo {
     @Column(name = "REDIRECT_PROTOCOLLO", length = 35)
     private String redirectProtocollo;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SERV_PLUGIN")
     private WfespPluginConf idServPlugin;
