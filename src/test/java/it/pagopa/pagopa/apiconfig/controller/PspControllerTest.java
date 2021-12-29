@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(classes = ApiConfig.class)
-@ActiveProfiles(profiles = "azure-d")
 @AutoConfigureMockMvc
 class PspControllerTest {
 

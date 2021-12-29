@@ -29,7 +29,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 
 @SpringBootTest(classes = ApiConfig.class)
-@ActiveProfiles(profiles = "azure-d")
 @AutoConfigureMockMvc
 class EncodingsControllerTest {
 

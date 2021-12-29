@@ -32,7 +32,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
-@ActiveProfiles(profiles = "azure-d")
 class PspServiceTest {
 
     @MockBean

@@ -5,7 +5,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ActiveProfiles(profiles = "azure-d")
 class ApiConfigTest {
 
     @Test

@@ -24,7 +24,6 @@ variables:
     RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(DEV_WEB_APP_NAME)
     STAGE: "d"
-    SPRING_PROFILES_ACTIVE: "azure-d"
     dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
     dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
   ${{ if eq(parameters['ENV'], 'uat') }}:
@@ -32,7 +31,6 @@ variables:
     RESOURCE_GROUP: $(UAT_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(UAT_WEB_APP_NAME)
     STAGE: "u"
-    SPRING_PROFILES_ACTIVE: "azure-u"
     dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
     dockerNamespace: $(UAT_CONTAINER_NAMESPACE)
   ${{ if eq(parameters['ENV'], 'prod') }}:
@@ -40,7 +38,6 @@ variables:
     RESOURCE_GROUP: $(PROD_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(PROD_WEB_APP_NAME)
     STAGE: "p"
-    SPRING_PROFILES_ACTIVE: "azure-p"
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
     dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
   ${{ if eq(parameters['ENV'], 'test') }}:
@@ -48,7 +45,6 @@ variables:
     RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(DEV_WEB_APP_NAME)
     STAGE: "t"
-    SPRING_PROFILES_ACTIVE: "azure-t"
     dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
     dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
 
@@ -142,7 +138,16 @@ stages:
             clean: true
             persistCredentials: true
             submodules: true
-            
+
+          - task: Bash@3
+            name: application_properties
+            inputs:
+              targetType: "inline"
+              script: |
+                cp src/main/resources/application-azure-$(STAGE).properties src/main/resources/application.properties
+                cat src/main/resources/application.properties
+              failOnStderr: true
+
           - task: Cache@2
             inputs:
               key: 'maven | "$(Agent.OS)" | pom.xml'

@@ -44,7 +44,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
-@ActiveProfiles(profiles = "azure-d")
 class CreditorInstitutionsServiceTest {
 
     @MockBean

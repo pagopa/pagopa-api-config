@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = ApiConfig.class)
-@ActiveProfiles(profiles = "azure-d")
 class ErrorHandlerTest {
 
     @Autowired
