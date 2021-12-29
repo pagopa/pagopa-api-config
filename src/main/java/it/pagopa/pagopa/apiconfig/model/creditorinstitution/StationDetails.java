@@ -31,9 +31,11 @@ public class StationDetails extends Station {
     @NotNull
     private String ip;
 
+    @ToString.Exclude
     @JsonProperty("new_password")
     private String newPassword;
 
+    @ToString.Exclude
     @JsonProperty("password")
     @NotNull
     private String password;
@@ -93,6 +95,7 @@ public class StationDetails extends Station {
     @JsonProperty("proxy_username")
     private String proxyUsername;
 
+    @ToString.Exclude
     @JsonProperty("proxy_password")
     private String proxyPassword;
 

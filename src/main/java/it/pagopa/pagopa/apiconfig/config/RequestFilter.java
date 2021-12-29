@@ -47,7 +47,6 @@ public class RequestFilter implements Filter {
 
             // set requestId in MDC
             MDC.put("requestId", requestId);
-
             log.debug("{} {}", httRequest.getMethod(), httRequest.getRequestURI());
 
             // set requestId in the response header

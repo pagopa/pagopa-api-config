@@ -56,17 +56,17 @@ public class LoggingAspect {
                 .map(ps -> ((EnumerablePropertySource<?>) ps).getPropertyNames())
                 .flatMap(Arrays::stream)
                 .distinct()
-                .filter(prop -> !(prop.contains("credentials") || prop.contains("password")))
+                .filter(prop -> !(prop.toLowerCase().contains("credentials") || prop.toLowerCase().contains("password") || prop.toLowerCase().contains("pass") || prop.toLowerCase().contains("pwd")))
                 .forEach(prop -> log.debug("{}: {}", prop, env.getProperty(prop)));
     }
 
     @Before(value = "@within(org.springframework.web.bind.annotation.RestController)")
     public void logApiInvocation(JoinPoint joinPoint) {
-        log.info("Invoking API operation: {} args={}", joinPoint.getSignature().getName(), joinPoint.getArgs());
+        log.info("Invoking API operation {} - args: {}", joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
     @AfterReturning(value = "@within(org.springframework.web.bind.annotation.RestController)", returning = "result")
     public void returnApiInvocation(JoinPoint joinPoint, Object result) {
-        log.info("Successful API operation: {} result={}", joinPoint.getSignature().getName(), result);
+        log.info("Successful API operation {} - result: {}", joinPoint.getSignature().getName(), result);
     }
 }
