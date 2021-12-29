@@ -25,24 +25,32 @@ variables:
     APP_NAME: $(DEV_WEB_APP_NAME)
     STAGE: "d"
     SPRING_PROFILES_ACTIVE: "azure-d"
+    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
+    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
   ${{ if eq(parameters['ENV'], 'uat') }}:
     AZURE_SUBSCRIPTION: $(UAT_AZURE_SUBSCRIPTION)
     RESOURCE_GROUP: $(UAT_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(UAT_WEB_APP_NAME)
     STAGE: "u"
     SPRING_PROFILES_ACTIVE: "azure-u"
+    dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
+    dockerNamespace:$(UAT_CONTAINER_NAMESPACE)
   ${{ if eq(parameters['ENV'], 'prod') }}:
     AZURE_SUBSCRIPTION: $(PROD_AZURE_SUBSCRIPTION)
     RESOURCE_GROUP: $(PROD_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(PROD_WEB_APP_NAME)
     STAGE: "p"
     SPRING_PROFILES_ACTIVE: "azure-p"
+    dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
+    dockerNamespace:$(PROD_CONTAINER_NAMESPACE)
   ${{ if eq(parameters['ENV'], 'test') }}:
     AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
     RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(DEV_WEB_APP_NAME)
     STAGE: "t"
     SPRING_PROFILES_ACTIVE: "azure-t"
+    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
+    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
@@ -178,6 +186,27 @@ stages:
                 az webapp deploy --clean true --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
 
 
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+              repository: '$(IMAGE_REPOSITORY)'
+              command: 'buildAndPush'
+              tags: |
+                $(Build.BuildId)
+                latest
+                $(pomversion.next)
+          - task: AzureRMWebAppDeployment@4
+            displayName: Azure App Service Deploy
+            inputs:
+              appType: webAppContainer
+              ConnectedServiceName: '$(AZURE_SUBSCRIPTION)'
+              WebAppName: '$(APP_NAME)'
+              DockerNamespace: '$(dockerNamespace)'
+              DockerRepository: '$(IMAGE_REPOSITORY)'
+              DockerImageTag: '$(Build.BuildId)'
+
+  # Run test
   - stage: test
     # run stage 'test' only if ENV is equal to 'test'
     condition: and(not(failed('deployJava')), eq('${{ parameters.ENV }}', 'test'))
@@ -240,6 +269,3 @@ stages:
               k6 run --vus 2 --duration 30s k6-script.js
             displayName: 'Run load test'
             continueOnError: true
-
-
-
