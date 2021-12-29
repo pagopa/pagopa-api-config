@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "application.name",
+      "type": "java.lang.String",
+      "description": "Name of the application set in the POM file."
+    },
+    {
+      "name": "application.version",
+      "type": "java.lang.String",
+      "description": "Version of the application set in the POM file."
+    },
+    {
+      "name": "application.description",
+      "type": "java.lang.String",
+      "description": "Description of the application set in the POM file."
+    },
+    {
+      "name": "properties.environment",
+      "type": "java.lang.String",
+      "description": "Environment name."
+    },
+    {
+      "name": "cors.configuration",
+      "type": "java.lang.String",
+      "description": "CORS configuration."
+    },
+    {
+      "name": "xsd.ica",
+      "type": "java.lang.String",
+      "description": "Path of XSD for ICA service."
+    }
+  ] }
