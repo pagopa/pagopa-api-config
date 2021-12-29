@@ -41,9 +41,11 @@ public class Stazioni {
     @Column(name = "IP")
     private String ip;
 
+    @ToString.Exclude
     @Column(name = "NEW_PASSWORD")
     private String newPassword;
 
+    @ToString.Exclude
     @Column(name = "PASSWORD")
     private String password;
 
@@ -106,6 +108,7 @@ public class Stazioni {
     @Column(name = "PROXY_USERNAME")
     private String proxyUsername;
 
+    @ToString.Exclude
     @Column(name = "PROXY_PASSWORD")
     private String proxyPassword;
 

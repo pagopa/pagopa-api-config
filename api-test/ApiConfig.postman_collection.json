@@ -1,10 +1,91 @@
 {
 	"info": {
-		"_postman_id": "11f63905-44c1-441b-a8f9-87ebfb6122b2",
+		"_postman_id": "618a0964-fcb8-453e-b456-70f5f36d256b",
 		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "login",
+			"item": [
+				{
+					"name": "Login JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"login JWT\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jwt\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "resource",
+									"value": "{{resource}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://login.microsoftonline.com/{{tenant_id}}/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"login",
+								"microsoftonline",
+								"com"
+							],
+							"path": [
+								"{{tenant_id}}",
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "api test suite - creditor institutions",
 			"item": [
@@ -33,9 +114,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -70,9 +148,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -134,7 +209,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
@@ -212,7 +293,13 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
@@ -222,44 +309,6 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{creditor_institution_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitution",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitution\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
 							"host": [
@@ -336,7 +385,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"mod4\": false,\n    \"broadcast\": false\n}",
@@ -360,7 +415,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1110001"
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -384,7 +439,13 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"aux_digit\": \"10\",\n    \"mod4\": true,\n    \"broadcast\": true\n}",
@@ -409,7 +470,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1110001"
+									"value": "{{creditor_institution_code}}"
 								},
 								{
 									"key": "stationcode",
@@ -453,11 +514,49 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "1110001"
+									"value": "{{creditor_institution_code}}"
 								},
 								{
 									"key": "stationcode",
 									"value": "80007580279_01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -539,7 +638,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"code_type\": \"QR_CODE\",\n    \"encoding_code\": \"{{encoding_code}}\"\n}",
@@ -749,7 +854,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
@@ -827,7 +938,13 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 2,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
@@ -1056,7 +1173,13 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"broker_code\": \"{{broker_code}}\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio 2\",\n    \"extended_fault_bean\": false\n}",
@@ -1310,14 +1433,23 @@
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
 					"request": {
 						"method": "POST",
 						"header": [
 							{
-								"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
 								"key": "Content-Type",
-								"value": "multipart/form-data",
-								"type": "text"
+								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "105513",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -1326,7 +1458,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./src/test/resources/file/ica_valid.xml"
+									"src": "src/test/resources/file/ica_valid.xml"
 								}
 							]
 						},
@@ -1339,17 +1471,40 @@
 								"{{api-config-base-path}}",
 								"icas",
 								"xsd"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "1",
-									"disabled": true
-								}
 							]
 						}
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -1428,7 +1583,13 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
@@ -1666,7 +1827,13 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"enabled\": true,\n    \"description\": \"Regione Lazio 2\",\n    \"extended_fault_bean\": false\n}",
@@ -1797,7 +1964,13 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"enabled\": true,\n    \"version\": 2,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"fk_intermediario_pa\": 2\n}",
@@ -1864,6 +2037,36 @@
 						}
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -2116,6 +2319,36 @@
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -2240,57 +2473,37 @@
 					},
 					"response": []
 				}
-			]
-		},
-		{
-			"name": "Login JWT",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
 			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "grant_type",
-							"value": "client_credentials",
-							"type": "text"
-						},
-						{
-							"key": "client_id",
-							"value": "",
-							"type": "text"
-						},
-						{
-							"key": "client_secret",
-							"value": "",
-							"type": "text"
-						},
-						{
-							"key": "resource",
-							"value": "",
-							"type": "text"
-						}
-					]
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				},
-				"url": {
-					"raw": "https://login.microsoftonline.com/7788edaf-0346-4068-9d79-c868aed15b3d/oauth2/token",
-					"protocol": "https",
-					"host": [
-						"login",
-						"microsoftonline",
-						"com"
-					],
-					"path": [
-						"7788edaf-0346-4068-9d79-c868aed15b3d",
-						"oauth2",
-						"token"
-					]
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }

@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "CANALI", schema = "NODO4_CFG")
 @Builder
@@ -42,9 +42,11 @@ public class Canali {
     @Column(name = "IP", length = 100)
     private String ip;
 
+    @ToString.Exclude
     @Column(name = "NEW_PASSWORD", length = 15)
     private String newPassword;
 
+    @ToString.Exclude
     @Column(name = "PASSWORD", length = 15)
     private String password;
 
@@ -60,6 +62,7 @@ public class Canali {
     @Column(name = "DESCRIZIONE", length = 70)
     private String descrizione;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_INTERMEDIARIO_PSP", nullable = false)
     @NotNull
@@ -71,6 +74,7 @@ public class Canali {
     @Column(name = "PROXY_HOST", length = 100)
     private String proxyHost;
 
+    @ToString.Exclude
     @Column(name = "PROXY_PASSWORD", length = 15)
     private String proxyPassword;
 
@@ -86,6 +90,7 @@ public class Canali {
     @Column(name = "CANALE_AVV", nullable = false)
     private Boolean canaleAvv = false;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_CANALI_NODO")
     private CanaliNodo fkCanaliNodo;

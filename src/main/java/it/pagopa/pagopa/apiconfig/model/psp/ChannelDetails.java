@@ -25,10 +25,12 @@ import java.util.Arrays;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelDetails extends Channel {
 
+    @ToString.Exclude
     @JsonProperty("password")
     @NotNull
     private String password;
 
+    @ToString.Exclude
     @JsonProperty("new_password")
     private String newPassword;
 
@@ -64,6 +66,7 @@ public class ChannelDetails extends Channel {
     @JsonProperty("proxy_username")
     private String proxyUsername;
 
+    @ToString.Exclude
     @JsonProperty("proxy_password")
     private String proxyPassword;
 
