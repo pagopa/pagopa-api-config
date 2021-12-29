@@ -168,18 +168,10 @@ stages:
               javaHomeOption: 'JDKVersion'
               jdkVersionOption: '1.11'
               mavenVersionOption: 'Default'
+              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
               mavenAuthenticateFeed: false
               effectivePomSkip: false
               sonarQubeRunAnalysis: false
-
-          - task: AzureCLI@1
-            displayName: 'Deploy'
-            inputs:
-              azureSubscription: $(AZURE_SUBSCRIPTION)
-              scriptLocation: inlineScript
-              inlineScript: |
-                az webapp deploy --clean true --resource-group $(RESOURCE_GROUP) --name $(APP_NAME) --src-path ./target/api-config-$(pomversion.next).jar  --type jar
-
 
           - task: Docker@2
             displayName: Build and push an image to container registry
@@ -191,6 +183,7 @@ stages:
                 $(Build.BuildId)
                 latest
                 $(pomversion.next)
+
           - task: AzureRMWebAppDeployment@4
             displayName: Azure App Service Deploy
             inputs:
@@ -214,7 +207,7 @@ stages:
         steps:
           - task: Delay@1
             inputs:
-              delayForMinutes: '2'
+              delayForMinutes: '5'
 
       - job: integrationTests
         dependsOn: waitStartup
