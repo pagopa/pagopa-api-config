@@ -23,7 +23,6 @@ import java.util.stream.StreamSupport;
 @Slf4j
 public class LoggingAspect {
 
-    @Before(value = "@within(org.springframework.web.bind.annotation.RestController) && args(someArg)", argNames = "someArgs")
     @Value("${application.name}")
     private String name;
 
@@ -34,11 +33,19 @@ public class LoggingAspect {
     private String environment;
 
 
+    /**
+     * Log essential info of application during the startup.
+     */
     @PostConstruct
     public void logStartup() {
         log.info("-> Starting {} version {} - environment {}", name, version, environment);
     }
 
+    /**
+     * If DEBUG log-level is enabled prints the env variables and the application properties.
+     *
+     * @param event Context of application
+     */
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
         final Environment env = event.getApplicationContext().getEnvironment();
@@ -53,7 +60,7 @@ public class LoggingAspect {
                 .forEach(prop -> log.debug("{}: {}", prop, env.getProperty(prop)));
     }
 
-    @Before(value = "@within(org.springframework.web.bind.annotation.RestController) && args(someArg)", argNames = "someArgs")
+    @Before(value = "@within(org.springframework.web.bind.annotation.RestController)")
     public void logApiInvocation(JoinPoint joinPoint) {
         log.info("Invoking API operation: {} args={}", joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
