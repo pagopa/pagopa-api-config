@@ -142,6 +142,7 @@ stages:
             clean: true
             persistCredentials: true
             submodules: true
+            
           - task: Cache@2
             inputs:
               key: 'maven | "$(Agent.OS)" | pom.xml'
@@ -160,13 +161,16 @@ stages:
                 echo "##vso[task.setvariable variable=next;isOutput=true]$version"
               failOnStderr: true
 
-          - task: Bash@3
-            name: build
+          - task: Maven@3
             inputs:
-              targetType: "inline"
-              script: |
-                mvn package
-              failOnStderr: true
+              mavenPomFile: 'pom.xml'
+              publishJUnitResults: false
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.11'
+              mavenVersionOption: 'Default'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
+              sonarQubeRunAnalysis: false
 
           - task: AzureCLI@1
             displayName: 'Deploy'
