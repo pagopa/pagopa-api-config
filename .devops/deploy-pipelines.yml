@@ -222,7 +222,7 @@ stages:
               bash api-test/setup_env_api_test.sh $(STAGE)
 
           - script: |
-              yarn global add postman-to-k6
+              yarn global add @apideck/postman-to-k6
             displayName: 'postman-to-k6 installation'
           - script: |
               sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69

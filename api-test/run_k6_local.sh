@@ -2,7 +2,7 @@
 
 # To run k6 load tests on your local pc
 
-# Install postman-to-k6 https://github.com/grafana/postman-to-k6
+# Install postman-to-k6 https://github.com/apideck-libraries/postman-to-k6
 # Install k6 https://k6.io/docs/getting-started/installation/
 # https://k6.io/docs/using-k6/http-debugging/
 
