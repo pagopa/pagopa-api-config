@@ -253,11 +253,11 @@ stages:
             displayName: 'k6 installation'
 
           - script: |
-              postman-to-k6  api-test/ApiConfig.postman_collection.json -e api-test/Azure.postman_environment.json -o k6-script.js
+              bash api-test/postman-to-k6-converter.sh api-test/Azure.postman_environment.json
             displayName: 'Generate load test'
             continueOnError: true
 
           - script: |
-              k6 run --vus 2 --duration 30s k6-script.js
+              k6 run --vus 2 --duration 30s ./k6-script.js
             displayName: 'Run load test'
             continueOnError: true
