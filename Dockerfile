@@ -22,5 +22,4 @@ COPY --chown=spring:spring  --from=builder application/ ./
 EXPOSE 8080
 
 COPY --chown=spring:spring docker/run.sh ./run.sh
-RUN  chmod +x ./run.sh
 ENTRYPOINT ["./run.sh"]
