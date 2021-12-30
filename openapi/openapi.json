@@ -1862,6 +1862,15 @@
                             "minLength": 0,
                             "type": "string"
                         }
+                    },
+                    {
+                        "description": "PSP code",
+                        "in": "query",
+                        "name": "pspcode",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {

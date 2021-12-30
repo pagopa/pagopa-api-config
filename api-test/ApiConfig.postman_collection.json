@@ -2430,7 +2430,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -2438,6 +2438,12 @@
 								"{{api-config-base-path}}",
 								"cdis",
 								":id"
+							],
+							"query": [
+								{
+									"key": "pspcode",
+									"value": "BPPIITRRZZZ"
+								}
 							],
 							"variable": [
 								{

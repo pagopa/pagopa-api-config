@@ -61,8 +61,9 @@ public class CdiController {
             value = "/{idcdi}",
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<Resource> getCdi(@NotBlank @Size(max = 50) @Parameter(description = "Id of a CDI", required = true) @PathVariable("idcdi") String idCdi) {
-        byte[] file = cdiService.getCdi(idCdi);
+    public ResponseEntity<Resource> getCdi(@NotBlank @Size(max = 50) @Parameter(description = "Id of a CDI", required = true) @PathVariable("idcdi") String idCdi,
+                                           @NotBlank @Parameter(description = "PSP code", required = true) @RequestParam("pspcode") String pspCode) {
+        byte[] file = cdiService.getCdi(idCdi, pspCode);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_XML)
                 .contentLength(file.length)

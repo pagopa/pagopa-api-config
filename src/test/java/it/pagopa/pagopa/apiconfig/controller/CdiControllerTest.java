@@ -32,7 +32,7 @@ class CdiControllerTest {
     @BeforeEach
     void setUp() {
         when(cdiService.getCdis(50, 0)).thenReturn(Cdis.builder().build());
-        when(cdiService.getCdi(anyString())).thenReturn(new byte[]{});
+        when(cdiService.getCdi(anyString(), anyString())).thenReturn(new byte[]{});
 
     }
 
@@ -46,7 +46,7 @@ class CdiControllerTest {
 
     @Test
     void getCdi() throws Exception {
-        String url = "/cdis/1234";
+        String url = "/cdis/1234?pspcode=1";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_XML));

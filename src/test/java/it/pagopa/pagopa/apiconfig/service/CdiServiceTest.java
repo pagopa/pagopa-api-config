@@ -50,9 +50,9 @@ class CdiServiceTest {
 
     @Test
     void getCdi() {
-        when(cdiMasterRepository.findByIdInformativaPsp("1234")).thenReturn(Optional.of(getMockCdiMaster()));
+        when(cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp("1234", "1")).thenReturn(Optional.of(getMockCdiMaster()));
 
-        byte[] result  = cdiService.getCdi("1234");
+        byte[] result  = cdiService.getCdi("1234", "1");
         assertNotNull(result);
         assertEquals(2, result.length);
     }

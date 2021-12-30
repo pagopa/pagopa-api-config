@@ -506,6 +506,13 @@
             "name": "idcdi",
             "required": true,
             "type": "string"
+          },
+          {
+            "description": "PSP code",
+            "in": "query",
+            "name": "pspcode",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {

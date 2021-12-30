@@ -37,8 +37,8 @@ public class CdiService {
                 .build();
     }
 
-    public byte[] getCdi(@NotBlank String idCdi) {
-        CdiMaster cdiMaster = cdiMasterRepository.findByIdInformativaPsp(idCdi)
+    public byte[] getCdi(@NotBlank String idCdi, @NotBlank String pspCode) {
+        CdiMaster cdiMaster = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(idCdi, pspCode)
                 .orElseThrow(() -> new AppException(AppError.CDI_NOT_FOUND, idCdi));
 
         return cdiMaster.getFkBinaryFile().getFileContent();
