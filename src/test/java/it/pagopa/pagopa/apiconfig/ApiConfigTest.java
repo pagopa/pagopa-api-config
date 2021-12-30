@@ -1,7 +1,6 @@
 package it.pagopa.pagopa.apiconfig;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
