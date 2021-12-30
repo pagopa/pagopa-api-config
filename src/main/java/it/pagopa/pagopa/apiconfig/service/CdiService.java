@@ -37,10 +37,11 @@ public class CdiService {
                 .build();
     }
 
-    public Cdi getCdi(@NotBlank String idCdi) {
+    public byte[] getCdi(@NotBlank String idCdi) {
         CdiMaster cdiMaster = cdiMasterRepository.findByIdInformativaPsp(idCdi)
                 .orElseThrow(() -> new AppException(AppError.CDI_NOT_FOUND, idCdi));
-        return modelMapper.map(cdiMaster, Cdi.class);
+
+        return cdiMaster.getFkBinaryFile().getFileContent();
     }
 
     /**

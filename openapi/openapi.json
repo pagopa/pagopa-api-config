@@ -1867,9 +1867,10 @@
                 "responses": {
                     "200": {
                         "content": {
-                            "application/json": {
+                            "application/xml": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Cdi"
+                                    "format": "binary",
+                                    "type": "string"
                                 }
                             }
                         },
@@ -1881,6 +1882,11 @@
                     "404": {
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            },
+                            "application/xml": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ProblemJson"
                                 }
@@ -1910,7 +1916,7 @@
                         "Authorization": []
                     }
                 ],
-                "summary": "Get CDI details ",
+                "summary": "Download a XML file containing the details of a CDI",
                 "tags": [
                     "Payment Service Providers"
                 ]
@@ -3361,12 +3367,6 @@
                 "responses": {
                     "200": {
                         "content": {
-                            "application/json": {
-                                "schema": {
-                                    "format": "binary",
-                                    "type": "string"
-                                }
-                            },
                             "application/xml": {
                                 "schema": {
                                     "format": "binary",

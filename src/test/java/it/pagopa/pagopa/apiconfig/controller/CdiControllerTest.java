@@ -1,7 +1,6 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.service.CdiService;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +32,7 @@ class CdiControllerTest {
     @BeforeEach
     void setUp() {
         when(cdiService.getCdis(50, 0)).thenReturn(Cdis.builder().build());
-        when(cdiService.getCdi(anyString())).thenReturn(Cdi.builder().build());
+        when(cdiService.getCdi(anyString())).thenReturn(new byte[]{});
 
     }
 
@@ -50,6 +49,6 @@ class CdiControllerTest {
         String url = "/cdis/1234";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_XML));
     }
 }

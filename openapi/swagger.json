@@ -494,6 +494,7 @@
     "/cdis/{idcdi}": {
       "get": {
         "produces": [
+          "application/xml",
           "application/json"
         ],
         "parameters": [
@@ -511,7 +512,8 @@
           "200": {
             "description": "OK.",
             "schema": {
-              "$ref": "#/definitions/Cdi"
+              "format": "binary",
+              "type": "string"
             }
           },
           "403": {
@@ -545,7 +547,7 @@
           "Payment Service Providers"
         ],
         "operationId": "getCdi",
-        "summary": "Get CDI details "
+        "summary": "Download a XML file containing the details of a CDI"
       }
     },
     "/channels": {
@@ -1708,8 +1710,8 @@
     "/icas/{idica}": {
       "get": {
         "produces": [
-          "application/json",
-          "application/xml"
+          "application/xml",
+          "application/json"
         ],
         "parameters": [
           {
