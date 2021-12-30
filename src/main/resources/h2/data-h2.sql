@@ -134,3 +134,29 @@ insert into NODO4_CFG.CANALI (OBJ_ID, ID_CANALE, ENABLED, IP, NEW_PASSWORD, PASS
                               USE_NEW_FAULT_CODE, TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, SERVIZIO_NMP)
 values (1, '00001060966_01', 'Y', '1.1.1.1', null, 'FakePay', 443, 'HTTPS', 'basepath/services/fake', null, 6, 'Y',
         '2.2.2.2', null, 8080, null, 'Y', 'N', 1, 120, 2, 'Y', 15, 30, 120, null);
+
+insert into NODO4_CFG.ELENCO_SERVIZI (OBJ_ID, PSP_ID, FLUSSO_ID, PSP_RAG_SOC, PSP_FLAG_STORNO, PSP_FLAG_BOLLO, INTM_ID,
+                                      CANALE_ID, NOME_SERVIZIO, CANALE_MOD_PAG, TIPO_VERS_COD, CODICE_LINGUA,
+                                      INF_COND_EC_MAX, INF_DESC_SERV, INF_DISP_SERV, INF_URL_CANALE, IMPORTO_MINIMO,
+                                      IMPORTO_MASSIMO, COSTO_FISSO, TIMESTAMP_INS, DATA_VALIDITA, LOGO_PSP, TAGS,
+                                      LOGO_SERVIZIO, CANALE_APP, ON_US, CARRELLO_CARTE, CODICE_ABI, CODICE_MYBANK,
+                                      CODICE_CONVENZIONE, FLAG_IO)
+values (1, 'BPPIITRRZZZ', 'WISP_1_1_20210101', 'Cassa di Risparmio di Parma e Piacenza S.p.A.', 'N', 'N', '02113530345',
+        '00001060966_01', 'non comunicato', 0, 'CP', 'IT', null,
+        'Il servizio consente ai clienti di effettuare pagamenti elettronici online verso la Pubblica Amministrazione e i gestori di serviz',
+        '24/7', null, 0, 99999999.99, 1.99, to_timestamp('2021-12-10 00:05:09.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'),
+        to_timestamp('2017-07-12 00:02:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'), '16', 'Diners;V-Pay', '16',
+        'N', 'N', 'N', 'TBD', null, null, 'N');
+
+insert into NODO4_CFG.ELENCO_SERVIZI (OBJ_ID, PSP_ID, FLUSSO_ID, PSP_RAG_SOC, PSP_FLAG_STORNO, PSP_FLAG_BOLLO, INTM_ID,
+                                      CANALE_ID, NOME_SERVIZIO, CANALE_MOD_PAG, TIPO_VERS_COD, CODICE_LINGUA,
+                                      INF_COND_EC_MAX, INF_DESC_SERV, INF_DISP_SERV, INF_URL_CANALE, IMPORTO_MINIMO,
+                                      IMPORTO_MASSIMO, COSTO_FISSO, TIMESTAMP_INS, DATA_VALIDITA, LOGO_PSP, TAGS,
+                                      LOGO_SERVIZIO, CANALE_APP, ON_US, CARRELLO_CARTE, CODICE_ABI, CODICE_MYBANK,
+                                      CODICE_CONVENZIONE, FLAG_IO)
+values (2, 'BPPIITRRZZZ', 'WISP_1_1_20210101', 'Cassa di Risparmio di Parma e Piacenza S.p.A.', 'N', 'N', '02113530345',
+        '00001060966_01', 'non comunicato', 0, 'CP', 'EN', null,
+        'Il servizio consente ai clienti di effettuare pagamenti elettronici online verso la Pubblica Amministrazione e i gestori di serviz',
+        '24/7', null, 0, 99999999.99, 1.99, to_timestamp('2021-12-10 00:05:09.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'),
+        to_timestamp('2017-07-12 00:02:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'), '16', 'Diners;V-Pay', '16',
+        'Y', 'Y', 'Y', 'TBD', '1', null, 'Y');

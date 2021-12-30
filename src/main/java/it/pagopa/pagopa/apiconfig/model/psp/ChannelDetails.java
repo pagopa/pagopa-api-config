@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
@@ -25,10 +27,12 @@ import java.util.Arrays;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelDetails extends Channel {
 
+    @ToString.Exclude
     @JsonProperty("password")
     @NotNull
     private String password;
 
+    @ToString.Exclude
     @JsonProperty("new_password")
     private String newPassword;
 
@@ -64,6 +68,7 @@ public class ChannelDetails extends Channel {
     @JsonProperty("proxy_username")
     private String proxyUsername;
 
+    @ToString.Exclude
     @JsonProperty("proxy_password")
     private String proxyPassword;
 

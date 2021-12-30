@@ -8,6 +8,7 @@ import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
 import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
@@ -56,8 +57,7 @@ public class TestUtil {
      */
     public File readFile(String relativePath) {
         ClassLoader classLoader = TestUtil.class.getClassLoader();
-        File file = new File(classLoader.getResource(relativePath).getFile());
-        return file;
+        return new File(classLoader.getResource(relativePath).getFile());
     }
 
     /**
@@ -338,6 +338,23 @@ public class TestUtil {
                 .flagIo(true)
                 .marcaBolloDigitale(true)
                 .modelloPagamento("IMMEDIATO")
+                .build();
+    }
+
+    public static ElencoServizi getMockElencoServizi() {
+        return ElencoServizi.builder()
+                .canaleApp(true)
+                .carrelloCarte(true)
+                .codiceMybank("mybank")
+                .id(1L)
+                .canaleId("123")
+                .flagIo(false)
+                .canaleModPag(2L)
+                .codiceLingua("IT")
+                .tipoVersCod("PPAL")
+                .nomeServizio("service")
+                .timestampIns(Timestamp.valueOf("2021-12-13 00:00:00"))
+                .dataValidita(Timestamp.valueOf("2021-12-14 00:00:00"))
                 .build();
     }
 }

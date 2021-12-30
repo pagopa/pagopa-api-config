@@ -8,7 +8,6 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
@@ -32,10 +31,6 @@ public class StationsService {
 
     @Autowired
     StazioniRepository stazioniRepository;
-
-
-    @Autowired
-    PaStazionePaRepository paStazionePaRepository;
 
     @Autowired
     ModelMapper modelMapper;

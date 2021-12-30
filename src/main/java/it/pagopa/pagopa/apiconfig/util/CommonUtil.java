@@ -39,6 +39,6 @@ public class CommonUtil {
      * @return convert timestamp to {@link OffsetDateTime}
      */
     public static OffsetDateTime toOffsetDateTime(Timestamp timestamp) {
-        return OffsetDateTime.of(timestamp.toLocalDateTime(), ZoneOffset.UTC);
+        return timestamp != null ? OffsetDateTime.of(timestamp.toLocalDateTime(), ZoneOffset.UTC) : null;
     }
 }

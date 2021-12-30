@@ -378,3 +378,39 @@ create table NODO4_CFG.CANALI (
                                       foreign key (FK_CANALI_NODO)
                                           references NODO4_CFG.CANALI_NODO
 );
+
+create table NODO4_CFG.ELENCO_SERVIZI (
+                                          OBJ_ID numeric not null,
+                                          PSP_ID varchar(35),
+                                          FLUSSO_ID varchar(35),
+                                          PSP_RAG_SOC varchar(255),
+                                          PSP_FLAG_STORNO char,
+                                          PSP_FLAG_BOLLO char,
+                                          INTM_ID varchar(35),
+                                          CANALE_ID varchar(35),
+                                          NOME_SERVIZIO varchar(35),
+                                          CANALE_MOD_PAG numeric,
+                                          TIPO_VERS_COD varchar(255),
+                                          CODICE_LINGUA char(2),
+                                          INF_COND_EC_MAX varchar(35),
+                                          INF_DESC_SERV varchar(511),
+                                          INF_DISP_SERV varchar(511),
+                                          INF_URL_CANALE varchar(255),
+                                          IMPORTO_MINIMO float,
+                                          IMPORTO_MASSIMO float,
+                                          COSTO_FISSO float,
+                                          TIMESTAMP_INS timestamp(6),
+                                          DATA_VALIDITA timestamp(6),
+                                          LOGO_PSP blob,
+                                          TAGS varchar(135),
+                                          LOGO_SERVIZIO blob,
+                                          CANALE_APP char,
+                                          ON_US char,
+                                          CARRELLO_CARTE char,
+                                          CODICE_ABI varchar(5),
+                                          CODICE_MYBANK varchar(35),
+                                          CODICE_CONVENZIONE varchar(35),
+                                          FLAG_IO char,
+                                          constraint PK_ELENCO_SERVIZI
+                                              primary key (OBJ_ID)
+);
