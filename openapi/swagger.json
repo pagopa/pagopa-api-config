@@ -4,9 +4,9 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.26"
+    "version": "0.2.28"
   },
-  "host": "localhost:8080",
+  "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
   "schemes": [
     "http"
@@ -67,7 +67,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getBrokers_1",
+        "operationId": "getBrokers",
         "summary": "Get paginated list of creditor brokers"
       },
       "post": {
@@ -130,7 +130,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "createBroker_1",
+        "operationId": "createBroker",
         "summary": "Create a broker"
       }
     },
@@ -190,7 +190,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "deleteBroker_1",
+        "operationId": "deleteBroker",
         "summary": "Delete a broker"
       },
       "get": {
@@ -245,7 +245,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getBroker_1",
+        "operationId": "getBroker",
         "summary": "Get creditor broker details "
       },
       "put": {
@@ -312,7 +312,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "updateBroker_1",
+        "operationId": "updateBroker",
         "summary": "Update a broker"
       }
     },
@@ -371,7 +371,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "getBrokersPsp_1",
+        "operationId": "getBrokersPsp",
         "summary": "Get paginated list of PSP brokers"
       }
     },
@@ -428,7 +428,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "getBrokerPsp_1",
+        "operationId": "getBrokerPsp",
         "summary": "Get creditor broker details "
       }
     },
@@ -487,7 +487,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "getChannels_1",
+        "operationId": "getChannels",
         "summary": "Get paginated list of channels"
       }
     },
@@ -544,7 +544,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "getChannel_1",
+        "operationId": "getChannel",
         "summary": "Get channel details "
       }
     },
@@ -603,7 +603,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCounterpartTables_1",
+        "operationId": "getCounterpartTables",
         "summary": "Get the counterparties table"
       }
     },
@@ -667,7 +667,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCounterpartTable_1",
+        "operationId": "getCounterpartTable",
         "summary": "Download a XML file containing the details of a counterpart table"
       }
     },
@@ -726,7 +726,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCreditorInstitutions_1",
+        "operationId": "getCreditorInstitutions",
         "summary": "Get paginated list of creditor institutions"
       },
       "post": {
@@ -783,7 +783,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "createCreditorInstitution_1",
+        "operationId": "createCreditorInstitution",
         "summary": "Create creditor institution"
       }
     },
@@ -843,7 +843,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "deleteCreditorInstitution_1",
+        "operationId": "deleteCreditorInstitution",
         "summary": "Delete creditor institution"
       },
       "get": {
@@ -898,7 +898,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCreditorInstitution_1",
+        "operationId": "getCreditorInstitution",
         "summary": "Get creditor institution details"
       },
       "put": {
@@ -965,7 +965,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "updateCreditorInstitution_1",
+        "operationId": "updateCreditorInstitution",
         "summary": "Update creditor institution"
       }
     },
@@ -1022,7 +1022,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCreditorInstitutionEncodings_1",
+        "operationId": "getCreditorInstitutionEncodings",
         "summary": "Get creditor institution encodings"
       },
       "post": {
@@ -1088,7 +1088,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "createCreditorInstitutionEncoding_1",
+        "operationId": "createCreditorInstitutionEncoding",
         "summary": "Delete a creditor institution encoding"
       }
     },
@@ -1155,7 +1155,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "deleteCreditorInstitutionEncoding_1",
+        "operationId": "deleteCreditorInstitutionEncoding",
         "summary": "Delete a creditor institution encoding"
       }
     },
@@ -1212,7 +1212,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCreditorInstitutionsIbans_1",
+        "operationId": "getCreditorInstitutionsIbans",
         "summary": "Get creditor institution ibans"
       }
     },
@@ -1269,7 +1269,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCreditorInstitutionStations_1",
+        "operationId": "getCreditorInstitutionStations",
         "summary": "Get station details and relation info with creditor institution"
       },
       "post": {
@@ -1335,7 +1335,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "createCreditorInstitutionStation_1",
+        "operationId": "createCreditorInstitutionStation",
         "summary": "Create station details and relation info with creditor institution"
       }
     },
@@ -1398,7 +1398,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "deleteCreditorInstitutionStation_1",
+        "operationId": "deleteCreditorInstitutionStation",
         "summary": "Delete a relation between creditor institution and station"
       },
       "put": {
@@ -1473,7 +1473,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "updateCreditorInstitutionStation_1",
+        "operationId": "updateCreditorInstitutionStation",
         "summary": "Update a relation between creditor institution and station"
       }
     },
@@ -1532,7 +1532,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getIcas_1",
+        "operationId": "getIcas",
         "summary": "Get the list of ICAs"
       }
     },
@@ -1585,7 +1585,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "checkXSD_1",
+        "operationId": "checkXSD",
         "summary": "Validate XML against XSD"
       }
     },
@@ -1649,7 +1649,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getIca_1",
+        "operationId": "getIca",
         "summary": "Download a XML file containing the details of an ICA"
       }
     },
@@ -1687,7 +1687,7 @@
         "tags": [
           "Home"
         ],
-        "operationId": "healthCheck_1",
+        "operationId": "healthCheck",
         "summary": "Return OK if application is started"
       }
     },
@@ -1746,7 +1746,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "getPaymentServiceProviders_1",
+        "operationId": "getPaymentServiceProviders",
         "summary": "Get paginated list of Payment Service Providers"
       }
     },
@@ -1803,7 +1803,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "getPaymentServiceProvider_1",
+        "operationId": "getPaymentServiceProvider",
         "summary": "Get payment service provider details"
       }
     },
@@ -2041,7 +2041,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getStations_1",
+        "operationId": "getStations",
         "summary": "Get paginated list of stations"
       },
       "post": {
@@ -2104,7 +2104,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "createStation_1",
+        "operationId": "createStation",
         "summary": "Create a station"
       }
     },
@@ -2164,7 +2164,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "deleteStation_1",
+        "operationId": "deleteStation",
         "summary": "Delete a station"
       },
       "get": {
@@ -2219,7 +2219,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getStation_1",
+        "operationId": "getStation",
         "summary": "Get station details"
       },
       "put": {
@@ -2286,7 +2286,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "updateStation_1",
+        "operationId": "updateStation",
         "summary": "Update a station"
       }
     }
