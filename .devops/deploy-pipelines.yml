@@ -145,6 +145,7 @@ stages:
               targetType: "inline"
               script: |
                 cp src/main/resources/application-azure-$(STAGE).properties src/main/resources/application.properties
+                cat src/main/resources/application.properties
               failOnStderr: true
 
           - task: Cache@2
