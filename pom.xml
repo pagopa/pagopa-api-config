@@ -30,7 +30,7 @@
         <modelmapper-version>2.4.5</modelmapper-version>
         <log4j2.version>2.16.0</log4j2.version>
         <jackson-datatype-version>2.13.1</jackson-datatype-version>
-        <h2-version>1.4.200</h2-version>
+        <h2-version>2.0.202</h2-version>
     </properties>
 
     <dependencies>
