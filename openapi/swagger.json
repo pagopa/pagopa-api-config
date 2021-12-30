@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.24"
+    "version": "0.2.26"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -479,6 +479,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -533,6 +536,9 @@
         "security": [
           {
             "ApiKey": []
+          },
+          {
+            "Authorization": []
           }
         ],
         "tags": [
@@ -604,8 +610,8 @@
     "/counterparttables/{idcounterparttable}": {
       "get": {
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -1586,8 +1592,8 @@
     "/icas/{idica}": {
       "get": {
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -1799,6 +1805,171 @@
         ],
         "operationId": "getPaymentServiceProvider",
         "summary": "Get payment service provider details"
+      }
+    },
+    "/services": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "default": 50,
+            "description": "Number of elements on one page. Default = 50",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "format": "int32",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "query",
+            "name": "pspcode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "brokerpspcode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "channelcode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "format": "int64",
+            "in": "query",
+            "name": "paymentmethodchannel",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "enum": [
+              "PAYPAL",
+              "POSTAL",
+              "TREASURY_BANK_TRANSFER",
+              "DIRECT_DEBIT",
+              "PAYMENT_CARD",
+              "PSP_PAYMENT",
+              "ONLINE_BANKING_PAYMENT",
+              "JIFFY",
+              "MYBANK"
+            ],
+            "in": "query",
+            "name": "paymentTypeCode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "pspflagftamp",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "channelapp",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "onus",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "flagio",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "flowid",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "format": "double",
+            "in": "query",
+            "name": "minimumamount",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "format": "double",
+            "in": "query",
+            "name": "maximumamount",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "default": "IT",
+            "enum": [
+              "IT",
+              "EN",
+              "FR",
+              "DE",
+              "SL"
+            ],
+            "in": "query",
+            "name": "languagecode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "conventionCode",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/Services"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getServices",
+        "summary": "Get paginated list of services"
       }
     },
     "/stations": {
@@ -2964,6 +3135,169 @@
       },
       "type": "object"
     },
+    "Service": {
+      "properties": {
+        "tags": {
+          "maxLength": 135,
+          "minLength": 0,
+          "type": "string"
+        },
+        "abi_code": {
+          "maxLength": 5,
+          "minLength": 0,
+          "type": "string"
+        },
+        "broker_psp_code": {
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "cart_card": {
+          "type": "boolean"
+        },
+        "channel_app": {
+          "type": "boolean"
+        },
+        "channel_code": {
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "channel_url": {
+          "type": "string"
+        },
+        "convention_code": {
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "fixed_cost": {
+          "format": "double",
+          "type": "number"
+        },
+        "flag_io": {
+          "type": "boolean"
+        },
+        "flow_id": {
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "language_code": {
+          "enum": [
+            "IT",
+            "EN",
+            "FR",
+            "DE",
+            "SL"
+          ],
+          "maxLength": 2,
+          "minLength": 0,
+          "type": "string"
+        },
+        "logo_psp": {
+          "items": {
+            "format": "byte",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "logo_service": {
+          "items": {
+            "format": "byte",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "maximum_amount": {
+          "format": "double",
+          "type": "number"
+        },
+        "minimum_amount": {
+          "format": "double",
+          "type": "number"
+        },
+        "mybank_code": {
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "on_us": {
+          "type": "boolean"
+        },
+        "payment_method_channel": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "payment_type_code": {
+          "enum": [
+            "PAYPAL",
+            "POSTAL",
+            "TREASURY_BANK_TRANSFER",
+            "DIRECT_DEBIT",
+            "PAYMENT_CARD",
+            "PSP_PAYMENT",
+            "ONLINE_BANKING_PAYMENT",
+            "JIFFY",
+            "MYBANK"
+          ],
+          "type": "string"
+        },
+        "psp_business_name": {
+          "type": "string"
+        },
+        "psp_code": {
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "psp_flag_stamp": {
+          "type": "boolean"
+        },
+        "service_availability": {
+          "maxLength": 511,
+          "minLength": 0,
+          "type": "string"
+        },
+        "service_description": {
+          "maxLength": 511,
+          "minLength": 0,
+          "type": "string"
+        },
+        "service_name": {
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "timestamp_insertion": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "validity_date": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "Services": {
+      "properties": {
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "services": {
+          "items": {
+            "$ref": "#/definitions/Service"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "page_info",
+        "services"
+      ],
+      "type": "object"
+    },
     "Station": {
       "properties": {
         "enabled": {
@@ -3163,10 +3497,10 @@
     "Authorization": {
       "bearerFormat": "JWT",
       "description": "JWT token get after Azure Login",
-      "in": "header",
-      "name": "Authorization",
       "scheme": "Bearer",
-      "type": "apiKey"
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization"
     }
   },
   "tags": [
