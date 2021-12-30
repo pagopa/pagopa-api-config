@@ -223,6 +223,7 @@ stages:
           - script: |
               yarn add jquery
               bash api-test/setup_env_api_test.sh $(STAGE)
+              cat api-test/Azure.postman_environment.json
 
           - script: |
               newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml
