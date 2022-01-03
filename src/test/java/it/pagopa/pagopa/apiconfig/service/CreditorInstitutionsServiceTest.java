@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,7 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getECs_empty() throws IOException, JSONException {
-        Page<Pa> page = TestUtil.mockPage(Lists.emptyList(), 50, 0);
+        Page<Pa> page = TestUtil.mockPage(Collections.emptyList(), 50, 0);
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
