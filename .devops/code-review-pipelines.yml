@@ -43,18 +43,14 @@ steps:
     displayName: 'Run Junit Test'
     inputs:
       mavenPomFile: 'pom.xml'
-      goals: 'clean verify'
-      publishJUnitResults: true
-      testResultsFiles: '**/surefire-reports/TEST-*.xml'
-      codeCoverageToolOption: 'JaCoCo'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '1.11'
-      mavenVersionOption: 'Default'
-      mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
-      mavenAuthenticateFeed: false
-      effectivePomSkip: false
-      sonarQubeRunAnalysis: true
-      sqMavenPluginVersionChoice: 'latest'
+        mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.11'
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: false
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        goals: 'clean verify'
+        sonarQubeRunAnalysis: true
 
   - task: SonarCloudPublish@1
     displayName: 'Publish SonarCloud results on build summary'
