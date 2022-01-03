@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.util.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,11 +15,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 
 import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 
 @Data
 @Builder(toBuilder = true)
@@ -150,29 +147,21 @@ public class Service {
     }
 
     @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public enum PaymentTypeCode {
-        PAYPAL("PPAL"),
-        POSTAL("BP"),
-        TREASURY_BANK_TRANSFER("BBT"),
-        DIRECT_DEBIT("AD"),
-        PAYMENT_CARD("CP"),
-        PSP_PAYMENT("PO"),
-        ONLINE_BANKING_PAYMENT("OBEP"),
-        JIFFY("JIF"),
-        MYBANK("MYBK");
+        BBT("Bonifico Bancario di Tesoreria"),
+        BP("Bollettino Postale"),
+        AD("Addebito Diretto"),
+        CP("Carta di Pagamento"),
+        PO("Pagamento attivato presso PSP"),
+        OBEP("Online Banking Electronic Payment"),
+        JIF("Bancomat Pay"),
+        MYBK("MyBank Seller Bank"),
+        PPAL("PayPal");
 
-        private final String code;
+        private final String description;
 
-        PaymentTypeCode(String code) {
-            this.code = code;
-        }
 
-        public static PaymentTypeCode fromCode(String code) {
-            return Arrays.stream(PaymentTypeCode.values())
-                    .filter(elem -> elem.code.equals(code))
-                    .findFirst()
-                    .orElseThrow(() -> new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "PaymentTypeCode not found", "Cannot convert string '" + code + "' into enum"));
-        }
     }
 
     @Data

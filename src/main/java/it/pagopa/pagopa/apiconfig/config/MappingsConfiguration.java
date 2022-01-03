@@ -12,6 +12,7 @@ import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertBrokerDetailsToIntermediariPa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCanaliToChannel;
@@ -31,6 +32,7 @@ import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPspToBrokerPspDetail
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPspCanaleTipoVersamentoToPspChannel;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertStationDetailsToStazioni;
@@ -54,6 +56,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.Channel;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannel;
 import it.pagopa.pagopa.apiconfig.model.psp.Service;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -94,6 +97,7 @@ public class MappingsConfiguration {
         Converter<Canali, Channel> convertCanaliToChannel = new ConvertCanaliToChannel();
         Converter<Canali, ChannelDetails> convertCanaliToChannelDetails = new ConvertCanaliToChannelDetails();
         Converter<ElencoServizi, Service> convertElencoServiziToService = new ConvertElencoServiziToService();
+        Converter<PspCanaleTipoVersamento, PspChannel> convertPspCanaleTipoVersamentoToPspChannel = new ConvertPspCanaleTipoVersamentoToPspChannel();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -118,6 +122,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(Canali.class, Channel.class).setConverter(convertCanaliToChannel);
         mapper.createTypeMap(Canali.class, ChannelDetails.class).setConverter(convertCanaliToChannelDetails);
         mapper.createTypeMap(ElencoServizi.class, Service.class).setConverter(convertElencoServiziToService);
+        mapper.createTypeMap(PspCanaleTipoVersamento.class, PspChannel.class).setConverter(convertPspCanaleTipoVersamentoToPspChannel);
 
         return mapper;
     }

@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @UtilityClass
 public class CommonUtil {
@@ -40,5 +43,15 @@ public class CommonUtil {
      */
     public static OffsetDateTime toOffsetDateTime(Timestamp timestamp) {
         return timestamp != null ? OffsetDateTime.of(timestamp.toLocalDateTime(), ZoneOffset.UTC) : null;
+    }
+
+
+    /**
+     * @param list list with duplicates
+     * @param <T>  the type of elements in this list
+     * @return a list without duplicates
+     */
+    public <T> List<T> removeDuplicates(List<T> list) {
+        return new ArrayList<>(new HashSet<>(list));
     }
 }
