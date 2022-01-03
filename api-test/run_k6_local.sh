@@ -10,7 +10,7 @@ if [[ "$(pwd)" =~ .*"api-test".* ]]; then
     cd ..
 fi
 
-bash api-test/postman-to-k6-converter.sh api-test/local.postman_environment.json
+bash api-test/postman-to-k6-converter.sh
 
 ## execute script
 k6 run --vus 2 --duration 5s ./k6-script.js

@@ -1968,7 +1968,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "getServices_1",
+        "operationId": "getServices",
         "summary": "Get paginated list of services"
       }
     },
