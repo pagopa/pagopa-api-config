@@ -58,9 +58,10 @@ public class PspService {
     public PspChannelList getPaymentServiceProvidersChannels(@NotBlank String pspCode) {
         Psp psp = getPspIfExists(pspCode);
         List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList = pspCanaleTipoVersamentoRepository.findByFkPsp(psp.getObjId());
-        Map<String, Set<String>> source = pspCanaleTipoVersamentotoMap(pspCanaleTipoVersamentoList);
+        // data structure useful for mapping
+        Map<String, Set<String>> channelPaymentType = pspCanaleTipoVersamentotoMap(pspCanaleTipoVersamentoList);
         return PspChannelList.builder()
-                .channelsList(getChannelsList(pspCanaleTipoVersamentoList, source))
+                .channelsList(getChannelsList(pspCanaleTipoVersamentoList, channelPaymentType))
                 .build();
     }
 
@@ -97,16 +98,16 @@ public class PspService {
      * Maps a list of PspCanaleTipoVersamento into a list of PspChannel
      *
      * @param pspCanaleTipoVersamentoList list of PspCanaleTipoVersamento from DB
-     * @param source                      the data structure with the PaymentTypeCode associated at one Channel
+     * @param channelPaymentType                      the data structure with the PaymentTypeCode associated at one Channel
      * @return the list of {@link PspChannel}
      */
-    private List<PspChannel> getChannelsList(List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList, Map<String, Set<String>> source) {
+    private List<PspChannel> getChannelsList(List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList, Map<String, Set<String>> channelPaymentType) {
         return pspCanaleTipoVersamentoList.stream()
                 .filter(Objects::nonNull)
                 .map(elem -> {
                     PspChannel result = modelMapper.map(elem, PspChannel.class);
                     // the mapping of PaymentTypeList is custom
-                    result.setPaymentTypeList(getPaymentTypeList(source, result.getChannelCode()));
+                    result.setPaymentTypeList(getPaymentTypeList(channelPaymentType, result.getChannelCode()));
                     return result;
                 })
                 .distinct()
@@ -115,12 +116,12 @@ public class PspService {
 
 
     /**
-     * @param source      the data structure with the PaymentTypeCode associated at one Channel
+     * @param channelPaymentType      the data structure with the PaymentTypeCode associated at one Channel
      * @param channelCode the channel code key of the data structure
      * @return a list of PaymentTypeCode get from data structure
      */
-    private List<it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode> getPaymentTypeList(Map<String, Set<String>> source, String channelCode) {
-        return source.get(channelCode)
+    private List<it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode> getPaymentTypeList(Map<String, Set<String>> channelPaymentType, String channelCode) {
+        return channelPaymentType.get(channelCode)
                 .stream()
                 .map(it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode::valueOf)
                 .collect(Collectors.toList());

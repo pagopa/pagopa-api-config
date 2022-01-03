@@ -6,6 +6,8 @@ import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
+import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
@@ -24,9 +26,11 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +40,8 @@ class PspServiceTest {
     @MockBean
     PspRepository pspRepository;
 
+    @MockBean
+    PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
 
     @InjectMocks
     @Autowired
@@ -75,5 +81,17 @@ class PspServiceTest {
             fail();
         }
 
+    }
+
+
+    @Test
+    void getPaymentServiceProvidersChannels() throws IOException, JSONException {
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+        when(pspCanaleTipoVersamentoRepository.findByFkPsp(anyLong())).thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
+
+        PspChannelList result = pspService.getPaymentServiceProvidersChannels("1234");
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_psp_channels_ok1.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 }

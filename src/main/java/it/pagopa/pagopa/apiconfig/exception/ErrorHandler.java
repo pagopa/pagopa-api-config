@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.exception;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
@@ -69,6 +71,27 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .title(BAD_REQUEST)
                 .detail(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
+    /**
+     * Customize the response for TypeMismatchException.
+     *
+     * @param ex      the exception
+     * @param headers the headers to be written to the response
+     * @param status  the selected response status
+     * @param request the current request
+     * @return a {@code ResponseEntity} instance
+     */
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        log.warn("Type mismatch: ", ex);
+        var errorResponse = ProblemJson.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .title(BAD_REQUEST)
+                .detail(String.format("Invalid value %s for property %s", ex.getValue(), ((MethodArgumentTypeMismatchException) ex).getName()))
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

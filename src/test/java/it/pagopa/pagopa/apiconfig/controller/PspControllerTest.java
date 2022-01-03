@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
 import it.pagopa.pagopa.apiconfig.service.PspService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ class PspControllerTest {
     void setUp() {
         when(pspService.getPaymentServiceProviders(50, 0)).thenReturn(PaymentServiceProviders.builder().build());
         when(pspService.getPaymentServiceProvider(anyString())).thenReturn(PaymentServiceProviderDetails.builder().build());
+        when(pspService.getPaymentServiceProvidersChannels(anyString())).thenReturn(PspChannelList.builder().build());
     }
 
     @Test
@@ -46,6 +48,14 @@ class PspControllerTest {
     @Test
     void getPaymentServiceProvider() throws Exception {
         String url = "/paymentserviceproviders/1234";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getPaymentServiceProvidersChannels() throws Exception {
+        String url = "/paymentserviceproviders/1234/channels";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
