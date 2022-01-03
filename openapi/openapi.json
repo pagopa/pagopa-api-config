@@ -139,6 +139,58 @@
                 ],
                 "type": "object"
             },
+            "Cdi": {
+                "properties": {
+                    "business_name": {
+                        "example": "Comune di Lorem Ipsum",
+                        "type": "string"
+                    },
+                    "id_cdi": {
+                        "example": "223344556677889900",
+                        "type": "string"
+                    },
+                    "psp_code": {
+                        "example": "1234567890100",
+                        "maxLength": 35,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "publication_date": {
+                        "example": "2021-10-08T14:55:16.302Z",
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "validity_date": {
+                        "example": "2021-10-08T14:55:16.302Z",
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "business_name",
+                    "id_cdi",
+                    "psp_code"
+                ],
+                "type": "object"
+            },
+            "Cdis": {
+                "properties": {
+                    "page_info": {
+                        "$ref": "#/components/schemas/PageInfo"
+                    },
+                    "services": {
+                        "items": {
+                            "$ref": "#/components/schemas/Cdi"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "page_info",
+                    "services"
+                ],
+                "type": "object"
+            },
             "Channel": {
                 "properties": {
                     "channel_code": {
@@ -1215,7 +1267,7 @@
         "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
         "termsOfService": "https://www.pagopa.gov.it/",
         "title": "PagoPA API configuration",
-        "version": "0.2.26"
+        "version": "0.2.28"
     },
     "openapi": "3.0.1",
     "paths": {
@@ -1723,6 +1775,157 @@
                     }
                 ],
                 "summary": "Get creditor broker details ",
+                "tags": [
+                    "Payment Service Providers"
+                ]
+            }
+        },
+        "/cdis": {
+            "get": {
+                "operationId": "getCdis",
+                "parameters": [
+                    {
+                        "description": "Number of elements on one page. Default = 50",
+                        "in": "query",
+                        "name": "limit",
+                        "required": false,
+                        "schema": {
+                            "default": 50,
+                            "format": "int32",
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Page number. Page value starts from 0",
+                        "in": "query",
+                        "name": "page",
+                        "required": true,
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Cdis"
+                                }
+                            }
+                        },
+                        "description": "OK."
+                    },
+                    "403": {
+                        "description": "Forbidden client error status."
+                    },
+                    "429": {
+                        "description": "Too many requests"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Get paginated list of CDIs",
+                "tags": [
+                    "Payment Service Providers"
+                ]
+            }
+        },
+        "/cdis/{idcdi}": {
+            "get": {
+                "operationId": "getCdi",
+                "parameters": [
+                    {
+                        "description": "Id of a CDI",
+                        "in": "path",
+                        "name": "idcdi",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 50,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "PSP code",
+                        "in": "query",
+                        "name": "pspcode",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/xml": {
+                                "schema": {
+                                    "format": "binary",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "OK."
+                    },
+                    "403": {
+                        "description": "Forbidden client error status."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            },
+                            "application/xml": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "429": {
+                        "description": "Too many requests"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Download a XML file containing the details of a CDI",
                 "tags": [
                     "Payment Service Providers"
                 ]
@@ -3173,12 +3376,6 @@
                 "responses": {
                     "200": {
                         "content": {
-                            "application/json": {
-                                "schema": {
-                                    "format": "binary",
-                                    "type": "string"
-                                }
-                            },
                             "application/xml": {
                                 "schema": {
                                     "format": "binary",

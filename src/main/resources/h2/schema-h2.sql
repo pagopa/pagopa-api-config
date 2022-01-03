@@ -415,6 +415,30 @@ create table NODO4_CFG.ELENCO_SERVIZI (
                                               primary key (OBJ_ID)
 );
 
+create table NODO4_CFG.CDI_MASTER (
+                                      OBJ_ID numeric not null,
+                                      ID_INFORMATIVA_PSP varchar(35) not null,
+                                      DATA_INIZIO_VALIDITA timestamp(6),
+                                      DATA_PUBBLICAZIONE timestamp(6),
+                                      LOGO_PSP blob,
+                                      URL_INFORMAZIONI_PSP varchar(255),
+                                      MARCA_BOLLO_DIGITALE numeric not null,
+                                      STORNO_PAGAMENTO numeric not null,
+                                      FK_PSP numeric not null,
+                                      FK_BINARY_FILE numeric not null,
+                                      VERSIONE varchar(35),
+                                      constraint PK_CDI_MASTER
+                                          primary key (OBJ_ID),
+                                      constraint FK_CDI_MASTER_TO_PSP
+                                          foreign key (FK_PSP)
+                                              references NODO4_CFG.PSP,
+                                      constraint FK_CDI_MASTER_TO_BINARY_FILE
+                                          foreign key (FK_BINARY_FILE)
+                                              references NODO4_CFG.BINARY_FILE,
+                                      constraint UQ_INFORMATIVA_CDI
+                                          unique (FK_PSP, ID_INFORMATIVA_PSP)
+);
+
 create table NODO4_CFG.TIPI_VERSAMENTO (
                                            OBJ_ID numeric not null,
                                            DESCRIZIONE varchar(35),

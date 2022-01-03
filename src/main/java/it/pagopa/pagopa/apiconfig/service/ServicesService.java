@@ -25,7 +25,6 @@ public class ServicesService {
     @Autowired
     ElencoServiziRepository elencoServiziRepository;
 
-
     public Services getServices(Integer limit, Integer pageNumber, Service.Filter filters) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
         // filter only if is not null

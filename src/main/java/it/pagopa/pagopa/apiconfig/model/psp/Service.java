@@ -184,6 +184,4 @@ public class Service {
         private Service.LanguageCode languageCode;
         private String conventionCode;
     }
-
-
 }

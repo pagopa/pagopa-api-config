@@ -161,6 +161,14 @@ values (2, 'BPPIITRRZZZ', 'WISP_1_1_20210101', 'Cassa di Risparmio di Parma e Pi
         to_timestamp('2017-07-12 00:02:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'), '16', 'Diners;V-Pay', '16',
         'Y', 'Y', 'Y', 'TBD', '1', null, 'Y');
 
+
+insert into NODO4_CFG.CDI_MASTER (OBJ_ID, ID_INFORMATIVA_PSP, DATA_INIZIO_VALIDITA, DATA_PUBBLICAZIONE, LOGO_PSP,
+                                  URL_INFORMAZIONI_PSP, MARCA_BOLLO_DIGITALE, STORNO_PAGAMENTO, FK_PSP, FK_BINARY_FILE,
+                                  VERSIONE)
+values (3, 'WISP_1_2_20211229', to_timestamp('2017-05-16 00:02:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'),
+        to_timestamp('2017-05-16 00:01:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'), '16', 'http://host/service', 0, 0, 1,
+        201, null);
+
 INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (11636, 'PayPal', 'PPAL');
 INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (1, 'Bollettino postale', 'BP');
 INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (2, 'Bonifico bancario tesoreria', 'BBT');

@@ -1,0 +1,16 @@
+{
+  "services": [
+    {
+      "psp_code": "50",
+      "business_name": "Banca",
+      "validity_date": "2021-12-14T00:00:00.000Z",
+      "publication_date": "2021-12-14T00:00:00.000Z"
+    }
+  ],
+  "page_info": {
+    "page": 0,
+    "limit": 50,
+    "items_found": 1,
+    "total_pages": 1
+  }
+}

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # To run k6 load tests on your local pc
 
@@ -9,5 +9,8 @@
 if [[ "$(pwd)" =~ .*"api-test".* ]]; then
     cd ..
 fi
-postman-to-k6  api-test/ApiConfig.postman_collection.json -e api-test/local.postman_environment.json -o ./k6-script.js
-k6 run --http-debug=full --vus 2 --duration 5s ./k6-script.js
+
+bash api-test/postman-to-k6-converter.sh
+
+## execute script
+k6 run --vus 2 --duration 5s ./k6-script.js
