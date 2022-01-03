@@ -2329,7 +2329,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getChannel\", function () {",
+									"pm.test(\"getServices\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -2358,6 +2358,97 @@
 								{
 									"key": "page",
 									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCdis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCdis\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis?page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCdi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCdi\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis",
+								":id"
+							],
+							"query": [
+								{
+									"key": "pspcode",
+									"value": "BPPIITRRZZZ"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "WISP_1_2_20211229"
 								}
 							]
 						}
@@ -2502,6 +2593,49 @@
 								{
 									"key": "code",
 									"value": "111"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCdi NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCdi_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "zzz"
 								}
 							]
 						}

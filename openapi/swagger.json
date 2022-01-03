@@ -432,6 +432,131 @@
         "summary": "Get creditor broker details "
       }
     },
+    "/cdis": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "default": 50,
+            "description": "Number of elements on one page. Default = 50",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "format": "int32",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/Cdis"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getCdis",
+        "summary": "Get paginated list of CDIs"
+      }
+    },
+    "/cdis/{idcdi}": {
+      "get": {
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Id of a CDI",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "idcdi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "PSP code",
+            "in": "query",
+            "name": "pspcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "format": "binary",
+              "type": "string"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getCdi",
+        "summary": "Download a XML file containing the details of a CDI"
+      }
+    },
     "/channels": {
       "get": {
         "produces": [
@@ -1592,8 +1717,8 @@
     "/icas/{idica}": {
       "get": {
         "produces": [
-          "application/json",
-          "application/xml"
+          "application/xml",
+          "application/json"
         ],
         "parameters": [
           {
@@ -2427,6 +2552,58 @@
       "required": [
         "brokers_psp_list",
         "page_info"
+      ],
+      "type": "object"
+    },
+    "Cdi": {
+      "properties": {
+        "business_name": {
+          "example": "Comune di Lorem Ipsum",
+          "type": "string"
+        },
+        "id_cdi": {
+          "example": "223344556677889900",
+          "type": "string"
+        },
+        "psp_code": {
+          "example": "1234567890100",
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "publication_date": {
+          "example": "2021-10-08T14:55:16.302Z",
+          "format": "date-time",
+          "type": "string"
+        },
+        "validity_date": {
+          "example": "2021-10-08T14:55:16.302Z",
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "business_name",
+        "id_cdi",
+        "psp_code"
+      ],
+      "type": "object"
+    },
+    "Cdis": {
+      "properties": {
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "services": {
+          "items": {
+            "$ref": "#/definitions/Cdi"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "page_info",
+        "services"
       ],
       "type": "object"
     },

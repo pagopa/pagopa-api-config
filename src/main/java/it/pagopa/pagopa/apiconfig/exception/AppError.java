@@ -31,6 +31,8 @@ public enum AppError {
 
     CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Channel not found", "No Channel found with code: %s"),
 
+    CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
+
     UNKNOWN(null, null, null);
 
 

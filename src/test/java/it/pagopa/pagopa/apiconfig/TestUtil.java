@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
+import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
 import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
@@ -57,7 +58,7 @@ public class TestUtil {
      */
     public File readFile(String relativePath) {
         ClassLoader classLoader = TestUtil.class.getClassLoader();
-        return new File(classLoader.getResource(relativePath).getFile());
+        return new File(Objects.requireNonNull(classLoader.getResource(relativePath)).getFile());
     }
 
     /**
@@ -355,6 +356,16 @@ public class TestUtil {
                 .nomeServizio("service")
                 .timestampIns(Timestamp.valueOf("2021-12-13 00:00:00"))
                 .dataValidita(Timestamp.valueOf("2021-12-14 00:00:00"))
+                .build();
+    }
+
+    public static CdiMaster getMockCdiMaster(){
+        return CdiMaster.builder()
+                .id(1L)
+                .fkPsp(getMockPsp())
+                .fkBinaryFile(getMockBinaryFile())
+                .dataPubblicazione(Timestamp.valueOf("2021-12-14 00:00:00"))
+                .dataInizioValidita(Timestamp.valueOf("2021-12-14 00:00:00"))
                 .build();
     }
 }
