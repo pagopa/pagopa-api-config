@@ -2219,8 +2219,17 @@
               "$ref": "#/definitions/PspChannelList"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -2232,7 +2241,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
