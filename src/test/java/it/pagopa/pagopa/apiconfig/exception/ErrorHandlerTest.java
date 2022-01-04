@@ -4,12 +4,15 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.MethodParameter;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.sql.SQLException;
 
@@ -83,4 +86,15 @@ class ErrorHandlerTest {
         assertEquals(HttpStatus.CONFLICT.value(), actual.getBody().getStatus());
     }
 
+    @Test
+    void handleTypeMismatch() {
+        MethodParameter methodParameter = Mockito.mock(MethodParameter.class);
+        ResponseEntity<Object> actual = errorHandler.handleTypeMismatch(new MethodArgumentTypeMismatchException("2", String.class, "age", methodParameter, new IllegalArgumentException("")), null, null, null);
+        assertNotNull(actual.getBody());
+        ProblemJson body = (ProblemJson) actual.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
+        assertEquals("BAD REQUEST", body.getTitle());
+        assertEquals("Invalid value 2 for property age", body.getDetail());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), body.getStatus());
+    }
 }
