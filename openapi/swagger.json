@@ -38,19 +38,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/Brokers"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -89,19 +98,22 @@
         ],
         "responses": {
           "201": {
-            "description": "OK.",
+            "description": "Created",
             "schema": {
               "$ref": "#/definitions/BrokerDetails"
             }
           },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "404": {
-            "description": "Not Found",
+          "400": {
+            "description": "Bad Request",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "409": {
             "description": "Conflict",
@@ -113,7 +125,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -152,19 +164,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK."
+            "description": "OK"
           },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "404": {
-            "description": "Not Found",
+          "400": {
+            "description": "Bad Request",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
-          "409": {
-            "description": "Conflict",
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -173,7 +188,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -210,13 +225,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/BrokerDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -228,7 +252,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -277,13 +301,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/BrokerDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -295,7 +328,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -342,19 +375,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/BrokersPsp"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -393,13 +435,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/BrokerPspDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -411,7 +462,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -458,19 +509,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/Cdis"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -517,14 +577,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "format": "binary",
               "type": "string"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -536,7 +605,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -583,19 +652,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/Channels"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -634,13 +712,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/ChannelDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -652,7 +739,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -699,19 +786,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/CounterpartTables"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -756,14 +852,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "format": "binary",
               "type": "string"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -775,7 +880,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -822,19 +927,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/CreditorInstitutions"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -873,13 +987,22 @@
         ],
         "responses": {
           "201": {
-            "description": "OK.",
+            "description": "Created",
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "409": {
             "description": "Conflict",
@@ -891,7 +1014,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -930,19 +1053,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK."
+            "description": "OK"
           },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "404": {
-            "description": "Not Found",
+          "400": {
+            "description": "Bad Request",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
-          "409": {
-            "description": "Conflict",
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -951,7 +1077,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -988,13 +1114,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1006,7 +1141,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1055,13 +1190,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1073,7 +1217,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1112,13 +1256,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionEncodings"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1130,7 +1283,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1178,13 +1331,22 @@
         ],
         "responses": {
           "201": {
-            "description": "OK.",
+            "description": "Created",
             "schema": {
               "$ref": "#/definitions/Encoding"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "409": {
             "description": "Conflict",
@@ -1196,7 +1358,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1242,19 +1404,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK."
+            "description": "OK"
           },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "404": {
-            "description": "Not Found",
+          "400": {
+            "description": "Bad Request",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
-          "409": {
-            "description": "Conflict",
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1263,7 +1428,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1302,13 +1467,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/Ibans"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1320,7 +1494,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1359,13 +1533,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionStationList"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1377,7 +1560,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1424,17 +1607,26 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK.",
+          "201": {
+            "description": "Created",
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionStationEdit"
             }
           },
-          "403": {
-            "description": "Forbidden client error status."
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1443,7 +1635,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1491,10 +1683,19 @@
         ],
         "responses": {
           "200": {
-            "description": "OK."
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1506,7 +1707,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1563,13 +1764,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionStationEdit"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1581,7 +1791,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1628,19 +1838,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/Icas"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1681,19 +1900,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/XSDValidation"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1738,14 +1966,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "format": "binary",
               "type": "string"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1757,7 +1994,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1786,16 +2023,25 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "OK."
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1842,19 +2088,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/PaymentServiceProviders"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1893,13 +2148,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/PaymentServiceProviderDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1911,7 +2175,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1955,8 +2219,17 @@
               "$ref": "#/definitions/PspChannelList"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -1968,7 +2241,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2121,19 +2394,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/Services"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2194,19 +2476,28 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/Stations"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "429": {
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2245,19 +2536,22 @@
         ],
         "responses": {
           "201": {
-            "description": "OK.",
+            "description": "Created",
             "schema": {
               "$ref": "#/definitions/StationDetails"
             }
           },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "404": {
-            "description": "Not Found",
+          "400": {
+            "description": "Bad Request",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "409": {
             "description": "Conflict",
@@ -2269,7 +2563,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2308,19 +2602,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK."
+            "description": "OK"
           },
-          "403": {
-            "description": "Forbidden client error status."
-          },
-          "404": {
-            "description": "Not Found",
+          "400": {
+            "description": "Bad Request",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
-          "409": {
-            "description": "Conflict",
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2329,7 +2626,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2366,13 +2663,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/StationDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -2384,7 +2690,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2433,13 +2739,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK.",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/StationDetails"
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
-            "description": "Forbidden client error status."
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found",
@@ -2451,7 +2766,7 @@
             "description": "Too many requests"
           },
           "500": {
-            "description": "Service unavailable.",
+            "description": "Service unavailable",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -3343,11 +3658,6 @@
           "example": "There was an error processing the request",
           "type": "string"
         },
-        "instance": {
-          "description": "An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.",
-          "format": "uri",
-          "type": "string"
-        },
         "status": {
           "description": "The HTTP status code generated by the origin server for this occurrence of the problem.",
           "example": 200,
@@ -3358,12 +3668,6 @@
         },
         "title": {
           "description": "A short, summary of the problem type. Written in english and readable for engineers (usually not suited for non technical stakeholders and not localized); example: Service Unavailable",
-          "type": "string"
-        },
-        "type": {
-          "description": "An absolute URI that identifies the problem type. When dereferenced, it SHOULD provide human-readable documentation for the problem type (e.g., using HTML).",
-          "example": "https://example.com/problem/constraint-violation",
-          "format": "uri",
           "type": "string"
         }
       },
