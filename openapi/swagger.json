@@ -49,6 +49,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -100,11 +109,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "409": {
             "description": "Conflict",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -154,11 +172,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -209,11 +236,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -276,11 +312,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -341,6 +386,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -392,11 +446,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -456,6 +519,15 @@
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -517,11 +589,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -582,6 +663,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -633,11 +723,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -698,6 +797,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -756,11 +864,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -821,6 +938,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -872,11 +998,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "409": {
             "description": "Conflict",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -926,11 +1061,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -981,11 +1125,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1048,11 +1201,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1105,11 +1267,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1171,11 +1342,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "409": {
             "description": "Conflict",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1232,11 +1412,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1289,11 +1478,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1346,11 +1544,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1412,11 +1619,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "409": {
             "description": "Conflict",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1475,11 +1691,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1550,11 +1775,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1615,6 +1849,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -1667,6 +1910,15 @@
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1726,11 +1978,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1769,6 +2030,15 @@
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -1829,6 +2099,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -1880,11 +2159,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -2108,6 +2396,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -2181,6 +2478,15 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
           "500": {
             "description": "Service unavailable",
             "schema": {
@@ -2232,11 +2538,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "409": {
             "description": "Conflict",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -2286,11 +2601,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -2341,11 +2665,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
@@ -2408,11 +2741,20 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found",
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
+          },
+          "429": {
+            "description": "Too many requests"
           },
           "500": {
             "description": "Service unavailable",
