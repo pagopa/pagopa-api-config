@@ -896,6 +896,53 @@
                 },
                 "type": "object"
             },
+            "PspChannel": {
+                "properties": {
+                    "channel_code": {
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "payment_type_list": {
+                        "items": {
+                            "enum": [
+                                "BBT",
+                                "BP",
+                                "AD",
+                                "CP",
+                                "PO",
+                                "OBEP",
+                                "JIF",
+                                "MYBK",
+                                "PPAL"
+                            ],
+                            "type": "string"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "channel_code",
+                    "enabled",
+                    "payment_type_list"
+                ],
+                "type": "object"
+            },
+            "PspChannelList": {
+                "properties": {
+                    "channels_list": {
+                        "items": {
+                            "$ref": "#/components/schemas/PspChannel"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "channels_list"
+                ],
+                "type": "object"
+            },
             "Service": {
                 "properties": {
                     "abi_code": {
@@ -987,15 +1034,15 @@
                     },
                     "payment_type_code": {
                         "enum": [
-                            "PAYPAL",
-                            "POSTAL",
-                            "TREASURY_BANK_TRANSFER",
-                            "DIRECT_DEBIT",
-                            "PAYMENT_CARD",
-                            "PSP_PAYMENT",
-                            "ONLINE_BANKING_PAYMENT",
-                            "JIFFY",
-                            "MYBANK"
+                            "BBT",
+                            "BP",
+                            "AD",
+                            "CP",
+                            "PO",
+                            "OBEP",
+                            "JIF",
+                            "MYBK",
+                            "PPAL"
                         ],
                         "type": "string"
                     },
@@ -3612,6 +3659,74 @@
                 ]
             }
         },
+        "/paymentserviceproviders/{pspcode}/channels": {
+            "get": {
+                "operationId": "getPaymentServiceProvidersChannels",
+                "parameters": [
+                    {
+                        "description": "Code of the payment service provider",
+                        "in": "path",
+                        "name": "pspcode",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 50,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PspChannelList"
+                                }
+                            }
+                        },
+                        "description": "OK."
+                    },
+                    "403": {
+                        "description": "Forbidden client error status."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "429": {
+                        "description": "Too many requests"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Get channels details and relation info with PSP",
+                "tags": [
+                    "Payment Service Providers"
+                ]
+            }
+        },
         "/services": {
             "get": {
                 "operationId": "getServices",
@@ -3672,19 +3787,19 @@
                     },
                     {
                         "in": "query",
-                        "name": "paymentTypeCode",
+                        "name": "paymenttypecode",
                         "required": false,
                         "schema": {
                             "enum": [
-                                "PAYPAL",
-                                "POSTAL",
-                                "TREASURY_BANK_TRANSFER",
-                                "DIRECT_DEBIT",
-                                "PAYMENT_CARD",
-                                "PSP_PAYMENT",
-                                "ONLINE_BANKING_PAYMENT",
-                                "JIFFY",
-                                "MYBANK"
+                                "BBT",
+                                "BP",
+                                "AD",
+                                "CP",
+                                "PO",
+                                "OBEP",
+                                "JIF",
+                                "MYBK",
+                                "PPAL"
                             ],
                             "type": "string"
                         }

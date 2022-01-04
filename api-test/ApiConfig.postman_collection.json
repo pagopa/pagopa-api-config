@@ -2159,6 +2159,45 @@
 					"response": []
 				},
 				{
+					"name": "getPaymentServiceProvidersChannels",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProvidersChannels\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "BPPIITRRZZZ"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getBrokersPsp",
 					"event": [
 						{
@@ -2507,6 +2546,45 @@
 								"{{api-config-base-path}}",
 								"paymentserviceproviders",
 								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "zzz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPaymentServiceProviderChannels NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProviderChannels_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels"
 							],
 							"variable": [
 								{
