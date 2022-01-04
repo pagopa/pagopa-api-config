@@ -51,6 +51,6 @@ public class ConvertElencoServiziToService implements Converter<ElencoServizi, S
     }
 
     private Service.PaymentTypeCode getPaymentTypeCode(ElencoServizi source) {
-        return source.getTipoVersCod() != null ? Service.PaymentTypeCode.fromCode(source.getTipoVersCod()) : null;
+        return source.getTipoVersCod() != null ? Service.PaymentTypeCode.valueOf(source.getTipoVersCod()) : null;
     }
 }

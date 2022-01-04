@@ -34,7 +34,7 @@ public class ServicesService {
                 .intmId(filters.getBrokerPspCode())
                 .canaleId(filters.getChannelCode())
                 .canaleModPag(filters.getPaymentMethodChannel())
-                .tipoVersCod(filters.getPaymentTypeCode() != null ? filters.getPaymentTypeCode().getCode() : null)
+                .tipoVersCod(filters.getPaymentTypeCode() != null ? filters.getPaymentTypeCode().name() : null)
                 .pspFlagBollo(filters.getPspFlagStamp())
                 .canaleApp(filters.getChannelApp())
                 .onUs(filters.getOnUs())

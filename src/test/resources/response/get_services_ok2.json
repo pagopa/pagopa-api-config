@@ -4,7 +4,7 @@
       "channel_code": "123",
       "service_name": "service",
       "payment_method_channel": 2,
-      "payment_type_code": "PAYPAL",
+      "payment_type_code": "PPAL",
       "language_code": "IT",
       "service_description": "service",
       "timestamp_insertion": "2021-12-13T00:00:00.000Z",

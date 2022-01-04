@@ -4,6 +4,7 @@ package it.pagopa.pagopa.apiconfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
+import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
@@ -18,7 +19,9 @@ import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
@@ -368,4 +371,31 @@ public class TestUtil {
                 .dataInizioValidita(Timestamp.valueOf("2021-12-14 00:00:00"))
                 .build();
     }
+
+    public static CanaleTipoVersamento getMockCanaleTipoVersamento() {
+        return CanaleTipoVersamento.builder()
+                .id(1L)
+                .canale(getMockCanali())
+                .tipoVersamento(getMockTipoVersamento())
+                .build();
+    }
+
+    public static TipiVersamento getMockTipoVersamento() {
+        return TipiVersamento.builder()
+                .id(123L)
+                .tipoVersamento("PPAL")
+                .descrizione("PayPal")
+                .build();
+    }
+
+    public static PspCanaleTipoVersamento getMockPspCanaleTipoVersamento() {
+        return PspCanaleTipoVersamento.builder()
+                .id(1L)
+                .canaleTipoVersamento(getMockCanaleTipoVersamento())
+                .psp(getMockPsp())
+                .build();
+    }
+
+
+
 }

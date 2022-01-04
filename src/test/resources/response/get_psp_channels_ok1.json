@@ -1,0 +1,11 @@
+{
+  "channels_list": [
+    {
+      "channel_code": "1234",
+      "enabled": true,
+      "payment_type_list": [
+        "PPAL"
+      ]
+    }
+  ]
+}

@@ -438,3 +438,41 @@ create table NODO4_CFG.CDI_MASTER (
                                       constraint UQ_INFORMATIVA_CDI
                                           unique (FK_PSP, ID_INFORMATIVA_PSP)
 );
+
+create table NODO4_CFG.TIPI_VERSAMENTO (
+                                           OBJ_ID numeric not null,
+                                           DESCRIZIONE varchar(35),
+                                           TIPO_VERSAMENTO varchar(15) not null,
+                                           constraint PK_TIPI_VERSAMENTO
+                                               primary key (OBJ_ID),
+                                           constraint UQ_TIPO_VERSAMENTO
+                                               unique (TIPO_VERSAMENTO)
+);
+
+create table NODO4_CFG.CANALE_TIPO_VERSAMENTO (
+                                                  OBJ_ID numeric not null,
+                                                  FK_CANALE numeric not null,
+                                                  FK_TIPO_VERSAMENTO numeric not null,
+                                                  constraint PK_CANALE_TIPO_VERSAMENTOE
+                                                      primary key (OBJ_ID),
+                                                  constraint FK_CANALE_TIPO_VERSAMENTO_CANALI
+                                                      foreign key (FK_CANALE)
+                                                          references NODO4_CFG.CANALI,
+                                                  constraint FK_CANALE_TIPO_VERSAMENTO_TIPO_VERSAMENTO
+                                                      foreign key (FK_TIPO_VERSAMENTO)
+                                                          references NODO4_CFG.TIPI_VERSAMENTO
+);
+
+create table NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO (
+                                                      OBJ_ID numeric not null,
+                                                      FK_CANALE_TIPO_VERSAMENTO numeric not null,
+                                                      FK_PSP numeric not null,
+                                                      constraint PK_PSP_CANALE_TIPO_VERSAMENTO
+                                                          primary key (OBJ_ID),
+                                                      constraint FK_CANALE_TIPO_VERSAMENTO
+                                                          foreign key (FK_CANALE_TIPO_VERSAMENTO)
+                                                              references NODO4_CFG.CANALE_TIPO_VERSAMENTO,
+                                                      constraint FK_PSP_CANALE_TIPO_VERSAMENTO_PSP
+                                                          foreign key (FK_PSP)
+                                                              references NODO4_CFG.PSP
+);

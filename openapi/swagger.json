@@ -1932,6 +1932,63 @@
         "summary": "Get payment service provider details"
       }
     },
+    "/paymentserviceproviders/{pspcode}/channels": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Code of the payment service provider",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "pspcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/PspChannelList"
+            }
+          },
+          "403": {
+            "description": "Forbidden client error status."
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable.",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getPaymentServiceProvidersChannels",
+        "summary": "Get channels details and relation info with PSP"
+      }
+    },
     "/services": {
       "get": {
         "produces": [
@@ -1982,18 +2039,18 @@
           },
           {
             "enum": [
-              "PAYPAL",
-              "POSTAL",
-              "TREASURY_BANK_TRANSFER",
-              "DIRECT_DEBIT",
-              "PAYMENT_CARD",
-              "PSP_PAYMENT",
-              "ONLINE_BANKING_PAYMENT",
-              "JIFFY",
-              "MYBANK"
+              "BBT",
+              "BP",
+              "AD",
+              "CP",
+              "PO",
+              "OBEP",
+              "JIF",
+              "MYBK",
+              "PPAL"
             ],
             "in": "query",
-            "name": "paymentTypeCode",
+            "name": "paymenttypecode",
             "required": false,
             "type": "string"
           },
@@ -3312,6 +3369,53 @@
       },
       "type": "object"
     },
+    "PspChannel": {
+      "properties": {
+        "channel_code": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "payment_type_list": {
+          "items": {
+            "enum": [
+              "BBT",
+              "BP",
+              "AD",
+              "CP",
+              "PO",
+              "OBEP",
+              "JIF",
+              "MYBK",
+              "PPAL"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "channel_code",
+        "enabled",
+        "payment_type_list"
+      ],
+      "type": "object"
+    },
+    "PspChannelList": {
+      "properties": {
+        "channels_list": {
+          "items": {
+            "$ref": "#/definitions/PspChannel"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "channels_list"
+      ],
+      "type": "object"
+    },
     "Service": {
       "properties": {
         "tags": {
@@ -3408,15 +3512,15 @@
         },
         "payment_type_code": {
           "enum": [
-            "PAYPAL",
-            "POSTAL",
-            "TREASURY_BANK_TRANSFER",
-            "DIRECT_DEBIT",
-            "PAYMENT_CARD",
-            "PSP_PAYMENT",
-            "ONLINE_BANKING_PAYMENT",
-            "JIFFY",
-            "MYBANK"
+            "BBT",
+            "BP",
+            "AD",
+            "CP",
+            "PO",
+            "OBEP",
+            "JIF",
+            "MYBK",
+            "PPAL"
           ],
           "type": "string"
         },
