@@ -23,8 +23,10 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokerPspDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePsp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -74,5 +76,72 @@ class BrokersPspServiceTest {
         }
     }
 
+    @Test
+    void createBrokerPsp() throws IOException, JSONException {
+        when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.empty());
+        when(intermediariPspRepository.save(any(IntermediariPsp.class))).thenReturn(getMockIntermediariePsp());
+
+        BrokerPspDetails result = brokersPspService.createBrokerPsp(getMockBrokerPspDetails());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_brokerpsp_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createBrokerPsp_conflict() {
+        when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.of(getMockIntermediariePsp()));
+        BrokerPspDetails mockBrokerPspDetails = getMockBrokerPspDetails();
+        try {
+            brokersPspService.createBrokerPsp(mockBrokerPspDetails);
+            fail();
+        } catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updateBrokerPsp() throws IOException, JSONException {
+        when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.of(getMockIntermediariePsp()));
+
+        BrokerPspDetails result = brokersPspService.updateBrokerPsp("1234", getMockBrokerPspDetails());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_brokerpsp_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updateBrokerPsp_notFound() {
+        when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.empty());
+        try {
+            brokersPspService.updateBrokerPsp("1234", getMockBrokerPspDetails());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteBrokerPsp() {
+        when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.of(getMockIntermediariePsp()));
+
+        brokersPspService.deleteBrokerPsp("1234");
+        assertTrue(true);
+    }
+
+    @Test
+    void deleteBrokerPsp_notfound() {
+        when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.empty());
+
+        try {
+            brokersPspService.deleteBrokerPsp("1234");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
 
 }
