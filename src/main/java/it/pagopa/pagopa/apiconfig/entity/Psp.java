@@ -55,7 +55,7 @@ public class Psp {
     private IntermediariPsp fkIntQuadrature;
 
     @Column(name = "STORNO_PAGAMENTO", nullable = false)
-    private Long stornoPagamento;
+    private Boolean stornoPagamento;
 
     @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
     private Boolean flagRepoCommissioneCaricoPa;
@@ -67,7 +67,7 @@ public class Psp {
     private String codiceMybank;
 
     @Column(name = "MARCA_BOLLO_DIGITALE", nullable = false)
-    private Long marcaBolloDigitale;
+    private Boolean marcaBolloDigitale;
 
     @Column(name = "AGID_PSP", nullable = false)
     private Boolean agidPsp;

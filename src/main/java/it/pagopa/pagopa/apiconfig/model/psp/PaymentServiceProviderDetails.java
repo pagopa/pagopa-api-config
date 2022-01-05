@@ -26,14 +26,14 @@ public class PaymentServiceProviderDetails extends PaymentServiceProvider {
     private String bic;
 
     @JsonProperty("transfer")
-    private Long transfer;
+    private Boolean transfer;
 
     @JsonProperty("my_bank_code")
     @Schema(description = "MyBank code")
     private String myBankCode;
 
     @JsonProperty("stamp")
-    private Long stamp;
+    private Boolean stamp;
 
     @JsonProperty("agid_psp")
     @Schema(description = "True if the PSP is internal")
