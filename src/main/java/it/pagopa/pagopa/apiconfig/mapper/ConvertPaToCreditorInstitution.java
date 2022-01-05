@@ -6,6 +6,7 @@ import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 
 public class ConvertPaToCreditorInstitution implements Converter<Pa, CreditorInstitution> {
@@ -16,7 +17,7 @@ public class ConvertPaToCreditorInstitution implements Converter<Pa, CreditorIns
         return CreditorInstitution.builder()
                 .creditorInstitutionCode(pa.getIdDominio())
                 .enabled(pa.getEnabled())
-                .businessName(pa.getRagioneSociale())
+                .businessName(Optional.ofNullable(pa.getRagioneSociale()).orElse(""))
                 .build();
     }
 }
