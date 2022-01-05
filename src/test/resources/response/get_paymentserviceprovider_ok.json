@@ -4,9 +4,9 @@
   "business_name": "Banca",
   "abi": "123",
   "bic": "4321",
-  "transfer": 2,
+  "transfer": false,
   "my_bank_code": "7",
-  "stamp": 22,
+  "stamp": true,
   "agid_psp": true,
   "tax_code": "AAABBB000X1A",
   "vat_number": "123123123"

@@ -282,9 +282,9 @@ public class TestUtil {
                 .emailRepoCommissioneCaricoPa("email@email.com")
                 .flagRepoCommissioneCaricoPa(false)
                 .pspNodo(true)
-                .marcaBolloDigitale(22L)
+                .marcaBolloDigitale(true)
                 .ragioneSociale("Banca")
-                .stornoPagamento(2L)
+                .stornoPagamento(false)
                 .vatNumber("123123123")
                 .build();
     }
