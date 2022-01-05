@@ -31,6 +31,7 @@ public class PaymentServiceProvider {
 
     @JsonProperty("business_name")
     @Schema(required = true)
+    @NotNull
     private String businessName;
 
 }
