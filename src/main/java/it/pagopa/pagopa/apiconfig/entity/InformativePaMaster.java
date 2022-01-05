@@ -54,7 +54,7 @@ public class InformativePaMaster {
     private String versione;
 
     @Column(name = "PAGAMENTI_PRESSO_PSP")
-    private Long pagamentiPressoPsp;
+    private Boolean pagamentiPressoPsp;
 
 
 }
