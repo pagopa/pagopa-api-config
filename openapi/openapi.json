@@ -824,15 +824,13 @@
                         "type": "string"
                     },
                     "stamp": {
-                        "format": "int64",
-                        "type": "integer"
+                        "type": "boolean"
                     },
                     "tax_code": {
                         "type": "string"
                     },
                     "transfer": {
-                        "format": "int64",
-                        "type": "integer"
+                        "type": "boolean"
                     },
                     "vat_number": {
                         "type": "string"
