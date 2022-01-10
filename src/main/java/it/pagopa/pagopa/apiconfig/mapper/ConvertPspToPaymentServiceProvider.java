@@ -2,10 +2,9 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
-
-import java.util.Optional;
 
 public class ConvertPspToPaymentServiceProvider implements Converter<Psp, PaymentServiceProvider> {
 
@@ -15,7 +14,7 @@ public class ConvertPspToPaymentServiceProvider implements Converter<Psp, Paymen
         return PaymentServiceProvider.builder()
                 .pspCode(source.getIdPsp())
                 .enabled(source.getEnabled())
-                .businessName(Optional.ofNullable(source.getRagioneSociale()).orElse(""))
+                .businessName(CommonUtil.deNull(source.getRagioneSociale()))
                 .build();
     }
 }

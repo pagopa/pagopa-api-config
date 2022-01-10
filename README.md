@@ -75,7 +75,7 @@ spring-api-config | 2021-09-14 10:55:02.858  WARN 1 --- [           main] JpaBas
 spring-api-config | 2021-09-14 10:55:03.454  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/apiconfig'
 spring-api-config | 2021-09-14 10:55:03.468  INFO 1 --- [           main] it.pagopa.pagopa.apiconfig.ApiConfig     : Started ApiConfig in 99.198 seconds (JVM running for 100.391)
 ```
-> NOTE : you can connect to local instance of `NODO4_CFG` db, for example via `sqlplus` typing `sqlplus NODO4_CFG/PASS_NODO4_CFG@localhost:1521/ORCLCDB.localdomain` on a terminal
+> NOTE : you can connect to local instance of `NODO4_CFG` db, for example via `sqlplus` typing `sqlplus NODO4_CFG/NODO4_CFG@localhost:1521/ORCLCDB.localdomain` on a terminal
 
 The `docker-compose` command create 3 containers: 
 - `pagopa-api-config` spring application, 
@@ -131,7 +131,7 @@ Connection info of DB from other docker containers:
 ```
 url = jdbc:oracle:thin:@oracle-db-12c:1521:ORCLCDB
 user = NODO4_CFG
-password = PASS_NODO4_CFG
+password = NODO4_CFG
 ```
 
 ⚠️ **Attention!** 

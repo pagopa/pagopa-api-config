@@ -23,7 +23,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Cdis {
 
-    @JsonProperty("services")
+    @JsonProperty("cdis")
     @Schema(required = true)
     @Valid
     private List<Cdi> cdiList;

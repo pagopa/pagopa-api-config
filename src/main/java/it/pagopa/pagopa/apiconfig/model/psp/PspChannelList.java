@@ -22,7 +22,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PspChannelList {
 
-    @JsonProperty("channels_list")
+    @JsonProperty("channels")
     @Schema(required = true)
     private List<PspChannel> channelsList;
 }

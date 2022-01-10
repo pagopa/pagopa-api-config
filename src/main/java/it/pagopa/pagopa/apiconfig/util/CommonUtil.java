@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 
 @UtilityClass
 public class CommonUtil {
@@ -43,4 +44,11 @@ public class CommonUtil {
     }
 
 
+    /**
+     * @param value value to deNullify.
+     * @return return empty string if value is null
+     */
+    public static String deNull(String value) {
+        return Optional.ofNullable(value).orElse("");
+    }
 }

@@ -26,7 +26,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BrokersPsp {
 
-    @JsonProperty("brokers_psp_list")
+    @JsonProperty("brokers_psp")
     @Schema(required = true)
     @Valid
     private List<BrokerPsp> brokerPspList;
