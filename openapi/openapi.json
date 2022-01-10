@@ -105,7 +105,7 @@
             },
             "Brokers": {
                 "properties": {
-                    "brokers_list": {
+                    "brokers": {
                         "items": {
                             "$ref": "#/components/schemas/Broker"
                         },
@@ -116,14 +116,14 @@
                     }
                 },
                 "required": [
-                    "brokers_list",
+                    "brokers",
                     "page_info"
                 ],
                 "type": "object"
             },
             "BrokersPsp": {
                 "properties": {
-                    "brokers_psp_list": {
+                    "brokers_psp": {
                         "items": {
                             "$ref": "#/components/schemas/BrokerPsp"
                         },
@@ -134,7 +134,7 @@
                     }
                 },
                 "required": [
-                    "brokers_psp_list",
+                    "brokers_psp",
                     "page_info"
                 ],
                 "type": "object"
@@ -175,19 +175,19 @@
             },
             "Cdis": {
                 "properties": {
-                    "page_info": {
-                        "$ref": "#/components/schemas/PageInfo"
-                    },
-                    "services": {
+                    "cdis": {
                         "items": {
                             "$ref": "#/components/schemas/Cdi"
                         },
                         "type": "array"
+                    },
+                    "page_info": {
+                        "$ref": "#/components/schemas/PageInfo"
                     }
                 },
                 "required": [
-                    "page_info",
-                    "services"
+                    "cdis",
+                    "page_info"
                 ],
                 "type": "object"
             },
@@ -352,7 +352,7 @@
             },
             "Channels": {
                 "properties": {
-                    "channels_list": {
+                    "channels": {
                         "items": {
                             "$ref": "#/components/schemas/Channel"
                         },
@@ -363,7 +363,7 @@
                     }
                 },
                 "required": [
-                    "channels_list",
+                    "channels",
                     "page_info"
                 ],
                 "type": "object"
@@ -609,7 +609,7 @@
             },
             "CreditorInstitutionStationList": {
                 "properties": {
-                    "stations_list": {
+                    "stations": {
                         "items": {
                             "$ref": "#/components/schemas/CreditorInstitutionStation"
                         },
@@ -617,7 +617,7 @@
                     }
                 },
                 "required": [
-                    "stations_list"
+                    "stations"
                 ],
                 "type": "object"
             },
@@ -891,7 +891,7 @@
                     "enabled": {
                         "type": "boolean"
                     },
-                    "payment_type_list": {
+                    "payment_type": {
                         "items": {
                             "enum": [
                                 "BBT",
@@ -912,13 +912,13 @@
                 "required": [
                     "channel_code",
                     "enabled",
-                    "payment_type_list"
+                    "payment_type"
                 ],
                 "type": "object"
             },
             "PspChannelList": {
                 "properties": {
-                    "channels_list": {
+                    "channels": {
                         "items": {
                             "$ref": "#/components/schemas/PspChannel"
                         },
@@ -926,7 +926,7 @@
                     }
                 },
                 "required": [
-                    "channels_list"
+                    "channels"
                 ],
                 "type": "object"
             },

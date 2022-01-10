@@ -24,7 +24,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutionStationList {
 
-    @JsonProperty("stations_list")
+    @JsonProperty("stations")
     @Schema(required = true)
     private List<CreditorInstitutionStation> stationsList;
 

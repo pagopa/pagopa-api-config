@@ -1,5 +1,5 @@
 {
-  "brokers_list": [
+  "brokers": [
     {
       "broker_code": "1234",
       "enabled": true,

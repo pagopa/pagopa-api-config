@@ -3096,7 +3096,7 @@
     },
     "Brokers": {
       "properties": {
-        "brokers_list": {
+        "brokers": {
           "items": {
             "$ref": "#/definitions/Broker"
           },
@@ -3107,14 +3107,14 @@
         }
       },
       "required": [
-        "brokers_list",
+        "brokers",
         "page_info"
       ],
       "type": "object"
     },
     "BrokersPsp": {
       "properties": {
-        "brokers_psp_list": {
+        "brokers_psp": {
           "items": {
             "$ref": "#/definitions/BrokerPsp"
           },
@@ -3125,7 +3125,7 @@
         }
       },
       "required": [
-        "brokers_psp_list",
+        "brokers_psp",
         "page_info"
       ],
       "type": "object"
@@ -3166,19 +3166,19 @@
     },
     "Cdis": {
       "properties": {
-        "page_info": {
-          "$ref": "#/definitions/PageInfo"
-        },
-        "services": {
+        "cdis": {
           "items": {
             "$ref": "#/definitions/Cdi"
           },
           "type": "array"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
         }
       },
       "required": [
-        "page_info",
-        "services"
+        "cdis",
+        "page_info"
       ],
       "type": "object"
     },
@@ -3343,7 +3343,7 @@
     },
     "Channels": {
       "properties": {
-        "channels_list": {
+        "channels": {
           "items": {
             "$ref": "#/definitions/Channel"
           },
@@ -3354,7 +3354,7 @@
         }
       },
       "required": [
-        "channels_list",
+        "channels",
         "page_info"
       ],
       "type": "object"
@@ -3600,7 +3600,7 @@
     },
     "CreditorInstitutionStationList": {
       "properties": {
-        "stations_list": {
+        "stations": {
           "items": {
             "$ref": "#/definitions/CreditorInstitutionStation"
           },
@@ -3608,7 +3608,7 @@
         }
       },
       "required": [
-        "stations_list"
+        "stations"
       ],
       "type": "object"
     },
@@ -3882,7 +3882,7 @@
         "enabled": {
           "type": "boolean"
         },
-        "payment_type_list": {
+        "payment_type": {
           "items": {
             "enum": [
               "BBT",
@@ -3903,13 +3903,13 @@
       "required": [
         "channel_code",
         "enabled",
-        "payment_type_list"
+        "payment_type"
       ],
       "type": "object"
     },
     "PspChannelList": {
       "properties": {
-        "channels_list": {
+        "channels": {
           "items": {
             "$ref": "#/definitions/PspChannel"
           },
@@ -3917,7 +3917,7 @@
         }
       },
       "required": [
-        "channels_list"
+        "channels"
       ],
       "type": "object"
     },

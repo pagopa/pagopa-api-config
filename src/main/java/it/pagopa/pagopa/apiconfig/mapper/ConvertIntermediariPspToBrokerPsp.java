@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPsp;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 
@@ -12,7 +13,7 @@ public class ConvertIntermediariPspToBrokerPsp implements Converter<Intermediari
         return BrokerPsp.builder()
                 .brokerPspCode(source.getIdIntermediarioPsp())
                 .enabled(source.getEnabled())
-                .description(source.getCodiceIntermediario())
+                .description(CommonUtil.deNull(source.getCodiceIntermediario()))
                 .build();
     }
 }

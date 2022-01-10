@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,6 +36,7 @@ public class Psp {
     @Column(name = "ID_PSP", nullable = false, length = 35)
     private String idPsp;
 
+    @Type(type="yes_no")
     @Column(name = "ENABLED", nullable = false)
     private Boolean enabled;
 
@@ -57,6 +59,7 @@ public class Psp {
     @Column(name = "STORNO_PAGAMENTO", nullable = false)
     private Boolean stornoPagamento;
 
+    @Type(type="yes_no")
     @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
     private Boolean flagRepoCommissioneCaricoPa;
 
@@ -69,12 +72,15 @@ public class Psp {
     @Column(name = "MARCA_BOLLO_DIGITALE", nullable = false)
     private Boolean marcaBolloDigitale;
 
+    @Type(type="yes_no")
     @Column(name = "AGID_PSP", nullable = false)
     private Boolean agidPsp;
 
+    @Type(type="yes_no")
     @Column(name = "PSP_NODO", nullable = false)
     private Boolean pspNodo;
 
+    @Type(type="yes_no")
     @Column(name = "PSP_AVV", nullable = false)
     private Boolean pspAvv;
 

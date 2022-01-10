@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -21,7 +22,7 @@ import javax.persistence.Table;
 @ToString
 @Entity
 @Table(name = "WFESP_PLUGIN_CONF", schema = "NODO4_CFG")
-public class WfespPluginConf {
+public class WfespPluginConf implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

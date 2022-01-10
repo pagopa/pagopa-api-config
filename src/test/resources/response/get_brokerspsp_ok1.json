@@ -1,5 +1,5 @@
 {
-  "brokers_psp_list": [
+  "brokers_psp": [
     {
       "broker_psp_code": "1234",
       "description": "Regione Lazio",
