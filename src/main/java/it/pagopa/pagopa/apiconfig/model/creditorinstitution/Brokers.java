@@ -25,7 +25,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Brokers {
 
-    @JsonProperty("brokers_list")
+    @JsonProperty("brokers")
     @Schema(required = true)
     @Valid
     private List<Broker> brokerList;

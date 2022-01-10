@@ -40,11 +40,44 @@ public class BrokersPspService {
     }
 
     public BrokerPspDetails getBrokerPsp(@NotBlank String brokerPspCode) {
-        IntermediariPsp intermediariPsp = intermediariPspRepository.findByIdIntermediarioPsp(brokerPspCode)
-                .orElseThrow(() -> new AppException(AppError.BROKER_PSP_NOT_FOUND, brokerPspCode));
+        IntermediariPsp intermediariPsp = getIntermediariPspIfExists(brokerPspCode);
         return modelMapper.map(intermediariPsp, BrokerPspDetails.class);
     }
 
+    public BrokerPspDetails createBrokerPsp(@NotNull BrokerPspDetails brokerPspDetails) {
+        if (intermediariPspRepository.findByIdIntermediarioPsp(brokerPspDetails.getBrokerPspCode()).isPresent()) {
+            throw new AppException(AppError.BROKER_CONFLICT, brokerPspDetails.getBrokerPspCode());
+        }
+        IntermediariPsp intermediariPsp = modelMapper.map(brokerPspDetails, IntermediariPsp.class);
+        intermediariPspRepository.save(intermediariPsp);
+        return brokerPspDetails;
+    }
+
+
+    public BrokerPspDetails updateBrokerPsp(@NotBlank String brokerPspCode, @NotNull BrokerPspDetails brokerPspDetails) {
+        Long objId = getIntermediariPspIfExists(brokerPspCode).getObjId();
+        IntermediariPsp intermediariPsp = modelMapper.map(brokerPspDetails, IntermediariPsp.class)
+                .toBuilder()
+                .objId(objId)
+                .build();
+        intermediariPspRepository.save(intermediariPsp);
+        return brokerPspDetails;
+    }
+
+    public void deleteBrokerPsp(@NotBlank String brokerPspCode) {
+        IntermediariPsp intermediariPsp = getIntermediariPspIfExists(brokerPspCode);
+        intermediariPspRepository.delete(intermediariPsp);
+    }
+
+    /**
+     * @param brokerPspCode code of the broker PSP
+     * @return search on DB using the {@code brokerPspCode} and return the IntermediariPSP if it is present
+     * @throws AppException if not found
+     */
+    private IntermediariPsp getIntermediariPspIfExists(String brokerPspCode) {
+        return intermediariPspRepository.findByIdIntermediarioPsp(brokerPspCode)
+                .orElseThrow(() -> new AppException(AppError.BROKER_PSP_NOT_FOUND, brokerPspCode));
+    }
 
     /**
      * Maps IntermediariPsp objects stored in the DB in a List of BrokerPsp
@@ -57,5 +90,4 @@ public class BrokersPspService {
                 .map(elem -> modelMapper.map(elem, BrokerPsp.class))
                 .collect(Collectors.toList());
     }
-
 }

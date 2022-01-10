@@ -30,7 +30,7 @@ public class PspChannel {
     @Schema(required = true)
     private Boolean enabled;
 
-    @JsonProperty("payment_type_list")
+    @JsonProperty("payment_type")
     @Schema(required = true)
     private List<Service.PaymentTypeCode> paymentTypeList;
 }

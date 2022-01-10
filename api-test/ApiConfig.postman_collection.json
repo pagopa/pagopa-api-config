@@ -2235,6 +2235,168 @@
 					"response": []
 				},
 				{
+					"name": "createBrokersPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createBrokersPsp\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"broker_psp_code\", makeid(35));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"description\": \"Postecom\",\n    \"enabled\": true,\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBrokersPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateBrokersPsp\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"description\": \"Nome\",\n    \"enabled\": false,\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{broker_psp_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBrokersPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteBrokersPsp\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{broker_psp_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getBrokerPsp",
 					"event": [
 						{
@@ -2629,6 +2791,55 @@
 									"key": "code",
 									"value": "ggg"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createBrokersPsp Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getBrokersPsp_conflict\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_psp_code\": \"17103880000\",\n    \"description\": \"Postecom\",\n    \"enabled\": true,\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp"
 							]
 						}
 					},

@@ -23,7 +23,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Channels {
 
-    @JsonProperty("channels_list")
+    @JsonProperty("channels")
     @Schema(required = true)
     @Valid
     private List<Channel> channelList;

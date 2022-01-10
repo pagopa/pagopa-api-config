@@ -64,7 +64,7 @@ public class CanaliNodo {
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_SERV_PLUGIN")
+    @JoinColumn(name = "ID_SERV_PLUGIN", referencedColumnName = "ID_SERV_PLUGIN")
     private WfespPluginConf idServPlugin;
 
     @Column(name = "ID_CLUSTER")

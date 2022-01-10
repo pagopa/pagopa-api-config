@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,10 +20,10 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
+@ToString
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
 public class IntermediariPsp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,18 +33,22 @@ public class IntermediariPsp {
     @Column(name = "ID_INTERMEDIARIO_PSP", nullable = false, length = 35)
     private String idIntermediarioPsp;
 
+    @Type(type="yes_no")
     @Column(name = "ENABLED", nullable = false)
     private Boolean enabled;
 
     @Column(name = "CODICE_INTERMEDIARIO")
     private String codiceIntermediario;
 
+    @Type(type="yes_no")
     @Column(name = "INTERMEDIARIO_AVV", nullable = false)
     private Boolean intermediarioAvv;
 
+    @Type(type="yes_no")
     @Column(name = "INTERMEDIARIO_NODO", nullable = false)
     private Boolean intermediarioNodo;
 
+    @Type(type="yes_no")
     @Column(name = "FAULT_BEAN_ESTESO", nullable = false)
     private Boolean faultBeanEsteso;
 

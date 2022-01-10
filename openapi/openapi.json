@@ -105,7 +105,7 @@
             },
             "Brokers": {
                 "properties": {
-                    "brokers_list": {
+                    "brokers": {
                         "items": {
                             "$ref": "#/components/schemas/Broker"
                         },
@@ -116,14 +116,14 @@
                     }
                 },
                 "required": [
-                    "brokers_list",
+                    "brokers",
                     "page_info"
                 ],
                 "type": "object"
             },
             "BrokersPsp": {
                 "properties": {
-                    "brokers_psp_list": {
+                    "brokers_psp": {
                         "items": {
                             "$ref": "#/components/schemas/BrokerPsp"
                         },
@@ -134,7 +134,7 @@
                     }
                 },
                 "required": [
-                    "brokers_psp_list",
+                    "brokers_psp",
                     "page_info"
                 ],
                 "type": "object"
@@ -175,19 +175,19 @@
             },
             "Cdis": {
                 "properties": {
-                    "page_info": {
-                        "$ref": "#/components/schemas/PageInfo"
-                    },
-                    "services": {
+                    "cdis": {
                         "items": {
                             "$ref": "#/components/schemas/Cdi"
                         },
                         "type": "array"
+                    },
+                    "page_info": {
+                        "$ref": "#/components/schemas/PageInfo"
                     }
                 },
                 "required": [
-                    "page_info",
-                    "services"
+                    "cdis",
+                    "page_info"
                 ],
                 "type": "object"
             },
@@ -352,7 +352,7 @@
             },
             "Channels": {
                 "properties": {
-                    "channels_list": {
+                    "channels": {
                         "items": {
                             "$ref": "#/components/schemas/Channel"
                         },
@@ -363,7 +363,7 @@
                     }
                 },
                 "required": [
-                    "channels_list",
+                    "channels",
                     "page_info"
                 ],
                 "type": "object"
@@ -609,7 +609,7 @@
             },
             "CreditorInstitutionStationList": {
                 "properties": {
-                    "stations_list": {
+                    "stations": {
                         "items": {
                             "$ref": "#/components/schemas/CreditorInstitutionStation"
                         },
@@ -617,7 +617,7 @@
                     }
                 },
                 "required": [
-                    "stations_list"
+                    "stations"
                 ],
                 "type": "object"
             },
@@ -891,7 +891,7 @@
                     "enabled": {
                         "type": "boolean"
                     },
-                    "payment_type_list": {
+                    "payment_type": {
                         "items": {
                             "enum": [
                                 "BBT",
@@ -912,13 +912,13 @@
                 "required": [
                     "channel_code",
                     "enabled",
-                    "payment_type_list"
+                    "payment_type"
                 ],
                 "type": "object"
             },
             "PspChannelList": {
                 "properties": {
-                    "channels_list": {
+                    "channels": {
                         "items": {
                             "$ref": "#/components/schemas/PspChannel"
                         },
@@ -926,7 +926,7 @@
                     }
                 },
                 "required": [
-                    "channels_list"
+                    "channels"
                 ],
                 "type": "object"
             },
@@ -1784,9 +1784,157 @@
                 "tags": [
                     "Payment Service Providers"
                 ]
+            },
+            "post": {
+                "operationId": "createBrokerPsp",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BrokerPspDetails"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BrokerPspDetails"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "429": {
+                        "description": "Too many requests"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Create a PSP broker",
+                "tags": [
+                    "Payment Service Providers"
+                ]
             }
         },
         "/brokerspsp/{brokerpspcode}": {
+            "delete": {
+                "operationId": "deleteBrokerPsp",
+                "parameters": [
+                    {
+                        "description": "broker PSP code",
+                        "in": "path",
+                        "name": "brokerpspcode",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 50,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "429": {
+                        "description": "Too many requests"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Delete a broker PSP",
+                "tags": [
+                    "Payment Service Providers"
+                ]
+            },
             "get": {
                 "operationId": "getBrokerPsp",
                 "parameters": [
@@ -1861,7 +2009,97 @@
                         "Authorization": []
                     }
                 ],
-                "summary": "Get creditor broker details ",
+                "summary": "Get PSP broker details",
+                "tags": [
+                    "Payment Service Providers"
+                ]
+            },
+            "put": {
+                "operationId": "updateBrokerPsp",
+                "parameters": [
+                    {
+                        "description": "broker PSP code",
+                        "in": "path",
+                        "name": "brokerpspcode",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 50,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BrokerPspDetails"
+                            }
+                        }
+                    },
+                    "description": "The values to update of the broker PSP",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BrokerPspDetails"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "429": {
+                        "description": "Too many requests"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Update a broker PSP",
                 "tags": [
                     "Payment Service Providers"
                 ]
