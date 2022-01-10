@@ -28,6 +28,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionD
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -396,6 +397,13 @@ public class TestUtil {
                 .build();
     }
 
-
+    public static BrokerPspDetails getMockBrokerPspDetails() {
+        return BrokerPspDetails.builder()
+                .brokerPspCode("1234")
+                .enabled(true)
+                .description("Regione Lazio")
+                .extendedFaultBean(false)
+                .build();
+    }
 
 }
