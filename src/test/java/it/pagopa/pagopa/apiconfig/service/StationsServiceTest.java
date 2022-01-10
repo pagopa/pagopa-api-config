@@ -82,7 +82,7 @@ class StationsServiceTest {
     }
 
     @Test
-    void createBroker_conflict() {
+    void createStation_conflict() {
         when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
 
         try {
@@ -107,7 +107,7 @@ class StationsServiceTest {
     }
 
     @Test
-    void updateBroker_notFound() {
+    void updateStation_notFound() {
         when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.empty());
         try {
             stationsService.updateStation("1234", getMockStationDetails());
@@ -127,7 +127,7 @@ class StationsServiceTest {
     }
 
     @Test
-    void deleteBroker_notfound() {
+    void deleteStation_notfound() {
         when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.empty());
 
         try {

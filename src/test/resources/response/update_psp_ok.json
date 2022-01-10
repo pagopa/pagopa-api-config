@@ -1,0 +1,13 @@
+{
+  "psp_code": "1234",
+  "enabled": true,
+  "business_name": "name",
+  "abi": "abi",
+  "bic": "435",
+  "transfer": false,
+  "my_bank_code": "mbank01",
+  "stamp": true,
+  "agid_psp": true,
+  "tax_code": "1",
+  "vat_number": "123432"
+}

@@ -13,4 +13,4 @@ fi
 bash api-test/postman-to-k6-converter.sh
 
 ## execute script
-k6 run --vus 2 --duration 5s ./k6-script.js
+k6 run --vus 2 --duration 5s --http-debug=full ./k6-script.js
