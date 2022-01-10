@@ -34,6 +34,7 @@ import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPspToBrokerPspDetail
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPaymentServiceProviderDetailsToPsp;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPspCanaleTipoVersamentoToPspChannel;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProviderDetails;
@@ -102,6 +103,7 @@ public class MappingsConfiguration {
         Converter<ElencoServizi, Service> convertElencoServiziToService = new ConvertElencoServiziToService();
         Converter<CdiMaster, Cdi> convertCdiMasterToCdi = new ConvertCdiMasterToCdi();
         Converter<PspCanaleTipoVersamento, PspChannel> convertPspCanaleTipoVersamentoToPspChannel = new ConvertPspCanaleTipoVersamentoToPspChannel();
+        Converter<PaymentServiceProviderDetails, Psp> convertPaymentServiceProviderDetailsToPsp = new ConvertPaymentServiceProviderDetailsToPsp();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -128,6 +130,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(ElencoServizi.class, Service.class).setConverter(convertElencoServiziToService);
         mapper.createTypeMap(CdiMaster.class, Cdi.class).setConverter(convertCdiMasterToCdi);
         mapper.createTypeMap(PspCanaleTipoVersamento.class, PspChannel.class).setConverter(convertPspCanaleTipoVersamentoToPspChannel);
+        mapper.createTypeMap(PaymentServiceProviderDetails.class, Psp.class).setConverter(convertPaymentServiceProviderDetailsToPsp);
 
         return mapper;
     }
