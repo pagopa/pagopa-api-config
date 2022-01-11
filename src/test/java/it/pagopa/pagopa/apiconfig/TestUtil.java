@@ -29,6 +29,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionS
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -403,6 +404,22 @@ public class TestUtil {
                 .enabled(true)
                 .description("Regione Lazio")
                 .extendedFaultBean(false)
+                .build();
+    }
+
+    public static PaymentServiceProviderDetails getMockPaymentServiceProviderDetails() {
+        return PaymentServiceProviderDetails.builder()
+                .abi("abi")
+                .enabled(true)
+                .businessName("name")
+                .agidPsp(true)
+                .pspCode("1234")
+                .bic("435")
+                .stamp(true)
+                .transfer(false)
+                .vatNumber("123432")
+                .myBankCode("mbank01")
+                .taxCode("1")
                 .build();
     }
 

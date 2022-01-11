@@ -67,7 +67,7 @@ class IcaServiceTest {
 
 
     @Test
-    void getEC_NotFound() {
+    void getIca_NotFound() {
         when(informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(anyString(), anyString())).thenReturn(Optional.empty());
         try {
             icaService.getIca("111", "1234");

@@ -25,9 +25,11 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviderDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -81,6 +83,74 @@ class PspServiceTest {
             fail();
         }
 
+    }
+
+    @Test
+    void createPsp() throws IOException, JSONException {
+        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.empty());
+        when(pspRepository.save(any(Psp.class))).thenReturn(getMockPsp());
+
+        var result = pspService.createPaymentServiceProvider(getMockPaymentServiceProviderDetails());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_psp_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createPsp_conflict() {
+        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.of(getMockPsp()));
+
+        try {
+            pspService.createPaymentServiceProvider(getMockPaymentServiceProviderDetails());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updatePsp() throws IOException, JSONException {
+        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.of(getMockPsp()));
+        when(pspRepository.save(any(Psp.class))).thenReturn(getMockPsp());
+
+        var result = pspService.updatePaymentServiceProvider("1234", getMockPaymentServiceProviderDetails());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_psp_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updatePsp_notFound() {
+        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.empty());
+        try {
+            pspService.updatePaymentServiceProvider("1234", getMockPaymentServiceProviderDetails());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deletePsp() {
+        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.of(getMockPsp()));
+
+        pspService.deletePaymentServiceProvider("1234");
+        assertTrue(true);
+    }
+
+    @Test
+    void deletePsp_notfound() {
+        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.empty());
+
+        try {
+            pspService.deletePaymentServiceProvider("1234");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
 

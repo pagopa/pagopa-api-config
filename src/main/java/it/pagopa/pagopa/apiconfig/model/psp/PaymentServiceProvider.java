@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @SuperBuilder(toBuilder = true)
@@ -22,11 +23,12 @@ public class PaymentServiceProvider {
 
     @JsonProperty("psp_code")
     @Schema(required = true)
-    @NotNull
+    @NotBlank
     private String pspCode;
 
     @JsonProperty("enabled")
     @Schema(required = true)
+    @NotNull
     private Boolean enabled;
 
     @JsonProperty("business_name")
