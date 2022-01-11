@@ -17,7 +17,7 @@ public class ConvertCdiMasterToCdi implements Converter<CdiMaster, Cdi> {
         return Cdi.builder()
                 .idCdi(source.getIdInformativaPsp())
                 .pspCode(source.getFkPsp().getIdPsp())
-                .businessName(source.getFkPsp().getRagioneSociale())
+                .businessName(CommonUtil.deNull(source.getFkPsp().getRagioneSociale()))
                 .publicationDate(CommonUtil.toOffsetDateTime(source.getDataPubblicazione()))
                 .validityDate(CommonUtil.toOffsetDateTime(source.getDataInizioValidita()))
                 .build();

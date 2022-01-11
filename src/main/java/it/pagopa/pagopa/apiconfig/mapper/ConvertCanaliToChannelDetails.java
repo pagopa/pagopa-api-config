@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 
@@ -16,7 +17,7 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
         ChannelDetails.ChannelDetailsBuilder<?, ?> builder = ChannelDetails.builder()
                 .channelCode(source.getIdCanale())
                 .enabled(source.getEnabled())
-                .description(source.getDescrizione())
+                .description(CommonUtil.deNull(source.getDescrizione()))
                 .ip(source.getIp())
                 .newPassword(source.getNewPassword())
                 .password(source.getPassword())

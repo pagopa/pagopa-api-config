@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -26,11 +27,13 @@ import java.util.List;
 public class CreditorInstitutions {
     @JsonProperty("creditor_institutions")
     @Schema(required = true)
+    @NotNull
     @Valid
     private List<CreditorInstitution> creditorInstitutionList;
 
     @JsonProperty("page_info")
     @Schema(required = true)
+    @NotNull
     @Valid
     private PageInfo pageInfo;
 }

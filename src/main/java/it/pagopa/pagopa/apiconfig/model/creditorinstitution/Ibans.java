@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -27,8 +28,9 @@ public class Ibans {
 
     @JsonProperty("ibans")
     @Schema(required = true)
+    @NotNull
     @Valid
-    private List<Iban> ibanList = null;
+    private List<Iban> ibanList;
 
 
 }

@@ -1,7 +1,6 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import it.pagopa.pagopa.apiconfig.service.ServicesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockServices;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -31,7 +31,7 @@ class ServicesControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(servicesService.getServices(anyInt(), anyInt(), any())).thenReturn(Services.builder().build());
+        when(servicesService.getServices(anyInt(), anyInt(), any())).thenReturn(getMockServices());
     }
 
     @Test

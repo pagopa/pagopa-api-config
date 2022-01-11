@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
@@ -25,12 +26,14 @@ public class CounterpartTables {
 
     @JsonProperty("counterpart_tables")
     @Schema(required = true)
+    @NotNull
     @Valid
     private List<CounterpartTable> counterpartTableList;
 
 
     @JsonProperty("page_info")
     @Schema(required = true)
+    @NotNull
     @Valid
     private PageInfo pageInfo;
 

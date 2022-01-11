@@ -55,8 +55,8 @@ public class StationsService {
         }
         brokerCodeToObjId(stationDetails);
         Stazioni stazioni = modelMapper.map(stationDetails, Stazioni.class);
-        Stazioni result = stazioniRepository.save(stazioni);
-        return modelMapper.map(result, StationDetails.class);
+        stazioniRepository.save(stazioni);
+        return stationDetails;
     }
 
     public StationDetails updateStation(@NotNull String stationCode, @NotNull StationDetails stationDetails) {

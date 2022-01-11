@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -26,6 +27,7 @@ public class CreditorInstitutionStationList {
 
     @JsonProperty("stations")
     @Schema(required = true)
+    @NotNull
     private List<CreditorInstitutionStation> stationsList;
 
 }

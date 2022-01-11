@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 
@@ -24,7 +25,7 @@ public class ConvertStazioniToStationDetails implements Converter<Stazioni, Stat
                 .port(source.getPorta())
                 .service(source.getServizio())
                 .protocol4Mod(source.getProtocollo4Mod())
-                .brokerCode(source.getFkIntermediarioPa() != null ? source.getFkIntermediarioPa().getIdIntermediarioPa() : null)
+                .brokerCode(CommonUtil.deNull(source.getFkIntermediarioPa().getIdIntermediarioPa()))
                 .ip4Mod(source.getIp4Mod())
                 .port4Mod(source.getPorta4Mod())
                 .service4Mod(source.getServizio4Mod())

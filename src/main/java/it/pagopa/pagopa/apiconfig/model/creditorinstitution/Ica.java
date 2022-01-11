@@ -47,6 +47,7 @@ public class Ica {
     @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
     @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(required = true)
+    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime validityDate;
 
@@ -54,6 +55,7 @@ public class Ica {
     @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
     @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(required = true)
+    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime publicationDate;
 
