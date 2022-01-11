@@ -4,9 +4,6 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationEdit;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationList;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutions;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbans;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -45,14 +46,14 @@ class CreditorInstitutionsControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(creditorInstitutionsService.getCreditorInstitutions(50, 0)).thenReturn(CreditorInstitutions.builder().build());
-        when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(CreditorInstitutionDetails.builder().build());
-        when(creditorInstitutionsService.getCreditorInstitutionStations("1234")).thenReturn(CreditorInstitutionStationList.builder().build());
-        when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234")).thenReturn(Ibans.builder().build());
-        when(creditorInstitutionsService.createCreditorInstitution(any(CreditorInstitutionDetails.class))).thenReturn(CreditorInstitutionDetails.builder().build());
-        when(creditorInstitutionsService.updateCreditorInstitution(anyString(), any(CreditorInstitutionDetails.class))).thenReturn(CreditorInstitutionDetails.builder().build());
-        when(creditorInstitutionsService.createCreditorInstitutionStation(anyString(), any(CreditorInstitutionStationEdit.class))).thenReturn(CreditorInstitutionStationEdit.builder().build());
-        when(creditorInstitutionsService.updateCreditorInstitutionStation(anyString(), anyString(), any(CreditorInstitutionStationEdit.class))).thenReturn(CreditorInstitutionStationEdit.builder().build());
+        when(creditorInstitutionsService.getCreditorInstitutions(50, 0)).thenReturn(getMockCreditorInstitutions());
+        when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(getMockCreditorInstitutionDetails());
+        when(creditorInstitutionsService.getCreditorInstitutionStations("1234")).thenReturn(getMockCreditorInstitutionStationList());
+        when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234")).thenReturn(getMockIbans());
+        when(creditorInstitutionsService.createCreditorInstitution(any(CreditorInstitutionDetails.class))).thenReturn(getMockCreditorInstitutionDetails());
+        when(creditorInstitutionsService.updateCreditorInstitution(anyString(), any(CreditorInstitutionDetails.class))).thenReturn(getMockCreditorInstitutionDetails());
+        when(creditorInstitutionsService.createCreditorInstitutionStation(anyString(), any(CreditorInstitutionStationEdit.class))).thenReturn(getMockCreditorInstitutionStationEdit());
+        when(creditorInstitutionsService.updateCreditorInstitutionStation(anyString(), anyString(), any(CreditorInstitutionStationEdit.class))).thenReturn(getMockCreditorInstitutionStationEdit());
     }
 
     @ParameterizedTest

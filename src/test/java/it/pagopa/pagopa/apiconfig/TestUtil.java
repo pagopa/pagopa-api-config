@@ -23,13 +23,26 @@ import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannel;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
+import it.pagopa.pagopa.apiconfig.model.psp.Service;
+import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -38,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -189,7 +203,7 @@ public class TestUtil {
                 .build();
     }
 
-    private static BinaryFile getMockBinaryFile() {
+    public static BinaryFile getMockBinaryFile() {
         return BinaryFile.builder()
                 .fileContent(new byte[]{1, 11})
                 .build();
@@ -364,7 +378,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static CdiMaster getMockCdiMaster(){
+    public static CdiMaster getMockCdiMaster() {
         return CdiMaster.builder()
                 .id(1L)
                 .fkPsp(getMockPsp())
@@ -420,6 +434,113 @@ public class TestUtil {
                 .vatNumber("123432")
                 .myBankCode("mbank01")
                 .taxCode("1")
+                .build();
+    }
+
+    public static CreditorInstitution getMockCreditorInstitution() {
+        return CreditorInstitution.builder()
+                .enabled(true)
+                .creditorInstitutionCode("1234")
+                .businessName("regione")
+                .build();
+    }
+
+    public static CreditorInstitutions getMockCreditorInstitutions() {
+        return CreditorInstitutions.builder()
+                .creditorInstitutionList(List.of(getMockCreditorInstitution()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
+    public static PageInfo getMockPageInfo() {
+        return PageInfo.builder()
+                .page(0)
+                .limit(10)
+                .itemsFound(1)
+                .totalPages(1)
+                .build();
+    }
+
+    public static CreditorInstitutionStationList getMockCreditorInstitutionStationList() {
+        return CreditorInstitutionStationList.builder()
+                .stationsList(List.of(getMockCreditorInstitutionStation()))
+                .build();
+    }
+
+    public static CreditorInstitutionStation getMockCreditorInstitutionStation() {
+        return CreditorInstitutionStation.builder()
+                .auxDigit(1L)
+                .stationCode("1234")
+                .enabled(true)
+                .build();
+    }
+
+    public static Services getMockServices() {
+        return Services.builder()
+                .servicesList(List.of(getMockService()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
+    public static Service getMockService() {
+        return Service.builder()
+                .abiCode("12345")
+                .pspCode("1234")
+                .brokerPspCode("1234")
+                .cartCard(true)
+                .channelApp(false)
+                .channelCode("aaaaa")
+                .build();
+    }
+
+
+    public static Ibans getMockIbans() {
+        return Ibans.builder()
+                .ibanList(List.of(getMockIban()))
+                .build();
+    }
+
+    public static Iban getMockIban() {
+        return Iban.builder()
+                .ibanValue("IT99C0222211111000000000000")
+                .publicationDate(OffsetDateTime.now())
+                .validityDate(OffsetDateTime.now())
+                .build();
+    }
+
+    public static CreditorInstitutionStationEdit getMockCreditorInstitutionStationEdit() {
+        return CreditorInstitutionStationEdit.builder()
+                .stationCode("12344")
+                .build();
+    }
+
+    public static PaymentServiceProviders getMockPaymentServiceProviders() {
+        return PaymentServiceProviders.builder()
+                .pageInfo(getMockPageInfo())
+                .paymentServiceProviderList(List.of(getMockPaymentServiceProvider()))
+                .build();
+    }
+
+    public static PaymentServiceProvider getMockPaymentServiceProvider() {
+        return PaymentServiceProvider.builder()
+                .businessName("ciao")
+                .enabled(true)
+                .pspCode("1")
+                .build();
+    }
+
+
+    public static PspChannelList getMockPspChannelList() {
+        return PspChannelList.builder()
+                .channelsList(List.of(getMockPspChannel()))
+                .build();
+    }
+
+    public static PspChannel getMockPspChannel() {
+        return PspChannel.builder()
+                .enabled(true)
+                .channelCode("1234")
+                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
                 .build();
     }
 

@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -24,13 +25,16 @@ public class PspChannel {
 
     @JsonProperty("channel_code")
     @Schema(required = true)
+    @NotNull
     private String channelCode;
 
     @JsonProperty("enabled")
     @Schema(required = true)
+    @NotNull
     private Boolean enabled;
 
     @JsonProperty("payment_type")
     @Schema(required = true)
+    @NotNull
     private List<Service.PaymentTypeCode> paymentTypeList;
 }

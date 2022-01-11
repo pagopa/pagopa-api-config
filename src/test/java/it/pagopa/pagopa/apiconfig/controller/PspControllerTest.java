@@ -3,8 +3,6 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
 import it.pagopa.pagopa.apiconfig.service.PspService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviderDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviders;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -41,9 +41,9 @@ class PspControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(pspService.getPaymentServiceProviders(50, 0)).thenReturn(PaymentServiceProviders.builder().build());
-        when(pspService.getPaymentServiceProvider(anyString())).thenReturn(PaymentServiceProviderDetails.builder().build());
-        when(pspService.getPaymentServiceProvidersChannels(anyString())).thenReturn(PspChannelList.builder().build());
+        when(pspService.getPaymentServiceProviders(50, 0)).thenReturn(getMockPaymentServiceProviders());
+        when(pspService.getPaymentServiceProvider(anyString())).thenReturn(getMockPaymentServiceProviderDetails());
+        when(pspService.getPaymentServiceProvidersChannels(anyString())).thenReturn(getMockPspChannelList());
         when(pspService.createPaymentServiceProvider(any(PaymentServiceProviderDetails.class))).thenReturn(PaymentServiceProviderDetails.builder().build());
         when(pspService.updatePaymentServiceProvider(anyString(), any(PaymentServiceProviderDetails.class))).thenReturn(PaymentServiceProviderDetails.builder().build());
     }

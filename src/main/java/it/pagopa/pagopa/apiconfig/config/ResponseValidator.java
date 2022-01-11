@@ -1,12 +1,13 @@
 package it.pagopa.pagopa.apiconfig.config;
 
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolation;
@@ -15,7 +16,6 @@ import java.util.Set;
 
 @Aspect
 @Component
-@Slf4j
 public class ResponseValidator {
 
     @Autowired
@@ -26,24 +26,25 @@ public class ResponseValidator {
      * This method validates the response annotated with the {@link javax.validation.constraints}
      *
      * @param joinPoint not used
-     * @param result the response to validate
+     * @param result    the response to validate
      */
     @AfterReturning(pointcut = "execution(* it.pagopa.pagopa.apiconfig.controller.*.*(..))", returning = "result")
     public void validateResponse(JoinPoint joinPoint, Object result) {
-        validateResponse(result);
+        validateResponse((ResponseEntity<?>) result);
     }
 
-    private void validateResponse(Object object) {
-        Set<ConstraintViolation<Object>> validationResults = validator.validate(object);
+    private <T> void validateResponse(ResponseEntity<T> response) {
+        if (response.getBody() != null) {
+            Set<ConstraintViolation<T>> validationResults = validator.validate(response.getBody());
 
-        if (!validationResults.isEmpty()) {
-            var sb = new StringBuilder();
-            for (ConstraintViolation<Object> error : validationResults) {
-                sb.append(error.getPropertyPath()).append(" - ").append(error.getMessage()).append("\n");
+            if (!validationResults.isEmpty()) {
+                var sb = new StringBuilder();
+                for (ConstraintViolation<T> error : validationResults) {
+                    sb.append(error.getPropertyPath()).append(" ").append(error.getMessage()).append(". ");
+                }
+                var msg = StringUtils.chop(sb.toString());
+                throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid response", msg);
             }
-            var msg = sb.toString();
-            log.warn(msg);
-            throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid response", msg);
         }
     }
 }

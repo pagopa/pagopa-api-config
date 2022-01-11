@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -25,12 +26,14 @@ public class Services {
 
     @JsonProperty("services")
     @Schema(required = true)
+    @NotNull
     @Valid
     private List<Service> servicesList;
 
 
     @JsonProperty("page_info")
     @Schema(required = true)
+    @NotNull
     @Valid
     private PageInfo pageInfo;
 }

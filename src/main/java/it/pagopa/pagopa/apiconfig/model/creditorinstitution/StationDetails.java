@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +29,7 @@ import javax.validation.constraints.NotNull;
 public class StationDetails extends Station {
 
     @JsonProperty("ip")
+    @Schema(required = true)
     @NotNull
     private String ip;
 
@@ -37,14 +39,17 @@ public class StationDetails extends Station {
 
     @ToString.Exclude
     @JsonProperty("password")
+    @Schema(required = true)
     @NotNull
     private String password;
 
     @JsonProperty("port")
+    @Schema(required = true)
     @NotNull
     private Long port;
 
     @JsonProperty("protocol")
+    @Schema(required = true)
     @NotNull
     private String protocol;
 
@@ -64,10 +69,12 @@ public class StationDetails extends Station {
     private String redirectProtocol;
 
     @JsonProperty("service")
+    @Schema(required = true)
     @NotNull
     private String service;
 
     @JsonProperty("broker_code")
+    @Schema(required = true)
     @NotBlank
     private String brokerCode;
 
@@ -104,14 +111,17 @@ public class StationDetails extends Station {
     private Long threadNumber;
 
     @JsonProperty("timeout_a")
+    @Schema(required = true)
     @NotNull
     private Long timeoutA;
 
     @JsonProperty("timeout_b")
+    @Schema(required = true)
     @NotNull
     private Long timeoutB;
 
     @JsonProperty("timeout_c")
+    @Schema(required = true)
     @NotNull
     private Long timeoutC;
 

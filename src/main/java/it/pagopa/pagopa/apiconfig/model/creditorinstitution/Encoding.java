@@ -15,6 +15,7 @@ import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 
 /**
@@ -31,6 +32,7 @@ public class Encoding {
 
     @JsonProperty("code_type")
     @Schema(required = true)
+    @NotNull
     private CodeTypeEnum codeType;
 
 

@@ -18,7 +18,7 @@ public class ConvertPaToCreditorInstitutionDetails implements Converter<Pa, Cred
         return CreditorInstitutionDetails.builder()
                 .creditorInstitutionCode(pa.getIdDominio())
                 .enabled(pa.getEnabled())
-                .businessName(pa.getRagioneSociale())
+                .businessName(CommonUtil.deNull(pa.getRagioneSociale()))
                 .address(CreditorInstitutionAddress.builder()
                         .city(pa.getComuneDomicilioFiscale())
                         .location(pa.getIndirizzoDomicilioFiscale())

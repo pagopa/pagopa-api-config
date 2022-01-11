@@ -61,7 +61,6 @@ public class Service {
     private PaymentTypeCode paymentTypeCode;
 
     @JsonProperty("language_code")
-    @Size(max = 2)
     private LanguageCode languageCode;
 
     @JsonProperty("service_description")

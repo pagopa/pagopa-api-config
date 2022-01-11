@@ -51,4 +51,12 @@ public class CommonUtil {
     public static String deNull(String value) {
         return Optional.ofNullable(value).orElse("");
     }
+
+    /**
+     * @param value value to deNullify.
+     * @return return false if value is null
+     */
+    public static Boolean deNull(Boolean value) {
+        return Optional.ofNullable(value).orElse(false);
+    }
 }

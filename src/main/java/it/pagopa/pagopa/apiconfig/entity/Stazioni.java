@@ -76,8 +76,8 @@ public class Stazioni {
     @Column(name = "SERVIZIO_POF")
     private String servizioPof;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_INTERMEDIARIO_PA")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "FK_INTERMEDIARIO_PA", nullable = false)
     @ToString.Exclude
     private IntermediariPa fkIntermediarioPa;
 

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ public class CreditorInstitutionEncodings {
 
     @JsonProperty("encodings")
     @Schema(required = true)
+    @NotNull
     @Valid
     private List<Encoding> encodings;
 

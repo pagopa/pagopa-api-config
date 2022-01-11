@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -24,5 +25,6 @@ public class PspChannelList {
 
     @JsonProperty("channels")
     @Schema(required = true)
+    @NotNull
     private List<PspChannel> channelsList;
 }

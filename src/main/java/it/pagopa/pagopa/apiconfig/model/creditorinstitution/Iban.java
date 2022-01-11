@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
 
@@ -39,6 +40,7 @@ public class Iban {
     @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
     @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(required = true)
+    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime validityDate;
 
@@ -46,6 +48,7 @@ public class Iban {
     @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
     @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(required = true)
+    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime publicationDate;
 

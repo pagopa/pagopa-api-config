@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -25,11 +26,13 @@ public class Channels {
 
     @JsonProperty("channels")
     @Schema(required = true)
+    @NotNull
     @Valid
     private List<Channel> channelList;
 
     @JsonProperty("page_info")
     @Schema(required = true)
+    @NotNull
     @Valid
     private PageInfo pageInfo;
 }
