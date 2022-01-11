@@ -1,0 +1,13 @@
+{
+  "psp_code": "50",
+  "enabled": true,
+  "business_name": "Banca",
+  "abi": "123",
+  "bic": "4321",
+  "transfer": false,
+  "my_bank_code": "7",
+  "stamp": true,
+  "agid_psp": true,
+  "tax_code": "AAABBB000X1A",
+  "vat_number": "123123123"
+}

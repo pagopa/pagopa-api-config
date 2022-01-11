@@ -42,7 +42,7 @@ class BrokersPspServiceTest {
     private BrokersPspService brokersPspService;
 
     @Test
-    void getBrokers() throws IOException, JSONException {
+    void getBrokersPsp() throws IOException, JSONException {
         Page<IntermediariPsp> page = TestUtil.mockPage(Lists.newArrayList(getMockIntermediariePsp()), 50, 0);
         when(intermediariPspRepository.findAll(any(Pageable.class))).thenReturn(page);
 
@@ -53,7 +53,7 @@ class BrokersPspServiceTest {
     }
 
     @Test
-    void getBroker() throws IOException, JSONException {
+    void getBrokerPsp() throws IOException, JSONException {
         when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.of(getMockIntermediariePsp()));
 
         BrokerPspDetails result = brokersPspService.getBrokerPsp("1234");
@@ -63,7 +63,7 @@ class BrokersPspServiceTest {
     }
 
     @Test
-    void getBroker_notFound() {
+    void getBrokerPsp_notFound() {
         when(intermediariPspRepository.findByIdIntermediarioPsp("1234")).thenReturn(Optional.empty());
 
         try {

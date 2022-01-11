@@ -55,6 +55,30 @@ public class PspService {
     }
 
 
+    public PaymentServiceProviderDetails createPaymentServiceProvider(PaymentServiceProviderDetails paymentServiceProviderDetails) {
+        if (pspRepository.findByIdPsp(paymentServiceProviderDetails.getPspCode()).isPresent()) {
+            throw new AppException(AppError.PSP_CONFLICT, paymentServiceProviderDetails.getPspCode());
+        }
+        var psp = modelMapper.map(paymentServiceProviderDetails, Psp.class);
+        var result = pspRepository.save(psp);
+        return modelMapper.map(result, PaymentServiceProviderDetails.class);
+    }
+
+    public PaymentServiceProviderDetails updatePaymentServiceProvider(String pspCode, PaymentServiceProviderDetails paymentServiceProviderDetails) {
+        var objId = getPspIfExists(pspCode).getObjId();
+        var psp = modelMapper.map(paymentServiceProviderDetails, Psp.class)
+                .toBuilder()
+                .objId(objId)
+                .build();
+        pspRepository.save(psp);
+        return paymentServiceProviderDetails;
+    }
+
+    public void deletePaymentServiceProvider(String pspCode) {
+        var psp = getPspIfExists(pspCode);
+        pspRepository.delete(psp);
+    }
+
     public PspChannelList getPaymentServiceProvidersChannels(@NotBlank String pspCode) {
         Psp psp = getPspIfExists(pspCode);
         List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList = pspCanaleTipoVersamentoRepository.findByFkPsp(psp.getObjId());
