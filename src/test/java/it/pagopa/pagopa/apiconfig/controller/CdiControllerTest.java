@@ -1,7 +1,6 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.service.CdiService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdis;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,7 +31,7 @@ class CdiControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(cdiService.getCdis(50, 0)).thenReturn(Cdis.builder().build());
+        when(cdiService.getCdis(50, 0)).thenReturn(getMockCdis());
         when(cdiService.getCdi(anyString(), anyString())).thenReturn(new byte[]{});
 
     }

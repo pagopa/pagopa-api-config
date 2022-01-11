@@ -3,7 +3,6 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.service.StationsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStations;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -38,10 +38,10 @@ class StationsControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(stationsService.getStations(50, 0, null, null)).thenReturn(Stations.builder().build());
-        when(stationsService.getStation(anyString())).thenReturn(StationDetails.builder().build());
-        when(stationsService.createStation(any(StationDetails.class))).thenReturn(StationDetails.builder().build());
-        when(stationsService.updateStation(anyString(), any(StationDetails.class))).thenReturn(StationDetails.builder().build());
+        when(stationsService.getStations(50, 0, null, null)).thenReturn(getMockStations());
+        when(stationsService.getStation(anyString())).thenReturn(getMockStationDetails());
+        when(stationsService.createStation(any(StationDetails.class))).thenReturn(getMockStationDetails());
+        when(stationsService.updateStation(anyString(), any(StationDetails.class))).thenReturn(getMockStationDetails());
     }
 
     @Test

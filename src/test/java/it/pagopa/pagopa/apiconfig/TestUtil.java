@@ -23,9 +23,13 @@ import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionAddress;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
@@ -33,9 +37,17 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
+import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
@@ -243,6 +255,20 @@ public class TestUtil {
                 .build();
     }
 
+    public static Brokers getMockBrokers() {
+        return Brokers.builder()
+                .brokerList(List.of(getMockBrokerDetails()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
+    public static Stations getMockStations() {
+        return Stations.builder()
+                .stationsList(List.of(getMockStationDetails()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
     public static StationDetails getMockStationDetails() {
         return StationDetails.builder()
                 .stationCode("1234")
@@ -270,6 +296,12 @@ public class TestUtil {
                 .encodingCode("000111")
                 .codificheObjId(1L)
                 .paObjId(2L)
+                .build();
+    }
+
+    public static CreditorInstitutionEncodings getMockCreditorInstitutionEncodings() {
+        return CreditorInstitutionEncodings.builder()
+                .encodings(List.of(getMockEncoding()))
                 .build();
     }
 
@@ -421,6 +453,13 @@ public class TestUtil {
                 .build();
     }
 
+    public static BrokersPsp getMockBrokersPsp() {
+        return BrokersPsp.builder()
+                .brokerPspList(List.of(getMockBrokerPspDetails()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
     public static PaymentServiceProviderDetails getMockPaymentServiceProviderDetails() {
         return PaymentServiceProviderDetails.builder()
                 .abi("abi")
@@ -543,5 +582,82 @@ public class TestUtil {
                 .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
                 .build();
     }
+
+
+    public static Cdis getMockCdis() {
+        return Cdis.builder()
+                .cdiList(List.of(getMockCdi()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
+    public static Cdi getMockCdi() {
+        return Cdi.builder()
+                .idCdi("1233")
+                .pspCode("12321")
+                .businessName("ciao")
+                .build();
+    }
+
+
+    public static Channels getMockChannels() {
+        return Channels.builder()
+                .channelList(List.of(getMockChannelDetails()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
+    public static ChannelDetails getMockChannelDetails() {
+        return ChannelDetails.builder()
+                .brokerPspCode("1233")
+                .channelCode("1")
+                .enabled(true)
+                .description("channel")
+                .timeoutA(1L)
+                .timeoutB(1L)
+                .timeoutC(1L)
+                .threadNumber(2L)
+                .password("***")
+                .protocol("HTTP")
+                .port(80L)
+                .service("ABAB")
+                .ip("1.1.1.1")
+                .build();
+    }
+
+    public static CounterpartTables getMockCounterpartTables() {
+        return CounterpartTables.builder()
+                .counterpartTableList(List.of(getMockCounterpartTable()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
+    public static CounterpartTable getMockCounterpartTable() {
+        return CounterpartTable.builder()
+                .idCounterpartTable("1")
+                .businessName("cc")
+                .creditorInstitutionCode("1234")
+                .publicationDate(OffsetDateTime.now())
+                .validityDate(OffsetDateTime.now())
+                .build();
+    }
+
+    public static Icas getMockIcas() {
+        return Icas.builder()
+                .icaList(List.of(getMockIca()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
+    private static Ica getMockIca() {
+        return Ica.builder()
+                .businessName("sdfa")
+                .idIca("12")
+                .creditorInstitutionCode("123")
+                .validityDate(OffsetDateTime.now())
+                .publicationDate(OffsetDateTime.now())
+                .build();
+    }
+
 
 }

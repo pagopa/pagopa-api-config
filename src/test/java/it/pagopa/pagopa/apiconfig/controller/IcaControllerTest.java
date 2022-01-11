@@ -2,7 +2,6 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.service.IcaService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.io.File;
 import java.io.FileInputStream;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIcas;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -38,7 +38,7 @@ class IcaControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(icaService.getIcas(50, 0)).thenReturn(Icas.builder().build());
+        when(icaService.getIcas(50, 0)).thenReturn(getMockIcas());
         when(icaService.getIca(anyString(), anyString())).thenReturn(new byte[]{});
         when(icaService.verifyXSD(any())).thenReturn(XSDValidation.builder().build());
     }
