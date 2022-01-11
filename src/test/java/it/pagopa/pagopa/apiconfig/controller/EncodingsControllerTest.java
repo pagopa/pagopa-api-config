@@ -2,7 +2,6 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.service.EncodingsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionEncodings;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockEncoding;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,8 +38,8 @@ class EncodingsControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(encdodingService.getCreditorInstitutionEncodings("1234")).thenReturn(CreditorInstitutionEncodings.builder().build());
-        when(encdodingService.createCreditorInstitutionEncoding(anyString(), any(Encoding.class))).thenReturn(Encoding.builder().build());
+        when(encdodingService.getCreditorInstitutionEncodings("1234")).thenReturn(getMockCreditorInstitutionEncodings());
+        when(encdodingService.createCreditorInstitutionEncoding(anyString(), any(Encoding.class))).thenReturn(getMockEncoding());
     }
 
     @Test

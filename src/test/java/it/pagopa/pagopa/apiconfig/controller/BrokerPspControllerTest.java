@@ -3,7 +3,6 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
 import it.pagopa.pagopa.apiconfig.service.BrokersPspService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokerPspDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokersPsp;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -39,10 +39,10 @@ class BrokerPspControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(brokersPspService.getBrokersPsp(50, 0)).thenReturn(BrokersPsp.builder().build());
-        when(brokersPspService.getBrokerPsp(anyString())).thenReturn(BrokerPspDetails.builder().build());
-        when(brokersPspService.createBrokerPsp(any(BrokerPspDetails.class))).thenReturn(BrokerPspDetails.builder().build());
-        when(brokersPspService.updateBrokerPsp(anyString(), any(BrokerPspDetails.class))).thenReturn(BrokerPspDetails.builder().build());
+        when(brokersPspService.getBrokersPsp(50, 0)).thenReturn(getMockBrokersPsp());
+        when(brokersPspService.getBrokerPsp(anyString())).thenReturn(getMockBrokerPspDetails());
+        when(brokersPspService.createBrokerPsp(any(BrokerPspDetails.class))).thenReturn(getMockBrokerPspDetails());
+        when(brokersPspService.updateBrokerPsp(anyString(), any(BrokerPspDetails.class))).thenReturn(getMockBrokerPspDetails());
     }
 
     @Test

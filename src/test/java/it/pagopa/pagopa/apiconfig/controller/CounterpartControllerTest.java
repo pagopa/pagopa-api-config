@@ -1,7 +1,6 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
 import it.pagopa.pagopa.apiconfig.service.CounterpartService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCounterpartTables;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,7 +31,7 @@ class CounterpartControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(counterpartService.getCounterpartTables(50, 0)).thenReturn(CounterpartTables.builder().build());
+        when(counterpartService.getCounterpartTables(50, 0)).thenReturn(getMockCounterpartTables());
         when(counterpartService.getCounterpartTable(anyString(), anyString())).thenReturn(new byte[]{});
     }
 

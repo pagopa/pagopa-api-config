@@ -44,8 +44,8 @@ class PspControllerTest {
         when(pspService.getPaymentServiceProviders(50, 0)).thenReturn(getMockPaymentServiceProviders());
         when(pspService.getPaymentServiceProvider(anyString())).thenReturn(getMockPaymentServiceProviderDetails());
         when(pspService.getPaymentServiceProvidersChannels(anyString())).thenReturn(getMockPspChannelList());
-        when(pspService.createPaymentServiceProvider(any(PaymentServiceProviderDetails.class))).thenReturn(PaymentServiceProviderDetails.builder().build());
-        when(pspService.updatePaymentServiceProvider(anyString(), any(PaymentServiceProviderDetails.class))).thenReturn(PaymentServiceProviderDetails.builder().build());
+        when(pspService.createPaymentServiceProvider(any(PaymentServiceProviderDetails.class))).thenReturn(getMockPaymentServiceProviderDetails());
+        when(pspService.updatePaymentServiceProvider(anyString(), any(PaymentServiceProviderDetails.class))).thenReturn(getMockPaymentServiceProviderDetails());
     }
 
     @ParameterizedTest
