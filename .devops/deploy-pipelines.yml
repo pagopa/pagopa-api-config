@@ -93,6 +93,9 @@ stages:
               failOnStderr: true
 
           - script: |
+              git checkout ${{variables['Build.SourceBranchName']}}
+
+          - script: |
               git add pom.xml
               git commit -m "Bump version [skip ci]"
               git push origin ${{variables['Build.SourceBranchName']}}
