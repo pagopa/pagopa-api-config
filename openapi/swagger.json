@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.29"
+    "version": "0.2.31"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -2668,6 +2668,237 @@
         ],
         "operationId": "getPaymentServiceProvidersChannels",
         "summary": "Get channels details and relation info with PSP"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Code of the payment service provider",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "pspcode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PspChannelCode"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/PspChannelCode"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "createPaymentServiceProvidersChannels",
+        "summary": "Create channel details and relation info with PSP"
+      }
+    },
+    "/paymentserviceproviders/{pspcode}/channels/{channelcode}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Code of the payment service provider",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "pspcode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Code of the channel",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "channelcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "deletePaymentServiceProvidersChannels",
+        "summary": "Delete a relation between a PSP and a channel"
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Code of the payment service provider",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
+            "name": "pspcode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Channel code.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "channelcode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PspChannelPaymentTypes"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PspChannelPaymentTypes"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Service unavailable",
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "updatePaymentServiceProvidersChannels",
+        "summary": "Update a relation between creditor institution and station"
       }
     },
     "/services": {
@@ -4126,6 +4357,35 @@
       ],
       "type": "object"
     },
+    "PspChannelCode": {
+      "properties": {
+        "channel_code": {
+          "type": "string"
+        },
+        "payment_type": {
+          "items": {
+            "enum": [
+              "BBT",
+              "BP",
+              "AD",
+              "CP",
+              "PO",
+              "OBEP",
+              "JIF",
+              "MYBK",
+              "PPAL"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "channel_code",
+        "payment_type"
+      ],
+      "type": "object"
+    },
     "PspChannelList": {
       "properties": {
         "channels": {
@@ -4137,6 +4397,31 @@
       },
       "required": [
         "channels"
+      ],
+      "type": "object"
+    },
+    "PspChannelPaymentTypes": {
+      "properties": {
+        "payment_type": {
+          "items": {
+            "enum": [
+              "BBT",
+              "BP",
+              "AD",
+              "CP",
+              "PO",
+              "OBEP",
+              "JIF",
+              "MYBK",
+              "PPAL"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "payment_type"
       ],
       "type": "object"
     },
@@ -4196,8 +4481,6 @@
             "DE",
             "SL"
           ],
-          "maxLength": 2,
-          "minLength": 0,
           "type": "string"
         },
         "logo_psp": {
