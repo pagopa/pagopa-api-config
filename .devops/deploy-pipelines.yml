@@ -140,6 +140,9 @@ stages:
             persistCredentials: true
             submodules: true
 
+          - script: |
+              git checkout ${{variables['Build.SourceBranchName']}}
+
           - task: Bash@3
             name: application_properties
             inputs:
@@ -218,6 +221,9 @@ stages:
       - job: integrationTests
         dependsOn: waitStartup
         steps:
+          - script: |
+              git checkout ${{variables['Build.SourceBranchName']}}
+
           - script: |
               yarn global add newman
             displayName: 'newman installation'
