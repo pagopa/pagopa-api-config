@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -26,7 +27,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "CANALI_NODO", schema = "NODO4_CFG")
 @Builder
-public class CanaliNodo {
+public class CanaliNodo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)

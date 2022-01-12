@@ -10,7 +10,7 @@ public enum AppError {
     CREDITOR_INSTITUTION_CONFLICT(HttpStatus.CONFLICT, "Creditor Institution conflict", "Creditor Institution code %s already exists"),
 
     RELATION_STATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Relation Station-CI not found", "No Relation Station-CI found between Creditor Institution with code %s and Station with code %s"),
-    RELATION_STATION_CONFLICT(HttpStatus.CONFLICT, "Relation Station-CI conflict", "Relation Station-CI between Station with code %s and Creditor Institution with code %s already exists"),
+    RELATION_STATION_CONFLICT(HttpStatus.CONFLICT, "Relation Station-CI conflict", "Relation Station-CI between Creditor Institution with code %s and Station with code %s already exists"),
 
     ENCODING_CREDITOR_INSTITUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Creditor Institution Encoding not found", "No Encoding found with code %s associated with Creditor Institution code %s"),
     ENCODING_CREDITOR_INSTITUTION_CONFLICT(HttpStatus.CONFLICT, "Creditor Institution Encoding conflict", "Encoding code %s associated with Creditor Institution code %s already exists"),
@@ -32,6 +32,11 @@ public enum AppError {
     BROKER_PSP_CONFLICT(HttpStatus.CONFLICT, "Broker PSP conflict", "Broker PSP code %s already exists"),
 
     CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Channel not found", "No Channel found with code: %s"),
+
+    RELATION_CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Relation PSP-Channel not found", "No Relation PSP-Channel found between PSP with code %s and Channel with code %s and with payment type %s"),
+    RELATION_CHANNEL_CONFLICT(HttpStatus.CONFLICT, "Relation PSP-Channel conflict", "Relation PSP-Channel between PSP with code %s and Channel with code %s and with payment type %s already exists"),
+
+    PAYMENT_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "PaymentType not found", "No PaymentType found with code: %s"),
 
     CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
 

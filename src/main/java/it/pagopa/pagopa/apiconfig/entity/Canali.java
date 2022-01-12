@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -30,7 +31,7 @@ import java.util.List;
 @Entity
 @Table(name = "CANALI", schema = "NODO4_CFG")
 @Builder
-public class Canali {
+public class Canali implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)

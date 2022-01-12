@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Table(name = "PSP", schema = "NODO4_CFG")
 @Entity
@@ -27,7 +28,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(onlyExplicitlyIncluded = true)
-public class Psp {
+public class Psp implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OBJ_ID", nullable = false)
@@ -36,7 +37,7 @@ public class Psp {
     @Column(name = "ID_PSP", nullable = false, length = 35)
     private String idPsp;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "ENABLED", nullable = false)
     private Boolean enabled;
 
@@ -59,7 +60,7 @@ public class Psp {
     @Column(name = "STORNO_PAGAMENTO", nullable = false)
     private Boolean stornoPagamento;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
     private Boolean flagRepoCommissioneCaricoPa;
 
@@ -72,15 +73,15 @@ public class Psp {
     @Column(name = "MARCA_BOLLO_DIGITALE", nullable = false)
     private Boolean marcaBolloDigitale;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "AGID_PSP", nullable = false)
     private Boolean agidPsp;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "PSP_NODO", nullable = false)
     private Boolean pspNodo;
 
-    @Type(type="yes_no")
+    @Type(type = "yes_no")
     @Column(name = "PSP_AVV", nullable = false)
     private Boolean pspAvv;
 
