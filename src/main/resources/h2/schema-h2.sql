@@ -450,7 +450,7 @@ create table NODO4_CFG.TIPI_VERSAMENTO (
 );
 
 create table NODO4_CFG.CANALE_TIPO_VERSAMENTO (
-                                                  OBJ_ID numeric not null,
+                                                  OBJ_ID numeric not null identity,
                                                   FK_CANALE numeric not null,
                                                   FK_TIPO_VERSAMENTO numeric not null,
                                                   constraint PK_CANALE_TIPO_VERSAMENTOE
@@ -464,7 +464,7 @@ create table NODO4_CFG.CANALE_TIPO_VERSAMENTO (
 );
 
 create table NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO (
-                                                      OBJ_ID numeric not null,
+                                                      OBJ_ID numeric not null identity,
                                                       FK_CANALE_TIPO_VERSAMENTO numeric not null,
                                                       FK_PSP numeric not null,
                                                       constraint PK_PSP_CANALE_TIPO_VERSAMENTO
