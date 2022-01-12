@@ -28,18 +28,18 @@ import java.time.OffsetDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Cdi {
 
-     @JsonProperty("id_cdi")
-     @Schema(example = "223344556677889900", required = true)
-     private String idCdi;
+    @JsonProperty("id_cdi")
+    @Schema(example = "223344556677889900", required = true)
+    private String idCdi;
 
-     @JsonProperty("psp_code")
-     @Schema(example = "1234567890100", required = true)
-     @Size(max = 35)
-     private String pspCode;
+    @JsonProperty("psp_code")
+    @Schema(example = "1234567890100", required = true)
+    @Size(max = 35)
+    private String pspCode;
 
-     @JsonProperty("business_name")
-     @Schema(example = "Comune di Lorem Ipsum", required = true)
-     private String businessName;
+    @JsonProperty("business_name")
+    @Schema(example = "Comune di Lorem Ipsum", required = true)
+    private String businessName;
 
     @JsonProperty("validity_date")
     @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)

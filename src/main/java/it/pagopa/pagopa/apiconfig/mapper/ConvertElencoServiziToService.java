@@ -47,7 +47,7 @@ public class ConvertElencoServiziToService implements Converter<ElencoServizi, S
     }
 
     private Service.LanguageCode getLanguageCode(ElencoServizi source) {
-        return source.getCodiceLingua() != null ? Service.LanguageCode.valueOf(source.getCodiceLingua()): null;
+        return source.getCodiceLingua() != null ? Service.LanguageCode.valueOf(source.getCodiceLingua()) : null;
     }
 
     private Service.PaymentTypeCode getPaymentTypeCode(ElencoServizi source) {
