@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +41,7 @@ public class PspCanaleTipoVersamento implements Serializable {
     private Long fkPsp;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_CANALE_TIPO_VERSAMENTO", nullable = false)
     private CanaleTipoVersamento canaleTipoVersamento;
 

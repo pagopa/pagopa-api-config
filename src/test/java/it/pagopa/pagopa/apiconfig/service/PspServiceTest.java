@@ -7,8 +7,11 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
+import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -25,9 +28,14 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanaleTipoVersamento;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviderDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelCode;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockTipoVersamento;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -44,6 +52,15 @@ class PspServiceTest {
 
     @MockBean
     PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
+
+    @MockBean
+    private CanaliRepository canaliRepository;
+
+    @MockBean
+    private TipiVersamentoRepository tipiVersamentoRepository;
+
+    @MockBean
+    private CanaleTipoVersamentoRepository canaleTipoVersamentoRepository;
 
     @InjectMocks
     @Autowired
@@ -163,5 +180,43 @@ class PspServiceTest {
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_psp_channels_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createPaymentServiceProvidersChannels() throws IOException, JSONException {
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
+        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+
+        var result = pspService.createPaymentServiceProvidersChannels("1234", getMockPspChannelCode());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_psp_channels_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updatePaymentServiceProvidersChannels() throws IOException, JSONException {
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
+        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+
+        var result = pspService.updatePaymentServiceProvidersChannels("1234", "2", getMockPspChannelPaymentTypes());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_psp_channels_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void deletePaymentServiceProvidersChannels() {
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
+
+        try {
+            pspService.deletePaymentServiceProvidersChannels("1234", "2");
+        } catch (Exception e) {
+            fail();
+        }
     }
 }

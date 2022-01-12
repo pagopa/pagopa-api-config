@@ -1,6 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
@@ -10,8 +9,9 @@ import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannel;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelEdit;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
@@ -108,31 +108,30 @@ public class PspService {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public PspChannelEdit createPaymentServiceProvidersChannels(String pspCode, PspChannelEdit pspChannelEdit) {
+    public PspChannelCode createPaymentServiceProvidersChannels(String pspCode, PspChannelCode pspChannelCode) {
         var psp = getPspIfExists(pspCode);
-        var canale = getChannelIfExists(pspChannelEdit.getChannelCode());
+        var canale = getChannelIfExists(pspChannelCode.getChannelCode());
 
-        // foreach payment type save a record in pspCanaleTipoVersamento and canaleTipoVersamento
-        for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode elem : pspChannelEdit.getPaymentTypeList()) {
-            savePspChannelRelation(pspChannelEdit, psp, canale, elem);
+        // foreach payment type save a record in pspCanaleTipoVersamento
+        for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode elem : pspChannelCode.getPaymentTypeList()) {
+            savePspChannelRelation(psp, canale, elem);
         }
-        return pspChannelEdit;
+        return pspChannelCode;
     }
 
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public PspChannelEdit updatePaymentServiceProvidersChannels(String pspCode, String channelCode, PspChannelEdit pspChannelEdit) {
+    public PspChannelPaymentTypes updatePaymentServiceProvidersChannels(String pspCode, String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
         var psp = getPspIfExists(pspCode);
         var canale = getChannelIfExists(channelCode);
 
         pspCanaleTipoVersamentoRepository.deleteAll(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(psp.getObjId(), canale.getId()));
 
-
-        // foreach payment type save a record in pspCanaleTipoVersamento and canaleTipoVersamento
-        for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode elem : pspChannelEdit.getPaymentTypeList()) {
-            savePspChannelRelation(pspChannelEdit, psp, canale, elem);
+        // foreach payment type save a record in pspCanaleTipoVersamento
+        for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode elem : pspChannelPaymentTypes.getPaymentTypeList()) {
+            savePspChannelRelation(psp, canale, elem);
         }
-        return pspChannelEdit;
+        return pspChannelPaymentTypes;
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -228,21 +227,26 @@ public class PspService {
                 .orElseThrow(() -> new AppException(AppError.CHANNEL_NOT_FOUND, channelCode));
     }
 
-    private void savePspChannelRelation(PspChannelEdit pspChannelEdit, Psp psp, Canali canale, it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode paymentTypeCode) {
+    /**
+     * Save a record in pspCanaleTipoVersamento
+     *
+     * @param psp             PSP entity
+     * @param channel         channel entity
+     * @param paymentTypeCode paymentTypeCode entity
+     */
+    private void savePspChannelRelation(Psp psp, Canali channel, it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode paymentTypeCode) {
         var tipoVersamento = tipiVersamentoRepository.findByTipoVersamento(paymentTypeCode.name())
                 .orElseThrow(() -> new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, paymentTypeCode.name()));
 
+        var canaleTipoVersamento = canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), tipoVersamento.getId())
+                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_NOT_FOUND, channel.getIdCanale(), paymentTypeCode.name()));
+
         // check if the relation already exists
-        if (pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanaleAndCanaleTipoVersamento_FkTipoVersamento(psp.getObjId(), canale.getId(), tipoVersamento.getId()).isPresent()) {
-            throw new AppException(AppError.RELATION_CHANNEL_CONFLICT, psp.getIdPsp(), pspChannelEdit.getChannelCode(), paymentTypeCode.name());
+        if (pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanaleAndCanaleTipoVersamento_FkTipoVersamento(psp.getObjId(), channel.getId(), tipoVersamento.getId()).isPresent()) {
+            throw new AppException(AppError.RELATION_CHANNEL_CONFLICT, psp.getIdPsp(), channel.getIdCanale(), paymentTypeCode.name());
         }
 
-        // save canaleTipoVersamento and pspCanaleTipoVersamento
-        var canaleTipoVersamento = CanaleTipoVersamento.builder()
-                .canale(canale)
-                .tipoVersamento(tipoVersamento)
-                .build();
-
+        // save pspCanaleTipoVersamento
         var entity = PspCanaleTipoVersamento.builder()
                 .psp(psp)
                 .canaleTipoVersamento(canaleTipoVersamento)

@@ -52,7 +52,9 @@ import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannel;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.model.psp.Service;
 import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import lombok.experimental.UtilityClass;
@@ -112,6 +114,7 @@ public class TestUtil {
      * @return a Mock of {@link Page}
      */
     public <T> Page<T> mockPage(List<T> content, int limit, int pageNumber) {
+        @SuppressWarnings("unchecked")
         Page<T> page = Mockito.mock(Page.class);
         when(page.getTotalPages()).thenReturn((int) Math.ceil((double) content.size() / limit));
         when(page.getNumberOfElements()).thenReturn(content.size());
@@ -579,6 +582,18 @@ public class TestUtil {
         return PspChannel.builder()
                 .enabled(true)
                 .channelCode("1234")
+                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
+                .build();
+    }
+
+    public static PspChannelCode getMockPspChannelCode() {
+        return PspChannelCode.builder()
+                .channelCode("1234")
+                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
+                .build();
+    }
+    public static PspChannelPaymentTypes getMockPspChannelPaymentTypes() {
+        return PspChannelPaymentTypes.builder()
                 .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
                 .build();
     }

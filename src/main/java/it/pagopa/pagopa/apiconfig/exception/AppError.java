@@ -37,6 +37,7 @@ public enum AppError {
     RELATION_CHANNEL_CONFLICT(HttpStatus.CONFLICT, "Relation PSP-Channel conflict", "Relation PSP-Channel between PSP with code %s and Channel with code %s and with payment type %s already exists"),
 
     PAYMENT_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "PaymentType not found", "No PaymentType found with code: %s"),
+    CHANNEL_PAYMENT_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "Relation Channel-PaymentType not found", "Channel %s has not PaymentType %s"),
 
     CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
 
