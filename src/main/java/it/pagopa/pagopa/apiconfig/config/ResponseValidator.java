@@ -30,7 +30,9 @@ public class ResponseValidator {
      */
     @AfterReturning(pointcut = "execution(* it.pagopa.pagopa.apiconfig.controller.*.*(..))", returning = "result")
     public void validateResponse(JoinPoint joinPoint, Object result) {
-        validateResponse((ResponseEntity<?>) result);
+        if (result instanceof ResponseEntity) {
+            validateResponse((ResponseEntity<?>) result);
+        }
     }
 
     private <T> void validateResponse(ResponseEntity<T> response) {

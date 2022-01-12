@@ -11,8 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelEdit;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.service.PspService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -138,7 +139,7 @@ public class PspController {
 
     @Operation(summary = "Create channel details and relation info with PSP", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers",})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PspChannelEdit.class))),
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PspChannelCode.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -149,14 +150,14 @@ public class PspController {
             value = "/{pspcode}/channels",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<PspChannelEdit> createPaymentServiceProvidersChannels(@Size(max = 50) @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
-                                                                                @RequestBody @Valid @NotNull PspChannelEdit pspChannelEdit) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(pspService.createPaymentServiceProvidersChannels(pspCode, pspChannelEdit));
+    public ResponseEntity<PspChannelCode> createPaymentServiceProvidersChannels(@Size(max = 50) @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
+                                                                                        @RequestBody @Valid @NotNull PspChannelCode pspChannelCode) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(pspService.createPaymentServiceProvidersChannels(pspCode, pspChannelCode));
     }
 
     @Operation(summary = "Update a relation between creditor institution and station", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PspChannelEdit.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PspChannelPaymentTypes.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -164,10 +165,10 @@ public class PspController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/{pspcode}/channels/{channelcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PspChannelEdit> updatePaymentServiceProvidersChannels(@Size(min = 1, max = 50) @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
-                                                                                @Size(max = 50) @Parameter(description = "Channel code.", required = true) @PathVariable("channelcode") String channelCode,
-                                                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true) @RequestBody @Valid @NotNull PspChannelEdit pspChannelEdit) {
-        return ResponseEntity.ok(pspService.updatePaymentServiceProvidersChannels(pspCode, channelCode, pspChannelEdit));
+    public ResponseEntity<PspChannelPaymentTypes> updatePaymentServiceProvidersChannels(@Size(min = 1, max = 50) @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
+                                                                                        @Size(max = 50) @Parameter(description = "Channel code.", required = true) @PathVariable("channelcode") String channelCode,
+                                                                                        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true) @RequestBody @Valid @NotNull PspChannelPaymentTypes pspChannelPaymentTypes) {
+        return ResponseEntity.ok(pspService.updatePaymentServiceProvidersChannels(pspCode, channelCode, pspChannelPaymentTypes));
     }
 
 

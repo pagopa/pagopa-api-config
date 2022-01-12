@@ -3,6 +3,8 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.service.PspService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviderDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviders;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannel;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -46,6 +49,8 @@ class PspControllerTest {
         when(pspService.getPaymentServiceProvidersChannels(anyString())).thenReturn(getMockPspChannelList());
         when(pspService.createPaymentServiceProvider(any(PaymentServiceProviderDetails.class))).thenReturn(getMockPaymentServiceProviderDetails());
         when(pspService.updatePaymentServiceProvider(anyString(), any(PaymentServiceProviderDetails.class))).thenReturn(getMockPaymentServiceProviderDetails());
+        when(pspService.createPaymentServiceProvidersChannels(anyString(), any(PspChannelCode.class))).thenReturn(getMockPspChannel());
+        when(pspService.updatePaymentServiceProvidersChannels(anyString(),anyString(), any(PspChannelPaymentTypes.class))).thenReturn(getMockPspChannel());
     }
 
     @ParameterizedTest
@@ -95,4 +100,29 @@ class PspControllerTest {
         mvc.perform(delete("/paymentserviceproviders/1234").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void createPspChannel() throws Exception {
+        mvc.perform(post("/paymentserviceproviders/1234/channels")
+                        .content(TestUtil.toJson(getMockPspChannel()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void updatePspChannel() throws Exception {
+        mvc.perform(put("/paymentserviceproviders/1234/channels/1234")
+                        .content(TestUtil.toJson(getMockPspChannel()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void deletePspChannel() throws Exception {
+        mvc.perform(delete("/paymentserviceproviders/1234/channels/1234"))
+                .andExpect(status().isOk());
+    }
+
 }

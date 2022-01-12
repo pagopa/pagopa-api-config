@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -22,11 +22,12 @@ import javax.validation.constraints.NotNull;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PspChannel extends PspChannelCode {
+public class PspChannelCode extends PspChannelPaymentTypes {
 
-    @JsonProperty("enabled")
+    @JsonProperty("channel_code")
     @Schema(required = true)
-    @NotNull
-    private Boolean enabled;
+    @NotBlank
+    private String channelCode;
+
 
 }
