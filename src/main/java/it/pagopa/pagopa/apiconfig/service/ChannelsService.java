@@ -47,8 +47,7 @@ public class ChannelsService {
     }
 
     public ChannelDetails getChannel(@NotBlank String channelCode) {
-        Canali canali = canaliRepository.findByIdCanale(channelCode)
-                .orElseThrow(() -> new AppException(AppError.CHANNEL_NOT_FOUND, channelCode));
+        Canali canali = getCanaliIfExists(channelCode);
         return modelMapper.map(canali, ChannelDetails.class);
     }
 
@@ -58,16 +57,7 @@ public class ChannelsService {
         }
 
         // add info for model mapper
-        var intermediariPsp = intermediariPspRepository.findByIdIntermediarioPsp(channelDetails.getBrokerPspCode())
-                .orElseThrow(() -> new AppException(AppError.BROKER_PSP_NOT_FOUND, channelDetails.getBrokerPspCode()));
-        channelDetails.setFkIntermediarioPsp(intermediariPsp);
-
-        if (channelDetails.getServPlugin() != null) {
-            var wfespPluginConf = wfespPluginConfRepository.findByIdServPlugin(channelDetails.getServPlugin())
-                    .orElseThrow(() -> new AppException(AppError.SERV_PLUGIN_NOT_FOUND, channelDetails.getBrokerPspCode()));
-
-            channelDetails.setFkWfespPluginConf(wfespPluginConf);
-        }
+        setInfoMapper(channelDetails);
 
         // convert and save
         var entity = modelMapper.map(channelDetails, Canali.class);
@@ -75,6 +65,36 @@ public class ChannelsService {
         return channelDetails;
     }
 
+
+    public ChannelDetails updateChannel(String channelCode, ChannelDetails channelDetails) {
+        Long objId = getCanaliIfExists(channelCode).getId();
+
+        // add info for model mapper
+        setInfoMapper(channelDetails);
+
+        var entity = modelMapper.map(channelDetails, Canali.class)
+                .toBuilder()
+                .id(objId)
+                .build();
+        canaliRepository.save(entity);
+        return channelDetails;
+    }
+
+    public void deleteChannel(String channelCode) {
+        Canali canale = getCanaliIfExists(channelCode);
+
+        canaliRepository.delete(canale);
+    }
+
+    /**
+     * @param channelCode code of the channel
+     * @return search on DB using the {@code channelCode} and return the Canali if it is present
+     * @throws AppException if not found
+     */
+    private Canali getCanaliIfExists(String channelCode) {
+        return canaliRepository.findByIdCanale(channelCode)
+                .orElseThrow(() -> new AppException(AppError.CHANNEL_NOT_FOUND, channelCode));
+    }
 
     /**
      * Maps Canali objects stored in the DB in a List of Channel
@@ -88,5 +108,21 @@ public class ChannelsService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Add info for model mapper
+     *
+     * @param channelDetails channel details form request
+     */
+    private void setInfoMapper(ChannelDetails channelDetails) {
+        var intermediariPsp = intermediariPspRepository.findByIdIntermediarioPsp(channelDetails.getBrokerPspCode())
+                .orElseThrow(() -> new AppException(AppError.BROKER_PSP_NOT_FOUND, channelDetails.getBrokerPspCode()));
+        channelDetails.setFkIntermediarioPsp(intermediariPsp);
 
+        if (channelDetails.getServPlugin() != null) {
+            var wfespPluginConf = wfespPluginConfRepository.findByIdServPlugin(channelDetails.getServPlugin())
+                    .orElseThrow(() -> new AppException(AppError.SERV_PLUGIN_NOT_FOUND, channelDetails.getBrokerPspCode()));
+
+            channelDetails.setFkWfespPluginConf(wfespPluginConf);
+        }
+    }
 }

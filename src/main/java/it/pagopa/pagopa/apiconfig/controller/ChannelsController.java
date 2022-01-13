@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,7 +57,7 @@ public class ChannelsController {
         return ResponseEntity.ok(channelsService.getChannels(limit, page));
     }
 
-    @Operation(summary = "Get channel details ", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers",})
+    @Operation(summary = "Get Channel details ", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers",})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ChannelDetails.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
@@ -72,7 +74,7 @@ public class ChannelsController {
         return ResponseEntity.ok(channelsService.getChannel(channelCode));
     }
 
-    @Operation(summary = "Create a channel", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
+    @Operation(summary = "Create a Channel", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ChannelDetails.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
@@ -84,6 +86,37 @@ public class ChannelsController {
     @PostMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ChannelDetails> createChannel(@RequestBody @Valid @NotNull ChannelDetails channelDetails) {
         return ResponseEntity.status(HttpStatus.CREATED).body(channelsService.createChannel(channelDetails));
+    }
+
+    @Operation(summary = "Update a Channel", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ChannelDetails.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @PutMapping(value = "/{channelcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ChannelDetails> updateChannel(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode,
+                                                        @RequestBody @Valid @NotNull ChannelDetails channelDetails) {
+        return ResponseEntity.ok(channelsService.updateChannel(channelCode, channelDetails));
+    }
+
+
+    @Operation(summary = "Delete a Channel", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/{channelcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> deleteChannel(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode) {
+        channelsService.deleteChannel(channelCode);
+        return ResponseEntity.ok().build();
     }
 
 }
