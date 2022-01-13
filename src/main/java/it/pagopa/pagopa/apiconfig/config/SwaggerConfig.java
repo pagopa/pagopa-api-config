@@ -65,6 +65,7 @@ public class SwaggerConfig {
             // add Request-ID as request header
             value.addParametersItem(new Parameter().in("header")
                     .name(HEADER_REQUEST_ID)
+                    .schema(new StringSchema())
                     .description("This header identifies the call, if not passed it is self-generated. This ID is returned in the response."));
 
             // add Request-ID as response header
@@ -72,7 +73,6 @@ public class SwaggerConfig {
                     .forEach(operation -> operation.getResponses().values()
                             .forEach(response -> response.addHeaderObject(HEADER_REQUEST_ID, new Header()
                                     .schema(new StringSchema())
-                                    .required(true)
                                     .description("This header identifies the call"))));
         });
     }

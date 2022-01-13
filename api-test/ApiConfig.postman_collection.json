@@ -2366,20 +2366,20 @@
 							],
 							"path": [
 								"{{api-config-base-path}}",
-                              "paymentserviceproviders",
-                              ":code",
-                              "channels"
-                            ],
-                          "variable": [
-                            {
-                              "key": "code",
-                              "value": "BPPIITRRZZZ"
-                            }
-                          ]
-                        }
-                    },
-                  "response": []
-                },
+								"paymentserviceproviders",
+								":code",
+								"channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "BPPIITRRZZZ"
+								}
+							]
+						}
+					},
+					"response": []
+				},
               {
                 "name": "createPaymentServiceProvidersChannel",
                 "event": [
@@ -2533,12 +2533,12 @@
                 },
                 "response": []
               },
-              {
-                "name": "getBrokersPsp",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
+				{
+					"name": "getBrokersPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
 								"exec": [
 									"pm.test(\"getBrokersPsp\", function () {",
 									"  pm.response.to.have.status(200);",
@@ -2871,6 +2871,178 @@
 								{
 									"key": "code",
 									"value": "00001060966_01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createChannel\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"channel_code\", makeid(35));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"enabled\": true,\n    \"description\": \"\",\n    \"password\": \"FakePay\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"17103880000\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": false,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"serv_plugin\": \"idPsp1\",\n    \"agid\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateChannel\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"enabled\": false,\n    \"description\": \"descrizione\",\n    \"password\": \"***\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"17103880000\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": true,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"agid\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{channel_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteChannel\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{channel_code}}"
 								}
 							]
 						}
@@ -3416,6 +3588,121 @@
 								{
 									"key": "code",
 									"value": "111"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createChannel Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createChannel_conflict\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"channel_code\": \"00001060966_01\",\n    \"enabled\": true,\n    \"description\": \"\",\n    \"password\": \"FakePay\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"17103880000\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": false,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"serv_plugin\": \"idPsp1\",\n    \"agid\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateChannel BadRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateChannel_badRequest\", function () {",
+									"  pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enabled\": false,\n    \"description\": \"descrizione\",\n    \"password\": \"***\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"17103880000\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": true,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"agid\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{channel_code}}"
 								}
 							]
 						}
