@@ -59,6 +59,7 @@ public class ChannelsService {
 
         channelDetails.setFkIntermediarioPsp(intermediariPsp);
 
+
         var entity = modelMapper.map(channelDetails, Canali.class);
         canaliRepository.save(entity);
         return channelDetails;
