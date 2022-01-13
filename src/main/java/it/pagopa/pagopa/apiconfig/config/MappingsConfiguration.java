@@ -20,6 +20,7 @@ import it.pagopa.pagopa.apiconfig.mapper.ConvertBrokerPspDetailsToIntermediariPs
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCanaliToChannel;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCanaliToChannelDetails;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCdiMasterToCdi;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertChannelDetailsToCanali;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCodifichePaToEncoding;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCreditorInstitutionDetailsToPa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCreditorInstitutionStationPostToPaStazionePa;
@@ -106,6 +107,7 @@ public class MappingsConfiguration {
         Converter<PspCanaleTipoVersamento, PspChannel> convertPspCanaleTipoVersamentoToPspChannel = new ConvertPspCanaleTipoVersamentoToPspChannel();
         Converter<BrokerPspDetails, IntermediariPsp> convertBrokerPspDetailsToIntermediariPsp = new ConvertBrokerPspDetailsToIntermediariPsp();
         Converter<PaymentServiceProviderDetails, Psp> convertPaymentServiceProviderDetailsToPsp = new ConvertPaymentServiceProviderDetailsToPsp();
+        Converter<ChannelDetails, Canali> convertChannelDetailsToCanali = new ConvertChannelDetailsToCanali();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -134,6 +136,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(PspCanaleTipoVersamento.class, PspChannel.class).setConverter(convertPspCanaleTipoVersamentoToPspChannel);
         mapper.createTypeMap(BrokerPspDetails.class, IntermediariPsp.class).setConverter(convertBrokerPspDetailsToIntermediariPsp);
         mapper.createTypeMap(PaymentServiceProviderDetails.class, Psp.class).setConverter(convertPaymentServiceProviderDetailsToPsp);
+        mapper.createTypeMap(ChannelDetails.class, Canali.class).setConverter(convertChannelDetailsToCanali);
 
         return mapper;
     }

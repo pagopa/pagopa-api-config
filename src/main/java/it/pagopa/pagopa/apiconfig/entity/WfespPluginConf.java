@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.entity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import java.io.Serializable;
 @ToString
 @Entity
 @Table(name = "WFESP_PLUGIN_CONF", schema = "NODO4_CFG")
+@Builder(toBuilder = true)
 public class WfespPluginConf implements Serializable {
 
     @Id

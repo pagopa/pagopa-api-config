@@ -1,8 +1,10 @@
 package it.pagopa.pagopa.apiconfig.model.psp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -91,6 +93,9 @@ public class ChannelDetails extends Channel {
     @JsonProperty("npm_service")
     private String npmService;
 
+    @JsonProperty("new_fault_code")
+    private Boolean newFaultCode;
+
     // CANALI_NODO
 
     @JsonProperty("redirect_ip")
@@ -131,6 +136,10 @@ public class ChannelDetails extends Channel {
 
     @JsonProperty("flag_io")
     private Boolean flagIo;
+
+
+    @JsonIgnore
+    private IntermediariPsp fkIntermediarioPsp;
 
 
     @Getter
