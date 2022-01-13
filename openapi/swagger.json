@@ -13,6 +13,14 @@
   ],
   "paths": {
     "/brokers": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -39,27 +47,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/Brokers"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -99,33 +143,75 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/BrokerDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "409": {
             "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -147,6 +233,14 @@
       }
     },
     "/brokers/{brokercode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "delete": {
         "produces": [
           "application/json"
@@ -164,31 +258,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -226,33 +362,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/BrokerDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -302,33 +480,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/BrokerDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -350,6 +570,14 @@
       }
     },
     "/brokerspsp": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -376,27 +604,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/BrokersPsp"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -436,33 +700,75 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/BrokerPspDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "409": {
             "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -484,6 +790,14 @@
       }
     },
     "/brokerspsp/{brokerpspcode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "delete": {
         "produces": [
           "application/json"
@@ -501,31 +815,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -563,33 +919,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/BrokerPspDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -639,33 +1037,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/BrokerPspDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -687,6 +1127,14 @@
       }
     },
     "/cdis": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -713,27 +1161,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/Cdis"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -755,6 +1239,14 @@
       }
     },
     "/cdis/{idcdi}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/xml",
@@ -781,6 +1273,12 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "format": "binary",
               "type": "string"
@@ -788,27 +1286,63 @@
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -830,6 +1364,14 @@
       }
     },
     "/channels": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -856,27 +1398,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/Channels"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -895,9 +1473,228 @@
         ],
         "operationId": "getChannels",
         "summary": "Get paginated list of channels"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChannelDetails"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ChannelDetails"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "createChannel",
+        "summary": "Create a Channel"
       }
     },
     "/channels/{channelcode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Channel code",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "channelcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "deleteChannel",
+        "summary": "Delete a Channel"
+      },
       "get": {
         "produces": [
           "application/json"
@@ -916,33 +1713,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ChannelDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -960,10 +1799,135 @@
           "Payment Service Providers"
         ],
         "operationId": "getChannel",
-        "summary": "Get channel details "
+        "summary": "Get Channel details "
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Channel code",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "channelcode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChannelDetails"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ChannelDetails"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "updateChannel",
+        "summary": "Update a Channel"
       }
     },
     "/counterparttables": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -990,27 +1954,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CounterpartTables"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1032,6 +2032,14 @@
       }
     },
     "/counterparttables/{idcounterparttable}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json",
@@ -1056,6 +2064,12 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "format": "binary",
               "type": "string"
@@ -1063,27 +2077,63 @@
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1105,6 +2155,14 @@
       }
     },
     "/creditorinstitutions": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -1131,27 +2189,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CreditorInstitutions"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1191,33 +2285,75 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "409": {
             "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1239,6 +2375,14 @@
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "delete": {
         "produces": [
           "application/json"
@@ -1256,31 +2400,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1318,33 +2504,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1394,33 +2622,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1442,6 +2712,14 @@
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/encodings": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -1460,33 +2738,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionEncodings"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1535,33 +2855,75 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/Encoding"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "409": {
             "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1583,6 +2945,14 @@
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/encodings/{encodingcode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "delete": {
         "produces": [
           "application/json"
@@ -1607,31 +2977,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1653,6 +3065,14 @@
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/ibans": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -1671,33 +3091,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/Ibans"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1719,6 +3181,14 @@
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/stations": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -1737,33 +3207,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionStationList"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1812,33 +3324,75 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionStationEdit"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "409": {
             "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1860,6 +3414,14 @@
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/stations/{stationcode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "delete": {
         "produces": [
           "application/json"
@@ -1886,31 +3448,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -1968,33 +3572,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/CreditorInstitutionStationEdit"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2016,6 +3662,14 @@
       }
     },
     "/icas": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -2042,27 +3696,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/Icas"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2084,6 +3774,14 @@
       }
     },
     "/icas/xsd": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "post": {
         "consumes": [
           "multipart/form-data"
@@ -2104,27 +3802,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/XSDValidation"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2146,6 +3880,14 @@
       }
     },
     "/icas/{idica}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/xml",
@@ -2170,6 +3912,12 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "format": "binary",
               "type": "string"
@@ -2177,27 +3925,63 @@
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2219,6 +4003,14 @@
       }
     },
     "/info": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -2227,27 +4019,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/AppInfo"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2269,6 +4097,14 @@
       }
     },
     "/paymentserviceproviders": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -2295,27 +4131,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/PaymentServiceProviders"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2355,33 +4227,75 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/PaymentServiceProviderDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "409": {
             "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2403,6 +4317,14 @@
       }
     },
     "/paymentserviceproviders/{pspcode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "delete": {
         "produces": [
           "application/json"
@@ -2420,31 +4342,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2482,33 +4446,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/PaymentServiceProviderDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2557,33 +4563,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/PaymentServiceProviderDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2605,6 +4653,14 @@
       }
     },
     "/paymentserviceproviders/{pspcode}/channels": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -2623,33 +4679,75 @@
         "responses": {
           "200": {
             "description": "OK.",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/PspChannelList"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2698,33 +4796,75 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/PspChannelCode"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "409": {
             "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2746,6 +4886,14 @@
       }
     },
     "/paymentserviceproviders/{pspcode}/channels/{channelcode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "delete": {
         "produces": [
           "application/json"
@@ -2772,31 +4920,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2854,33 +5044,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/PspChannelPaymentTypes"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -2902,6 +5134,14 @@
       }
     },
     "/services": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -3034,27 +5274,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/Services"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -3076,6 +5352,14 @@
       }
     },
     "/stations": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "get": {
         "produces": [
           "application/json"
@@ -3116,27 +5400,63 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/Stations"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -3176,33 +5496,75 @@
         "responses": {
           "201": {
             "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/StationDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "409": {
             "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -3224,6 +5586,14 @@
       }
     },
     "/stations/{stationcode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
       "delete": {
         "produces": [
           "application/json"
@@ -3241,31 +5611,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -3303,33 +5715,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/StationDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -3379,33 +5833,75 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/StationDetails"
             }
           },
           "400": {
             "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
-            "description": "Too many requests"
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
             "schema": {
               "$ref": "#/definitions/ProblemJson"
             }
@@ -3657,6 +6153,9 @@
     },
     "ChannelDetails": {
       "properties": {
+        "agid": {
+          "type": "boolean"
+        },
         "broker_psp_code": {
           "type": "string"
         },
@@ -3684,6 +6183,9 @@
         },
         "ip": {
           "type": "string"
+        },
+        "new_fault_code": {
+          "type": "boolean"
         },
         "new_password": {
           "type": "string"
@@ -3775,14 +6277,21 @@
         }
       },
       "required": [
+        "agid",
         "broker_psp_code",
+        "card_chart",
         "channel_code",
         "description",
+        "digital_stamp_brand",
         "enabled",
         "ip",
+        "on_us",
         "password",
+        "payment_model",
         "port",
         "protocol",
+        "recovery",
+        "rt_push",
         "service",
         "thread_number",
         "timeout_a",
