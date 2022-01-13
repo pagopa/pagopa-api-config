@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,6 +39,7 @@ public class Canali implements Serializable {
     @Column(name = "ID_CANALE", nullable = false, length = 35)
     private String idCanale;
 
+    @Type(type = "yes_no")
     @Column(name = "ENABLED", nullable = false)
     private Boolean enabled = false;
 
@@ -70,6 +72,7 @@ public class Canali implements Serializable {
     @NotNull
     private IntermediariPsp fkIntermediarioPsp;
 
+    @Type(type = "yes_no")
     @Column(name = "PROXY_ENABLED", nullable = false)
     private Boolean proxyEnabled = false;
 
@@ -86,9 +89,11 @@ public class Canali implements Serializable {
     @Column(name = "PROXY_USERNAME", length = 15)
     private String proxyUsername;
 
+    @Type(type = "yes_no")
     @Column(name = "CANALE_NODO", nullable = false)
     private Boolean canaleNodo = false;
 
+    @Type(type = "yes_no")
     @Column(name = "CANALE_AVV", nullable = false)
     private Boolean canaleAvv = false;
 
@@ -103,6 +108,7 @@ public class Canali implements Serializable {
     @Column(name = "NUM_THREAD", nullable = false)
     private Long numThread;
 
+    @Type(type = "yes_no")
     @Column(name = "USE_NEW_FAULT_CODE", nullable = false)
     private Boolean useNewFaultCode = false;
 

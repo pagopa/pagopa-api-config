@@ -31,6 +31,8 @@ public enum AppError {
     BROKER_PSP_NOT_FOUND(HttpStatus.NOT_FOUND, "Broker PSP not found", "No Broker PSP found with code: %s"),
     BROKER_PSP_CONFLICT(HttpStatus.CONFLICT, "Broker PSP conflict", "Broker PSP code %s already exists"),
 
+    SERV_PLUGIN_NOT_FOUND(HttpStatus.NOT_FOUND, "Plugin not found", "No Plugin found with code: %s"),
+
     CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Channel not found", "No Channel found with code: %s"),
     CHANNEL_CONFLICT(HttpStatus.CONFLICT, "Channel conflict", "Channel code %s already exists"),
 

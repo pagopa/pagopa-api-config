@@ -8,6 +8,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class ChannelsService {
     IntermediariPspRepository intermediariPspRepository;
 
     @Autowired
+    WfespPluginConfRepository wfespPluginConfRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public Channels getChannels(@NotNull Integer limit, @NotNull Integer pageNumber) {
@@ -50,16 +54,22 @@ public class ChannelsService {
 
     public ChannelDetails createChannel(ChannelDetails channelDetails) {
         if (canaliRepository.findByIdCanale(channelDetails.getChannelCode()).isPresent()) {
-            throw new AppException(AppError.CHANNEL_NOT_FOUND, channelDetails.getChannelCode());
+            throw new AppException(AppError.CHANNEL_CONFLICT, channelDetails.getChannelCode());
         }
 
-        // add info for model mapping
+        // add info for model mapper
         var intermediariPsp = intermediariPspRepository.findByIdIntermediarioPsp(channelDetails.getBrokerPspCode())
                 .orElseThrow(() -> new AppException(AppError.BROKER_PSP_NOT_FOUND, channelDetails.getBrokerPspCode()));
-
         channelDetails.setFkIntermediarioPsp(intermediariPsp);
 
+        if (channelDetails.getServPlugin() != null) {
+            var wfespPluginConf = wfespPluginConfRepository.findByIdServPlugin(channelDetails.getServPlugin())
+                    .orElseThrow(() -> new AppException(AppError.SERV_PLUGIN_NOT_FOUND, channelDetails.getBrokerPspCode()));
 
+            channelDetails.setFkWfespPluginConf(wfespPluginConf);
+        }
+
+        // convert and save
         var entity = modelMapper.map(channelDetails, Canali.class);
         canaliRepository.save(entity);
         return channelDetails;
