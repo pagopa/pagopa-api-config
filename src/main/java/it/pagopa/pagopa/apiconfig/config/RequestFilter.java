@@ -16,12 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
+import static it.pagopa.pagopa.apiconfig.util.Constants.HEADER_REQUEST_ID;
+
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class RequestFilter implements Filter {
-
-    public static final String HEADER_REQUEST_ID = "X-Request-Id";
 
     /**
      * Get the request ID from the custom header "X-Request-Id" if present, otherwise it generates one.
