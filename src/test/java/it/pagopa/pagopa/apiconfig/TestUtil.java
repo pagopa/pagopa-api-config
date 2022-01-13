@@ -22,6 +22,7 @@ import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
+import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -362,6 +363,14 @@ public class TestUtil {
                 .build();
     }
 
+    public static WfespPluginConf getMockWfespPluginConf() {
+        return WfespPluginConf.builder()
+                .id(1L)
+                .idServPlugin("1")
+                .idBean("sdf")
+                .build();
+    }
+
     public static Canali getMockCanali() {
         return Canali.builder()
                 .id(1L)
@@ -637,6 +646,13 @@ public class TestUtil {
                 .port(80L)
                 .service("ABAB")
                 .ip("1.1.1.1")
+                .onUs(true)
+                .cardChart(true)
+                .recovery(true)
+                .rtPush(true)
+                .digitalStampBrand(false)
+                .paymentModel(ChannelDetails.PaymentModel.DEFERRED)
+                .agid(true)
                 .build();
     }
 

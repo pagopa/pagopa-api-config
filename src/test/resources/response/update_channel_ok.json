@@ -1,0 +1,22 @@
+{
+  "channel_code": "1",
+  "enabled": true,
+  "description": "channel",
+  "password": "***",
+  "protocol": "HTTP",
+  "ip": "1.1.1.1",
+  "port": 80,
+  "service": "ABAB",
+  "broker_psp_code": "1233",
+  "thread_number": 2,
+  "timeout_a": 1,
+  "timeout_b": 1,
+  "timeout_c": 1,
+  "payment_model": "DEFERRED",
+  "rt_push": true,
+  "on_us": true,
+  "card_chart": true,
+  "recovery": true,
+  "digital_stamp_brand": false,
+  "agid": true
+}

@@ -29,7 +29,7 @@ import java.io.Serializable;
 @ToString
 @Entity
 @Table(name = "CANALI", schema = "NODO4_CFG")
-@Builder
+@Builder(toBuilder = true)
 public class Canali implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
