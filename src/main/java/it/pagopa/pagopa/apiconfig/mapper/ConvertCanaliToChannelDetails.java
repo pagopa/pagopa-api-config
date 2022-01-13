@@ -34,8 +34,9 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
                 .timeoutA(source.getTimeoutA())
                 .timeoutB(source.getTimeoutB())
                 .timeoutC(source.getTimeoutC())
+                .newFaultCode(source.getUseNewFaultCode())
                 .npmService(source.getServizioNmp());
-        if (source.getCanaleNodo() != null) {
+        if (source.getFkCanaliNodo() != null) {
             builder.redirectIp(source.getFkCanaliNodo().getRedirectIp())
                     .redirectPath(source.getFkCanaliNodo().getRedirectPath())
                     .redirectPort(source.getFkCanaliNodo().getRedirectPorta())

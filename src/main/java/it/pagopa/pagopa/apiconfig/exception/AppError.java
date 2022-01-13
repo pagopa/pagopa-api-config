@@ -32,6 +32,7 @@ public enum AppError {
     BROKER_PSP_CONFLICT(HttpStatus.CONFLICT, "Broker PSP conflict", "Broker PSP code %s already exists"),
 
     CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Channel not found", "No Channel found with code: %s"),
+    CHANNEL_CONFLICT(HttpStatus.CONFLICT, "Channel conflict", "Channel code %s already exists"),
 
     RELATION_CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Relation PSP-Channel not found", "No Relation PSP-Channel found between PSP with code %s and Channel with code %s and with payment type %s"),
     RELATION_CHANNEL_CONFLICT(HttpStatus.CONFLICT, "Relation PSP-Channel conflict", "Relation PSP-Channel between PSP with code %s and Channel with code %s and with payment type %s already exists"),

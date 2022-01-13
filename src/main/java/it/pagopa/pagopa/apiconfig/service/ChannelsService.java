@@ -7,6 +7,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.Channel;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class ChannelsService {
     CanaliRepository canaliRepository;
 
     @Autowired
+    IntermediariPspRepository intermediariPspRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public Channels getChannels(@NotNull Integer limit, @NotNull Integer pageNumber) {
@@ -42,6 +46,22 @@ public class ChannelsService {
         Canali canali = canaliRepository.findByIdCanale(channelCode)
                 .orElseThrow(() -> new AppException(AppError.CHANNEL_NOT_FOUND, channelCode));
         return modelMapper.map(canali, ChannelDetails.class);
+    }
+
+    public ChannelDetails createChannel(ChannelDetails channelDetails) {
+        if (canaliRepository.findByIdCanale(channelDetails.getChannelCode()).isPresent()) {
+            throw new AppException(AppError.CHANNEL_NOT_FOUND, channelDetails.getChannelCode());
+        }
+
+        // add info for model mapping
+        var intermediariPsp = intermediariPspRepository.findByIdIntermediarioPsp(channelDetails.getBrokerPspCode())
+                .orElseThrow(() -> new AppException(AppError.BROKER_PSP_NOT_FOUND, channelDetails.getBrokerPspCode()));
+
+        channelDetails.setFkIntermediarioPsp(intermediariPsp);
+
+        var entity = modelMapper.map(channelDetails, Canali.class);
+        canaliRepository.save(entity);
+        return channelDetails;
     }
 
 

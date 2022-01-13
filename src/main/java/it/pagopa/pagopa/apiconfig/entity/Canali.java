@@ -17,11 +17,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter
@@ -95,7 +93,7 @@ public class Canali implements Serializable {
     private Boolean canaleAvv = false;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_CANALI_NODO")
     private CanaliNodo fkCanaliNodo;
 
@@ -120,7 +118,4 @@ public class Canali implements Serializable {
     @Column(name = "SERVIZIO_NMP")
     private String servizioNmp;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "fkCanale", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CanaleTipoVersamento> tipiVersamento;
 }
