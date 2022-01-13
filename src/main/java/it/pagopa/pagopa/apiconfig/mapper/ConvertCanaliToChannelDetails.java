@@ -48,6 +48,7 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
                     .cardChart(source.getFkCanaliNodo().getCarrelloCarte())
                     .recovery(source.getFkCanaliNodo().getRecovery())
                     .digitalStampBrand(source.getFkCanaliNodo().getMarcaBolloDigitale())
+                    .agid(source.getFkCanaliNodo().getAgidChannel())
                     .flagIo(source.getFkCanaliNodo().getFlagIo());
             if (source.getFkCanaliNodo().getIdServPlugin() != null) {
                 builder.servPlugin(source.getFkCanaliNodo().getIdServPlugin().getIdServPlugin());

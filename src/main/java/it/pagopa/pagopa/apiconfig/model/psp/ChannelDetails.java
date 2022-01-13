@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
+import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -114,32 +116,52 @@ public class ChannelDetails extends Channel {
     private String redirectProtocol;
 
     @JsonProperty("payment_model")
+    @Schema(required = true)
+    @NotNull
     private PaymentModel paymentModel;
 
     @JsonProperty("serv_plugin")
     private String servPlugin;
 
     @JsonProperty("rt_push")
+    @Schema(required = true)
+    @NotNull
     private Boolean rtPush;
 
     @JsonProperty("on_us")
+    @Schema(required = true)
+    @NotNull
     private Boolean onUs;
 
     @JsonProperty("card_chart")
+    @Schema(required = true)
+    @NotNull
     private Boolean cardChart;
 
     @JsonProperty("recovery")
+    @Schema(required = true)
+    @NotNull
     private Boolean recovery;
 
     @JsonProperty("digital_stamp_brand")
+    @Schema(required = true)
+    @NotNull
     private Boolean digitalStampBrand;
 
     @JsonProperty("flag_io")
     private Boolean flagIo;
 
+    @JsonProperty("agid")
+    @Schema(required = true)
+    @NotNull
+    private Boolean agid;
+
 
     @JsonIgnore
     private IntermediariPsp fkIntermediarioPsp;
+
+    @JsonIgnore
+    private WfespPluginConf fkWfespPluginConf;
 
 
     @Getter

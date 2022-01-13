@@ -2,7 +2,6 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
-import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -52,19 +51,17 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
                 .redirectQueryString(source.getRedirectQueryString())
                 .redirectProtocollo(source.getRedirectProtocol())
                 .modelloPagamento(source.getPaymentModel().getDatabaseValue())
-                .idServPlugin(buildServPlugin(source.getServPlugin()))
+                .idServPlugin(source.getFkWfespPluginConf())
                 .rtPush(source.getRtPush())
                 .onUs(source.getOnUs())
                 .carrelloCarte(source.getCardChart())
                 .recovery(source.getRecovery())
                 .marcaBolloDigitale(source.getDigitalStampBrand())
                 .flagIo(source.getFlagIo())
-                .build();
-    }
-
-    private WfespPluginConf buildServPlugin(String servPlugin) {
-        return WfespPluginConf.builder()
-                .idServPlugin(servPlugin)
+                .multiPayment(true)
+                .rptRtCompliant(true)
+                .lento(false)
+                .agidChannel(source.getAgid())
                 .build();
     }
 
