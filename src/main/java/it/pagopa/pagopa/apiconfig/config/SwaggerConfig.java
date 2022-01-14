@@ -34,7 +34,7 @@ public class SwaggerConfig {
                                         .type(SecurityScheme.Type.HTTP)
                                         .description("JWT token get after Azure Login")
                                         .name("Authorization")
-                                        .scheme("Bearer")
+                                        .scheme("bearer")
                                         .bearerFormat("JWT")
                                         .in(SecurityScheme.In.HEADER))
                 )
