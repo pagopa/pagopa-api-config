@@ -1371,16 +1371,16 @@
             "Authorization": {
                 "bearerFormat": "JWT",
                 "description": "JWT token get after Azure Login",
-                "scheme": "Bearer",
+                "scheme": "bearer",
                 "type": "http"
             }
         }
     },
     "info": {
-        "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
+        "description": "@project.description@",
         "termsOfService": "https://www.pagopa.gov.it/",
         "title": "PagoPA API configuration",
-        "version": "0.2.31"
+        "version": "0.2.32"
     },
     "openapi": "3.0.1",
     "paths": {

@@ -1,10 +1,10 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
+    "description": "@project.description@",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.31"
+    "version": "0.2.32"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -7292,12 +7292,10 @@
       "type": "apiKey"
     },
     "Authorization": {
-      "bearerFormat": "JWT",
       "description": "JWT token get after Azure Login",
-      "scheme": "Bearer",
-      "type": "apiKey",
       "in": "header",
-      "name": "Authorization"
+      "name": "Authorization",
+      "type": "apiKey"
     }
   },
   "tags": [
