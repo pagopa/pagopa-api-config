@@ -7,6 +7,7 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +46,9 @@ class StationsServiceTest {
     @MockBean
     private IntermediariPaRepository intermediariPaRepository;
 
+    @MockBean
+    private PaRepository paRepository;
+
     @Autowired
     @InjectMocks
     private StationsService stationsService;
@@ -52,6 +57,8 @@ class StationsServiceTest {
     void getStations() throws IOException, JSONException {
         Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
         when(stazioniRepository.findAllFilterByIntermediarioAndPa(anyLong(), anyLong(), any(Pageable.class))).thenReturn(page);
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
+        when(intermediariPaRepository.findByIdIntermediarioPa(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePa()));
 
         Stations result = stationsService.getStations(50, 0, "1234", "4321");
         String actual = TestUtil.toJson(result);
