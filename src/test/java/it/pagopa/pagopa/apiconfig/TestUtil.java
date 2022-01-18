@@ -43,6 +43,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
@@ -687,6 +688,14 @@ public class TestUtil {
                 .creditorInstitutionCode("123")
                 .validityDate(OffsetDateTime.now())
                 .publicationDate(OffsetDateTime.now())
+                .build();
+    }
+
+    public static XSDValidation getMockXSDValidation() {
+        return XSDValidation.builder()
+                .detail("detail")
+                .xsdCompliant(true)
+                .xsdSchema("schema")
                 .build();
     }
 
