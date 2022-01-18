@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +51,7 @@ class StationsServiceTest {
     @Test
     void getStations() throws IOException, JSONException {
         Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
-        when(stazioniRepository.findAllFilterByIntermediarioAndPa(anyString(), anyString(), any(Pageable.class))).thenReturn(page);
+        when(stazioniRepository.findAllFilterByIntermediarioAndPa(anyLong(), anyLong(), any(Pageable.class))).thenReturn(page);
 
         Stations result = stationsService.getStations(50, 0, "1234", "4321");
         String actual = TestUtil.toJson(result);

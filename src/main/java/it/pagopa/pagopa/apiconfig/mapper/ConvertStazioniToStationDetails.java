@@ -25,7 +25,7 @@ public class ConvertStazioniToStationDetails implements Converter<Stazioni, Stat
                 .port(source.getPorta())
                 .service(source.getServizio())
                 .protocol4Mod(source.getProtocollo4Mod())
-                .brokerCode(CommonUtil.deNull(source.getFkIntermediarioPa().getIdIntermediarioPa()))
+                .brokerCode(CommonUtil.deNull(source.getIntermediarioPa().getIdIntermediarioPa()))
                 .ip4Mod(source.getIp4Mod())
                 .port4Mod(source.getPorta4Mod())
                 .service4Mod(source.getServizio4Mod())

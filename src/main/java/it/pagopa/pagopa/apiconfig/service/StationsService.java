@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
@@ -8,6 +9,8 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
@@ -35,9 +38,24 @@ public class StationsService {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    private PaRepository paRepository;
+
+    @Autowired
+    private PaStazionePaRepository paStazionePaRepository;
+
+
     public Stations getStations(@NotNull Integer limit, @NotNull Integer pageNumber, String brokerCode, String creditorInstitutionCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<Stazioni> page = stazioniRepository.findAllFilterByIntermediarioAndPa(brokerCode, creditorInstitutionCode, pageable);
+        Long fkIntermediario = null;
+        Long fkPa = null;
+        if (creditorInstitutionCode != null) {
+            fkPa = getPaIfExists(creditorInstitutionCode).getObjId();
+        }
+        if (brokerCode != null) {
+            fkIntermediario = getIntermediariPaIfExists(brokerCode).getObjId();
+        }
+        Page<Stazioni> page = stazioniRepository.findAllFilterByIntermediarioAndPa(fkIntermediario, fkPa, pageable);
         return Stations.builder()
                 .stationsList(getStationsList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))
@@ -82,9 +100,17 @@ public class StationsService {
      * @param stationDetails details of station
      */
     private void brokerCodeToObjId(@NotNull StationDetails stationDetails) {
-        IntermediariPa intermediariPa = intermediariPaRepository.findByIdIntermediarioPa(stationDetails.getBrokerCode())
-                .orElseThrow(() -> new AppException(AppError.BROKER_NOT_FOUND, stationDetails.getBrokerCode()));
+        IntermediariPa intermediariPa = getIntermediariPaIfExists(stationDetails.getBrokerCode());
         stationDetails.setBrokerObjId(intermediariPa.getObjId());
+    }
+
+    /**
+     * @param brokerCode code of a broker
+     * @return IntermediariPa if present else throws AppException
+     */
+    private IntermediariPa getIntermediariPaIfExists(String brokerCode) {
+        return intermediariPaRepository.findByIdIntermediarioPa(brokerCode)
+                .orElseThrow(() -> new AppException(AppError.BROKER_NOT_FOUND, brokerCode));
     }
 
     /**
@@ -111,6 +137,16 @@ public class StationsService {
                 .filter(Objects::nonNull)
                 .map(elem -> modelMapper.map(elem, Station.class))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * @param creditorInstitutionCode idDominio
+     * @return return the PA record from DB if Exists
+     * @throws AppException if not found
+     */
+    protected Pa getPaIfExists(String creditorInstitutionCode) throws AppException {
+        return paRepository.findByIdDominio(creditorInstitutionCode)
+                .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, creditorInstitutionCode));
     }
 
 }

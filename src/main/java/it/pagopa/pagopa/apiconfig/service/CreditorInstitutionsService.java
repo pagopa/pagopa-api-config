@@ -93,7 +93,7 @@ public class CreditorInstitutionsService {
 
     public CreditorInstitutionStationList getCreditorInstitutionStations(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
-        List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa_ObjId(pa.getObjId());
+        List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa(pa.getObjId());
         return CreditorInstitutionStationList.builder()
                 .stationsList(getStationsList(result))
                 .build();
@@ -104,7 +104,7 @@ public class CreditorInstitutionsService {
         // check if the relation already exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(creditorInstitutionStationEdit.getStationCode());
-        if (paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId()).isPresent()) {
+        if (paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId()).isPresent()) {
             throw new AppException(AppError.RELATION_STATION_CONFLICT, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode());
         }
         // add info into object for model mapper
@@ -122,7 +122,7 @@ public class CreditorInstitutionsService {
         // check if the relation exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(stationCode);
-        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
+        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
                 .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
         // add info into object for model mapper
         creditorInstitutionStationEdit.setFkPa(pa);
@@ -141,7 +141,7 @@ public class CreditorInstitutionsService {
     public void deleteCreditorInstitutionStation(String creditorInstitutionCode, String stationCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(stationCode);
-        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
+        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
                 .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
         paStazionePaRepository.delete(paStazionePa);
     }
