@@ -19,7 +19,7 @@ public class ConvertCreditorInstitutionStationPostToPaStazionePa implements Conv
                 .broadcast(source.getBroadcast())
                 .progressivo(source.getApplicationCode())
                 .auxDigit(source.getAuxDigit())
-                .fkPa(source.getFkPa())
+                .pa(source.getFkPa())
                 .fkStazione(source.getFkStazioni())
                 .stazioneAvv(false) // default
                 .stazioneNodo(true) // default

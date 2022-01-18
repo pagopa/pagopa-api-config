@@ -82,7 +82,10 @@ public class Stazioni {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_INTERMEDIARIO_PA", nullable = false)
     @ToString.Exclude
-    private IntermediariPa fkIntermediarioPa;
+    private IntermediariPa intermediarioPa;
+
+    @Column(name = "FK_INTERMEDIARIO_PA", nullable = false, insertable = false, updatable = false)
+    private Long fkIntermediarioPa;
 
     @Column(name = "REDIRECT_PROTOCOLLO")
     private String redirectProtocollo;

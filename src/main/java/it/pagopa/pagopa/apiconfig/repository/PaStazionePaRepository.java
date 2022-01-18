@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface PaStazionePaRepository extends PagingAndSortingRepository<PaStazionePa, Long> {
 
-    List<PaStazionePa> findAllByFkPa_ObjId(Long creditorInstitutionCode);
+    List<PaStazionePa> findAllByFkPa(Long creditorInstitutionCode);
 
-    Optional<PaStazionePa> findAllByFkPa_ObjIdAndFkStazione_ObjId(Long creditorInstitutionCode, Long stationCode);
+    Optional<PaStazionePa> findAllByFkPaAndFkStazione_ObjId(Long creditorInstitutionCode, Long stationCode);
 
 }

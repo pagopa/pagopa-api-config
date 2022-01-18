@@ -142,7 +142,7 @@ public class TestUtil {
                 .servizio("openspcoop/PD/RT6TPDREGVENETO")
                 .rtEnabled(true)
                 .servizioPof("openspcoop/PD/CCP6TPDREGVENETO")
-                .fkIntermediarioPa(getMockIntermediariePa())
+                .intermediarioPa(getMockIntermediariePa())
                 .redirectProtocollo("HTTPS")
                 .proxyEnabled(true)
                 .proxyHost("10.101.1.95")
@@ -171,7 +171,7 @@ public class TestUtil {
 
     public static PaStazionePa getMockPaStazionePa() {
         return PaStazionePa.builder()
-                .fkPa(getMockPa())
+                .pa(getMockPa())
                 .fkStazione(getMockStazioni())
                 .broadcast(false)
                 .auxDigit(1L)

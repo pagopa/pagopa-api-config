@@ -198,7 +198,7 @@ class CreditorInstitutionsServiceTest {
     @Test
     void getStationsCI() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
-        when(paStazionePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+        when(paStazionePaRepository.findAllByFkPa(anyLong())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
 
         CreditorInstitutionStationList result = creditorInstitutionsService.getCreditorInstitutionStations("1234");
         String actual = TestUtil.toJson(result);
@@ -210,7 +210,7 @@ class CreditorInstitutionsServiceTest {
     void createStationsCI() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
-        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         CreditorInstitutionStationEdit result = creditorInstitutionsService.createCreditorInstitutionStation("1234", getCreditorInstitutionStationEdit());
         String actual = TestUtil.toJson(result);
@@ -222,7 +222,7 @@ class CreditorInstitutionsServiceTest {
     void createStationsCI_conflict() {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
-        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
 
         try {
             creditorInstitutionsService.createCreditorInstitutionStation("1234", getCreditorInstitutionStationEdit());
@@ -237,7 +237,7 @@ class CreditorInstitutionsServiceTest {
     void updateStationsCI() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
-        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
 
         CreditorInstitutionStationEdit result = creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", getCreditorInstitutionStationEdit());
         String actual = TestUtil.toJson(result);
@@ -249,7 +249,7 @@ class CreditorInstitutionsServiceTest {
     void deleteStationsCI() {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
-        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
 
         try {
             creditorInstitutionsService.deleteCreditorInstitutionStation("1234", "80007580279_01");
@@ -262,7 +262,7 @@ class CreditorInstitutionsServiceTest {
     void deleteStationsCI_notfound() {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
-        when(paStazionePaRepository.findAllByFkPa_ObjIdAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         try {
             creditorInstitutionsService.deleteCreditorInstitutionStation("1234", "80007580279_01");

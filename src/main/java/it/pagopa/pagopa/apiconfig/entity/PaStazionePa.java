@@ -39,7 +39,10 @@ public class PaStazionePa {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_PA", nullable = false)
     @ToString.Exclude
-    private Pa fkPa;
+    private Pa pa;
+
+    @Column(name = "FK_PA", nullable = false, insertable = false, updatable = false)
+    private Long fkPa;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_STAZIONE", nullable = false)

@@ -23,7 +23,7 @@ public class ConvertStationDetailsToStazioni implements Converter<StationDetails
                 .ip(source.getIp())
                 .porta(source.getPort())
                 .servizio(source.getService())
-                .fkIntermediarioPa(IntermediariPa.builder()
+                .intermediarioPa(IntermediariPa.builder()
                         .objId(source.getBrokerObjId())
                         .build())
                 .protocollo4Mod(source.getProtocol4Mod())
