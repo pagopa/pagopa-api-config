@@ -4,6 +4,8 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.FilterAndOrder;
+import it.pagopa.pagopa.apiconfig.model.Order;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
@@ -68,7 +70,7 @@ class CreditorInstitutionsServiceTest {
         Page<Pa> page = TestUtil.mockPage(Collections.emptyList(), 50, 0);
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, FilterAndOrder.builder().order(Order.builder().orderBy(null).ordering(null).build()).build());
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_empty.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -81,7 +83,7 @@ class CreditorInstitutionsServiceTest {
         Page<Pa> page = TestUtil.mockPage(content, 50, 0);
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, FilterAndOrder.builder().order(Order.builder().orderBy(null).ordering(null).build()).build());
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -93,7 +95,7 @@ class CreditorInstitutionsServiceTest {
         Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
         when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0);
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, FilterAndOrder.builder().order(Order.builder().orderBy(null).ordering(null).build()).build());
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

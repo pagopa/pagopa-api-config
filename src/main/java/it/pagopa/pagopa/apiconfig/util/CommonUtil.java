@@ -1,6 +1,6 @@
 package it.pagopa.pagopa.apiconfig.util;
 
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.PageInfo;
+import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 
