@@ -17,7 +17,7 @@ public interface StazioniRepository extends JpaRepository<Stazioni, Long> {
 
     @Query(value = "select distinct s from PaStazionePa r, Stazioni s " +
             "where (:fkIntermediario is null or  s.fkIntermediarioPa = :fkIntermediario) " +
-            "and (:fkPa is null or (r.fkPa = :fkPa))")
+            "and (:fkPa is null or (r.fkPa = :fkPa and r.fkStazione = s))")
     Page<Stazioni> findAllFilterByIntermediarioAndPa(@Param("fkIntermediario") Long fkIntermediario, @Param("fkPa") Long fkPa, Pageable pageable);
 
 }
