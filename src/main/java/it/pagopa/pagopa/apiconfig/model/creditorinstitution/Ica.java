@@ -35,12 +35,12 @@ public class Ica {
 
     @JsonProperty("creditor_institution_code")
     @Schema(required = true, example = "1234567890100")
-    @NotNull
+    @NotBlank
     private String creditorInstitutionCode;
 
     @JsonProperty("business_name")
     @Schema(required = true, example = "Comune di Lorem Ipsum")
-    @NotNull
+    @NotBlank
     private String businessName;
 
     @JsonProperty("validity_date")

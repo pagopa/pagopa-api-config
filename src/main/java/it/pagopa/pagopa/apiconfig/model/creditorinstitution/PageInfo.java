@@ -34,7 +34,7 @@ public class PageInfo {
 
     @JsonProperty("items_found")
     @Schema(description = "Number of items found. (The last page may have fewer elements than required)", required = true)
-    @Positive
+    @PositiveOrZero
     Integer itemsFound;
 
     @JsonProperty("total_pages")

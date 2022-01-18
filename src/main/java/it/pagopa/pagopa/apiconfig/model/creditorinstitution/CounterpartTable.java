@@ -41,7 +41,7 @@ public class CounterpartTable {
 
     @JsonProperty("creditor_institution_code")
     @Schema(required = true, example = "1234567890100")
-    @NotNull
+    @NotBlank
     private String creditorInstitutionCode;
 
     @JsonProperty("publication_date")
