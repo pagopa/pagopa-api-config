@@ -7229,11 +7229,8 @@
       "required": [
         "broker_code",
         "enabled",
-        "ip",
-        "password",
         "port",
         "protocol",
-        "service",
         "station_code",
         "thread_number",
         "timeout_a",
