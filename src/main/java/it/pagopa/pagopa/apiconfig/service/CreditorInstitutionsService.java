@@ -6,6 +6,7 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
@@ -24,10 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -54,8 +57,8 @@ public class CreditorInstitutionsService {
     private ModelMapper modelMapper;
 
 
-    public CreditorInstitutions getCreditorInstitutions(@NotNull Integer limit, @NotNull Integer pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
+    public CreditorInstitutions getCreditorInstitutions(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(filterAndOrder.getOrder().getOrdering(), filterAndOrder.getOrder().getOrderBy()));
         Page<Pa> page = paRepository.findAll(pageable);
         return CreditorInstitutions.builder()
                 .creditorInstitutionList(getCreditorInstitutions(page))

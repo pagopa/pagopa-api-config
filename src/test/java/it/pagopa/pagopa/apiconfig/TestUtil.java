@@ -42,7 +42,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.PageInfo;
+import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
