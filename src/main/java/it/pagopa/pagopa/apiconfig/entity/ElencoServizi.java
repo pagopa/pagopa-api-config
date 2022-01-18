@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,9 +40,11 @@ public class ElencoServizi {
     @Column(name = "PSP_RAG_SOC")
     private String pspRagSoc;
 
+    @Type(type = "yes_no")
     @Column(name = "PSP_FLAG_STORNO")
     private Boolean pspFlagStorno;
 
+    @Type(type = "yes_no")
     @Column(name = "PSP_FLAG_BOLLO")
     private Boolean pspFlagBollo;
 
@@ -99,12 +102,15 @@ public class ElencoServizi {
     @Column(name = "LOGO_SERVIZIO")
     private byte[] logoServizio;
 
+    @Type(type = "yes_no")
     @Column(name = "CANALE_APP")
     private Boolean canaleApp;
 
+    @Type(type = "yes_no")
     @Column(name = "ON_US")
     private Boolean onUs;
 
+    @Type(type = "yes_no")
     @Column(name = "CARRELLO_CARTE")
     private Boolean carrelloCarte;
 
@@ -117,6 +123,7 @@ public class ElencoServizi {
     @Column(name = "CODICE_CONVENZIONE", length = 35)
     private String codiceConvenzione;
 
+    @Type(type = "yes_no")
     @Column(name = "FLAG_IO")
     private Boolean flagIo;
 

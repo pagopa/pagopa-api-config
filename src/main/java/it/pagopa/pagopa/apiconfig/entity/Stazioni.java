@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +37,7 @@ public class Stazioni {
     private String idStazione;
 
     @Column(name = "ENABLED")
+    @Type(type = "yes_no")
     private Boolean enabled;
 
     @Column(name = "IP")
@@ -52,7 +54,7 @@ public class Stazioni {
     @Column(name = "PORTA")
     private Long porta;
 
-    @Column(name = "PROTOCOLLO")
+    @Column(name = "PROTOCOLLO", nullable = false)
     private String protocollo;
 
     @Column(name = "REDIRECT_IP")
@@ -71,6 +73,7 @@ public class Stazioni {
     private String servizio;
 
     @Column(name = "RT_ENABLED")
+    @Type(type = "yes_no")
     private Boolean rtEnabled = true;
 
     @Column(name = "SERVIZIO_POF")
@@ -97,6 +100,7 @@ public class Stazioni {
     private String servizio4Mod;
 
     @Column(name = "PROXY_ENABLED")
+    @Type(type = "yes_no")
     private Boolean proxyEnabled;
 
     @Column(name = "PROXY_HOST")
@@ -125,6 +129,7 @@ public class Stazioni {
     private Long timeoutC;
 
     @Column(name = "FLAG_ONLINE")
+    @Type(type = "yes_no")
     private Boolean flagOnline;
 
     @Column(name = "VERSIONE")

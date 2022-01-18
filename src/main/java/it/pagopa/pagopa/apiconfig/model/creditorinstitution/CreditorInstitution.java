@@ -39,7 +39,7 @@ public class CreditorInstitution {
 
     @JsonProperty("business_name")
     @Schema(example = "Comune di Lorem Ipsum", required = true)
-    @NotNull
+    @NotBlank
     @Size(max = 70)
     private String businessName;
 

@@ -29,8 +29,6 @@ import javax.validation.constraints.NotNull;
 public class StationDetails extends Station {
 
     @JsonProperty("ip")
-    @Schema(required = true)
-    @NotNull
     private String ip;
 
     @ToString.Exclude
@@ -39,8 +37,6 @@ public class StationDetails extends Station {
 
     @ToString.Exclude
     @JsonProperty("password")
-    @Schema(required = true)
-    @NotNull
     private String password;
 
     @JsonProperty("port")
@@ -50,7 +46,7 @@ public class StationDetails extends Station {
 
     @JsonProperty("protocol")
     @Schema(required = true)
-    @NotNull
+    @NotBlank
     private String protocol;
 
     @JsonProperty("redirect_ip")
@@ -69,8 +65,6 @@ public class StationDetails extends Station {
     private String redirectProtocol;
 
     @JsonProperty("service")
-    @Schema(required = true)
-    @NotNull
     private String service;
 
     @JsonProperty("broker_code")

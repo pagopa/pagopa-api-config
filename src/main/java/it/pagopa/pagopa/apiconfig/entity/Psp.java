@@ -58,6 +58,7 @@ public class Psp implements Serializable {
     private IntermediariPsp fkIntQuadrature;
 
     @Column(name = "STORNO_PAGAMENTO", nullable = false)
+    @Type(type = "yes_no")
     private Boolean stornoPagamento;
 
     @Type(type = "yes_no")

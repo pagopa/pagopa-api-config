@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -18,9 +21,14 @@ import lombok.NoArgsConstructor;
 public class XSDValidation {
 
     @Schema(required = true, example = "false")
-    private boolean xsdCompliant;
+    @NotNull
+    private Boolean xsdCompliant;
+
     @Schema(required = true, example = "https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/InformativaContoAccredito_1_2_1.xsd")
+    @NotBlank
     private String xsdSchema;
+
     @Schema(required = true, example = "Invalid content was found starting with element 'idBancaSeller'. One of '{ibanAccredito}' is expected. Error at lineNumber: 10")
+    @NotBlank
     private String detail;
 }
