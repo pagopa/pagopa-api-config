@@ -70,9 +70,8 @@ public class Pa {
     @Column(name = "RENDICONTAZIONE_ZIP")
     private Boolean rendicontazioneZip;
 
-    // default false because it is deprecated but not_null in the DB
     @Type(type = "yes_no")
     @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
-    private Boolean flagRepoCommissioneCaricoPa = false;
+    private Boolean flagRepoCommissioneCaricoPa;
 
 }

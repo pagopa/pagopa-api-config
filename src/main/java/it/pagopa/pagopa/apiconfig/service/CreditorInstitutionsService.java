@@ -6,7 +6,6 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
@@ -15,6 +14,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionS
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -59,10 +59,11 @@ public class CreditorInstitutionsService {
 
     public CreditorInstitutions getCreditorInstitutions(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
-        Example<Pa> query = CommonUtil.getFilters(Pa.builder()
-                .idDominio(filterAndOrder.getFilter().getCode())
-                .ragioneSociale(filterAndOrder.getFilter().getName())
-                .build());
+//        Example<Pa> query = CommonUtil.getFilters(Pa.builder()
+//                .idDominio(filterAndOrder.getFilter().getCode())
+//                .ragioneSociale(filterAndOrder.getFilter().getName())
+//                .build());
+        Example<Pa> query = CommonUtil.getFilters(filterAndOrder, Pa.class);
         Page<Pa> page = paRepository.findAll(query, pageable);
         return CreditorInstitutions.builder()
                 .creditorInstitutionList(getCreditorInstitutions(page))

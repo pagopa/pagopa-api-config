@@ -1,12 +1,11 @@
 package it.pagopa.pagopa.apiconfig.model.filterandorder;
 
-import java.util.List;
-
 public interface OrderType {
 
     String getColumnName();
 
-    List<String> getColumnNames();
+    // Filters for code and name
+    String getCode();
 
-    OrderType[] values();
+    String getName();
 }
