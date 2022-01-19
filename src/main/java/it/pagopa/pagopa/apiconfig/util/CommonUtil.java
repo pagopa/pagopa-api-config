@@ -5,7 +5,9 @@ import it.pagopa.pagopa.apiconfig.model.filterandorder.Filter;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.OrderType;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -109,16 +111,24 @@ public class CommonUtil {
                 .build();
     }
 
-//    @SneakyThrows
-//    public <T> Example<T> getFilters(OrderType orderType, Class<T> clazz, FilterAndOrder filterAndOrder) {
-//        T example = clazz.getDeclaredConstructor().newInstance();
-//        example.getClass().getField(orderType.getColumnName()).set(String.class, filterAndOrder.getFilter().);
-//
-//
-//        ExampleMatcher matcher = ExampleMatcher.matching()
-//                .withIgnoreNullValues()
-//                .withIgnoreCase(true)
-//                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-//        return Example.of(example, matcher);
-//    }
+    @SneakyThrows
+    public <T> Example<T> getFilters(FilterAndOrder filterAndOrder, Class<T> clazz) {
+        OrderType orderType = filterAndOrder.getOrder().getOrderBy();
+
+        T example = clazz.getDeclaredConstructor().newInstance();
+
+        example.getClass().getMethod("set" + StringUtils.capitalize(orderType.getCode()), String.class)
+                .invoke(example, filterAndOrder.getFilter().getCode());
+
+        if (orderType.getName() != null) {
+            example.getClass().getMethod("set" + StringUtils.capitalize(orderType.getName()), String.class)
+                    .invoke(example, filterAndOrder.getFilter().getName());
+        }
+
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase(true)
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        return Example.of(example, matcher);
+    }
 }

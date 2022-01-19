@@ -6,9 +6,6 @@ import lombok.Getter;
 import org.springframework.data.domain.Sort;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -30,10 +27,14 @@ public class Order {
 
         private final String columnName;
 
-        public List<String> getColumnNames() {
-            return Arrays.stream(values())
-                    .map(OrderType::getColumnName)
-                    .collect(Collectors.toList());
+        @Override
+        public String getCode() {
+            return CODE.getColumnName();
+        }
+
+        @Override
+        public String getName() {
+            return NAME.getColumnName();
         }
 
     }
@@ -46,10 +47,32 @@ public class Order {
 
         private final String columnName;
 
-        public List<String> getColumnNames() {
-            return Arrays.stream(values())
-                    .map(OrderType::getColumnName)
-                    .collect(Collectors.toList());
+        @Override
+        public String getCode() {
+            return CODE.getColumnName();
+        }
+
+        @Override
+        public String getName() {
+            return NAME.getColumnName();
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum Station implements OrderType {
+        CODE("idStazione");
+
+        private final String columnName;
+
+        @Override
+        public String getCode() {
+            return CODE.getColumnName();
+        }
+
+        @Override
+        public String getName() {
+            return null;
         }
     }
 }

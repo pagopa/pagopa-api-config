@@ -7,6 +7,7 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ class BrokersServiceTest {
         Page<IntermediariPa> page = TestUtil.mockPage(Lists.newArrayList(getMockIntermediariePa()), 50, 0);
         when(intermediariPaRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        Brokers result = brokersService.getBrokers(50, 0, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering));
+        Brokers result = brokersService.getBrokers(50, 0, CommonUtil.getFilterAndOrder(null, null, null, null));
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_brokers_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

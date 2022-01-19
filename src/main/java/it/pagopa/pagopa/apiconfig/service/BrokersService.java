@@ -3,10 +3,10 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Broker;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
@@ -34,10 +34,11 @@ public class BrokersService {
 
     public Brokers getBrokers(@NotNull Integer limit, @NotNull Integer pageNumber, FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
-        Example<IntermediariPa> query = CommonUtil.getFilters(IntermediariPa.builder()
-                .idIntermediarioPa(filterAndOrder.getFilter().getCode())
-                .codiceIntermediario(filterAndOrder.getFilter().getName())
-                .build());
+//        Example<IntermediariPa> query = CommonUtil.getFilters(IntermediariPa.builder()
+//                .idIntermediarioPa(filterAndOrder.getFilter().getCode())
+//                .codiceIntermediario(filterAndOrder.getFilter().getName())
+//                .build());
+        Example<IntermediariPa> query = CommonUtil.getFilters(filterAndOrder, IntermediariPa.class);
         Page<IntermediariPa> page = intermediariPaRepository.findAll(query, pageable);
         return Brokers.builder()
                 .brokerList(getBrokerList(page))

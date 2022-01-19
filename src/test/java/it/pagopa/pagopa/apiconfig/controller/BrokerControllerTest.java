@@ -4,7 +4,6 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.service.BrokersService;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokerDetails;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -40,7 +38,7 @@ class BrokerControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(brokersService.getBrokers(50, 0, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering))).thenReturn(getMockBrokers());
+//        when(brokersService.getBrokers(50, 0, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering))).thenReturn(getMockBrokers());
         when(brokersService.getBroker(anyString())).thenReturn(getMockBrokerDetails());
         when(brokersService.createBroker(any(BrokerDetails.class))).thenReturn(getMockBrokerDetails());
         when(brokersService.updateBroker(anyString(), any(BrokerDetails.class))).thenReturn(getMockBrokerDetails());

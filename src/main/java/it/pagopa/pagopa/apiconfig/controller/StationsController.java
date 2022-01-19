@@ -8,10 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.service.StationsService;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +66,7 @@ public class StationsController {
                                                 @Parameter(description = "Filter by broker") @RequestParam(name = "brokercode", required = false) String brokerCode, @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode,
                                                 @RequestParam(required = false, name = "code") String filterByCode,
                                                 @RequestParam(required = false, name = "name") String filterByName,
-                                                @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.CreditorInstitution orderBy,
+                                                @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.Station orderBy,
                                                 @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering) {
         return ResponseEntity.ok(stationsService.getStations(limit, page, brokerCode, creditorInstitutionCode, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering)));
     }
