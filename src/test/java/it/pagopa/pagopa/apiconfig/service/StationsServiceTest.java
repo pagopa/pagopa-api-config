@@ -60,7 +60,7 @@ class StationsServiceTest {
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
         when(intermediariPaRepository.findByIdIntermediarioPa(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePa()));
 
-        Stations result = stationsService.getStations(50, 0, "1234", "4321");
+        Stations result = stationsService.getStations(50, 0, "1234", "4321", CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering));
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_stations_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

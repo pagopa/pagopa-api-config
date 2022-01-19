@@ -1,8 +1,17 @@
 package it.pagopa.pagopa.apiconfig.util;
 
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Filter;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.OrderType;
 import lombok.experimental.UtilityClass;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -58,5 +67,64 @@ public class CommonUtil {
      */
     public static Boolean deNull(Boolean value) {
         return Optional.ofNullable(value).orElse(false);
+    }
+
+
+    /**
+     * @param filterAndOrder object with sorting info
+     * @return a {@link Sort} object to use with SpringRepository
+     */
+    public Sort getSort(FilterAndOrder filterAndOrder) {
+        return Sort.by(filterAndOrder.getOrder().getOrdering(), filterAndOrder.getOrder().getOrderBy().getColumnName());
+    }
+
+    /**
+     * @param example filter to use ignoring null values
+     * @param <T>     the class of the Example
+     * @return a {@link Example<T>} object to use with SpringRepository
+     */
+    public <T> Example<T> getFilters(T example) {
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase(true)
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        return Example.of(example, matcher);
+    }
+
+    /**
+     * @param filterByCode
+     * @param filterByName
+     * @param orderBy
+     * @param ordering
+     * @return
+     */
+    public FilterAndOrder getFilterAndOrder(String filterByCode, String filterByName, OrderType orderBy, Sort.Direction ordering) {
+        return FilterAndOrder.builder()
+                .filter(Filter.builder()
+                        .code(filterByCode)
+                        .name(filterByName)
+                        .build())
+                .order(Order.builder()
+                        .orderBy(orderBy)
+                        .ordering(ordering)
+                        .build())
+                .build();
+    }
+
+    public <T> Example<T> getFilters(OrderType orderType, Class<T> clazz) {
+        orderType.getColumnNames().stream()
+                .map(elem -> {
+                    try {
+                        return clazz.getField(elem);
+                    } catch (NoSuchFieldException e) {
+                        throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Field not found", "Error during reflection", e);
+                    }
+                });
+
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase(true)
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        return Example.of(example, matcher);
     }
 }

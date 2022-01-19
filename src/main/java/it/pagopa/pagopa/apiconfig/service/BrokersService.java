@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Broker;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
@@ -10,6 +11,7 @@ import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +32,13 @@ public class BrokersService {
     @Autowired
     ModelMapper modelMapper;
 
-    public Brokers getBrokers(@NotNull Integer limit, @NotNull Integer pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<IntermediariPa> page = intermediariPaRepository.findAll(pageable);
+    public Brokers getBrokers(@NotNull Integer limit, @NotNull Integer pageNumber, FilterAndOrder filterAndOrder) {
+        Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
+        Example<IntermediariPa> query = CommonUtil.getFilters(IntermediariPa.builder()
+                .idIntermediarioPa(filterAndOrder.getFilter().getCode())
+                .codiceIntermediario(filterAndOrder.getFilter().getName())
+                .build());
+        Page<IntermediariPa> page = intermediariPaRepository.findAll(query, pageable);
         return Brokers.builder()
                 .brokerList(getBrokerList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))
