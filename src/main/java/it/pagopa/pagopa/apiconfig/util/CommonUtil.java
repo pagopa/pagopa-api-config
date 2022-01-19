@@ -1,6 +1,5 @@
 package it.pagopa.pagopa.apiconfig.util;
 
-import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Filter;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -111,20 +109,16 @@ public class CommonUtil {
                 .build();
     }
 
-    public <T> Example<T> getFilters(OrderType orderType, Class<T> clazz) {
-        orderType.getColumnNames().stream()
-                .map(elem -> {
-                    try {
-                        return clazz.getField(elem);
-                    } catch (NoSuchFieldException e) {
-                        throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Field not found", "Error during reflection", e);
-                    }
-                });
-
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnoreNullValues()
-                .withIgnoreCase(true)
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        return Example.of(example, matcher);
-    }
+//    @SneakyThrows
+//    public <T> Example<T> getFilters(OrderType orderType, Class<T> clazz, FilterAndOrder filterAndOrder) {
+//        T example = clazz.getDeclaredConstructor().newInstance();
+//        example.getClass().getField(orderType.getColumnName()).set(String.class, filterAndOrder.getFilter().);
+//
+//
+//        ExampleMatcher matcher = ExampleMatcher.matching()
+//                .withIgnoreNullValues()
+//                .withIgnoreCase(true)
+//                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+//        return Example.of(example, matcher);
+//    }
 }
