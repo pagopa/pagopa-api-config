@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model;
+package it.pagopa.pagopa.apiconfig.model.filterandorder;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class FilterAndOrder {
     @NotNull
     @Valid
-    private Filters filters;
+    private Filter filter;
 
     @NotNull
     @Valid

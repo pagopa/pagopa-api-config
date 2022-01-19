@@ -8,9 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.pagopa.pagopa.apiconfig.model.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.model.Filters;
-import it.pagopa.pagopa.apiconfig.model.Order;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
@@ -18,6 +16,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionS
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -67,19 +66,12 @@ public class CreditorInstitutionsController {
     public ResponseEntity<CreditorInstitutions> getCreditorInstitutions(@Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit, @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
                                                                         @RequestParam(required = false, name = "code") String filterByCode,
                                                                         @RequestParam(required = false, name = "name") String filterByName,
-                                                                        @RequestParam(required = false, name = "orderby") String orderBy,
+                                                                        @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.CreditorInstitution orderBy,
                                                                         @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering) {
-        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutions(limit, page, FilterAndOrder.builder()
-                        .filters(Filters.builder()
-                                .code(filterByCode)
-                                .name(filterByName)
-                                .build())
-                        .order(Order.builder()
-                                .orderBy(orderBy)
-                                .ordering(ordering)
-                                .build())
-                .build()));
+        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutions(limit, page, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering)));
     }
+
+
 
     /**
      * GET /creditorinstitutions/{creditorinstitutioncode} : Get creditor institution details
