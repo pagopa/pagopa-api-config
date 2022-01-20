@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
@@ -23,6 +24,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviders
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannel;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelList;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -44,7 +46,7 @@ class PspControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(pspService.getPaymentServiceProviders(50, 0)).thenReturn(getMockPaymentServiceProviders());
+        when(pspService.getPaymentServiceProviders(anyInt(), anyInt(), any(FilterAndOrder.class))).thenReturn(getMockPaymentServiceProviders());
         when(pspService.getPaymentServiceProvider(anyString())).thenReturn(getMockPaymentServiceProviderDetails());
         when(pspService.getPaymentServiceProvidersChannels(anyString())).thenReturn(getMockPspChannelList());
         when(pspService.createPaymentServiceProvider(any(PaymentServiceProviderDetails.class))).thenReturn(getMockPaymentServiceProviderDetails());

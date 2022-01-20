@@ -65,10 +65,8 @@ public class StationsController {
                                                 @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
                                                 @Parameter(description = "Filter by broker") @RequestParam(name = "brokercode", required = false) String brokerCode, @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode,
                                                 @RequestParam(required = false, name = "code") String filterByCode,
-                                                @RequestParam(required = false, name = "name") String filterByName,
-                                                @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.Station orderBy,
                                                 @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering) {
-        return ResponseEntity.ok(stationsService.getStations(limit, page, brokerCode, creditorInstitutionCode, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering)));
+        return ResponseEntity.ok(stationsService.getStations(limit, page, brokerCode, creditorInstitutionCode, CommonUtil.getFilterAndOrder(filterByCode, null, Order.Station.CODE, ordering)));
     }
 
 

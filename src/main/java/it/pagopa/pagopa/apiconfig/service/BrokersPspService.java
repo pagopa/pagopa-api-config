@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPsp;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
@@ -10,11 +11,13 @@ import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -30,9 +33,10 @@ public class BrokersPspService {
     ModelMapper modelMapper;
 
 
-    public BrokersPsp getBrokersPsp(@NotNull Integer limit, @NotNull Integer pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<IntermediariPsp> page = intermediariPspRepository.findAll(pageable);
+    public BrokersPsp getBrokersPsp(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
+        Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
+        Example<IntermediariPsp> filters = CommonUtil.getFilters(filterAndOrder, IntermediariPsp.class);
+        Page<IntermediariPsp> page = intermediariPspRepository.findAll(filters, pageable);
         return BrokersPsp.builder()
                 .brokerPspList(getBrokerPspList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

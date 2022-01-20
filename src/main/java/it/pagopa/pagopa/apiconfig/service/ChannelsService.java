@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.Channel;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
@@ -12,15 +13,20 @@ import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilters;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 @Service
 public class ChannelsService {
@@ -37,9 +43,10 @@ public class ChannelsService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Channels getChannels(@NotNull Integer limit, @NotNull Integer pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<Canali> page = canaliRepository.findAll(pageable);
+    public Channels getChannels(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
+        Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
+        Example<Canali> filters = getFilters(filterAndOrder, Canali.class);
+        Page<Canali> page = canaliRepository.findAll(filters, pageable);
         return Channels.builder()
                 .channelList(getChannelList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePsp;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockWfespPluginConf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,9 +58,9 @@ class ChannelsServiceTest {
     @Test
     void getChannels() throws IOException, JSONException {
         Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
-        when(canaliRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        Channels result = channelsService.getChannels(50, 0);
+        Channels result = channelsService.getChannels(50, 0, getMockFilterAndOrder(Order.Channel.CODE));
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

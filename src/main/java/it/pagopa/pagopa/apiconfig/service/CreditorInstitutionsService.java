@@ -59,12 +59,8 @@ public class CreditorInstitutionsService {
 
     public CreditorInstitutions getCreditorInstitutions(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
-//        Example<Pa> query = CommonUtil.getFilters(Pa.builder()
-//                .idDominio(filterAndOrder.getFilter().getCode())
-//                .ragioneSociale(filterAndOrder.getFilter().getName())
-//                .build());
-        Example<Pa> query = CommonUtil.getFilters(filterAndOrder, Pa.class);
-        Page<Pa> page = paRepository.findAll(query, pageable);
+        Example<Pa> filters = CommonUtil.getFilters(filterAndOrder, Pa.class);
+        Page<Pa> page = paRepository.findAll(filters, pageable);
         return CreditorInstitutions.builder()
                 .creditorInstitutionList(getCreditorInstitutions(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

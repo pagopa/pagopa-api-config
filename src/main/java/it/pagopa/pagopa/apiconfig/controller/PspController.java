@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
@@ -16,6 +17,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.service.PspService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilterAndOrder;
 
 @RestController()
 @RequestMapping(path = "/paymentserviceproviders")
@@ -57,8 +61,12 @@ public class PspController {
     )
     public ResponseEntity<PaymentServiceProviders> getPaymentServiceProviders(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
-        return ResponseEntity.ok(pspService.getPaymentServiceProviders(limit, page));
+            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @RequestParam(required = false, name = "code") String filterByCode,
+            @RequestParam(required = false, name = "name") String filterByName,
+            @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.Psp orderBy,
+            @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering) {
+        return ResponseEntity.ok(pspService.getPaymentServiceProviders(limit, page, getFilterAndOrder(filterByCode, filterByName, orderBy, ordering)));
     }
 
 

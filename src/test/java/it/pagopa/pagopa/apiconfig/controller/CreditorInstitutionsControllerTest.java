@@ -2,10 +2,9 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +25,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStat
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutions;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbans;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -48,7 +48,7 @@ class CreditorInstitutionsControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(creditorInstitutionsService.getCreditorInstitutions(50, 0, FilterAndOrder.builder().order(Order.builder().orderBy(null).ordering(null).build()).build())).thenReturn(getMockCreditorInstitutions());
+        when(creditorInstitutionsService.getCreditorInstitutions(anyInt(), anyInt(), any(FilterAndOrder.class))).thenReturn(getMockCreditorInstitutions());
         when(creditorInstitutionsService.getCreditorInstitution("1234")).thenReturn(getMockCreditorInstitutionDetails());
         when(creditorInstitutionsService.getCreditorInstitutionStations("1234")).thenReturn(getMockCreditorInstitutionStationList());
         when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234")).thenReturn(getMockIbans());

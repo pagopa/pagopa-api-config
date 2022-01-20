@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.springframework.data.domain.Sort;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -28,13 +29,13 @@ public class Order {
         private final String columnName;
 
         @Override
-        public String getCode() {
-            return CODE.getColumnName();
+        public String getName() {
+            return this.name();
         }
 
         @Override
-        public String getName() {
-            return NAME.getColumnName();
+        public List<OrderType> getValues() {
+            return List.of(values());
         }
 
     }
@@ -48,13 +49,13 @@ public class Order {
         private final String columnName;
 
         @Override
-        public String getCode() {
-            return CODE.getColumnName();
+        public String getName() {
+            return this.name();
         }
 
         @Override
-        public String getName() {
-            return NAME.getColumnName();
+        public List<OrderType> getValues() {
+            return List.of(values());
         }
     }
 
@@ -66,13 +67,74 @@ public class Order {
         private final String columnName;
 
         @Override
-        public String getCode() {
-            return CODE.getColumnName();
+        public String getName() {
+            return this.name();
         }
 
         @Override
+        public List<OrderType> getValues() {
+            return List.of(values());
+        }
+    }
+
+
+    @Getter
+    @AllArgsConstructor
+    public enum Psp implements OrderType {
+        CODE("idPsp"),
+        NAME("descrizione");
+
+        private final String columnName;
+
+
+        @Override
         public String getName() {
-            return null;
+            return this.name();
+        }
+
+        @Override
+        public List<OrderType> getValues() {
+            return List.of(values());
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum BrokerPsp implements OrderType {
+        CODE("idIntermediarioPsp"),
+        NAME("codiceIntermediario");
+
+        private final String columnName;
+
+
+        @Override
+        public String getName() {
+            return this.name();
+        }
+
+        @Override
+        public List<OrderType> getValues() {
+            return List.of(values());
+        }
+    }
+
+
+    @Getter
+    @AllArgsConstructor
+    public enum Channel implements OrderType {
+        CODE("idCanale");
+
+        private final String columnName;
+
+
+        @Override
+        public String getName() {
+            return this.name();
+        }
+
+        @Override
+        public List<OrderType> getValues() {
+            return List.of(values());
         }
     }
 }
