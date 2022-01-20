@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKey;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKeys;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,11 +32,14 @@ public class ConfigurationControllerTest {
     @BeforeEach
     void setUp() {
         when(configurationService.getConfigurationKeys()).thenReturn(getMockConfigurationKeys());
+        when(configurationService.getConfigurationKey("key")).thenReturn(getMockConfigurationKey("key"));
     }
 
     @ParameterizedTest
     @CsvSource({
-            "/configuration/keys"
+            "/configuration/keys",
+            "/configuration/keys/key"
+
     })
     void testGets(String url) throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))

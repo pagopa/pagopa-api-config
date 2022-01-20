@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "618a0964-fcb8-453e-b456-70f5f36d256b",
+		"_postman_id": "e7a3aaf6-e7ae-4411-b04c-574700ab66dd",
 		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2380,159 +2380,159 @@
 					},
 					"response": []
 				},
-              {
-                "name": "createPaymentServiceProvidersChannel",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"createPaymentServiceProvidersChannel\", function () {",
-                        "  pm.response.to.have.status(201);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
-                    }
-                  }
-                ],
-                "request": {
-                  "method": "POST",
-                  "header": [
-                    {
-                      "key": "Content-Type",
-                      "value": "application/json",
-                      "type": "default"
-                    }
-                  ],
-                  "body": {
-                    "mode": "raw",
-                    "raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_type\": [\n    \"BBT\"\n  ]\n}"
-                  },
-                  "url": {
-                    "raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels",
-                    "host": [
-                      "{{api-config-host}}"
-                    ],
-                    "path": [
-                      "{{api-config-base-path}}",
-                      "paymentserviceproviders",
-                      ":code",
-                      "channels"
-                    ],
-                    "variable": [
-                      {
-                        "key": "code",
-                        "value": "BPPIITRRZZZ"
-                      }
-                    ]
-                  }
-                },
-                "response": []
-              },
-              {
-                "name": "updatePaymentServiceProvidersChannel",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"updatePaymentServiceProvidersChannel\", function () {",
-                        "  pm.response.to.have.status(200);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
-                    }
-                  }
-                ],
-                "request": {
-                  "method": "PUT",
-                  "header": [
-                    {
-                      "key": "Content-Type",
-                      "value": "application/json",
-                      "type": "default"
-                    }
-                  ],
-                  "body": {
-                    "mode": "raw",
-                    "raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_type\": [\n      \"BBT\"\n  ]\n}"
-                  },
-                  "url": {
-                    "raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
-                    "host": [
-                      "{{api-config-host}}"
-                    ],
-                    "path": [
-                      "{{api-config-base-path}}",
-                      "paymentserviceproviders",
-                      ":code",
-                      "channels",
-                      ":channels"
-                    ],
-                    "variable": [
-                      {
-                        "key": "code",
-                        "value": "BPPIITRRZZZ"
-                      },
-                      {
-                        "key": "channels",
-                        "value": "00001060966_01"
-                      }
-                    ]
-                  }
-                },
-                "response": []
-              },
-              {
-                "name": "deletePaymentServiceProvidersChannel",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"deletePaymentServiceProvidersChannel\", function () {",
-                        "  pm.response.to.have.status(200);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
-                    }
-                  }
-                ],
-                "request": {
-                  "method": "DELETE",
-                  "header": [
-                    {
-                      "key": "Content-Type",
-                      "value": "application/json",
-                      "type": "default"
-                    }
-                  ],
-                  "url": {
-                    "raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
-                    "host": [
-                      "{{api-config-host}}"
-                    ],
-                    "path": [
-                      "{{api-config-base-path}}",
-                      "paymentserviceproviders",
-                      ":code",
-                      "channels",
-                      ":channels"
-                    ],
-                    "variable": [
-                      {
-                        "key": "code",
-                        "value": "BPPIITRRZZZ"
-                      },
-                      {
-                        "key": "channels",
-                        "value": "00001060966_01"
-                      }
-                    ]
-                  }
-                },
-                "response": []
-              },
+				{
+					"name": "createPaymentServiceProvidersChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPaymentServiceProvidersChannel\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_type\": [\n    \"BBT\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "BPPIITRRZZZ"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePaymentServiceProvidersChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePaymentServiceProvidersChannel\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_type\": [\n      \"BBT\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels",
+								":channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "BPPIITRRZZZ"
+								},
+								{
+									"key": "channels",
+									"value": "00001060966_01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePaymentServiceProvidersChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deletePaymentServiceProvidersChannel\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels",
+								":channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "BPPIITRRZZZ"
+								},
+								{
+									"key": "channels",
+									"value": "00001060966_01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "getBrokersPsp",
 					"event": [
@@ -3777,6 +3777,124 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "api test suite - configuration",
+			"item": [
+				{
+					"name": "getConfigurationKeys",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProviders\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.configuration_keys).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProviders\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.configuration_keys).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "api test error - configuration",
+			"item": [
+				{
+					"name": "getConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProvider_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/unknown",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"unknown"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

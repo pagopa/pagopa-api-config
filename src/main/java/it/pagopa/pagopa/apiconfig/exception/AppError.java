@@ -44,6 +44,8 @@ public enum AppError {
 
     CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
 
+    CONFIGURATION_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "Configuration key not found", "No Configuration key found with key: %s"),
+
     UNKNOWN(null, null, null);
 
 
