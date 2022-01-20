@@ -10,10 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Author: Francesco Cesareo
- * Email: cesareo.francesco@gmail.com
- */
 @Service
 public class ConfigurationService {
 
@@ -23,8 +19,14 @@ public class ConfigurationService {
     @Autowired
     private ModelMapper modelMapper;
 
+    public ConfigurationKeys getConfigurationKeys() {
+        return it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys.builder()
+                .configurationKeyList(getConfigurationKeys(configurationKeysRepository.findAll()))
+                .build();
+    }
+
     /**
-     * Maps ConfigurationKey objects stored in the DB in a List of ConfigurationKey
+     * Maps ConfigurationKeys objects stored in the DB in a List of ConfigurationKey
      *
      * @param configurationKeysList list of configuration key returned from the database
      * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey}.
@@ -35,9 +37,5 @@ public class ConfigurationService {
                 .collect(Collectors.toList());
     }
 
-    public ConfigurationKeys getConfigurationKeys() {
-        return it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys.builder()
-                .configurationKeyList(getConfigurationKeys(configurationKeysRepository.findAll()))
-                .build();
-    }
+
 }
