@@ -5,6 +5,11 @@
 
 # how install api-spec-converter https://www.npmjs.com/package/api-spec-converter
 
+if [[ "$(pwd)" =~ .*"openapi".* ]]; then
+    cd ..
+fi
+
+
 curl http://127.0.0.1:8080/apiconfig/api/v1/v3/api-docs | python -m json.tool > ./openapi.json
 api-spec-converter  --from=openapi_3 --to=swagger_2 ./openapi.json > swagger.json
 

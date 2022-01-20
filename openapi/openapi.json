@@ -395,6 +395,46 @@
                 ],
                 "type": "object"
             },
+            "ConfigurationKey": {
+                "properties": {
+                    "config_category": {
+                        "example": "GLOBAL",
+                        "type": "string"
+                    },
+                    "config_description": {
+                        "example": " default millisecondi validit\u00e0 token",
+                        "type": "string"
+                    },
+                    "config_key": {
+                        "example": "default_token_duration_validity_millis",
+                        "type": "string"
+                    },
+                    "config_value": {
+                        "example": "180000",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "config_category",
+                    "config_key",
+                    "config_value"
+                ],
+                "type": "object"
+            },
+            "ConfigurationKeys": {
+                "properties": {
+                    "configuration_keys": {
+                        "items": {
+                            "$ref": "#/components/schemas/ConfigurationKey"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "configuration_keys"
+                ],
+                "type": "object"
+            },
             "CounterpartTable": {
                 "properties": {
                     "business_name": {
@@ -3756,6 +3796,122 @@
                     "Payment Service Providers"
                 ]
             }
+        },
+        "/configuration/keys": {
+            "get": {
+                "operationId": "getConfigurationKeys",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConfigurationKeys"
+                                }
+                            }
+                        },
+                        "description": "OK",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Bad Request",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Get list of configuration keys",
+                "tags": [
+                    "Configuration"
+                ]
+            },
+            "parameters": [
+                {
+                    "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+                    "in": "header",
+                    "name": "X-Request-Id",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
         },
         "/counterparttables": {
             "get": {
@@ -8779,6 +8935,10 @@
         {
             "description": "Everything about Creditor Institution",
             "name": "Creditor Institutions"
+        },
+        {
+            "description": "Everything about Configuration",
+            "name": "Configuration"
         }
     ]
 }
