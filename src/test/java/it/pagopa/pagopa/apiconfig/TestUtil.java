@@ -710,7 +710,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static ConfigurationKey getMockConfigurationKey(String key) {
+    public static ConfigurationKey getMockConfigurationKey(String category, String key) {
         return getMockConfigurationKey();
     }
 

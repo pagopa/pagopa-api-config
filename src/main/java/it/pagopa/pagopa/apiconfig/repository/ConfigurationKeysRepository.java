@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ConfigurationKeysRepository extends JpaRepository<ConfigurationKeys, ConfigurationKeys> {
-    Optional<ConfigurationKeys> findByConfigKey(String key);
+    Optional<ConfigurationKeys> findByConfigCategoryAndConfigKey(String category, String key);
 }

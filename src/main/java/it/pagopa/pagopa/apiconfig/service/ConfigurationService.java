@@ -32,9 +32,34 @@ public class ConfigurationService {
                 .build();
     }
 
-    public ConfigurationKey getConfigurationKey(@NotNull String key) {
-        it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configKey = getConfigurationKeyIfExists(key);
+    public ConfigurationKey getConfigurationKey(@NotNull String category, @NotNull String key) {
+        it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configKey = getConfigurationKeyIfExists(category, key);
         return modelMapper.map(configKey, ConfigurationKey.class);
+    }
+
+    public ConfigurationKey createConfigurationKey(ConfigurationKey configurationKey) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKey = configurationKeysRepository.findByConfigCategoryAndConfigKey(configurationKey.getConfigCategory(), configurationKey.getConfigKey());
+        if (configKey.isPresent()) {
+            throw new AppException(AppError.CONFIGURATION_KEY_CONFLICT, configKey.get().getConfigCategory(), configKey.get().getConfigKey());
+        }
+
+        it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configKeyEntity = modelMapper.map(configurationKey, it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.class);
+        configurationKeysRepository.save(configKeyEntity);
+        return modelMapper.map(configKeyEntity, ConfigurationKey.class);
+    }
+
+    public ConfigurationKey updateConfigurationKey(String category, String key, ConfigurationKey configurationKey) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKey = configurationKeysRepository.findByConfigCategoryAndConfigKey(category, key);
+        if (!configKey.isPresent()) {
+            throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
+        }
+
+        it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configKeyEntity = configKey.get();
+        configKeyEntity.setConfigValue(configurationKey.getConfigValue());
+        configKeyEntity.setConfigDescription(configurationKey.getConfigDescription());
+        configurationKeysRepository.save(configKeyEntity);
+
+        return modelMapper.map(configKeyEntity, ConfigurationKey.class);
     }
 
     /**
@@ -50,14 +75,15 @@ public class ConfigurationService {
     }
 
     /**
+     * @param category configuration category
      * @param key configuration key
      * @return return the configuration key record from DB if exists
      * @throws AppException if not found
      */
-    protected it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys getConfigurationKeyIfExists(String key) throws AppException {
-        Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> result = configurationKeysRepository.findByConfigKey(key);
+    protected it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys getConfigurationKeyIfExists(String category, String key) throws AppException {
+        Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> result = configurationKeysRepository.findByConfigCategoryAndConfigKey(category, key);
         if (result.isEmpty()) {
-            throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, key);
+            throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
         }
         return result.get();
     }

@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * ConfigurationKey
@@ -30,7 +31,7 @@ public class ConfigurationKey {
 
     @JsonProperty("config_value")
     @Schema(example = "180000", required = true)
-    @NotBlank
+    @NotNull
     private String configValue;
 
     @JsonProperty("config_description")

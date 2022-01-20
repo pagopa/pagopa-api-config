@@ -3790,7 +3790,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getPaymentServiceProviders\", function () {",
+									"pm.test(\"getConfigurationKeys\", function () {",
 									"  pm.response.to.have.status(200);",
 									"  const responseJson = pm.response.json();",
 									"  pm.expect(responseJson.configuration_keys).to.be.exist",
@@ -3818,16 +3818,67 @@
 					"response": []
 				},
 				{
+					"name": "createConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createConfigurationKey\", function () {",
+									"  pm.response.to.have.status(201);  ",
+									"  ",
+									"  const requestJson = JSON.parse(pm.request.body.raw);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.config_category).to.eql(requestJson.config_category);",
+									"  pm.expect(responseJson.config_key).to.eql(requestJson.config_key);",
+									"  pm.expect(responseJson.config_value).to.eql(requestJson.config_value);",
+									"  pm.expect(responseJson.config_description).to.be.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_category\": \"{{configuration_category}}\",\n    \"config_key\": \"pippo2\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getConfigurationKey",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getPaymentServiceProviders\", function () {",
+									"pm.test(\"getConfigurationKey\", function () {",
 									"  pm.response.to.have.status(200);",
 									"  const responseJson = pm.response.json();",
-									"  pm.expect(responseJson.configuration_keys).to.be.exist",
+									"  pm.expect(responseJson.config_category).to.be.exist;",
+									"  pm.expect(responseJson.config_key).to.be.exist;",
+									"  pm.expect(responseJson.config_value).to.be.exist;",
+									"  pm.expect(responseJson.config_description).to.be.exist",
 									"});"
 								],
 								"type": "text/javascript"
@@ -3838,7 +3889,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/:key",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -3846,9 +3897,71 @@
 								"{{api-config-base-path}}",
 								"configuration",
 								"keys",
+								"category",
+								":category",
+								"key",
 								":key"
 							],
 							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_category\": \"test1\",\n    \"config_key\": \"pippo2\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
 								{
 									"key": "key",
 									"value": "{{configuration_key}}"
@@ -3882,7 +3995,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/unknown",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -3890,7 +4003,116 @@
 								"{{api-config-base-path}}",
 								"configuration",
 								"keys",
-								"unknown"
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "unknown"
+								},
+								{
+									"key": "key",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createConfigurationKey Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createConfigurationKey\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_category\": \"GLOBAL\",\n    \"config_key\": \"scheduler.jobName_mod3UpdateNotifiedPositionPayment.jobDescription\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateConfigurationKey BadRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
 							]
 						}
 					},
