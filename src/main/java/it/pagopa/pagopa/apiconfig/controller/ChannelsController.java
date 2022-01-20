@@ -9,10 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.service.ChannelsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilterAndOrder;
 
 @RestController()
 @RequestMapping(path = "/channels")
@@ -53,8 +57,10 @@ public class ChannelsController {
     )
     public ResponseEntity<Channels> getChannels(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
-        return ResponseEntity.ok(channelsService.getChannels(limit, page));
+            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @RequestParam(required = false, name = "code") String filterByCode,
+            @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering) {
+        return ResponseEntity.ok(channelsService.getChannels(limit, page, getFilterAndOrder(filterByCode, null, Order.Channel.CODE, ordering)));
     }
 
     @Operation(summary = "Get Channel details ", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers",})

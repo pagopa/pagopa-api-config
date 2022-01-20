@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import it.pagopa.pagopa.apiconfig.service.BrokersPspService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokerPspDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokersPsp;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -39,7 +41,7 @@ class BrokerPspControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(brokersPspService.getBrokersPsp(50, 0)).thenReturn(getMockBrokersPsp());
+        when(brokersPspService.getBrokersPsp(anyInt(), anyInt(), any(FilterAndOrder.class))).thenReturn(getMockBrokersPsp());
         when(brokersPspService.getBrokerPsp(anyString())).thenReturn(getMockBrokerPspDetails());
         when(brokersPspService.createBrokerPsp(any(BrokerPspDetails.class))).thenReturn(getMockBrokerPspDetails());
         when(brokersPspService.updateBrokerPsp(anyString(), any(BrokerPspDetails.class))).thenReturn(getMockBrokerPspDetails());

@@ -25,6 +25,7 @@ import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -46,6 +47,10 @@ import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Filter;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.OrderType;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
@@ -64,6 +69,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 
 import java.io.File;
 import java.io.IOException;
@@ -733,4 +739,15 @@ public class TestUtil {
         return List.of(getMockConfigurationKeyEntity());
     }
 
+    public static FilterAndOrder getMockFilterAndOrder(OrderType orderBy) {
+        return FilterAndOrder.builder()
+                .order(Order.builder()
+                        .orderBy(orderBy)
+                        .ordering(Sort.Direction.DESC)
+                        .build())
+                .filter(Filter.builder()
+                        .code("hello")
+                        .build())
+                .build();
+    }
 }

@@ -5,6 +5,7 @@ import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
@@ -20,6 +21,7 @@ import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -36,6 +39,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilters;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
+
 
 @Service
 public class PspService {
@@ -58,9 +65,10 @@ public class PspService {
     CanaleTipoVersamentoRepository canaleTipoVersamentoRepository;
 
 
-    public PaymentServiceProviders getPaymentServiceProviders(@NotNull Integer limit, @NotNull Integer pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<Psp> page = pspRepository.findAll(pageable);
+    public PaymentServiceProviders getPaymentServiceProviders(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
+        Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
+        Example<Psp> filters = getFilters(filterAndOrder, Psp.class);
+        Page<Psp> page = pspRepository.findAll(filters, pageable);
         return PaymentServiceProviders.builder()
                 .paymentServiceProviderList(getPaymentServiceProviderList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

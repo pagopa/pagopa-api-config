@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.service.StationsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStations;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,7 +41,7 @@ class StationsControllerTest {
 
     @BeforeEach
     void setUp() {
-//        when(stationsService.getStations(50, 0, null, null, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering))).thenReturn(getMockStations());
+        when(stationsService.getStations(anyInt(), anyInt(), isNull(), isNull(), any(FilterAndOrder.class))).thenReturn(getMockStations());
         when(stationsService.getStation(anyString())).thenReturn(getMockStationDetails());
         when(stationsService.createStation(any(StationDetails.class))).thenReturn(getMockStationDetails());
         when(stationsService.updateStation(anyString(), any(StationDetails.class))).thenReturn(getMockStationDetails());

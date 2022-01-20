@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.service.ChannelsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannels;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -38,7 +40,7 @@ class ChannelsControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(channelsService.getChannels(50, 0)).thenReturn(getMockChannels());
+        when(channelsService.getChannels(anyInt(), anyInt(), any(FilterAndOrder.class))).thenReturn(getMockChannels());
         when(channelsService.getChannel(anyString())).thenReturn(getMockChannelDetails());
         when(channelsService.createChannel(any(ChannelDetails.class))).thenReturn(getMockChannelDetails());
         when(channelsService.updateChannel(anyString(), any(ChannelDetails.class))).thenReturn(getMockChannelDetails());

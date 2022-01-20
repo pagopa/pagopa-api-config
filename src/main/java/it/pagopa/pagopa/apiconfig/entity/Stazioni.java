@@ -17,7 +17,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "STAZIONI", schema = "NODO4_CFG")
@@ -141,4 +143,6 @@ public class Stazioni {
     @Column(name = "SERVIZIO_NMP")
     private String servizioNmp;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkStazione")
+    private List<PaStazionePa> paStazionePa;
 }

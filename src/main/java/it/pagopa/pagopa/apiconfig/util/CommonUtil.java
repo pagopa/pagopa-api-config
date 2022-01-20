@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Locale;
 import java.util.Optional;
 
 @UtilityClass
@@ -74,22 +75,10 @@ public class CommonUtil {
      * @param filterAndOrder object with sorting info
      * @return a {@link Sort} object to use with SpringRepository
      */
-    public Sort getSort(FilterAndOrder filterAndOrder) {
+    public static Sort getSort(FilterAndOrder filterAndOrder) {
         return Sort.by(filterAndOrder.getOrder().getOrdering(), filterAndOrder.getOrder().getOrderBy().getColumnName());
     }
 
-    /**
-     * @param example filter to use ignoring null values
-     * @param <T>     the class of the Example
-     * @return a {@link Example<T>} object to use with SpringRepository
-     */
-    public <T> Example<T> getFilters(T example) {
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnoreNullValues()
-                .withIgnoreCase(true)
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        return Example.of(example, matcher);
-    }
 
     /**
      * @param filterByCode
@@ -98,7 +87,7 @@ public class CommonUtil {
      * @param ordering
      * @return
      */
-    public FilterAndOrder getFilterAndOrder(String filterByCode, String filterByName, OrderType orderBy, Sort.Direction ordering) {
+    public static FilterAndOrder getFilterAndOrder(String filterByCode, String filterByName, OrderType orderBy, Sort.Direction ordering) {
         return FilterAndOrder.builder()
                 .filter(Filter.builder()
                         .code(filterByCode)
@@ -111,19 +100,31 @@ public class CommonUtil {
                 .build();
     }
 
+    /**
+     * @param filterAndOrder
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     @SneakyThrows
-    public <T> Example<T> getFilters(FilterAndOrder filterAndOrder, Class<T> clazz) {
+    public static <T> Example<T> getFilters(FilterAndOrder filterAndOrder, Class<T> clazz) {
         OrderType orderType = filterAndOrder.getOrder().getOrderBy();
 
         T example = clazz.getDeclaredConstructor().newInstance();
 
-        example.getClass().getMethod("set" + StringUtils.capitalize(orderType.getCode()), String.class)
-                .invoke(example, filterAndOrder.getFilter().getCode());
-
-        if (orderType.getName() != null) {
-            example.getClass().getMethod("set" + StringUtils.capitalize(orderType.getName()), String.class)
-                    .invoke(example, filterAndOrder.getFilter().getName());
+        for (OrderType enumeration : orderType.getValues()) {
+            String value = (String) filterAndOrder.getFilter().getClass().getMethod("get" + StringUtils.capitalize(enumeration.getName().toLowerCase(Locale.ROOT)))
+                    .invoke(filterAndOrder.getFilter());
+            example.getClass().getMethod("set" + StringUtils.capitalize(enumeration.getColumnName()), String.class)
+                    .invoke(example, value);
         }
+//        example.getClass().getMethod("set" + StringUtils.capitalize(orderType.getCode()), String.class)
+//                .invoke(example, filterAndOrder.getFilter().getCode());
+//
+//        if (orderType.getName() != null) {
+//            example.getClass().getMethod("set" + StringUtils.capitalize(orderType.getName()), String.class)
+//                    .invoke(example, filterAndOrder.getFilter().getName());
+//        }
 
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnoreNullValues()

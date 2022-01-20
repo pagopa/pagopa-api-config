@@ -34,12 +34,8 @@ public class BrokersService {
 
     public Brokers getBrokers(@NotNull Integer limit, @NotNull Integer pageNumber, FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
-//        Example<IntermediariPa> query = CommonUtil.getFilters(IntermediariPa.builder()
-//                .idIntermediarioPa(filterAndOrder.getFilter().getCode())
-//                .codiceIntermediario(filterAndOrder.getFilter().getName())
-//                .build());
-        Example<IntermediariPa> query = CommonUtil.getFilters(filterAndOrder, IntermediariPa.class);
-        Page<IntermediariPa> page = intermediariPaRepository.findAll(query, pageable);
+        Example<IntermediariPa> filters = CommonUtil.getFilters(filterAndOrder, IntermediariPa.class);
+        Page<IntermediariPa> page = intermediariPaRepository.findAll(filters, pageable);
         return Brokers.builder()
                 .brokerList(getBrokerList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

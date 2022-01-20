@@ -4,13 +4,12 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -35,6 +34,7 @@ import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
@@ -68,9 +68,9 @@ class CreditorInstitutionsServiceTest {
     @Test
     void getECs_empty() throws IOException, JSONException {
         Page<Pa> page = TestUtil.mockPage(Collections.emptyList(), 50, 0);
-        when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(paRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, FilterAndOrder.builder().order(Order.builder().orderBy(null).ordering(null).build()).build());
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_empty.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -81,9 +81,9 @@ class CreditorInstitutionsServiceTest {
     void getECs_ok1() throws IOException, JSONException {
         List<Pa> content = Lists.newArrayList(getMockPa());
         Page<Pa> page = TestUtil.mockPage(content, 50, 0);
-        when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(paRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, FilterAndOrder.builder().order(Order.builder().orderBy(null).ordering(null).build()).build());
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -93,9 +93,9 @@ class CreditorInstitutionsServiceTest {
     void getECs_ok2() throws IOException, JSONException {
         List<Pa> ts = Lists.newArrayList(getMockPa());
         Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
-        when(paRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(paRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, FilterAndOrder.builder().order(Order.builder().orderBy(null).ordering(null).build()).build());
+        CreditorInstitutions result = creditorInstitutionsService.getCreditorInstitutions(50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

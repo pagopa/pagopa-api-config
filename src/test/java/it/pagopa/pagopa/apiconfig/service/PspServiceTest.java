@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
@@ -30,6 +31,7 @@ import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanaleTipoVersamento;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviderDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
@@ -69,9 +71,9 @@ class PspServiceTest {
     @Test
     void getPaymentServiceProviders() throws IOException, JSONException {
         Page<Psp> page = TestUtil.mockPage(Lists.newArrayList(getMockPsp()), 50, 0);
-        when(pspRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(pspRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        PaymentServiceProviders result = pspService.getPaymentServiceProviders(50, 0);
+        PaymentServiceProviders result = pspService.getPaymentServiceProviders(50, 0, getMockFilterAndOrder(Order.Psp.CODE));
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_paymentserviceproviders_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

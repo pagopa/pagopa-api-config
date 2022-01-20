@@ -8,6 +8,7 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
@@ -17,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
@@ -41,17 +44,19 @@ public class StationsService {
     private PaRepository paRepository;
 
 
-    public Stations getStations(@NotNull Integer limit, @NotNull Integer pageNumber, String brokerCode, String creditorInstitutionCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
-        Long fkIntermediario = null;
-        Long fkPa = null;
-        if (creditorInstitutionCode != null) {
-            fkPa = getPaIfExists(creditorInstitutionCode).getObjId();
-        }
-        if (brokerCode != null) {
-            fkIntermediario = getIntermediariPaIfExists(brokerCode).getObjId();
-        }
-        Page<Stazioni> page = stazioniRepository.findAllFilterByIntermediarioAndPa(fkIntermediario, fkPa, pageable);
+    public Stations getStations(@NotNull Integer limit, @NotNull Integer pageNumber,
+                                @Nullable String brokerCode, @Nullable String creditorInstitutionCode,
+                                @Valid FilterAndOrder filterAndOrder) {
+        Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
+        // convert code to FK
+        Long fkIntermediario = Optional.ofNullable(brokerCode)
+                .map(elem -> getIntermediariPaIfExists(elem).getObjId())
+                .orElse(null);
+        Long fkPa = Optional.ofNullable(creditorInstitutionCode)
+                .map(elem -> getPaIfExists(elem).getObjId())
+                .orElse(null);
+
+        Page<Stazioni> page = queryStazioni(fkIntermediario, fkPa, filterAndOrder, pageable);
         return Stations.builder()
                 .stationsList(getStationsList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))
@@ -145,4 +150,19 @@ public class StationsService {
                 .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, creditorInstitutionCode));
     }
 
+
+    /**
+     * @param fkIntermediario filter by intermediariPa ('equals' comparison)
+     * @param fkPa            filter by PA ('equals' comparison)
+     * @param filterAndOrder  filter by CODE ('like' comparison)
+     * @param pageable        page and sort info
+     * @return the result page of the query
+     */
+    private Page<Stazioni> queryStazioni(Long fkIntermediario, Long fkPa, FilterAndOrder filterAndOrder, Pageable pageable) {
+        if (fkPa != null) {
+            return stazioniRepository.findAllByFilters(fkIntermediario, fkPa, filterAndOrder.getFilter().getCode(), pageable);
+        } else {
+            return stazioniRepository.findAllByFilters(fkIntermediario, filterAndOrder.getFilter().getCode(), pageable);
+        }
+    }
 }

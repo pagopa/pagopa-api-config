@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBrokerPspDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePsp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -44,9 +46,9 @@ class BrokersPspServiceTest {
     @Test
     void getBrokersPsp() throws IOException, JSONException {
         Page<IntermediariPsp> page = TestUtil.mockPage(Lists.newArrayList(getMockIntermediariePsp()), 50, 0);
-        when(intermediariPspRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(intermediariPspRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        BrokersPsp result = brokersPspService.getBrokersPsp(50, 0);
+        BrokersPsp result = brokersPspService.getBrokersPsp(50, 0, getMockFilterAndOrder(Order.BrokerPsp.CODE));
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_brokerspsp_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
