@@ -58,8 +58,8 @@ public class ChannelsController {
     public ResponseEntity<Channels> getChannels(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
             @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
-            @RequestParam(required = false, name = "code") String filterByCode,
-            @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering) {
+            @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code") String filterByCode,
+            @RequestParam(required = false, name = "ordering", defaultValue = "DESC") @Parameter(description = "Direction of ordering. Results are ordered by code") Sort.Direction ordering) {
         return ResponseEntity.ok(channelsService.getChannels(limit, page, getFilterAndOrder(filterByCode, null, Order.Channel.CODE, ordering)));
     }
 

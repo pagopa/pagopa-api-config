@@ -22,7 +22,6 @@ import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -59,7 +58,10 @@ public class CreditorInstitutionsService {
 
     public CreditorInstitutions getCreditorInstitutions(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
-        Example<Pa> filters = CommonUtil.getFilters(filterAndOrder, Pa.class);
+        var filters = CommonUtil.getFilters(Pa.builder()
+                .idDominio(filterAndOrder.getFilter().getName())
+                .ragioneSociale(filterAndOrder.getFilter().getName())
+                .build());
         Page<Pa> page = paRepository.findAll(filters, pageable);
         return CreditorInstitutions.builder()
                 .creditorInstitutionList(getCreditorInstitutions(page))

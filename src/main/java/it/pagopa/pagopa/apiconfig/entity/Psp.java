@@ -27,7 +27,7 @@ import java.io.Serializable;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString(onlyExplicitlyIncluded = true)
+@ToString
 public class Psp implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +53,7 @@ public class Psp implements Serializable {
     @Column(name = "RAGIONE_SOCIALE", length = 70)
     private String ragioneSociale;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_INT_QUADRATURE")
     private IntermediariPsp fkIntQuadrature;

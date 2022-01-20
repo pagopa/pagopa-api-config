@@ -6,7 +6,6 @@ import lombok.Getter;
 import org.springframework.data.domain.Sort;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -23,20 +22,17 @@ public class Order {
     @Getter
     @AllArgsConstructor
     public enum CreditorInstitution implements OrderType {
+        /**
+         * To filter by CODE the PA we can use idDominio field of the entity
+         * To filter by NAME the PA we can use ragioneSociale field of the entity
+         */
         CODE("idDominio"),
         NAME("ragioneSociale");
 
+        /**
+         * The field name identify the column
+         */
         private final String columnName;
-
-        @Override
-        public String getName() {
-            return this.name();
-        }
-
-        @Override
-        public List<OrderType> getValues() {
-            return List.of(values());
-        }
 
     }
 
@@ -48,15 +44,6 @@ public class Order {
 
         private final String columnName;
 
-        @Override
-        public String getName() {
-            return this.name();
-        }
-
-        @Override
-        public List<OrderType> getValues() {
-            return List.of(values());
-        }
     }
 
     @Getter
@@ -65,16 +52,6 @@ public class Order {
         CODE("idStazione");
 
         private final String columnName;
-
-        @Override
-        public String getName() {
-            return this.name();
-        }
-
-        @Override
-        public List<OrderType> getValues() {
-            return List.of(values());
-        }
     }
 
 
@@ -86,16 +63,6 @@ public class Order {
 
         private final String columnName;
 
-
-        @Override
-        public String getName() {
-            return this.name();
-        }
-
-        @Override
-        public List<OrderType> getValues() {
-            return List.of(values());
-        }
     }
 
     @Getter
@@ -106,16 +73,6 @@ public class Order {
 
         private final String columnName;
 
-
-        @Override
-        public String getName() {
-            return this.name();
-        }
-
-        @Override
-        public List<OrderType> getValues() {
-            return List.of(values());
-        }
     }
 
 
@@ -126,15 +83,5 @@ public class Order {
 
         private final String columnName;
 
-
-        @Override
-        public String getName() {
-            return this.name();
-        }
-
-        @Override
-        public List<OrderType> getValues() {
-            return List.of(values());
-        }
     }
 }

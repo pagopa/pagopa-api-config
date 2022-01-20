@@ -11,7 +11,6 @@ import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +33,10 @@ public class BrokersService {
 
     public Brokers getBrokers(@NotNull Integer limit, @NotNull Integer pageNumber, FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
-        Example<IntermediariPa> filters = CommonUtil.getFilters(filterAndOrder, IntermediariPa.class);
+        var filters = CommonUtil.getFilters(IntermediariPa.builder()
+                .idIntermediarioPa(filterAndOrder.getFilter().getCode())
+                .codiceIntermediario(filterAndOrder.getFilter().getName())
+                .build());
         Page<IntermediariPa> page = intermediariPaRepository.findAll(filters, pageable);
         return Brokers.builder()
                 .brokerList(getBrokerList(page))

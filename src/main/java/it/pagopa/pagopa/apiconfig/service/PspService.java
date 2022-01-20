@@ -21,7 +21,6 @@ import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +39,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilters;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 
@@ -67,7 +65,10 @@ public class PspService {
 
     public PaymentServiceProviders getPaymentServiceProviders(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
-        Example<Psp> filters = getFilters(filterAndOrder, Psp.class);
+        var filters = CommonUtil.getFilters(Psp.builder()
+                .idPsp(filterAndOrder.getFilter().getName())
+                .ragioneSociale(filterAndOrder.getFilter().getName())
+                .build());
         Page<Psp> page = pspRepository.findAll(filters, pageable);
         return PaymentServiceProviders.builder()
                 .paymentServiceProviderList(getPaymentServiceProviderList(page))
