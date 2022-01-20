@@ -42,6 +42,44 @@
             "name": "page",
             "required": true,
             "type": "integer"
+          },
+          {
+            "description": "Filter by code",
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by name",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "CODE",
+            "description": "Order by code or name",
+            "enum": [
+              "CODE",
+              "NAME"
+            ],
+            "in": "query",
+            "name": "orderby",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "DESC",
+            "description": "Direction of ordering",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "in": "query",
+            "name": "ordering",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -599,6 +637,44 @@
             "name": "page",
             "required": true,
             "type": "integer"
+          },
+          {
+            "description": "Filter by code",
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by name",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "CODE",
+            "description": "Order by code or name",
+            "enum": [
+              "CODE",
+              "NAME"
+            ],
+            "in": "query",
+            "name": "orderby",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "DESC",
+            "description": "Direction of ordering",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "in": "query",
+            "name": "ordering",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -1393,6 +1469,25 @@
             "name": "page",
             "required": true,
             "type": "integer"
+          },
+          {
+            "description": "Filter by code",
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "DESC",
+            "description": "Direction of ordering. Results are ordered by code",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "in": "query",
+            "name": "ordering",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -3257,6 +3352,44 @@
             "name": "page",
             "required": true,
             "type": "integer"
+          },
+          {
+            "description": "Filter by code",
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by name",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "CODE",
+            "description": "Order by code or name",
+            "enum": [
+              "CODE",
+              "NAME"
+            ],
+            "in": "query",
+            "name": "orderby",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "DESC",
+            "description": "Direction of ordering",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "in": "query",
+            "name": "ordering",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -5199,6 +5332,44 @@
             "name": "page",
             "required": true,
             "type": "integer"
+          },
+          {
+            "description": "Filter by code",
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by name",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "CODE",
+            "description": "Order by code or name",
+            "enum": [
+              "CODE",
+              "NAME"
+            ],
+            "in": "query",
+            "name": "orderby",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "DESC",
+            "description": "Direction of ordering",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "in": "query",
+            "name": "ordering",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -6466,6 +6637,25 @@
             "description": "Filter by creditor institution",
             "in": "query",
             "name": "creditorinstitutioncode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by code",
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "DESC",
+            "description": "Direction of ordering. Results are ordered by code",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "in": "query",
+            "name": "ordering",
             "required": false,
             "type": "string"
           }

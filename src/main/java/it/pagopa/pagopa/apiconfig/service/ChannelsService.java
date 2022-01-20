@@ -13,7 +13,6 @@ import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilters;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 @Service
@@ -45,7 +43,9 @@ public class ChannelsService {
 
     public Channels getChannels(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
-        Example<Canali> filters = getFilters(filterAndOrder, Canali.class);
+        var filters = CommonUtil.getFilters(Canali.builder()
+                .idCanale(filterAndOrder.getFilter().getCode())
+                .build());
         Page<Canali> page = canaliRepository.findAll(filters, pageable);
         return Channels.builder()
                 .channelList(getChannelList(page))

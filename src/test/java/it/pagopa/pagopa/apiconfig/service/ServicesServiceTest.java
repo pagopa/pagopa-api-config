@@ -15,7 +15,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,7 +38,7 @@ class ServicesServiceTest {
     @Test
     void getServices() throws IOException, JSONException {
         Page<ElencoServizi> page = TestUtil.mockPage(Lists.newArrayList(getMockElencoServizi()), 50, 0);
-        when(elencoServiziRepository.findAll(any(Example.class), any(Pageable.class))).thenReturn(page);
+        when(elencoServiziRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
         Services result = servicesService.getServices(50, 0, Service.Filter.builder().build());
 
@@ -51,7 +50,7 @@ class ServicesServiceTest {
     @Test
     void getServices_filter() throws IOException, JSONException {
         Page<ElencoServizi> page = TestUtil.mockPage(Lists.newArrayList(getMockElencoServizi()), 50, 0);
-        when(elencoServiziRepository.findAll(any(Example.class), any(Pageable.class))).thenReturn(page);
+        when(elencoServiziRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
         Services result = servicesService.getServices(50, 0, Service.Filter.builder()
                 .languageCode(Service.LanguageCode.EN)

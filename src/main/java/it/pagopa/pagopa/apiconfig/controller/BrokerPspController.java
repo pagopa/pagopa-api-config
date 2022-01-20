@@ -60,10 +60,10 @@ public class BrokerPspController {
     public ResponseEntity<BrokersPsp> getBrokersPsp(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
             @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
-            @RequestParam(required = false, name = "code") String filterByCode,
-            @RequestParam(required = false, name = "name") String filterByName,
-            @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.BrokerPsp orderBy,
-            @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering) {
+            @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code") String filterByCode,
+            @RequestParam(required = false, name = "name") @Parameter(description = "Filter by name") String filterByName,
+            @RequestParam(required = false, name = "orderby", defaultValue = "CODE") @Parameter(description = "Order by code or name") Order.BrokerPsp orderBy,
+            @RequestParam(required = false, name = "ordering", defaultValue = "DESC") @Parameter(description = "Direction of ordering") Sort.Direction ordering) {
         return ResponseEntity.ok(brokersPspService.getBrokersPsp(limit, page, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering)));
     }
 

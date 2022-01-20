@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "ELENCO_SERVIZI", schema = "NODO4_CFG")
 public class ElencoServizi {

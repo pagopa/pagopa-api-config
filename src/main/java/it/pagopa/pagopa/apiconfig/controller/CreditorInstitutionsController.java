@@ -8,13 +8,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +64,10 @@ public class CreditorInstitutionsController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CreditorInstitutions> getCreditorInstitutions(@Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit, @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
-                                                                        @RequestParam(required = false, name = "code") String filterByCode,
-                                                                        @RequestParam(required = false, name = "name") String filterByName,
-                                                                        @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.CreditorInstitution orderBy,
-                                                                        @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering) {
+                                                                        @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code") String filterByCode,
+                                                                        @RequestParam(required = false, name = "name") @Parameter(description = "Filter by name") String filterByName,
+                                                                        @RequestParam(required = false, name = "orderby", defaultValue = "CODE") @Parameter(description = "Order by code or name") Order.CreditorInstitution orderBy,
+                                                                        @RequestParam(required = false, name = "ordering", defaultValue = "DESC") @Parameter(description = "Direction of ordering") Sort.Direction ordering) {
         return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutions(limit, page, CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering)));
     }
 
