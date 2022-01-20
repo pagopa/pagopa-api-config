@@ -1,0 +1,8 @@
+{
+  "configuration_keys": [{
+    "config_category": "category",
+    "config_key": "key",
+    "config_value": "value",
+    "config_description": "description"
+  }]
+}

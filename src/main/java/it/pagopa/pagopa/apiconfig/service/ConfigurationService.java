@@ -20,8 +20,9 @@ public class ConfigurationService {
     private ModelMapper modelMapper;
 
     public ConfigurationKeys getConfigurationKeys() {
+        List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKeyList = configurationKeysRepository.findAll();
         return it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys.builder()
-                .configurationKeyList(getConfigurationKeys(configurationKeysRepository.findAll()))
+                .configurationKeyList(getConfigurationKeys(configKeyList))
                 .build();
     }
 
