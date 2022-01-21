@@ -149,4 +149,28 @@ public class ConfigurationServiceTest {
         }
     }
 
+    @Test
+    void deleteConfigurationService() {
+        when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key")).thenReturn(Optional.of(getMockConfigurationKeyEntity()));
+
+        try {
+            configurationService.deleteConfigurationKey("category", "key");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteConfigurationService_notfound() {
+        when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key")).thenReturn(Optional.empty());
+
+        try {
+            configurationService.deleteConfigurationKey("category", "key");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
 }

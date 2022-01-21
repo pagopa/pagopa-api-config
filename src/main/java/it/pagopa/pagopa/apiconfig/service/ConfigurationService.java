@@ -62,6 +62,11 @@ public class ConfigurationService {
         return modelMapper.map(configKeyEntity, ConfigurationKey.class);
     }
 
+    public void deleteConfigurationKey(String category, String key) {
+        it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configurationKey = getConfigurationKeyIfExists(category, key);
+        configurationKeysRepository.delete(configurationKey);
+    }
+
     /**
      * Maps ConfigurationKeys objects stored in the DB in a List of ConfigurationKey
      *

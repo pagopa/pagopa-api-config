@@ -3970,6 +3970,52 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "deleteConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -4112,6 +4158,52 @@
 								{
 									"key": "key",
 									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteConfigurationKey NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "unknown"
+								},
+								{
+									"key": "key",
+									"value": "unknown"
 								}
 							]
 						}

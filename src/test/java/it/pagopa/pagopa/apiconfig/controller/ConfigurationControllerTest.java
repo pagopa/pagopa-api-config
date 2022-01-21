@@ -91,4 +91,10 @@ public class ConfigurationControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
+    @Test
+    void deleteConfigurationKey() throws Exception {
+        mvc.perform(delete("/configuration/keys/category/category/key/key").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 /**
  * Author: Francesco Cesareo
@@ -102,6 +103,8 @@ public class ConfigurationController {
     /**
      * PUT /configuration/keys/category/{category}/key/{key} : Update a configuration key
      *
+     * @param category Configuration category (required)
+     * @param key Configuration key (required)
      * @return OK. (status code 200)
      * or Service unavailable (status code 500)
      */
@@ -115,10 +118,33 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/keys/category/{category}/key/{key}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ConfigurationKey> updateCreditorInstitution(@Parameter(description = "Configuration category") @PathVariable("category") String category,
+    public ResponseEntity<ConfigurationKey> updateConfigurationKey(@Parameter(description = "Configuration category") @PathVariable("category") String category,
                                                                       @Parameter(description = "Configuration key") @PathVariable("key") String key,
                                                                       @RequestBody @Valid @NotNull ConfigurationKey configurationKey) {
         ConfigurationKey configKey = configurationService.updateConfigurationKey(category, key, configurationKey);
         return ResponseEntity.ok(configKey);
+    }
+
+    /**
+     * DELETE /configuration/keys/category/{category}/key/{key} : Delete a configuration key
+     *
+     * @param category Configuration category (required)
+     * @param key Configuration key (required)
+     * @return
+     */
+    @Operation(summary = "Delete configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/keys/category/{category}/key/{key}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> deleteConfigurationKeys(@Parameter(description = "Configuration category") @PathVariable("category") String category,
+                                                        @Parameter(description = "Configuration key") @PathVariable("key") String key) {
+        configurationService.deleteConfigurationKey(category, key);
+        return ResponseEntity.ok().build();
     }
 }
