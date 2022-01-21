@@ -40,7 +40,7 @@ public class ConfigurationControllerTest {
     @ParameterizedTest
     @CsvSource({
             "/configuration/keys",
-            "/configuration/keys/key"
+            "/configuration/keys/category/category/key/key"
 
     })
     void testGets(String url) throws Exception {
