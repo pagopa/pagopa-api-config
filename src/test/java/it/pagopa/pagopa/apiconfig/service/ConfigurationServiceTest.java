@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
-public class ConfigurationServiceTest {
+class ConfigurationServiceTest {
 
     @MockBean
     private ConfigurationKeysRepository configurationKeysRepository;
