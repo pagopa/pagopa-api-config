@@ -78,6 +78,11 @@ public class ConfigurationService {
                 .build();
     }
 
+    public WfespPluginConf getWfespPluginConfiguration(@NotNull String idServPlugin) {
+        it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wfespPluginConf = getWfespPluginConfigurationIfExists(idServPlugin);
+        return modelMapper.map(wfespPluginConf, WfespPluginConf.class);
+    }
+
     /**
      * Maps ConfigurationKeys objects stored in the DB in a List of ConfigurationKey
      *
@@ -116,4 +121,16 @@ public class ConfigurationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param idServPlugin idServPlugin
+     * @return return the configuration wfesp plugin record from DB if exists
+     * @throws AppException if not found
+     */
+    protected it.pagopa.pagopa.apiconfig.entity.WfespPluginConf getWfespPluginConfigurationIfExists(String idServPlugin) throws AppException {
+        Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> result = wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
+        if (result.isEmpty()) {
+            throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
+        }
+        return result.get();
+    }
 }

@@ -49,6 +49,9 @@ public enum AppError {
     CONFIGURATION_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "Configuration key not found", "No Configuration key found with category: %s key: %s"),
     CONFIGURATION_KEY_CONFLICT(HttpStatus.CONFLICT, "Configuration key conflict", "Configuration key with category %s and key %s already exists"),
 
+    CONFIGURATION_WFESP_PLUGIN_NOT_FOUND(HttpStatus.NOT_FOUND, "Configuration wfesp plugin not found", "No Configuration wfesp plugin found with idServPlugin: %s"),
+    CONFIGURATION_WFESP_PLUGIN_CONFLICT(HttpStatus.CONFLICT, "Configuration wfesp plugin conflict", "Configuration key with idServPlugin %s already exists"),
+
     UNKNOWN(null, null, null);
 
 

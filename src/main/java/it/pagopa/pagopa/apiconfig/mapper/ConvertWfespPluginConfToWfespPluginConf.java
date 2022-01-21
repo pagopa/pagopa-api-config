@@ -16,7 +16,7 @@ public class ConvertWfespPluginConfToWfespPluginConf implements Converter<WfespP
                 .idServPlugin(wfespPluginConf.getIdServPlugin())
                 .profiloPagConstString(CommonUtil.deNull(wfespPluginConf.getProfiloPagConstString()))
                 .profiloPagSoapRule(CommonUtil.deNull(wfespPluginConf.getProfiloPagSoapRule()))
-                .profiloPagRptXpath(CommonUtil.deNull(wfespPluginConf.getProfiloPagSoapRule()))
+                .profiloPagRptXpath(CommonUtil.deNull(wfespPluginConf.getProfiloPagRptXpath()))
                 .build();
     }
 }
