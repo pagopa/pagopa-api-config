@@ -4,7 +4,10 @@ import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,9 @@ public class ConfigurationService {
 
     @Autowired
     private ConfigurationKeysRepository configurationKeysRepository;
+
+    @Autowired
+    private WfespPluginConfRepository wfespPluginConfRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -65,6 +71,13 @@ public class ConfigurationService {
         configurationKeysRepository.delete(configurationKey);
     }
 
+    public WfespPluginConfs getWfespPluginConfigurationList() {
+        List<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> list = wfespPluginConfRepository.findAll();
+        return it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs.builder()
+                .wfespPluginConfList(getWfespPluginConfList(list))
+                .build();
+    }
+
     /**
      * Maps ConfigurationKeys objects stored in the DB in a List of ConfigurationKey
      *
@@ -89,6 +102,18 @@ public class ConfigurationService {
             throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
         }
         return result.get();
+    }
+
+    /**
+     * Maps WfespPluginConf objects stored in the DB in a List of WfespPluginConf
+     *
+     * @param wfespPluginConfList list of Wfesp Plugin configuration returned from the database
+     * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf}.
+     */
+    private List<WfespPluginConf> getWfespPluginConfList(List<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wfespPluginConfList) {
+        return wfespPluginConfList.stream()
+                .map(elem -> modelMapper.map(elem, WfespPluginConf.class))
+                .collect(Collectors.toList());
     }
 
 }

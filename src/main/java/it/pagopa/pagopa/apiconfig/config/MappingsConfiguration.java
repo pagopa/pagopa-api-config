@@ -1,22 +1,7 @@
 package it.pagopa.pagopa.apiconfig.config;
 
 
-import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
-import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
-import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.mapper.*;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Broker;
@@ -86,6 +71,7 @@ public class MappingsConfiguration {
         Converter<ChannelDetails, Canali> convertChannelDetailsToCanali = new ConvertChannelDetailsToCanali();
         Converter<ConfigurationKeys, ConfigurationKey> convertConfigurationKeysConfigurationKey = new ConvertConfigurationKeysToConfigurationKey();
         Converter<CanaleTipoVersamento, Service.PaymentTypeCode> convertCanaleTipoVersamentoToPaymentTypeCode = new ConvertCanaleTipoVersamentoToPaymentTypeCode();
+        Converter<WfespPluginConf, it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf> convertConfWfespPluginConf = new ConvertWfespPluginConfToWfespPluginConf();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -117,6 +103,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(ChannelDetails.class, Canali.class).setConverter(convertChannelDetailsToCanali);
         mapper.createTypeMap(ConfigurationKeys.class, ConfigurationKey.class).setConverter(convertConfigurationKeysConfigurationKey);
         mapper.createTypeMap(CanaleTipoVersamento.class, Service.PaymentTypeCode.class).setConverter(convertCanaleTipoVersamentoToPaymentTypeCode);
+        mapper.createTypeMap(WfespPluginConf.class, it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf.class).setConverter(convertConfWfespPluginConf);
 
         return mapper;
     }
