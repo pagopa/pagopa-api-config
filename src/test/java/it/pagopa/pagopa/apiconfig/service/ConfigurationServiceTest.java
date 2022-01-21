@@ -2,10 +2,13 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,13 +35,16 @@ class ConfigurationServiceTest {
     @MockBean
     private ConfigurationKeysRepository configurationKeysRepository;
 
+    @MockBean
+    private WfespPluginConfRepository wfespPluginConfRepository;
+
     @Autowired
     @InjectMocks
     private ConfigurationService configurationService;
 
     @Test
     void getConfigurationKeys_ok() throws IOException, JSONException {
-        List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKeyEntityList = getMockConfigurationKeysEntities();
+        List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKeyEntityList = getMockConfigurationKeysEntries();
         when(configurationKeysRepository.findAll()).thenReturn(configKeyEntityList);
 
         ConfigurationKeys configurationKeys = configurationService.getConfigurationKeys();
@@ -169,5 +175,145 @@ class ConfigurationServiceTest {
             fail();
         }
     }
+
+
+
+
+
+
+
+    @Test
+    void getWfespPlugins_ok() throws IOException, JSONException {
+        List<WfespPluginConf> entries = getMockWfespPluginConfEntries();
+        when(wfespPluginConfRepository.findAll()).thenReturn(entries);
+
+        WfespPluginConfs wpList = configurationService.getWfespPluginConfigurations();
+        String actual = TestUtil.toJson(wpList);
+        String expected = TestUtil.readJsonFromFile("response/get_wfesp_plugins_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getWfespPlugin_ok() throws IOException, JSONException {
+        WfespPluginConf wfespPluginConf = getMockWfespPluginConf();
+        when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(java.util.Optional.ofNullable(wfespPluginConf));
+
+        it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf wp = configurationService.getWfespPluginConfiguration("idServPlugin");
+        String actual = TestUtil.toJson(wp);
+        String expected = TestUtil.readJsonFromFile("response/get_wfesp_plugin_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getWfespPlugin_notFound() {
+        when(wfespPluginConfRepository.findByIdServPlugin("unknown")).thenReturn(Optional.empty());
+        try {
+            configurationService.getWfespPluginConfiguration("unknown");
+            fail();
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void createWfespPlugin() throws IOException, JSONException {
+        when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.empty());
+        when(wfespPluginConfRepository.save(any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class))).thenReturn(getMockWfespPluginConf());
+
+        it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf result = configurationService.createWfespPluginConfiguration(getMockModelWfespPluginConf());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_wfesp_plugin_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createWfespPlugin_conflict() {
+        when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.of(getMockWfespPluginConf()));
+        when(wfespPluginConfRepository.save(any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class))).thenReturn(getMockWfespPluginConf());
+
+        try {
+            configurationService.createWfespPluginConfiguration(getMockModelWfespPluginConf());
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updateWfespPlugin() throws IOException, JSONException {
+        when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.of(getMockWfespPluginConf()));
+        when(wfespPluginConfRepository.save(any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class))).thenReturn(getMockWfespPluginConf());
+
+        it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf result = configurationService.updateWfespPluginConfiguration("idServPlugin", getMockModelWfespPluginConf());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_wfesp_plugin_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updateWfespPlugin_notFound() {
+        when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.empty());
+        when(wfespPluginConfRepository.save(any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class))).thenReturn(getMockWfespPluginConf());
+
+        try {
+            configurationService.updateWfespPluginConfiguration("idServPlugin", getMockModelWfespPluginConf());
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updateWfespPlugin_badRequest() {
+        when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.of(getMockWfespPluginConf()));
+        when(wfespPluginConfRepository.save(any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class))).thenReturn(getMockWfespPluginConf());
+
+        try {
+            it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf conf = getMockModelWfespPluginConf();
+            conf.setIdServPlugin("");
+            configurationService.updateWfespPluginConfiguration("idServPlugin", conf);
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteWfespPlugin() {
+        when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.of(getMockWfespPluginConf()));
+
+        try {
+            configurationService.deleteWfespPluginConfiguration("idServPlugin");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteWfespPlugin_notfound() {
+        when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.empty());
+
+        try {
+            configurationService.deleteWfespPluginConfiguration("idServPlugin");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
 
 }

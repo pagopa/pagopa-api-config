@@ -71,7 +71,7 @@ public class ConfigurationService {
         configurationKeysRepository.delete(configurationKey);
     }
 
-    public WfespPluginConfs getWfespPluginConfigurationList() {
+    public WfespPluginConfs getWfespPluginConfigurations() {
         List<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> list = wfespPluginConfRepository.findAll();
         return it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs.builder()
                 .wfespPluginConfList(getWfespPluginConfList(list))
@@ -81,6 +81,40 @@ public class ConfigurationService {
     public WfespPluginConf getWfespPluginConfiguration(@NotNull String idServPlugin) {
         it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wfespPluginConf = getWfespPluginConfigurationIfExists(idServPlugin);
         return modelMapper.map(wfespPluginConf, WfespPluginConf.class);
+    }
+
+    public WfespPluginConf createWfespPluginConfiguration(WfespPluginConf wfespPluginConf) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp = wfespPluginConfRepository.findByIdServPlugin(wfespPluginConf.getIdServPlugin());
+        if (wp.isPresent()) {
+            throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_CONFLICT, wfespPluginConf.getIdServPlugin());
+        }
+
+        it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wpEntity = modelMapper.map(wfespPluginConf, it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class);
+        wfespPluginConfRepository.save(wpEntity);
+        return modelMapper.map(wpEntity, WfespPluginConf.class);
+    }
+
+    public WfespPluginConf updateWfespPluginConfiguration(String idServPlugin, WfespPluginConf wfespPluginConf) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp = wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
+        if (!wp.isPresent()) {
+            throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
+        }
+
+        it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wpEntity = wp.get();
+        wpEntity.setIdServPlugin(idServPlugin);
+        wpEntity.setIdBean(wfespPluginConf.getIdBean());
+        wpEntity.setProfiloPagConstString(wfespPluginConf.getProfiloPagConstString());
+        wpEntity.setProfiloPagSoapRule(wfespPluginConf.getProfiloPagSoapRule());
+        wpEntity.setProfiloPagRptXpath(wfespPluginConf.getProfiloPagRptXpath());
+
+        wfespPluginConfRepository.save(wpEntity);
+
+        return modelMapper.map(wpEntity, WfespPluginConf.class);
+    }
+
+    public void deleteWfespPluginConfiguration(String idServPlugin) {
+        it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wp = getWfespPluginConfigurationIfExists(idServPlugin);
+        wfespPluginConfRepository.delete(wp);
     }
 
     /**

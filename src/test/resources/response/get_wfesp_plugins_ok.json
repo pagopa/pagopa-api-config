@@ -1,0 +1,11 @@
+{
+  "wfesp_plugin_confs": [
+    {
+      "id_serv_plugin": "idServPlugin",
+      "pag_const_string_profile": "",
+      "pag_soap_rule_profile": "",
+      "pag_rpt_xpath_profile": "",
+      "id_bean": "sdf"
+    }
+  ]
+}

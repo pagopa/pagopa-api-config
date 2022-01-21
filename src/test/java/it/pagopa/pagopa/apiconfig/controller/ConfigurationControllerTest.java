@@ -35,12 +35,17 @@ class ConfigurationControllerTest {
     void setUp() {
         when(configurationService.getConfigurationKeys()).thenReturn(getMockConfigurationKeys());
         when(configurationService.getConfigurationKey("category", "key")).thenReturn(getMockConfigurationKey("category", "key"));
+
+        when(configurationService.getWfespPluginConfigurations()).thenReturn(getMockWfespPluginConfigurations());
+        when(configurationService.getWfespPluginConfiguration("idServPlugin")).thenReturn(getMockModelWfespPluginConf());
     }
 
     @ParameterizedTest
     @CsvSource({
             "/configuration/keys",
-            "/configuration/keys/category/category/key/key"
+            "/configuration/keys/category/category/key/key",
+            "/configuration/wfespplugins",
+            "/configuration/wfespplugins/idServPlugin"
 
     })
     void testGets(String url) throws Exception {
@@ -94,6 +99,52 @@ class ConfigurationControllerTest {
     @Test
     void deleteConfigurationKey() throws Exception {
         mvc.perform(delete("/configuration/keys/category/category/key/key").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createWfespPlugin() throws Exception {
+        mvc.perform(post("/configuration/wfespplugins")
+                .content(TestUtil.toJson(getMockModelWfespPluginConf()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createWfespPlugin_400() throws Exception {
+        mvc.perform(post("/configuration/wfespplugins")
+                .content(TestUtil.toJson(getMockModelWfespPluginConf().toBuilder()
+                        .idServPlugin("")
+                        .build()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void updateWfespPlugin() throws Exception {
+        mvc.perform(put("/configuration/wfespplugins/idServPlugin")
+                .content(TestUtil.toJson(getMockModelWfespPluginConf()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateWfespPlugin_400() throws Exception {
+        mvc.perform(put("/configuration/wfespplugins/idServPlugin")
+                .content(
+                        TestUtil.toJson(
+                                getMockModelWfespPluginConf().toBuilder()
+                                        .idServPlugin("")
+                                        .build())
+                ).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void deleteWfespPlugin() throws Exception {
+        mvc.perform(delete("/configuration/wfespplugins/idServPlugin").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

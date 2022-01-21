@@ -1,9 +1,9 @@
 {
 	"info": {
-      "_postman_id": "618a0964-fcb8-453e-b456-70f5f36d256b",
-      "name": "ApiConfig",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
+		"_postman_id": "618a0964-fcb8-453e-b456-70f5f36d256b",
+		"name": "ApiConfig",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
 	"item": [
 		{
 			"name": "login",
@@ -825,23 +825,23 @@
 								{
 									"key": "page",
 									"value": "0"
-                                },
-                              {
-                                "key": "creditorinstitutioncode",
-                                "value": "00168480242",
-                                "disabled": true
-                              },
-                              {
-                                "key": "brokercode",
-                                "value": "80007580279",
-                                "disabled": true
-                              },
-                              {
-                                "key": "code",
-                                "value": "8776",
-                                "disabled": true
-                              }
-                            ]
+								},
+								{
+									"key": "creditorinstitutioncode",
+									"value": "00168480242",
+									"disabled": true
+								},
+								{
+									"key": "brokercode",
+									"value": "80007580279",
+									"disabled": true
+								},
+								{
+									"key": "code",
+									"value": "8776",
+									"disabled": true
+								}
+							]
 						}
 					},
 					"response": []
@@ -1068,35 +1068,35 @@
 								"brokers"
 							],
 							"query": [
-                              {
-                                "key": "limit",
-                                "value": "50"
-                              },
-                              {
-                                "key": "page",
-                                "value": "0"
-                              },
-                              {
-                                "key": "code",
-                                "value": "int",
-                                "disabled": true
-                              },
-                              {
-                                "key": "name",
-                                "value": "pa",
-                                "disabled": true
-                              },
-                              {
-                                "key": "orderby",
-                                "value": "NAME",
-                                "disabled": true
-                              },
-                              {
-                                "key": "ordering",
-                                "value": "ASC",
-                                "disabled": true
-                              }
-                            ]
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "code",
+									"value": "int",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "pa",
+									"disabled": true
+								},
+								{
+									"key": "orderby",
+									"value": "NAME",
+									"disabled": true
+								},
+								{
+									"key": "ordering",
+									"value": "ASC",
+									"disabled": true
+								}
+							]
 						}
 					},
 					"response": []
@@ -3062,169 +3062,169 @@
 							"path": [
 								"{{api-config-base-path}}",
 								"channels",
-                              ":code"
-                            ],
-                          "variable": [
-                            {
-                              "key": "code",
-                              "value": "{{channel_code}}"
-                            }
-                          ]
-                        }
-                    },
-                  "response": []
-                },
-              {
-                "name": "getPaymentTypes",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"getPaymentTypes\", function () {",
-                        "  pm.response.to.have.status(200);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
-                    }
-                  }
-                ],
-                "request": {
-                  "method": "GET",
-                  "header": [
-                    {
-                      "key": "accept",
-                      "value": "application/json"
-                    }
-                  ],
-                  "url": {
-                    "raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
-                    "host": [
-                      "{{api-config-host}}"
-                    ],
-                    "path": [
-                      "{{api-config-base-path}}",
-                      "channels",
-                      ":code",
-                      "paymenttypes"
-                    ],
-                    "variable": [
-                      {
-                        "key": "code",
-                        "value": "00001060966_01"
-                      }
-                    ]
-                  }
-                },
-                "response": []
-              },
-              {
-                "name": "createPaymentType",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"createPaymentType\", function () {",
-                        "  pm.response.to.have.status(201);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
-                    }
-                  }
-                ],
-                "request": {
-                  "method": "POST",
-                  "header": [
-                    {
-                      "key": "Content-Type",
-                      "value": "application/json",
-                      "type": "text"
-                    }
-                  ],
-                  "body": {
-                    "mode": "raw",
-                    "raw": "{\n    \"payment_type\": [\n        \"PO\"\n    ]\n}"
-                  },
-                  "url": {
-                    "raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
-                    "host": [
-                      "{{api-config-host}}"
-                    ],
-                    "path": [
-                      "{{api-config-base-path}}",
-                      "channels",
-                      ":code",
-                      "paymenttypes"
-                    ],
-                    "variable": [
-                      {
-                        "key": "code",
-                        "value": "00001060966_01"
-                      }
-                    ]
-                  }
-                },
-                "response": []
-              },
-              {
-                "name": "deletePaymentType",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"deletePaymentType\", function () {",
-                        "  pm.response.to.have.status(200);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
-                    }
-                  }
-                ],
-                "request": {
-                  "method": "DELETE",
-                  "header": [
-                    {
-                      "key": "Content-Type",
-                      "value": "application/json",
-                      "type": "text"
-                    }
-                  ],
-                  "url": {
-                    "raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes/:type",
-                    "host": [
-                      "{{api-config-host}}"
-                    ],
-                    "path": [
-                      "{{api-config-base-path}}",
-                      "channels",
-                      ":code",
-                      "paymenttypes",
-                      ":type"
-                    ],
-                    "variable": [
-                      {
-                        "key": "code",
-                        "value": "00001060966_01"
-                      },
-                      {
-                        "key": "type",
-                        "value": "PO"
-                      }
-                    ]
-                  }
-                },
-                "response": []
-              },
-              {
-                "name": "getServices",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"getServices\", function () {",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{channel_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPaymentTypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentTypes\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code",
+								"paymenttypes"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00001060966_01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPaymentType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPaymentType\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_type\": [\n        \"PO\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code",
+								"paymenttypes"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00001060966_01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePaymentType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deletePaymentType\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes/:type",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code",
+								"paymenttypes",
+								":type"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00001060966_01"
+								},
+								{
+									"key": "type",
+									"value": "PO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getServices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getServices\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -3877,18 +3877,18 @@
 					},
 					"response": []
 				},
-              {
-                "name": "createPaymentType Conflict",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"createPaymentType_conflict\", function () {",
-                        "  pm.response.to.have.status(409);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
+				{
+					"name": "createPaymentType Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPaymentType_conflict\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -3898,155 +3898,975 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json",
-                              "type": "text"
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-                          "raw": "{\n    \"payment_type\": [\n        \"BBT\"\n    ]\n}"
+							"raw": "{\n    \"payment_type\": [\n        \"BBT\"\n    ]\n}"
 						},
 						"url": {
-                          "raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
-                          "host": [
-                            "{{api-config-host}}"
-                          ],
-                          "path": [
-                            "{{api-config-base-path}}",
-                            "channels",
-                            ":code",
-                            "paymenttypes"
-                          ],
-                          "variable": [
-                            {
-                              "key": "code",
-                              "value": "00001060966_01"
-                            }
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code",
+								"paymenttypes"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00001060966_01"
+								}
 							]
 						}
 					},
 					"response": []
 				},
-              {
-                "name": "deletePaymentType NotFound",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"deletePaymentType_notFound\", function () {",
-                        "  pm.response.to.have.status(404);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
+				{
+					"name": "deletePaymentType NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deletePaymentType_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-                      "method": "DELETE",
-                      "header": [
-                        {
-                          "key": "Content-Type",
-                          "value": "application/json",
-                          "type": "text"
-                        }
-                      ],
-                      "url": {
-                        "raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes/:type",
-                        "host": [
-                          "{{api-config-host}}"
-                        ],
-                        "path": [
-                          "{{api-config-base-path}}",
-                          "channels",
-                          ":code",
-                          "paymenttypes",
-                          ":type"
-                        ],
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes/:type",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code",
+								"paymenttypes",
+								":type"
+							],
 							"variable": [
-                              {
-                                "key": "code",
-                                "value": "00001060966_01"
-                              },
-                              {
-                                "key": "type",
-                                "value": "PO"
-                              }
-                            ]
-                      }
-                    },
-                "response": []
-              },
-              {
-                "name": "getCdi NotFound",
-                "event": [
-                  {
-                    "listen": "test",
-                    "script": {
-                      "exec": [
-                        "pm.test(\"getCdi_notFound\", function () {",
-                        "  pm.response.to.have.status(404);",
-                        "});"
-                      ],
-                      "type": "text/javascript"
+								{
+									"key": "code",
+									"value": "00001060966_01"
+								},
+								{
+									"key": "type",
+									"value": "PO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCdi NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCdi_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
 						"header": [
-                          {
-                            "key": "accept",
-                            "value": "application/json"
-                          }
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
 						],
 						"url": {
-                          "raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
-                          "host": [
-                            "{{api-config-host}}"
-                          ],
-                          "path": [
-                            "{{api-config-base-path}}",
-                            "cdis",
-                            ":id"
-                          ],
-                          "query": [
-                            {
-                              "key": "pspcode",
-                              "value": "BPPIITRRZZZ"
-                            }
-                          ],
-                          "variable": [
-                            {
-                              "key": "id",
-                              "value": "zzz"
-                            }
-                          ]
-                        }
-                    },
-                "response": []
-              }
-            ],
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  ""
-                ]
-              }
-            }
-          ]
-        }
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis",
+								":id"
+							],
+							"query": [
+								{
+									"key": "pspcode",
+									"value": "BPPIITRRZZZ"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "zzz"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "api test suite - configuration",
+			"item": [
+				{
+					"name": "getConfigurationKeys",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKeys\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.configuration_keys).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createConfigurationKey\", function () {",
+									"  pm.response.to.have.status(201);  ",
+									"  ",
+									"  const requestJson = JSON.parse(pm.request.body.raw);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.config_category).to.eql(requestJson.config_category);",
+									"  pm.expect(responseJson.config_key).to.eql(requestJson.config_key);",
+									"  pm.expect(responseJson.config_value).to.eql(requestJson.config_value);",
+									"  pm.expect(responseJson.config_description).to.be.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_category\": \"{{configuration_category}}\",\n    \"config_key\": \"pippo2\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.config_category).to.be.exist;",
+									"  pm.expect(responseJson.config_key).to.be.exist;",
+									"  pm.expect(responseJson.config_value).to.be.exist;",
+									"  pm.expect(responseJson.config_description).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_category\": \"test1\",\n    \"config_key\": \"pippo2\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteConfigurationKey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getWfespPlugins",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getWfespPlugins\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.wfesp_plugin_confs).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/wfespplugins",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"wfespplugins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createWfespPlugins",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createConfigurationKey\", function () {",
+									"  pm.response.to.have.status(201);  ",
+									"  ",
+									"  const requestJson = JSON.parse(pm.request.body.raw);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.config_category).to.eql(requestJson.config_category);",
+									"  pm.expect(responseJson.config_key).to.eql(requestJson.config_key);",
+									"  pm.expect(responseJson.config_value).to.eql(requestJson.config_value);",
+									"  pm.expect(responseJson.config_description).to.be.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_serv_plugin\": \"{{wfesp_id_serv_plugin}}\",\n    \"pag_const_string_profile\": \"const string\",\n    \"pag_soap_rule_profile\": \"soap rule\",\n    \"pag_rpt_xpath_profile\": \"xpath rtp\",\n    \"id_bean\": \"id bean\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/wfespplugins",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"wfespplugins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getWfespPlugin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getWfespPlugins\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.wfesp_plugin_confs).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/wfespplugins/:wfesp_idServPlugin",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"wfespplugins",
+								":wfesp_idServPlugin"
+							],
+							"variable": [
+								{
+									"key": "wfesp_idServPlugin",
+									"value": "{{wfesp_id_serv_plugin}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateWfespPlugin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_serv_plugin\": \"{{wfesp_id_serv_plugin}}\",\n    \"pag_const_string_profile\": \"const string 1\",\n    \"pag_soap_rule_profile\": \"soap rule 1\",\n    \"pag_rpt_xpath_profile\": \"xpath rtp 1\",\n    \"id_bean\": \"id bean 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/wfespplugins/:wfesp_idServPlugin",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"wfespplugins",
+								":wfesp_idServPlugin"
+							],
+							"variable": [
+								{
+									"key": "wfesp_idServPlugin",
+									"value": "{{wfesp_id_serv_plugin}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteWfespPlugin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/wfespplugins/:wfesp_idServPlugin",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"wfespplugins",
+								":wfesp_idServPlugin"
+							],
+							"variable": [
+								{
+									"key": "wfesp_idServPlugin",
+									"value": "{{wfesp_id_serv_plugin}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "api test error - configuration",
+			"item": [
+				{
+					"name": "getConfigurationKey NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentServiceProvider_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "unknown"
+								},
+								{
+									"key": "key",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createConfigurationKey Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createConfigurationKey\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_category\": \"GLOBAL\",\n    \"config_key\": \"scheduler.jobName_mod3UpdateNotifiedPositionPayment.jobDescription\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateConfigurationKey BadRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteConfigurationKey NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "unknown"
+								},
+								{
+									"key": "key",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getWfespPlugin NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getWfespPlugins\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.wfesp_plugin_confs).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/wfespplugins/:wfesp_idServPlugin",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"wfespplugins",
+								":wfesp_idServPlugin"
+							],
+							"variable": [
+								{
+									"key": "wfesp_idServPlugin",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createWfespPlugins Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createConfigurationKey\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_serv_plugin\": \"idPsp1\",\n    \"pag_const_string_profile\": \"const string\",\n    \"pag_soap_rule_profile\": \"soap rule\",\n    \"pag_rpt_xpath_profile\": \"xpath rtp\",\n    \"id_bean\": \"id bean\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/wfespplugins",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"wfespplugins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateWfespPlugin NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateConfigurationKey\", function () {",
+									"  pm.response.to.have.status(404);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_serv_plugin\": \"{{wfesp_id_serv_plugin}}\",\n    \"pag_const_string_profile\": \"const string 1\",\n    \"pag_soap_rule_profile\": \"soap rule 1\",\n    \"pag_rpt_xpath_profile\": \"xpath rtp 1\",\n    \"id_bean\": \"id bean 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/wfespplugins/:wfesp_idServPlugin",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"wfespplugins",
+								":wfesp_idServPlugin"
+							],
+							"variable": [
+								{
+									"key": "wfesp_idServPlugin",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
 	],
 	"auth": {
 		"type": "bearer",
