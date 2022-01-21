@@ -21,10 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-/**
- * Author: Francesco Cesareo
- * Email: cesareo.francesco@gmail.com
- */
 
 @RestController()
 @RequestMapping(path = "/configuration")
