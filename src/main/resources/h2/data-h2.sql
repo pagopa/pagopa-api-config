@@ -276,3 +276,19 @@ values (
            'false',
            'jobName_idempotencyCacheClean enabled/disabled'
        );
+insert into NODO4_CFG.PDD (
+    OBJ_ID,
+    ID_PDD,
+    ENABLED,
+    DESCRIZIONE,
+    IP,
+    PORTA
+)
+values (
+           1,
+           'localhost',
+           'Y',
+           'localhost',
+           '127.0.0.1',
+           null
+       );
