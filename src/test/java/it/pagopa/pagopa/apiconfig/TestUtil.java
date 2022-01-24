@@ -765,15 +765,6 @@ public class TestUtil {
                 .build();
     }
 
-//    public static it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys getMockConfigurationKeyEntity() {
-//        return  it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.builder()
-//                .configCategory("category")
-//                .configKey("key")
-//                .configValue("value")
-//                .configDescription("description")
-//                .build();
-//    }
-
     public static List<WfespPluginConf> getMockWfespPluginConfEntries() {
         return List.of(getMockWfespPluginConf());
     }
