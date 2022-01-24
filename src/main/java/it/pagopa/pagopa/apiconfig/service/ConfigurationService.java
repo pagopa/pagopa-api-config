@@ -2,11 +2,9 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
+import it.pagopa.pagopa.apiconfig.model.configuration.*;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.PddRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,9 @@ public class ConfigurationService {
 
     @Autowired
     private WfespPluginConfRepository wfespPluginConfRepository;
+
+    @Autowired
+    private PddRepository pddRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -117,6 +118,49 @@ public class ConfigurationService {
         wfespPluginConfRepository.delete(wp);
     }
 
+    public Pdds getPdds() {
+        List<it.pagopa.pagopa.apiconfig.entity.Pdd> pddList = pddRepository.findAll();
+        return it.pagopa.pagopa.apiconfig.model.configuration.Pdds.builder()
+                .pddList(getPdds(pddList))
+                .build();
+    }
+
+    public Pdd getPdd(@NotNull String idPdd) {
+        it.pagopa.pagopa.apiconfig.entity.Pdd pdd = getPddIfExists(idPdd);
+        return modelMapper.map(pdd, Pdd.class);
+    }
+
+    public Pdd createPdd(Pdd pdd) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> optPdd = pddRepository.findByIdPdd(pdd.getIdPdd());
+        if (optPdd.isPresent()) {
+            throw new AppException(AppError.PDD_CONFLICT, pdd.getIdPdd());
+        }
+
+        it.pagopa.pagopa.apiconfig.entity.Pdd pddEntity = modelMapper.map(pdd, it.pagopa.pagopa.apiconfig.entity.Pdd.class);
+        pddRepository.save(pddEntity);
+        return modelMapper.map(pddEntity, Pdd.class);
+    }
+
+    public Pdd updatePdd(String idPdd, Pdd pdd) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> optPdd = pddRepository.findByIdPdd(idPdd);
+        if (optPdd.isEmpty()) {
+            throw new AppException(AppError.PDD_NOT_FOUND, idPdd);
+        }
+        it.pagopa.pagopa.apiconfig.entity.Pdd updatedPdd = optPdd.get();
+        updatedPdd.setEnabled(pdd.getEnabled());
+        updatedPdd.setDescrizione(pdd.getDescription());
+        updatedPdd.setIp(pdd.getIp());
+        updatedPdd.setPorta(pdd.getPort());
+        pddRepository.save(updatedPdd);
+
+        return modelMapper.map(updatedPdd, Pdd.class);
+    }
+
+    public void deletePdd(String idPdd) {
+        it.pagopa.pagopa.apiconfig.entity.Pdd pdd = getPddIfExists(idPdd);
+        pddRepository.delete(pdd);
+    }
+
     /**
      * Maps ConfigurationKeys objects stored in the DB in a List of ConfigurationKey
      *
@@ -160,10 +204,35 @@ public class ConfigurationService {
      * @return return the configuration wfesp plugin record from DB if exists
      * @throws AppException if not found
      */
-    protected it.pagopa.pagopa.apiconfig.entity.WfespPluginConf getWfespPluginConfigurationIfExists(String idServPlugin) throws AppException {
+    private it.pagopa.pagopa.apiconfig.entity.WfespPluginConf getWfespPluginConfigurationIfExists(String idServPlugin) throws AppException {
         Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> result = wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
         if (result.isEmpty()) {
             throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
+        }
+        return result.get();
+    }
+
+    /**
+     * Maps Pdds objects stored in the DB in a List of Pdd
+     *
+     * @param pddList list of pdd returned from the database
+     * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.Pdds}.
+     */
+    private List<Pdd> getPdds(List<it.pagopa.pagopa.apiconfig.entity.Pdd> pddList) {
+        return pddList.stream()
+                .map(elem -> modelMapper.map(elem, Pdd.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @param idPdd pdd identifier
+     * @return return the configuration key record from DB if exists
+     * @throws AppException if not found
+     */
+    private it.pagopa.pagopa.apiconfig.entity.Pdd getPddIfExists(String idPdd) throws AppException {
+        Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> result = pddRepository.findByIdPdd(idPdd);
+        if (result.isEmpty()) {
+            throw new AppException(AppError.PDD_NOT_FOUND, idPdd);
         }
         return result.get();
     }
