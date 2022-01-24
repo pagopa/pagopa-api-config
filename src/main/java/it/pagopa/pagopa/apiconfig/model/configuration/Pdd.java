@@ -24,7 +24,7 @@ public class Pdd {
 
     @JsonProperty("id_pdd")
     @Schema(example = "localhost", required = true)
-    @NotNull
+    @NotBlank
     private String idPdd;
 
     @JsonProperty("enabled")
