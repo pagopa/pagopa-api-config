@@ -3841,7 +3841,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"config_category\": \"{{configuration_category}}\",\n    \"config_key\": \"pippo2\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
@@ -3933,7 +3939,13 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"config_category\": \"test1\",\n    \"config_key\": \"pippo2\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
@@ -4023,7 +4035,7 @@
 			"name": "api test error - configuration",
 			"item": [
 				{
-					"name": "getConfigurationKey",
+					"name": "getConfigurationKey NotFound",
 					"event": [
 						{
 							"listen": "test",
@@ -4085,7 +4097,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"config_category\": \"GLOBAL\",\n    \"config_key\": \"scheduler.jobName_mod3UpdateNotifiedPositionPayment.jobDescription\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
@@ -4126,10 +4144,16 @@
 					],
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \n}",
+							"mode": "formdata",
+							"formdata": [],
 							"options": {
 								"raw": {
 									"language": "json"
