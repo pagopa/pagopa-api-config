@@ -1,0 +1,17 @@
+{
+  "ftp_servers": [
+    {
+      "host": "host",
+      "port": 1,
+      "username": "username",
+      "password": "pwd",
+      "root_path": "/",
+      "service": "service",
+      "type": "out",
+      "in_path": null,
+      "out_path": null,
+      "history_path": null,
+      "enabled": true
+    }
+  ]
+}

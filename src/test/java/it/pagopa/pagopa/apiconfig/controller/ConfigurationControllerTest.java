@@ -41,6 +41,9 @@ class ConfigurationControllerTest {
 
         when(configurationService.getPdds()).thenReturn(getMockPdds());
         when(configurationService.getPdd("idPdd")).thenReturn(getMockPdd());
+
+        when(configurationService.getFtpServers()).thenReturn(getMockFtpServers());
+        when(configurationService.getFtpServer("host", 1, "service")).thenReturn(getMockFtpServer());
     }
 
     @ParameterizedTest
@@ -50,8 +53,9 @@ class ConfigurationControllerTest {
             "/configuration/wfespplugins",
             "/configuration/wfespplugins/idServPlugin",
             "/configuration/pdds",
-            "/configuration/pdds/idPdd"
-
+            "/configuration/pdds/idPdd",
+            "/configuration/ftpservers",
+            "/configuration/ftpservers/host/host/port/1/service/service"
     })
     void testGets(String url) throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -196,6 +200,53 @@ class ConfigurationControllerTest {
     @Test
     void deletePd() throws Exception {
         mvc.perform(delete("/configuration/pdds/idPdd").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createFtpServer() throws Exception {
+        mvc.perform(post("/configuration/ftpservers")
+                .content(TestUtil.toJson(getMockFtpServer()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated());
+    }
+
+
+    @Test
+    void createFtpServer_400() throws Exception {
+        mvc.perform(post("/configuration/ftpservers")
+                .content(TestUtil.toJson(getMockFtpServer().toBuilder()
+                        .host("")
+                        .build()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void updateFtpServer() throws Exception {
+        mvc.perform(put("/configuration/ftpservers/host/host/port/1/service/service")
+                .content(TestUtil.toJson(getMockFtpServer()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateFtpServer_400() throws Exception {
+        mvc.perform(put("/configuration/ftpservers/host/host/port/1/service/service")
+                .content(
+                        TestUtil.toJson(
+                                getMockFtpServer().toBuilder()
+                                        .host("")
+                                        .build())
+                ).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void deleteFtpServer() throws Exception {
+        mvc.perform(delete("/configuration/ftpservers/host/host/port/1/service/service").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
