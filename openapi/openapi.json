@@ -4212,26 +4212,174 @@
                     {
                         "ApiKey": []
                     },
-                    {
-                        "Authorization": []
-                    }
+                  {
+                    "Authorization": []
+                  }
                 ],
-                "summary": "Create a payment types of a channel",
-                "tags": [
-                    "Payment Service Providers"
-                ]
+              "summary": "Create a payment types of a channel",
+              "tags": [
+                "Payment Service Providers"
+              ]
             }
         },
-        "/configuration/keys": {
-            "get": {
-                "operationId": "getConfigurationKeys",
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ConfigurationKeys"
-                                }
+      "/channels/{channelcode}/paymenttypes/{paymenttypecode}": {
+        "delete": {
+          "operationId": "deletePaymentType",
+          "parameters": [
+            {
+              "description": "Channel code",
+              "in": "path",
+              "name": "channelcode",
+              "required": true,
+              "schema": {
+                "maxLength": 50,
+                "minLength": 0,
+                "type": "string"
+              }
+            },
+            {
+              "in": "path",
+              "name": "paymenttypecode",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {
+                "X-Request-Id": {
+                  "description": "This header identifies the call",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "400": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ProblemJson"
+                  }
+                }
+              },
+              "description": "Bad Request",
+              "headers": {
+                "X-Request-Id": {
+                  "description": "This header identifies the call",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "headers": {
+                "X-Request-Id": {
+                  "description": "This header identifies the call",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden",
+              "headers": {
+                "X-Request-Id": {
+                  "description": "This header identifies the call",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "404": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ProblemJson"
+                  }
+                }
+              },
+              "description": "Not Found",
+              "headers": {
+                "X-Request-Id": {
+                  "description": "This header identifies the call",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "429": {
+              "description": "Too many requests",
+              "headers": {
+                "X-Request-Id": {
+                  "description": "This header identifies the call",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ProblemJson"
+                  }
+                }
+              },
+              "description": "Service unavailable",
+              "headers": {
+                "X-Request-Id": {
+                  "description": "This header identifies the call",
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "ApiKey": []
+            },
+            {
+              "Authorization": []
+            }
+          ],
+          "summary": "Delete a payment types of a channel",
+          "tags": [
+            "Payment Service Providers"
+          ]
+        },
+        "parameters": [
+          {
+            "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+            "in": "header",
+            "name": "X-Request-Id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "/configuration/keys": {
+        "get": {
+          "operationId": "getConfigurationKeys",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ConfigurationKeys"
+                  }
                             }
                         },
                         "description": "OK",
