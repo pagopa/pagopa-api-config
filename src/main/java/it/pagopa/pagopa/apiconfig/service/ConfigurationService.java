@@ -83,7 +83,7 @@ public class ConfigurationService {
      * @return return the configuration key record from DB if exists
      * @throws AppException if not found
      */
-    protected it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys getConfigurationKeyIfExists(String category, String key) throws AppException {
+    private it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys getConfigurationKeyIfExists(String category, String key) throws AppException {
         Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> result = configurationKeysRepository.findByConfigCategoryAndConfigKey(category, key);
         if (result.isEmpty()) {
             throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
