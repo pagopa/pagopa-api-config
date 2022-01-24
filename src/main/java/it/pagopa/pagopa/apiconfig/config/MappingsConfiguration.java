@@ -1,9 +1,48 @@
 package it.pagopa.pagopa.apiconfig.config;
 
 
-import it.pagopa.pagopa.apiconfig.entity.*;
-import it.pagopa.pagopa.apiconfig.mapper.*;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
+import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
+import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
+import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
+import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
+import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
+import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertBrokerDetailsToIntermediariPa;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertBrokerPspDetailsToIntermediariPsp;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCanaliToChannel;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCanaliToChannelDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCdiMasterToCdi;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertChannelDetailsToCanali;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCodifichePaToEncoding;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCreditorInstitutionDetailsToPa;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertCreditorInstitutionStationPostToPaStazionePa;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertElencoServiziToService;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertEncodingToCodifichePa;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertIbanValidiPerPaToIban;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertInformativeContoAccreditoMasterRepositoryToIca;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertInformativePaMasterToCounterpartTable;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBroker;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPaToBrokerDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPspToBrokerPsp;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertIntermediariPspToBrokerPspDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitution;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPaToCreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPaymentServiceProviderDetailsToPsp;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPspCanaleTipoVersamentoToPspChannel;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProvider;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProviderDetails;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertStationDetailsToStazioni;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStation;
+import it.pagopa.pagopa.apiconfig.mapper.ConvertStazioniToStationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Broker;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -70,6 +109,7 @@ public class MappingsConfiguration {
         Converter<PaymentServiceProviderDetails, Psp> convertPaymentServiceProviderDetailsToPsp = new ConvertPaymentServiceProviderDetailsToPsp();
         Converter<ChannelDetails, Canali> convertChannelDetailsToCanali = new ConvertChannelDetailsToCanali();
         Converter<ConfigurationKeys, ConfigurationKey> convertConfigurationKeysConfigurationKey = new ConvertConfigurationKeysToConfigurationKey();
+        Converter<CanaleTipoVersamento, Service.PaymentTypeCode> convertCanaleTipoVersamentoToPaymentTypeCode = new ConvertCanaleTipoVersamentoToPaymentTypeCode();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -100,6 +140,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(PaymentServiceProviderDetails.class, Psp.class).setConverter(convertPaymentServiceProviderDetailsToPsp);
         mapper.createTypeMap(ChannelDetails.class, Canali.class).setConverter(convertChannelDetailsToCanali);
         mapper.createTypeMap(ConfigurationKeys.class, ConfigurationKey.class).setConverter(convertConfigurationKeysConfigurationKey);
+        mapper.createTypeMap(CanaleTipoVersamento.class, Service.PaymentTypeCode.class).setConverter(convertCanaleTipoVersamentoToPaymentTypeCode);
 
         return mapper;
     }
