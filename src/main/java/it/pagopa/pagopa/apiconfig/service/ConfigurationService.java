@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.configuration.*;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
 import it.pagopa.pagopa.apiconfig.repository.PddRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.modelmapper.ModelMapper;
@@ -26,6 +27,9 @@ public class ConfigurationService {
 
     @Autowired
     private PddRepository pddRepository;
+
+    @Autowired
+    private FtpServersRepository ftpServersRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -161,6 +165,46 @@ public class ConfigurationService {
         pddRepository.delete(pdd);
     }
 
+    public FtpServers getFtpServers() {
+        List<it.pagopa.pagopa.apiconfig.entity.FtpServers> ftpServerList = ftpServersRepository.findAll();
+        return it.pagopa.pagopa.apiconfig.model.configuration.FtpServers.builder()
+                .ftpServerList(getFtpServers(ftpServerList))
+                .build();
+    }
+
+    public FtpServer getFtpServer(@NotNull String host, @NotNull Integer port, @NotNull String service) {
+        it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServers = getFtpServerIfExists(host, port, service);
+        return modelMapper.map(ftpServers, FtpServer.class);
+    }
+
+    public FtpServer createFtpServer(FtpServer ftpServer) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.FtpServers> fs = ftpServersRepository.findByHostAndPortAndService(ftpServer.getHost(), ftpServer.getPort(), ftpServer.getService());
+        if (fs.isPresent()) {
+            throw new AppException(AppError.FTP_SERVER_CONFLICT, ftpServer.getHost(), ftpServer.getPort(), ftpServer.getService());
+        }
+
+        it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServerE = modelMapper.map(ftpServer, it.pagopa.pagopa.apiconfig.entity.FtpServers.class);
+        ftpServersRepository.save(ftpServerE);
+        return modelMapper.map(ftpServerE, FtpServer.class);
+    }
+
+
+    public FtpServer updateFtpServer(String host, Integer port, String service, FtpServer ftpServer) {
+        it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServerE = getFtpServerIfExists(host, port, service);
+
+        it.pagopa.pagopa.apiconfig.entity.FtpServers updatedFtpServer = modelMapper.map(ftpServer, it.pagopa.pagopa.apiconfig.entity.FtpServers.class)
+                .toBuilder()
+                .id(ftpServerE.getId())
+                .build();
+
+        return modelMapper.map(updatedFtpServer, FtpServer.class);
+    }
+
+    public void deleteFtpServer(String host, Integer port, String service) {
+        it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServerE = getFtpServerIfExists(host, port, service);
+        ftpServersRepository.delete(ftpServerE);
+    }
+
     /**
      * Maps ConfigurationKeys objects stored in the DB in a List of ConfigurationKey
      *
@@ -233,6 +277,33 @@ public class ConfigurationService {
         Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> result = pddRepository.findByIdPdd(idPdd);
         if (result.isEmpty()) {
             throw new AppException(AppError.PDD_NOT_FOUND, idPdd);
+        }
+        return result.get();
+    }
+
+    /**
+     * Maps FtpServers objects stored in the DB in a List of FtpServer
+     *
+     * @param ftpServerList list of configuration key returned from the database
+     * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.FtpServer}.
+     */
+    private List<FtpServer> getFtpServers(List<it.pagopa.pagopa.apiconfig.entity.FtpServers> ftpServerList) {
+        return ftpServerList.stream()
+                .map(elem -> modelMapper.map(elem, FtpServer.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @param host ftp server host
+     * @param port ftp server host
+     * @param service ftp server service
+     * @return return the configuration key record from DB if exists
+     * @throws AppException if not found
+     */
+    private it.pagopa.pagopa.apiconfig.entity.FtpServers getFtpServerIfExists(String host, Integer port, String service) throws AppException {
+        Optional<it.pagopa.pagopa.apiconfig.entity.FtpServers> result = ftpServersRepository.findByHostAndPortAndService(host, port, service);
+        if (result.isEmpty()) {
+            throw new AppException(AppError.FTP_SERVER_NOT_FOUND, host, port, service);
         }
         return result.get();
     }

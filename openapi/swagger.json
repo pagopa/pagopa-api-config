@@ -2378,6 +2378,583 @@
         "summary": "Delete a payment types of a channel"
       }
     },
+    "/configuration/ftpservers": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/FtpServers"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Configuration"
+        ],
+        "operationId": "getFtpServers",
+        "summary": "Get list of ftp server"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FtpServer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/FtpServer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Configuration"
+        ],
+        "operationId": "createFtpServer",
+        "summary": "Create ftp server"
+      }
+    },
+    "/configuration/ftpservers/host/{host}/port/{port}/service/{service}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Host",
+            "in": "path",
+            "name": "host",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Port",
+            "format": "int32",
+            "in": "path",
+            "name": "port",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "Service",
+            "in": "path",
+            "name": "service",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Configuration"
+        ],
+        "operationId": "deleteFtpServer",
+        "summary": "Delete configuration key"
+      },
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Host",
+            "in": "path",
+            "name": "host",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Port",
+            "format": "int32",
+            "in": "path",
+            "name": "port",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "Service",
+            "in": "path",
+            "name": "service",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/FtpServer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Configuration"
+        ],
+        "operationId": "getFtpServer",
+        "summary": "Get details of ftp server"
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Host",
+            "in": "path",
+            "name": "host",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Port",
+            "format": "int32",
+            "in": "path",
+            "name": "port",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "Service",
+            "in": "path",
+            "name": "service",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FtpServer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/FtpServer"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Configuration"
+        ],
+        "operationId": "updateConfigurationKey_1",
+        "summary": "Update configuration key"
+      }
+    },
     "/configuration/keys": {
       "parameters": [
         {
@@ -8806,6 +9383,80 @@
       "required": [
         "code_type",
         "encoding_code"
+      ],
+      "type": "object"
+    },
+    "FtpServer": {
+      "properties": {
+        "host": {
+          "example": "host.domain",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "type": "boolean"
+        },
+        "history_path": {
+          "example": "/out/history/service",
+          "type": "string"
+        },
+        "in_path": {
+          "example": "/in/service",
+          "type": "string"
+        },
+        "out_path": {
+          "example": "/out/service",
+          "type": "string"
+        },
+        "password": {
+          "example": "pwdpwdpwd",
+          "type": "string"
+        },
+        "port": {
+          "example": 1234,
+          "format": "int32",
+          "type": "integer"
+        },
+        "root_path": {
+          "example": "/",
+          "type": "string"
+        },
+        "service": {
+          "example": "service",
+          "type": "string"
+        },
+        "type": {
+          "example": "out",
+          "type": "string"
+        },
+        "username": {
+          "example": "username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "host",
+        "password",
+        "port",
+        "root_path",
+        "service",
+        "type",
+        "username"
+      ],
+      "type": "object"
+    },
+    "FtpServers": {
+      "properties": {
+        "ftp_servers": {
+          "items": {
+            "$ref": "#/definitions/FtpServer"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "ftp_servers"
       ],
       "type": "object"
     },

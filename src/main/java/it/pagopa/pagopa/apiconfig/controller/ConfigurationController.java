@@ -350,4 +350,122 @@ public class ConfigurationController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * GET /configuration/ftpservers : Get list of ftp server
+     *
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Get list of ftp server", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = FtpServers.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/ftpservers", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<FtpServers> getFtpServers() {
+        return ResponseEntity.ok(configurationService.getFtpServers());
+    }
+
+    /**
+     * POST /configuration/ftpservers : Create a ftp server
+     *
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Create ftp server", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = FtpServer.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @PostMapping(value = "/ftpservers", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<FtpServer> createFtpServer(@RequestBody @Valid @NotNull FtpServer ftpServer) {
+        FtpServer savedFtpserver = configurationService.createFtpServer(ftpServer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedFtpserver);
+    }
+
+    /**
+     * GET /configuration/ftpservers/host/{host}/port/{port}/service/{service} : Get details of a ftp server
+     *
+     * @param host ftp server host (required)
+     * @param port ftp server port (required)
+     * @param service ftp server service (required)
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Get details of ftp server", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = FtpServer.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/ftpservers/host/{host}/port/{port}/service/{service}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<FtpServer> getFtpServer(@Parameter(description = "Host") @PathVariable("host") String host,
+                                                  @Parameter(description = "Port") @PathVariable("port") Integer port,
+                                                  @Parameter(description = "Service") @PathVariable("service") String service) {
+        return ResponseEntity.ok(configurationService.getFtpServer(host, port, service));
+    }
+
+    /**
+     * PUT /configuration/ftpservers/host/{host}/port/{port}/service/{service} : Update details of a ftp server
+     *
+     * @param host ftp server host (required)
+     * @param port ftp server port (required)
+     * @param service ftp server service (required)
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Update configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = FtpServer.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @PutMapping(value = "/ftpservers/host/{host}/port/{port}/service/{service}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<FtpServer> updateConfigurationKey(@Parameter(description = "Host") @PathVariable("host") String host,
+                                                            @Parameter(description = "Port") @PathVariable("port") Integer port,
+                                                            @Parameter(description = "Service") @PathVariable("service") String service,
+                                                            @RequestBody @Valid @NotNull FtpServer ftpServer) {
+        FtpServer savedFtpServer = configurationService.updateFtpServer(host, port, service, ftpServer);
+        return ResponseEntity.ok(savedFtpServer);
+    }
+
+    /**
+     * DELETE /configuration/ftpservers/host/{host}/port/{port}/service/{service} : Delete details of a ftp server
+     *
+     * @param host ftp server host (required)
+     * @param port ftp server port (required)
+     * @param service ftp server service (required)
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Delete configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/ftpservers/host/{host}/port/{port}/service/{service}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> deleteFtpServer(@Parameter(description = "Host") @PathVariable("host") String host,
+                                                @Parameter(description = "Port") @PathVariable("port") Integer port,
+                                                @Parameter(description = "Service") @PathVariable("service") String service) {
+        configurationService.deleteFtpServer(host, port, service);
+        return ResponseEntity.ok().build();
+    }
+
 }

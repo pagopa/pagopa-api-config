@@ -4,6 +4,7 @@ package it.pagopa.pagopa.apiconfig.config;
 import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.mapper.*;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Broker;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -74,6 +75,7 @@ public class MappingsConfiguration {
         Converter<WfespPluginConf, it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf> convertConfWfespPluginConf = new ConvertWfespPluginConfToWfespPluginConf();
         Converter<Pdd, it.pagopa.pagopa.apiconfig.model.configuration.Pdd> convertPddEToPddM = new ConvertPddEToPddM();
         Converter<it.pagopa.pagopa.apiconfig.model.configuration.Pdd, Pdd> convertPddMToPddE = new ConvertPddMToPddE();
+        Converter<FtpServers, FtpServer> convertFtpServersFtpServer = new ConvertFtpServersToFtpServer();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -108,6 +110,7 @@ public class MappingsConfiguration {
         mapper.createTypeMap(WfespPluginConf.class, it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf.class).setConverter(convertConfWfespPluginConf);
         mapper.createTypeMap(Pdd.class, it.pagopa.pagopa.apiconfig.model.configuration.Pdd.class).setConverter(convertPddEToPddM);
         mapper.createTypeMap(it.pagopa.pagopa.apiconfig.model.configuration.Pdd.class, Pdd.class).setConverter(convertPddMToPddE);
+        mapper.createTypeMap(FtpServers.class, FtpServer.class).setConverter(convertFtpServersFtpServer);
 
         return mapper;
     }
