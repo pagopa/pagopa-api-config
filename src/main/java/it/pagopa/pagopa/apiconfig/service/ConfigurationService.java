@@ -55,7 +55,7 @@ public class ConfigurationService {
 
     public ConfigurationKey updateConfigurationKey(String category, String key, ConfigurationKey configurationKey) {
         Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKey = configurationKeysRepository.findByConfigCategoryAndConfigKey(category, key);
-        if (!configKey.isPresent()) {
+        if (configKey.isEmpty()) {
             throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
         }
 

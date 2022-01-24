@@ -349,4 +349,5 @@ public class ConfigurationController {
         configurationService.deletePdd(idPdd);
         return ResponseEntity.ok().build();
     }
+
 }
