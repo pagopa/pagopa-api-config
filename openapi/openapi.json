@@ -1375,62 +1375,6 @@
                 ],
                 "type": "object"
             },
-            "WfespPluginConf": {
-                "properties": {
-                    "id_bean": {
-                        "example": "defaultForwardProcessor",
-                        "maxLength": 255,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "id_serv_plugin": {
-                        "example": "idPsp1",
-                        "maxLength": 35,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "pag_const_string_profile": {
-                        "example": "Lorem ipsum dolor sit amet",
-                        "maxLength": 150,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "pag_rpt_xpath_profile": {
-                        "example": "Lorem ipsum dolor sit amet",
-                        "maxLength": 150,
-                        "minLength": 0,
-                        "type": "string"
-                    },
-                    "pag_soap_rule_profile": {
-                        "example": "IDVS=$buyerBank$",
-                        "maxLength": 150,
-                        "minLength": 0,
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "id_bean",
-                    "id_serv_plugin",
-                    "pag_const_string_profile",
-                    "pag_rpt_xpath_profile",
-                    "pag_soap_rule_profile"
-                ],
-                "type": "object"
-            },
-            "WfespPluginConfs": {
-                "properties": {
-                    "wfesp_plugin_confs": {
-                        "items": {
-                            "$ref": "#/components/schemas/WfespPluginConf"
-                        },
-                        "type": "array"
-                    }
-                },
-                "required": [
-                    "wfesp_plugin_confs"
-                ],
-                "type": "object"
-            },
             "XSDValidation": {
                 "properties": {
                     "detail": {
@@ -1492,16 +1436,62 @@
                             "type": "integer"
                         }
                     },
-                    {
-                        "description": "Page number. Page value starts from 0",
-                        "in": "query",
-                        "name": "page",
-                        "required": true,
-                        "schema": {
-                            "format": "int32",
-                            "type": "integer"
-                        }
+                  {
+                    "description": "Page number. Page value starts from 0",
+                    "in": "query",
+                    "name": "page",
+                    "required": true,
+                    "schema": {
+                      "format": "int32",
+                      "type": "integer"
                     }
+                  },
+                  {
+                    "description": "Filter by code",
+                    "in": "query",
+                    "name": "code",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Filter by name",
+                    "in": "query",
+                    "name": "name",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Order by code or name",
+                    "in": "query",
+                    "name": "orderby",
+                    "required": false,
+                    "schema": {
+                      "default": "CODE",
+                      "enum": [
+                        "CODE",
+                        "NAME"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Direction of ordering",
+                    "in": "query",
+                    "name": "ordering",
+                    "required": false,
+                    "schema": {
+                      "default": "DESC",
+                      "enum": [
+                        "ASC",
+                        "DESC"
+                      ],
+                      "type": "string"
+                    }
+                  }
                 ],
                 "responses": {
                     "200": {
@@ -2184,16 +2174,62 @@
                             "type": "integer"
                         }
                     },
-                    {
-                        "description": "Page number. Page value starts from 0",
-                        "in": "query",
-                        "name": "page",
-                        "required": true,
-                        "schema": {
-                            "format": "int32",
-                            "type": "integer"
-                        }
+                  {
+                    "description": "Page number. Page value starts from 0",
+                    "in": "query",
+                    "name": "page",
+                    "required": true,
+                    "schema": {
+                      "format": "int32",
+                      "type": "integer"
                     }
+                  },
+                  {
+                    "description": "Filter by code",
+                    "in": "query",
+                    "name": "code",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Filter by name",
+                    "in": "query",
+                    "name": "name",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Order by code or name",
+                    "in": "query",
+                    "name": "orderby",
+                    "required": false,
+                    "schema": {
+                      "default": "CODE",
+                      "enum": [
+                        "CODE",
+                        "NAME"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Direction of ordering",
+                    "in": "query",
+                    "name": "ordering",
+                    "required": false,
+                    "schema": {
+                      "default": "DESC",
+                      "enum": [
+                        "ASC",
+                        "DESC"
+                      ],
+                      "type": "string"
+                    }
+                  }
                 ],
                 "responses": {
                     "200": {
@@ -3177,16 +3213,39 @@
                             "type": "integer"
                         }
                     },
-                    {
-                        "description": "Page number. Page value starts from 0",
-                        "in": "query",
-                        "name": "page",
-                        "required": true,
-                        "schema": {
-                            "format": "int32",
-                            "type": "integer"
-                        }
+                  {
+                    "description": "Page number. Page value starts from 0",
+                    "in": "query",
+                    "name": "page",
+                    "required": true,
+                    "schema": {
+                      "format": "int32",
+                      "type": "integer"
                     }
+                  },
+                  {
+                    "description": "Filter by code",
+                    "in": "query",
+                    "name": "code",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Direction of ordering. Results are ordered by code",
+                    "in": "query",
+                    "name": "ordering",
+                    "required": false,
+                    "schema": {
+                      "default": "DESC",
+                      "enum": [
+                        "ASC",
+                        "DESC"
+                      ],
+                      "type": "string"
+                    }
+                  }
                 ],
                 "responses": {
                     "200": {
@@ -4425,254 +4484,6 @@
                     "required": true
                 },
                 "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ConfigurationKey"
-                                }
-                            }
-                        },
-                        "description": "OK",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Bad Request",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Not Found",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "429": {
-                        "description": "Too many requests",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Service unavailable",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "Authorization": []
-                    }
-                ],
-                "summary": "Update configuration key",
-                "tags": [
-                    "Configuration"
-                ]
-            }
-        },
-        "/configuration/wfespplugins": {
-            "get": {
-                "operationId": "getWfespPlugins",
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WfespPluginConfs"
-                                }
-                            }
-                        },
-                        "description": "OK",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Bad Request",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "429": {
-                        "description": "Too many requests",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Service unavailable",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "Authorization": []
-                    }
-                ],
-                "summary": "Get list of WFESP Plugin configuration",
-                "tags": [
-                    "Configuration"
-                ]
-            },
-            "parameters": [
-                {
-                    "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-                    "in": "header",
-                    "name": "X-Request-Id",
-                    "schema": {
-                        "type": "string"
-                    }
-                }
-            ],
-            "post": {
-                "operationId": "createWfespPlugin",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WfespPluginConf"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
                     "201": {
                         "content": {
                             "application/json": {
@@ -4731,137 +4542,6 @@
                             }
                         }
                     },
-                    "409": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Conflict",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "429": {
-                        "description": "Too many requests",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Service unavailable",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "Authorization": []
-                    }
-                ],
-                "summary": "Create configuration key",
-                "tags": [
-                    "Configuration"
-                ]
-            }
-        },
-        "/configuration/wfespplugins/{idServPlugin}": {
-            "delete": {
-                "operationId": "deleteWfespPlugin",
-                "parameters": [
-                    {
-                        "description": "idServPlugin",
-                        "in": "path",
-                        "name": "idServPlugin",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {}
-                        },
-                        "description": "OK",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Bad Request",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
                     "404": {
                         "content": {
                             "application/json": {
@@ -4910,286 +4590,18 @@
                         }
                     }
                 },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "Authorization": []
-                    }
-                ],
-                "summary": "Delete configuration key",
-                "tags": [
-                    "Configuration"
-                ]
-            },
-            "get": {
-                "operationId": "getWfespPlugin",
-                "parameters": [
-                    {
-                        "description": "idServPlugin",
-                        "in": "path",
-                        "name": "idServPlugin",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WfespPluginConf"
-                                }
-                            }
-                        },
-                        "description": "OK",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Bad Request",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "429": {
-                        "description": "Too many requests",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Service unavailable",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "Authorization": []
-                    }
-                ],
-                "summary": "Get details of a Wfesp plugin",
-                "tags": [
-                    "Configuration"
-                ]
-            },
-            "parameters": [
+              "security": [
                 {
-                    "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-                    "in": "header",
-                    "name": "X-Request-Id",
-                    "schema": {
-                        "type": "string"
-                    }
+                  "ApiKey": []
+                },
+                {
+                  "Authorization": []
                 }
-            ],
-            "put": {
-                "operationId": "updateWfespPlugin",
-                "parameters": [
-                    {
-                        "description": "idServPlugin",
-                        "in": "path",
-                        "name": "idServPlugin",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WfespPluginConf"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WfespPluginConf"
-                                }
-                            }
-                        },
-                        "description": "OK",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Bad Request",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Not Found",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "429": {
-                        "description": "Too many requests",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemJson"
-                                }
-                            }
-                        },
-                        "description": "Service unavailable",
-                        "headers": {
-                            "X-Request-Id": {
-                                "description": "This header identifies the call",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "Authorization": []
-                    }
-                ],
-                "summary": "Update Wfesp plugin configuration",
-                "tags": [
-                    "Configuration"
-                ]
+              ],
+              "summary": "Update configuration key",
+              "tags": [
+                "Configuration"
+              ]
             }
         },
         "/counterparttables": {
@@ -5507,16 +4919,62 @@
                             "type": "integer"
                         }
                     },
-                    {
-                        "description": "Page number. Page value starts from 0",
-                        "in": "query",
-                        "name": "page",
-                        "required": true,
-                        "schema": {
-                            "format": "int32",
-                            "type": "integer"
-                        }
+                  {
+                    "description": "Page number. Page value starts from 0",
+                    "in": "query",
+                    "name": "page",
+                    "required": true,
+                    "schema": {
+                      "format": "int32",
+                      "type": "integer"
                     }
+                  },
+                  {
+                    "description": "Filter by code",
+                    "in": "query",
+                    "name": "code",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Filter by name",
+                    "in": "query",
+                    "name": "name",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Order by code or name",
+                    "in": "query",
+                    "name": "orderby",
+                    "required": false,
+                    "schema": {
+                      "default": "CODE",
+                      "enum": [
+                        "CODE",
+                        "NAME"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Direction of ordering",
+                    "in": "query",
+                    "name": "ordering",
+                    "required": false,
+                    "schema": {
+                      "default": "DESC",
+                      "enum": [
+                        "ASC",
+                        "DESC"
+                      ],
+                      "type": "string"
+                    }
+                  }
                 ],
                 "responses": {
                     "200": {
@@ -7938,16 +7396,62 @@
                             "type": "integer"
                         }
                     },
-                    {
-                        "description": "Page number. Page value starts from 0",
-                        "in": "query",
-                        "name": "page",
-                        "required": true,
-                        "schema": {
-                            "format": "int32",
-                            "type": "integer"
-                        }
+                  {
+                    "description": "Page number. Page value starts from 0",
+                    "in": "query",
+                    "name": "page",
+                    "required": true,
+                    "schema": {
+                      "format": "int32",
+                      "type": "integer"
                     }
+                  },
+                  {
+                    "description": "Filter by code",
+                    "in": "query",
+                    "name": "code",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Filter by name",
+                    "in": "query",
+                    "name": "name",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Order by code or name",
+                    "in": "query",
+                    "name": "orderby",
+                    "required": false,
+                    "schema": {
+                      "default": "CODE",
+                      "enum": [
+                        "CODE",
+                        "NAME"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Direction of ordering",
+                    "in": "query",
+                    "name": "ordering",
+                    "required": false,
+                    "schema": {
+                      "default": "DESC",
+                      "enum": [
+                        "ASC",
+                        "DESC"
+                      ],
+                      "type": "string"
+                    }
+                  }
                 ],
                 "responses": {
                     "200": {
@@ -9520,18 +9024,41 @@
                         "name": "brokercode",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                          "type": "string"
                         }
                     },
-                    {
-                        "description": "Filter by creditor institution",
-                        "in": "query",
-                        "name": "creditorinstitutioncode",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
+                  {
+                    "description": "Filter by creditor institution",
+                    "in": "query",
+                    "name": "creditorinstitutioncode",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
                     }
+                  },
+                  {
+                    "description": "Filter by code",
+                    "in": "query",
+                    "name": "code",
+                    "required": false,
+                    "schema": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "description": "Direction of ordering. Results are ordered by code",
+                    "in": "query",
+                    "name": "ordering",
+                    "required": false,
+                    "schema": {
+                      "default": "DESC",
+                      "enum": [
+                        "ASC",
+                        "DESC"
+                      ],
+                      "type": "string"
+                    }
+                  }
                 ],
                 "responses": {
                     "200": {
