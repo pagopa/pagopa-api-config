@@ -1,14 +1,19 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.Channel;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
+import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
@@ -37,6 +42,12 @@ public class ChannelsService {
 
     @Autowired
     WfespPluginConfRepository wfespPluginConfRepository;
+
+    @Autowired
+    CanaleTipoVersamentoRepository canaleTipoVersamentoRepository;
+
+    @Autowired
+    TipiVersamentoRepository tipiVersamentoRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -72,7 +83,6 @@ public class ChannelsService {
         return channelDetails;
     }
 
-
     public ChannelDetails updateChannel(String channelCode, ChannelDetails channelDetails) {
         Long objId = getCanaliIfExists(channelCode).getId();
 
@@ -91,6 +101,34 @@ public class ChannelsService {
         Canali canale = getCanaliIfExists(channelCode);
 
         canaliRepository.delete(canale);
+    }
+
+    public PspChannelPaymentTypes getPaymentTypes(@NotBlank String channelCode) {
+        var channel = getCanaliIfExists(channelCode);
+        var type = canaleTipoVersamentoRepository.findByFkCanale(channel.getId());
+        return PspChannelPaymentTypes.builder()
+                .paymentTypeList(getPaymentTypeList(type))
+                .build();
+    }
+
+    public PspChannelPaymentTypes createPaymentType(@NotBlank String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
+        var channel = getCanaliIfExists(channelCode);
+        // foreach type in the request...
+        for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode type : pspChannelPaymentTypes.getPaymentTypeList()) {
+            // ...search the type in DB
+            var paymentType = tipiVersamentoRepository.findByTipoVersamento(type.name())
+                    .orElseThrow(() -> new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, type.name()));
+            // check if already exists a relation Channel-PaymentType...
+            getCanaleTipoVersamentoIfExists(channel, paymentType);
+
+            // ...if NOT exists, save the new relation
+            var entity = CanaleTipoVersamento.builder()
+                    .canale(channel)
+                    .tipoVersamento(paymentType)
+                    .build();
+            canaleTipoVersamentoRepository.save(entity);
+        }
+        return pspChannelPaymentTypes;
     }
 
     /**
@@ -132,4 +170,27 @@ public class ChannelsService {
             channelDetails.setFkWfespPluginConf(wfespPluginConf);
         }
     }
+
+    /**
+     * @param channel     an entity CANALI
+     * @param paymentType an entity TIPI_VERSAMENTO
+     * @return search on DB using the {@code channelCode} and {@code paymentType} if it is present
+     * @throws AppException if not found
+     */
+    private CanaleTipoVersamento getCanaleTipoVersamentoIfExists(Canali channel, TipiVersamento paymentType) {
+        return canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), paymentType.getId())
+                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_CONFLICT, channel.getIdCanale(), paymentType.getTipoVersamento()));
+    }
+
+    /**
+     * @param type list of CanaleTipoVersamento
+     * @return map each element of the list in a PaymentTypeCode
+     */
+    private List<it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode> getPaymentTypeList(List<CanaleTipoVersamento> type) {
+        return type.stream()
+                .map(elem -> modelMapper.map(elem, it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode.class))
+                .collect(Collectors.toList());
+    }
+
+
 }
