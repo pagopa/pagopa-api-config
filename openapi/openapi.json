@@ -1436,62 +1436,62 @@
                             "type": "integer"
                         }
                     },
-                  {
-                    "description": "Page number. Page value starts from 0",
-                    "in": "query",
-                    "name": "page",
-                    "required": true,
-                    "schema": {
-                      "format": "int32",
-                      "type": "integer"
+                    {
+                        "description": "Page number. Page value starts from 0",
+                        "in": "query",
+                        "name": "page",
+                        "required": true,
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Filter by code",
+                        "in": "query",
+                        "name": "code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filter by name",
+                        "in": "query",
+                        "name": "name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Order by code or name",
+                        "in": "query",
+                        "name": "orderby",
+                        "required": false,
+                        "schema": {
+                            "default": "CODE",
+                            "enum": [
+                                "CODE",
+                                "NAME"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Direction of ordering",
+                        "in": "query",
+                        "name": "ordering",
+                        "required": false,
+                        "schema": {
+                            "default": "DESC",
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
                     }
-                  },
-                  {
-                    "description": "Filter by code",
-                    "in": "query",
-                    "name": "code",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Filter by name",
-                    "in": "query",
-                    "name": "name",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Order by code or name",
-                    "in": "query",
-                    "name": "orderby",
-                    "required": false,
-                    "schema": {
-                      "default": "CODE",
-                      "enum": [
-                        "CODE",
-                        "NAME"
-                      ],
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Direction of ordering",
-                    "in": "query",
-                    "name": "ordering",
-                    "required": false,
-                    "schema": {
-                      "default": "DESC",
-                      "enum": [
-                        "ASC",
-                        "DESC"
-                      ],
-                      "type": "string"
-                    }
-                  }
                 ],
                 "responses": {
                     "200": {
@@ -2174,62 +2174,62 @@
                             "type": "integer"
                         }
                     },
-                  {
-                    "description": "Page number. Page value starts from 0",
-                    "in": "query",
-                    "name": "page",
-                    "required": true,
-                    "schema": {
-                      "format": "int32",
-                      "type": "integer"
+                    {
+                        "description": "Page number. Page value starts from 0",
+                        "in": "query",
+                        "name": "page",
+                        "required": true,
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Filter by code",
+                        "in": "query",
+                        "name": "code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filter by name",
+                        "in": "query",
+                        "name": "name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Order by code or name",
+                        "in": "query",
+                        "name": "orderby",
+                        "required": false,
+                        "schema": {
+                            "default": "CODE",
+                            "enum": [
+                                "CODE",
+                                "NAME"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Direction of ordering",
+                        "in": "query",
+                        "name": "ordering",
+                        "required": false,
+                        "schema": {
+                            "default": "DESC",
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
                     }
-                  },
-                  {
-                    "description": "Filter by code",
-                    "in": "query",
-                    "name": "code",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Filter by name",
-                    "in": "query",
-                    "name": "name",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Order by code or name",
-                    "in": "query",
-                    "name": "orderby",
-                    "required": false,
-                    "schema": {
-                      "default": "CODE",
-                      "enum": [
-                        "CODE",
-                        "NAME"
-                      ],
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Direction of ordering",
-                    "in": "query",
-                    "name": "ordering",
-                    "required": false,
-                    "schema": {
-                      "default": "DESC",
-                      "enum": [
-                        "ASC",
-                        "DESC"
-                      ],
-                      "type": "string"
-                    }
-                  }
                 ],
                 "responses": {
                     "200": {
@@ -3213,39 +3213,39 @@
                             "type": "integer"
                         }
                     },
-                  {
-                    "description": "Page number. Page value starts from 0",
-                    "in": "query",
-                    "name": "page",
-                    "required": true,
-                    "schema": {
-                      "format": "int32",
-                      "type": "integer"
+                    {
+                        "description": "Page number. Page value starts from 0",
+                        "in": "query",
+                        "name": "page",
+                        "required": true,
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Filter by code",
+                        "in": "query",
+                        "name": "code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Direction of ordering. Results are ordered by code",
+                        "in": "query",
+                        "name": "ordering",
+                        "required": false,
+                        "schema": {
+                            "default": "DESC",
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
                     }
-                  },
-                  {
-                    "description": "Filter by code",
-                    "in": "query",
-                    "name": "code",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Direction of ordering. Results are ordered by code",
-                    "in": "query",
-                    "name": "ordering",
-                    "required": false,
-                    "schema": {
-                      "default": "DESC",
-                      "enum": [
-                        "ASC",
-                        "DESC"
-                      ],
-                      "type": "string"
-                    }
-                  }
                 ],
                 "responses": {
                     "200": {
@@ -3907,6 +3907,316 @@
                     }
                 ],
                 "summary": "Update a Channel",
+                "tags": [
+                    "Payment Service Providers"
+                ]
+            }
+        },
+        "/channels/{channelcode}/paymenttypes": {
+            "get": {
+                "operationId": "getPaymentTypes",
+                "parameters": [
+                    {
+                        "description": "Channel code",
+                        "in": "path",
+                        "name": "channelcode",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 50,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PspChannelPaymentTypes"
+                                }
+                            }
+                        },
+                        "description": "OK",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Bad Request",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Not Found",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Get a payment types of a channel",
+                "tags": [
+                    "Payment Service Providers"
+                ]
+            },
+            "parameters": [
+                {
+                    "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+                    "in": "header",
+                    "name": "X-Request-Id",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "operationId": "createPaymentType",
+                "parameters": [
+                    {
+                        "description": "Channel code",
+                        "in": "path",
+                        "name": "channelcode",
+                        "required": true,
+                        "schema": {
+                            "maxLength": 50,
+                            "minLength": 0,
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PspChannelPaymentTypes"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PspChannelPaymentTypes"
+                                }
+                            }
+                        },
+                        "description": "Created",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Bad Request",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Not Found",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Conflict",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Service unavailable",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Create a payment types of a channel",
                 "tags": [
                     "Payment Service Providers"
                 ]
@@ -4590,18 +4900,18 @@
                         }
                     }
                 },
-              "security": [
-                {
-                  "ApiKey": []
-                },
-                {
-                  "Authorization": []
-                }
-              ],
-              "summary": "Update configuration key",
-              "tags": [
-                "Configuration"
-              ]
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "summary": "Update configuration key",
+                "tags": [
+                    "Configuration"
+                ]
             }
         },
         "/counterparttables": {
@@ -4919,62 +5229,62 @@
                             "type": "integer"
                         }
                     },
-                  {
-                    "description": "Page number. Page value starts from 0",
-                    "in": "query",
-                    "name": "page",
-                    "required": true,
-                    "schema": {
-                      "format": "int32",
-                      "type": "integer"
+                    {
+                        "description": "Page number. Page value starts from 0",
+                        "in": "query",
+                        "name": "page",
+                        "required": true,
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Filter by code",
+                        "in": "query",
+                        "name": "code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filter by name",
+                        "in": "query",
+                        "name": "name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Order by code or name",
+                        "in": "query",
+                        "name": "orderby",
+                        "required": false,
+                        "schema": {
+                            "default": "CODE",
+                            "enum": [
+                                "CODE",
+                                "NAME"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Direction of ordering",
+                        "in": "query",
+                        "name": "ordering",
+                        "required": false,
+                        "schema": {
+                            "default": "DESC",
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
                     }
-                  },
-                  {
-                    "description": "Filter by code",
-                    "in": "query",
-                    "name": "code",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Filter by name",
-                    "in": "query",
-                    "name": "name",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Order by code or name",
-                    "in": "query",
-                    "name": "orderby",
-                    "required": false,
-                    "schema": {
-                      "default": "CODE",
-                      "enum": [
-                        "CODE",
-                        "NAME"
-                      ],
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Direction of ordering",
-                    "in": "query",
-                    "name": "ordering",
-                    "required": false,
-                    "schema": {
-                      "default": "DESC",
-                      "enum": [
-                        "ASC",
-                        "DESC"
-                      ],
-                      "type": "string"
-                    }
-                  }
                 ],
                 "responses": {
                     "200": {
@@ -7396,62 +7706,62 @@
                             "type": "integer"
                         }
                     },
-                  {
-                    "description": "Page number. Page value starts from 0",
-                    "in": "query",
-                    "name": "page",
-                    "required": true,
-                    "schema": {
-                      "format": "int32",
-                      "type": "integer"
+                    {
+                        "description": "Page number. Page value starts from 0",
+                        "in": "query",
+                        "name": "page",
+                        "required": true,
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Filter by code",
+                        "in": "query",
+                        "name": "code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filter by name",
+                        "in": "query",
+                        "name": "name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Order by code or name",
+                        "in": "query",
+                        "name": "orderby",
+                        "required": false,
+                        "schema": {
+                            "default": "CODE",
+                            "enum": [
+                                "CODE",
+                                "NAME"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Direction of ordering",
+                        "in": "query",
+                        "name": "ordering",
+                        "required": false,
+                        "schema": {
+                            "default": "DESC",
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
                     }
-                  },
-                  {
-                    "description": "Filter by code",
-                    "in": "query",
-                    "name": "code",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Filter by name",
-                    "in": "query",
-                    "name": "name",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Order by code or name",
-                    "in": "query",
-                    "name": "orderby",
-                    "required": false,
-                    "schema": {
-                      "default": "CODE",
-                      "enum": [
-                        "CODE",
-                        "NAME"
-                      ],
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Direction of ordering",
-                    "in": "query",
-                    "name": "ordering",
-                    "required": false,
-                    "schema": {
-                      "default": "DESC",
-                      "enum": [
-                        "ASC",
-                        "DESC"
-                      ],
-                      "type": "string"
-                    }
-                  }
                 ],
                 "responses": {
                     "200": {
@@ -9024,41 +9334,41 @@
                         "name": "brokercode",
                         "required": false,
                         "schema": {
-                          "type": "string"
+                            "type": "string"
                         }
                     },
-                  {
-                    "description": "Filter by creditor institution",
-                    "in": "query",
-                    "name": "creditorinstitutioncode",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
+                    {
+                        "description": "Filter by creditor institution",
+                        "in": "query",
+                        "name": "creditorinstitutioncode",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filter by code",
+                        "in": "query",
+                        "name": "code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Direction of ordering. Results are ordered by code",
+                        "in": "query",
+                        "name": "ordering",
+                        "required": false,
+                        "schema": {
+                            "default": "DESC",
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
                     }
-                  },
-                  {
-                    "description": "Filter by code",
-                    "in": "query",
-                    "name": "code",
-                    "required": false,
-                    "schema": {
-                      "type": "string"
-                    }
-                  },
-                  {
-                    "description": "Direction of ordering. Results are ordered by code",
-                    "in": "query",
-                    "name": "ordering",
-                    "required": false,
-                    "schema": {
-                      "default": "DESC",
-                      "enum": [
-                        "ASC",
-                        "DESC"
-                      ],
-                      "type": "string"
-                    }
-                  }
                 ],
                 "responses": {
                     "200": {
