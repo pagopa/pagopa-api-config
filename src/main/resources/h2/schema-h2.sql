@@ -476,3 +476,12 @@ create table NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO (
                                                           foreign key (FK_PSP)
                                                               references NODO4_CFG.PSP
 );
+
+create table NODO4_CFG.CONFIGURATION_KEYS (
+                                              CONFIG_CATEGORY varchar(255) not null,
+                                              CONFIG_KEY varchar(255) not null,
+                                              CONFIG_VALUE varchar(255) not null,
+                                              CONFIG_DESCRIPTION varchar(255)
+);
+
+create unique index NODO4_CFG.UQ_CONFIGURATION_KEYS on NODO4_CFG.CONFIGURATION_KEYS(CONFIG_CATEGORY, CONFIG_KEY);

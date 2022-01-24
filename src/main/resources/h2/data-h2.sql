@@ -184,3 +184,95 @@ insert into NODO4_CFG.CANALE_TIPO_VERSAMENTO (OBJ_ID, FK_CANALE, FK_TIPO_VERSAME
 
 insert into NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO (OBJ_ID, FK_CANALE_TIPO_VERSAMENTO, FK_PSP)
 values (1,1,1);
+
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'scheduler.jobName_mod3UpdateNotifiedPositionPayment.jobDescription',
+           'Description',
+           'Mod3 update notified Position Payment'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'scheduler.jobName_mod3UpdateNotifiedPositionPayment.enabled',
+           'true',
+           'Job enabled (true/false)'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'scheduler.paSendRtMaxRetry',
+           '5',
+           'pa Send Rt max retry'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'scheduler.mod3Cancel.minutesWaitPaOld',
+           '0',
+           'indica i minuti di attesa per arrivo RPT in caso di Pa Old prima di annullare posizione debitoria'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'inviaCarrelloRpt.maxNumRptInCartMultibeneficiario',
+           '2',
+           null
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'inviaCarrelloRpt.maxVersamentiInSecondRptMultibeneficiario',
+           '1',
+           null
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'default_token_duration_validity_millis',
+           '180000',
+           ' default millisecondi validità token'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'timeout.paSendRT.pull',
+           'TIMEOUT_C',
+           'Tipo timeout'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'scheduler.paAttivaRptMaxRetry',
+           '5',
+           'pa attiva Rpt max retry'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'scheduler.jobName_paRetryAttivaRpt.jobDescription',
+           'Description',
+           'retry attiva rpt '
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'scheduler.jobName_paRetryAttivaRpt.enabled',
+           'true',
+           'Job enabled (true/false)'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'timeout.paaAttivaRPT.pull',
+           'TIMEOUT_C',
+           'timeout'
+       );
+insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
+values (
+           'GLOBAL',
+           'scheduler.jobName_idempotencyCacheClean.enabled',
+           'false',
+           'jobName_idempotencyCacheClean enabled/disabled'
+       );

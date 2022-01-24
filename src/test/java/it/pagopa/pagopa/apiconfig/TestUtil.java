@@ -23,6 +23,8 @@ import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -699,5 +701,36 @@ public class TestUtil {
                 .build();
     }
 
+    public static ConfigurationKey getMockConfigurationKey() {
+        return  ConfigurationKey.builder()
+                .configCategory("category")
+                .configKey("key")
+                .configValue("value")
+                .configDescription("description")
+                .build();
+    }
+
+    public static ConfigurationKey getMockConfigurationKey(String category, String key) {
+        return getMockConfigurationKey();
+    }
+
+    public static ConfigurationKeys getMockConfigurationKeys() {
+        return  ConfigurationKeys.builder()
+                .configurationKeyList(List.of(getMockConfigurationKey()))
+                .build();
+    }
+
+    public static it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys getMockConfigurationKeyEntity() {
+        return  it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.builder()
+                .configCategory("category")
+                .configKey("key")
+                .configValue("value")
+                .configDescription("description")
+                .build();
+    }
+
+    public static List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> getMockConfigurationKeysEntities() {
+        return List.of(getMockConfigurationKeyEntity());
+    }
 
 }
