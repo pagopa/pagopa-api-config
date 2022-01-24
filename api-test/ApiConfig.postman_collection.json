@@ -4517,6 +4517,230 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "getPdds",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPdds\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.pdds).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPdd",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPdd\", function () {",
+									"  pm.response.to.have.status(201);  ",
+									"  ",
+									"  const requestJson = JSON.parse(pm.request.body.raw);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.enabled).to.eql(requestJson.enabled);",
+									"  pm.expect(responseJson.description).to.eql(requestJson.description);",
+									"  pm.expect(responseJson.ip).to.eql(requestJson.ip);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_pdd\": \"{{pdd_id_pdd}}\",\n    \"enabled\": true,\n    \"description\": \"description\",\n    \"ip\": \"127.0.0.1\",\n    \"port\": 80\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPdd",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPdd\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.id_pdd).to.be.exist;",
+									"  pm.expect(responseJson.enabled).to.be.exist;",
+									"  pm.expect(responseJson.description).to.be.exist;",
+									"  pm.expect(responseJson.ip).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds/:idpdd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds",
+								":idpdd"
+							],
+							"variable": [
+								{
+									"key": "idpdd",
+									"value": "{{pdd_id_pdd}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePdd",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePdd\", function () {",
+									"  pm.response.to.have.status(200);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_pdd\": \"{{pdd_id_pdd}}\",\n    \"enabled\": false,\n    \"description\": \"description1\",\n    \"ip\": \"127.0.0.2\",\n    \"port\": 82\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds/:idpdd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds",
+								":idpdd"
+							],
+							"variable": [
+								{
+									"key": "idpdd",
+									"value": "{{pdd_id_pdd}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePdd",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds/:idpdd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds",
+								":idpdd"
+							],
+							"variable": [
+								{
+									"key": "idpdd",
+									"value": "{{pdd_id_pdd}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -4858,6 +5082,286 @@
 							"variable": [
 								{
 									"key": "wfesp_idServPlugin",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPdd NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPdd\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds/:idpdd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds",
+								":idpdd"
+							],
+							"variable": [
+								{
+									"key": "idpdd",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPdd Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPdd\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_pdd\": \"localhost\",\n    \"enabled\": true,\n    \"description\": \"this is a test\",\n    \"ip\": \"127.0.0.1\",\n    \"port\": 80\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPdd BadRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPdd\", function () {",
+									"  pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_pdd\": \"\",\n    \"enabled\": true,\n    \"description\": \"this is a test\",\n    \"ip\": \"127.0.0.1\",\n    \"port\": 80\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePdd BadRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePdd\", function () {",
+									"  pm.response.to.have.status(400);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds/:idpdd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds",
+								":idpdd"
+							],
+							"variable": [
+								{
+									"key": "idpdd",
+									"value": "{{pdd_id_pdd}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePdd NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePdd\", function () {",
+									"  pm.response.to.have.status(404);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id_pdd\": \"{{pdd_id_pdd}}\",\n    \"enabled\": false,\n    \"description\": \"description1\",\n    \"ip\": \"127.0.0.2\",\n    \"port\": 82\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds/:idpdd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds",
+								":idpdd"
+							],
+							"variable": [
+								{
+									"key": "idpdd",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePdd NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds/:idpdd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"pdds",
+								":idpdd"
+							],
+							"variable": [
+								{
+									"key": "idpdd",
 									"value": "unknown"
 								}
 							]
