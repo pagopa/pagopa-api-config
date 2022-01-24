@@ -116,10 +116,12 @@ public class ChannelsService {
         // foreach type in the request...
         for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode type : pspChannelPaymentTypes.getPaymentTypeList()) {
             // ...search the type in DB
-            var paymentType = tipiVersamentoRepository.findByTipoVersamento(type.name())
-                    .orElseThrow(() -> new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, type.name()));
+            var paymentType = getPaymentTypeIfExists(type.name());
             // check if already exists a relation Channel-PaymentType...
-            getCanaleTipoVersamentoIfExists(channel, paymentType);
+            if (canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), paymentType.getId()).isPresent()) {
+                throw new AppException(AppError.CHANNEL_PAYMENT_TYPE_CONFLICT, channel.getIdCanale(), paymentType.getTipoVersamento());
+            }
+
 
             // ...if NOT exists, save the new relation
             var entity = CanaleTipoVersamento.builder()
@@ -129,6 +131,22 @@ public class ChannelsService {
             canaleTipoVersamentoRepository.save(entity);
         }
         return pspChannelPaymentTypes;
+    }
+
+    public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {
+        var channel = getCanaliIfExists(channelCode);
+        var paymentType = getPaymentTypeIfExists(paymentTypeCode);
+        var result = getCanaleTipoVersamentoIfExists(channel, paymentType);
+        canaleTipoVersamentoRepository.delete(result);
+    }
+
+    /**
+     * @param type code of TipiVersamento
+     * @return find TipoVersamento if exists in DB
+     */
+    private TipiVersamento getPaymentTypeIfExists(String type) {
+        return tipiVersamentoRepository.findByTipoVersamento(type)
+                .orElseThrow(() -> new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, type));
     }
 
     /**
@@ -179,7 +197,7 @@ public class ChannelsService {
      */
     private CanaleTipoVersamento getCanaleTipoVersamentoIfExists(Canali channel, TipiVersamento paymentType) {
         return canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), paymentType.getId())
-                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_CONFLICT, channel.getIdCanale(), paymentType.getTipoVersamento()));
+                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_NOT_FOUND, channel.getIdCanale(), paymentType.getTipoVersamento()));
     }
 
     /**

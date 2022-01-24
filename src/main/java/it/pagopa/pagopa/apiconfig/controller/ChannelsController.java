@@ -155,7 +155,24 @@ public class ChannelsController {
     @PostMapping(value = "/{channelcode}/paymenttypes", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<PspChannelPaymentTypes> createPaymentType(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode,
                                                                     @RequestBody PspChannelPaymentTypes pspChannelPaymentTypes) {
-        return ResponseEntity.ok().body(channelsService.createPaymentType(channelCode, pspChannelPaymentTypes));
+        return ResponseEntity.status(HttpStatus.CREATED).body(channelsService.createPaymentType(channelCode, pspChannelPaymentTypes));
+    }
+
+
+    @Operation(summary = "Delete a payment types of a channel", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/{channelcode}/paymenttypes/{paymenttypecode}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<PspChannelPaymentTypes> deletePaymentType(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode,
+                                                                    @PathVariable("paymenttypecode") String paymentTypeCode) {
+        channelsService.deletePaymentType(channelCode, paymentTypeCode);
+        return ResponseEntity.ok().build();
     }
 
 
