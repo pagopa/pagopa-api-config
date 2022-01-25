@@ -66,7 +66,7 @@ public class PspService {
     public PaymentServiceProviders getPaymentServiceProviders(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
         var filters = CommonUtil.getFilters(Psp.builder()
-                .idPsp(filterAndOrder.getFilter().getName())
+                .idPsp(filterAndOrder.getFilter().getCode())
                 .ragioneSociale(filterAndOrder.getFilter().getName())
                 .build());
         Page<Psp> page = pspRepository.findAll(filters, pageable);
