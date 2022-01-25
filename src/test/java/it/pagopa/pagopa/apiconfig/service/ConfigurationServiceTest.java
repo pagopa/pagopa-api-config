@@ -5,11 +5,9 @@ import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pdd;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
+import it.pagopa.pagopa.apiconfig.model.configuration.*;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
 import it.pagopa.pagopa.apiconfig.repository.PddRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.json.JSONException;
@@ -43,6 +41,9 @@ class ConfigurationServiceTest {
 
     @MockBean
     private PddRepository pddRepository;
+
+    @MockBean
+    private FtpServersRepository ftpServersRepository;
 
     @Autowired
     @InjectMocks
@@ -181,12 +182,6 @@ class ConfigurationServiceTest {
             fail();
         }
     }
-
-
-
-
-
-
 
     @Test
     void getWfespPlugins_ok() throws IOException, JSONException {
@@ -448,6 +443,137 @@ class ConfigurationServiceTest {
 
         try {
             configurationService.deletePdd("idPdd");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void getFtpServers_ok() throws IOException, JSONException {
+        when(ftpServersRepository.findAll()).thenReturn(getMockFtpServersEntities());
+
+        FtpServers ftpServers = configurationService.getFtpServers();
+        String actual = TestUtil.toJson(ftpServers);
+        String expected = TestUtil.readJsonFromFile("response/get_ftp_servers_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getFtpServer_ok() throws IOException, JSONException {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(java.util.Optional.ofNullable(getMockFtpServersEntity()));
+
+        FtpServer ftpServer = configurationService.getFtpServer("host", 1, "service");
+        String actual = TestUtil.toJson(ftpServer);
+        String expected = TestUtil.readJsonFromFile("response/get_ftp_server_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getFtpServer_notFound() {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(java.util.Optional.empty());
+        try {
+            configurationService.getFtpServer("unknown", 1, "unknown");
+            fail();
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void createFtpServer() throws IOException, JSONException {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(java.util.Optional.empty());
+        when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class))).thenReturn(getMockFtpServersEntity());
+
+        FtpServer result = configurationService.createFtpServer(getMockFtpServer());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_ftp_server_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createFtpServer_conflict() {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(Optional.of(getMockFtpServersEntity()));
+        when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class))).thenReturn(getMockFtpServersEntity());
+
+        try {
+            configurationService.createFtpServer(getMockFtpServer());
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updateFtpServer() throws IOException, JSONException {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(Optional.of(getMockFtpServersEntity()));
+        when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class))).thenReturn(getMockFtpServersEntity());
+
+        FtpServer result = configurationService.updateFtpServer("host", 1,"service", getMockFtpServer());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_ftp_server_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updateFtpServer_notFound() {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(java.util.Optional.empty());
+        when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class))).thenReturn(getMockFtpServersEntity());
+
+        try {
+            configurationService.updateFtpServer("host", 1, "service", getMockFtpServer());
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updateFtpServer_badRequest() {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(Optional.of(getMockFtpServersEntity()));
+        when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class))).thenReturn(getMockFtpServersEntity());
+
+        try {
+            FtpServer conf = getMockFtpServer();
+            conf.setHost("");
+            configurationService.updateFtpServer("host", 1, "service", conf);
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteFtpServer() {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(Optional.of(getMockFtpServersEntity()));
+
+        try {
+            configurationService.deleteFtpServer("host", 1, "service");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteFtpServer_notfound() {
+        when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service")).thenReturn(java.util.Optional.empty());
+
+        try {
+            configurationService.deleteFtpServer("host", 1, "service");
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
         } catch (Exception e) {

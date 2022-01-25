@@ -284,11 +284,38 @@ insert into NODO4_CFG.PDD (
     IP,
     PORTA
 )
+values (1,
+        'localhost',
+        'Y',
+        'localhost',
+        '127.0.0.1',
+        null
+        );
+insert into NODO4_CFG.FTP_SERVERS (
+    OBJ_ID,
+    HOST,
+    PORT,
+    USERNAME,
+    PASSWORD,
+    ROOT_PATH,
+    SERVICE,
+    "TYPE",
+    IN_PATH,
+    OUT_PATH,
+    HISTORY_PATH,
+    ENABLED
+)
 values (
            1,
-           'localhost',
-           'Y',
-           'localhost',
-           '127.0.0.1',
-           null
+           'test.domain',
+           22,
+           'username',
+           'pwdpwdpwd',
+           '/',
+           'service',
+           'out',
+           '/in/service',
+           '/out/service',
+           '/out/history/service',
+           'Y'
        );

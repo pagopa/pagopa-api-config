@@ -55,6 +55,9 @@ public enum AppError {
     PDD_NOT_FOUND(HttpStatus.NOT_FOUND, "Pdd not found", "No pdd found with id_pdd %s"),
     PDD_CONFLICT(HttpStatus.CONFLICT, "Pdd conflict", "Pdd with id_pdd %s already exists"),
 
+    FTP_SERVER_NOT_FOUND(HttpStatus.NOT_FOUND, "Ftp server not found", "No ftp server found with host: %s port: %s service: %s"),
+    FTP_SERVER_CONFLICT(HttpStatus.CONFLICT, "Ftp server conflict", "Ftp server with host %s, port %s and service %s already exists"),
+
     UNKNOWN(null, null, null);
 
     public final HttpStatus httpStatus;
