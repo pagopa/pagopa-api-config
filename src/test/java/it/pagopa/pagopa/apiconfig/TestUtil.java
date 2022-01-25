@@ -27,6 +27,8 @@ import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -769,4 +771,31 @@ public class TestUtil {
         return List.of(getMockWfespPluginConf());
     }
 
+    public static Pdd getMockPdd() {
+        return  Pdd.builder()
+                .idPdd("idPdd")
+                .description("description")
+                .enabled(true)
+                .ip("127.0.0.1")
+                .build();
+    }
+
+    public static Pdds getMockPdds() {
+        return  Pdds.builder()
+                .pddList(List.of(getMockPdd()))
+                .build();
+    }
+
+    public static it.pagopa.pagopa.apiconfig.entity.Pdd getMockPddEntity() {
+        return  it.pagopa.pagopa.apiconfig.entity.Pdd.builder()
+                .idPdd("idPdd")
+                .descrizione("description")
+                .enabled(true)
+                .ip("127.0.0.1")
+                .build();
+    }
+
+    public static List<it.pagopa.pagopa.apiconfig.entity.Pdd> getMockPddsEntities() {
+        return List.of(getMockPddEntity());
+    }
 }

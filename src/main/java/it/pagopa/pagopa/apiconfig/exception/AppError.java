@@ -52,8 +52,10 @@ public enum AppError {
     CONFIGURATION_WFESP_PLUGIN_NOT_FOUND(HttpStatus.NOT_FOUND, "Configuration wfesp plugin not found", "No Configuration wfesp plugin found with idServPlugin: %s"),
     CONFIGURATION_WFESP_PLUGIN_CONFLICT(HttpStatus.CONFLICT, "Configuration wfesp plugin conflict", "Configuration key with idServPlugin %s already exists"),
 
-    UNKNOWN(null, null, null);
+    PDD_NOT_FOUND(HttpStatus.NOT_FOUND, "Pdd not found", "No pdd found with id_pdd %s"),
+    PDD_CONFLICT(HttpStatus.CONFLICT, "Pdd conflict", "Pdd with id_pdd %s already exists"),
 
+    UNKNOWN(null, null, null);
 
     public final HttpStatus httpStatus;
     public final String title;

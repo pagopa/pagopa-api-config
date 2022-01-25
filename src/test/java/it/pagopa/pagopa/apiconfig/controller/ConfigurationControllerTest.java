@@ -38,6 +38,9 @@ class ConfigurationControllerTest {
 
         when(configurationService.getWfespPluginConfigurations()).thenReturn(getMockWfespPluginConfigurations());
         when(configurationService.getWfespPluginConfiguration("idServPlugin")).thenReturn(getMockModelWfespPluginConf());
+
+        when(configurationService.getPdds()).thenReturn(getMockPdds());
+        when(configurationService.getPdd("idPdd")).thenReturn(getMockPdd());
     }
 
     @ParameterizedTest
@@ -45,7 +48,9 @@ class ConfigurationControllerTest {
             "/configuration/keys",
             "/configuration/keys/category/category/key/key",
             "/configuration/wfespplugins",
-            "/configuration/wfespplugins/idServPlugin"
+            "/configuration/wfespplugins/idServPlugin",
+            "/configuration/pdds",
+            "/configuration/pdds/idPdd"
 
     })
     void testGets(String url) throws Exception {
@@ -145,6 +150,52 @@ class ConfigurationControllerTest {
     @Test
     void deleteWfespPlugin() throws Exception {
         mvc.perform(delete("/configuration/wfespplugins/idServPlugin").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createPdd() throws Exception {
+        mvc.perform(post("/configuration/pdds")
+                .content(TestUtil.toJson(getMockPdd()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createPdd_400() throws Exception {
+        mvc.perform(post("/configuration/pdds")
+                .content(TestUtil.toJson(getMockPdd().toBuilder()
+                        .idPdd("")
+                        .build()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void updatePdd() throws Exception {
+        mvc.perform(put("/configuration/pdds/idPdd")
+                .content(TestUtil.toJson(getMockPdd()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updatePdd_400() throws Exception {
+        mvc.perform(put("/configuration/pdds/idPdd")
+                .content(
+                        TestUtil.toJson(
+                                getMockPdd().toBuilder()
+                                        .idPdd("")
+                                        .build())
+                ).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void deletePd() throws Exception {
+        mvc.perform(delete("/configuration/pdds/idPdd").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

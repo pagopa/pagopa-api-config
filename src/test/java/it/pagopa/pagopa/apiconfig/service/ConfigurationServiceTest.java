@@ -2,12 +2,15 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.Pdd;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.PddRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -37,6 +40,9 @@ class ConfigurationServiceTest {
 
     @MockBean
     private WfespPluginConfRepository wfespPluginConfRepository;
+
+    @MockBean
+    private PddRepository pddRepository;
 
     @Autowired
     @InjectMocks
@@ -315,5 +321,138 @@ class ConfigurationServiceTest {
         }
     }
 
+    @Test
+    void getPdds_ok() throws IOException, JSONException {
+        List<it.pagopa.pagopa.apiconfig.entity.Pdd> pddList = getMockPddsEntities();
+        when(pddRepository.findAll()).thenReturn(pddList);
+
+        Pdds pdds = configurationService.getPdds();
+        String actual = TestUtil.toJson(pdds);
+        String expected = TestUtil.readJsonFromFile("response/get_pdds_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getPdd_ok() throws IOException, JSONException {
+        Pdd pddEntity = getMockPddEntity();
+        when(pddRepository.findByIdPdd("idPdd")).thenReturn(java.util.Optional.ofNullable(pddEntity));
+
+        it.pagopa.pagopa.apiconfig.model.configuration.Pdd pdd = configurationService.getPdd("idPdd");
+        String actual = TestUtil.toJson(pdd);
+        String expected = TestUtil.readJsonFromFile("response/get_pdd_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+
+    @Test
+    void getPdd_notFound() {
+        when(pddRepository.findByIdPdd("unknown")).thenReturn(java.util.Optional.empty());
+        try {
+            configurationService.getPdd("unknown");
+            fail();
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void createPdd() throws IOException, JSONException {
+        when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.empty());
+        when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class))).thenReturn(getMockPddEntity());
+
+        it.pagopa.pagopa.apiconfig.model.configuration.Pdd result = configurationService.createPdd(getMockPdd());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_pdd_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createPdd_conflict() {
+        when(pddRepository.findByIdPdd("idPdd")).thenReturn(java.util.Optional.ofNullable( getMockPddEntity()));
+        when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class))).thenReturn(getMockPddEntity());
+
+        try {
+            configurationService.createPdd(getMockPdd());
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updatePdd() throws IOException, JSONException {
+        when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.of(getMockPddEntity()));
+        when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class))).thenReturn(getMockPddEntity());
+
+        it.pagopa.pagopa.apiconfig.model.configuration.Pdd result = configurationService.updatePdd("idPdd", getMockPdd());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_pdd_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updatePdd_notFound() {
+        when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.empty());
+        when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class))).thenReturn(getMockPddEntity());
+
+        try {
+            configurationService.updatePdd("idPdd", getMockPdd());
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updatePdd_badRequest() {
+        when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.of(getMockPddEntity()));
+        when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class))).thenReturn(getMockPddEntity());
+
+        try {
+            it.pagopa.pagopa.apiconfig.model.configuration.Pdd conf = getMockPdd();
+            conf.setIdPdd("");
+            configurationService.updatePdd("idPdd", conf);
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deletePdd() {
+        when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.of(getMockPddEntity()));
+
+        try {
+            configurationService.deletePdd("idPdd");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deletePdd_notfound() {
+        when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.empty());
+
+        try {
+            configurationService.deletePdd("idPdd");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
 
 }
