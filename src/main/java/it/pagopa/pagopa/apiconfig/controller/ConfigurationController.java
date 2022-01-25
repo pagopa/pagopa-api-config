@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.service.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -103,7 +105,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ConfigurationKey.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ConfigurationKey.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -141,4 +143,107 @@ public class ConfigurationController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * GET /configuration/wfespplugins : Get list of WFESP Plugin configuration
+     *
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Get list of WFESP Plugin configuration", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WfespPluginConfs.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/wfespplugins", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<WfespPluginConfs> getWfespPlugins() {
+        return ResponseEntity.ok(configurationService.getWfespPluginConfigurations());
+    }
+
+    /**
+     * POST /configuration/wfespplugins : Create a WFESP Plugin configuration
+     *
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Create configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ConfigurationKey.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @PostMapping(value = "/wfespplugins", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<WfespPluginConf> createWfespPlugin(@RequestBody @Valid @NotNull WfespPluginConf wfespPluginConf) {
+        WfespPluginConf result = configurationService.createWfespPluginConfiguration(wfespPluginConf);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    /**
+     * GET /configuration/wfespplugins/idServPlugin : Get details of a Wfesp plugin
+     *
+     * @param idServPlugin idServPlugin (required)
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Get details of a Wfesp plugin", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WfespPluginConf.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/wfespplugins/{idServPlugin}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<WfespPluginConf> getWfespPlugin(@Parameter(description = "idServPlugin") @PathVariable("idServPlugin") String idServPlugin) {
+        return ResponseEntity.ok(configurationService.getWfespPluginConfiguration(idServPlugin));
+    }
+
+    /**
+     * PUT /configuration/wfespplugins/idServPlugin : Update a Wfesp plugin configuration
+     *
+     * @param idServPlugin idServPlugin (required)
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Update Wfesp plugin configuration", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WfespPluginConf.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @PutMapping(value = "/wfespplugins/{idServPlugin}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<WfespPluginConf> updateWfespPlugin(@Parameter(description = "idServPlugin") @PathVariable("idServPlugin") String idServPlugin,
+                                                             @RequestBody @Valid @NotNull WfespPluginConf wfespPluginConf) {
+        WfespPluginConf wp = configurationService.updateWfespPluginConfiguration(idServPlugin, wfespPluginConf);
+        return ResponseEntity.ok(wp);
+    }
+
+    /**
+     * DELETE /configuration/wfespplugins/idServPlugin : Delete a Wfesp plugin configuration
+     *
+     * @param idServPlugin idServPlugin (required)
+     * @return
+     */
+    @Operation(summary = "Delete configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "/wfespplugins/{idServPlugin}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> deleteWfespPlugin(@Parameter(description = "idServPlugin") @PathVariable("idServPlugin") String idServPlugin) {
+        configurationService.deleteWfespPluginConfiguration(idServPlugin);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -4,7 +4,10 @@ import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,9 @@ public class ConfigurationService {
 
     @Autowired
     private ConfigurationKeysRepository configurationKeysRepository;
+
+    @Autowired
+    private WfespPluginConfRepository wfespPluginConfRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -65,6 +71,52 @@ public class ConfigurationService {
         configurationKeysRepository.delete(configurationKey);
     }
 
+    public WfespPluginConfs getWfespPluginConfigurations() {
+        List<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> list = wfespPluginConfRepository.findAll();
+        return it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs.builder()
+                .wfespPluginConfList(getWfespPluginConfList(list))
+                .build();
+    }
+
+    public WfespPluginConf getWfespPluginConfiguration(@NotNull String idServPlugin) {
+        it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wfespPluginConf = getWfespPluginConfigurationIfExists(idServPlugin);
+        return modelMapper.map(wfespPluginConf, WfespPluginConf.class);
+    }
+
+    public WfespPluginConf createWfespPluginConfiguration(WfespPluginConf wfespPluginConf) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp = wfespPluginConfRepository.findByIdServPlugin(wfespPluginConf.getIdServPlugin());
+        if (wp.isPresent()) {
+            throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_CONFLICT, wfespPluginConf.getIdServPlugin());
+        }
+
+        it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wpEntity = modelMapper.map(wfespPluginConf, it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class);
+        wfespPluginConfRepository.save(wpEntity);
+        return modelMapper.map(wpEntity, WfespPluginConf.class);
+    }
+
+    public WfespPluginConf updateWfespPluginConfiguration(String idServPlugin, WfespPluginConf wfespPluginConf) {
+        Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp = wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
+        if (!wp.isPresent()) {
+            throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
+        }
+
+        it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wpEntity = wp.get();
+        wpEntity.setIdServPlugin(idServPlugin);
+        wpEntity.setIdBean(wfespPluginConf.getIdBean());
+        wpEntity.setProfiloPagConstString(wfespPluginConf.getProfiloPagConstString());
+        wpEntity.setProfiloPagSoapRule(wfespPluginConf.getProfiloPagSoapRule());
+        wpEntity.setProfiloPagRptXpath(wfespPluginConf.getProfiloPagRptXpath());
+
+        wfespPluginConfRepository.save(wpEntity);
+
+        return modelMapper.map(wpEntity, WfespPluginConf.class);
+    }
+
+    public void deleteWfespPluginConfiguration(String idServPlugin) {
+        it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wp = getWfespPluginConfigurationIfExists(idServPlugin);
+        wfespPluginConfRepository.delete(wp);
+    }
+
     /**
      * Maps ConfigurationKeys objects stored in the DB in a List of ConfigurationKey
      *
@@ -91,4 +143,28 @@ public class ConfigurationService {
         return result.get();
     }
 
+    /**
+     * Maps WfespPluginConf objects stored in the DB in a List of WfespPluginConf
+     *
+     * @param wfespPluginConfList list of Wfesp Plugin configuration returned from the database
+     * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf}.
+     */
+    private List<WfespPluginConf> getWfespPluginConfList(List<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wfespPluginConfList) {
+        return wfespPluginConfList.stream()
+                .map(elem -> modelMapper.map(elem, WfespPluginConf.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @param idServPlugin idServPlugin
+     * @return return the configuration wfesp plugin record from DB if exists
+     * @throws AppException if not found
+     */
+    protected it.pagopa.pagopa.apiconfig.entity.WfespPluginConf getWfespPluginConfigurationIfExists(String idServPlugin) throws AppException {
+        Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> result = wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
+        if (result.isEmpty()) {
+            throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
+        }
+        return result.get();
+    }
 }

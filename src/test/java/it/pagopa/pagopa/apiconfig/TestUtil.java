@@ -26,6 +26,7 @@ import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -43,7 +44,6 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
-import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
@@ -375,7 +375,8 @@ public class TestUtil {
     public static WfespPluginConf getMockWfespPluginConf() {
         return WfespPluginConf.builder()
                 .id(1L)
-                .idServPlugin("1")
+//                .idServPlugin("1")
+                .idServPlugin("idServPlugin")
                 .idBean("sdf")
                 .build();
     }
@@ -735,7 +736,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> getMockConfigurationKeysEntities() {
+    public static List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> getMockConfigurationKeysEntries() {
         return List.of(getMockConfigurationKeyEntity());
     }
 
@@ -750,4 +751,22 @@ public class TestUtil {
                         .build())
                 .build();
     }
+
+    public static it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf getMockModelWfespPluginConf() {
+        return it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf.builder()
+                .idServPlugin("idServPlugin")
+                .idBean("sdf")
+                .build();
+    }
+
+    public static WfespPluginConfs getMockWfespPluginConfigurations() {
+        return  WfespPluginConfs.builder()
+                .wfespPluginConfList(List.of(getMockModelWfespPluginConf()))
+                .build();
+    }
+
+    public static List<WfespPluginConf> getMockWfespPluginConfEntries() {
+        return List.of(getMockWfespPluginConf());
+    }
+
 }
