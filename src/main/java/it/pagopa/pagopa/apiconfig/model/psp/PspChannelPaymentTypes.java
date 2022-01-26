@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -23,9 +23,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PspChannelPaymentTypes {
 
-    @JsonProperty("payment_type")
+    @JsonProperty("payment_types")
     @Schema(required = true)
-    @NotEmpty
+    @NotNull
     private List<Service.PaymentTypeCode> paymentTypeList;
 
 }
