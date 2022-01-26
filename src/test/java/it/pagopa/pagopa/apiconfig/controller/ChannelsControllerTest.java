@@ -56,11 +56,10 @@ class ChannelsControllerTest {
     @ParameterizedTest
     @CsvSource({
             "/channels?page=0",
-            "/channels/1234/paymenttypes",
-            "/channels/1234"
+            "/channels/1234",
+            "/channels/1234/paymenttypes"
     })
-    void getChannels() throws Exception {
-        String url = "/channels?page=0";
+    void getChannels(String url) throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
