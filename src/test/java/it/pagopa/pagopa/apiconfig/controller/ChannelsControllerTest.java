@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannels;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
@@ -117,8 +119,8 @@ class ChannelsControllerTest {
     @Test
     void createPaymentType() throws Exception {
         mvc.perform(post("/channels/1234/paymenttypes")
-                        .content(TestUtil.toJson(getMockChannelDetails()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(TestUtil.toJson(getMockPspChannelPaymentTypes()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }

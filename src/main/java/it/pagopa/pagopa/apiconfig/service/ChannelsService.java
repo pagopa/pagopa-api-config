@@ -112,6 +112,11 @@ public class ChannelsService {
     }
 
     public PspChannelPaymentTypes createPaymentType(@NotBlank String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
+        // necessary to prevent 201 status code without at least one payment type specified
+        if (pspChannelPaymentTypes.getPaymentTypeList().size() == 0) {
+            throw new AppException(AppError.PAYMENT_TYPE_BAD_REQUEST);
+        }
+
         var channel = getCanaliIfExists(channelCode);
         // foreach type in the request...
         for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode type : pspChannelPaymentTypes.getPaymentTypeList()) {
@@ -122,7 +127,6 @@ public class ChannelsService {
                 throw new AppException(AppError.CHANNEL_PAYMENT_TYPE_CONFLICT, channel.getIdCanale(), paymentType.getTipoVersamento());
             }
 
-
             // ...if NOT exists, save the new relation
             var entity = CanaleTipoVersamento.builder()
                     .canale(channel)
@@ -130,7 +134,7 @@ public class ChannelsService {
                     .build();
             canaleTipoVersamentoRepository.save(entity);
         }
-        return pspChannelPaymentTypes;
+        return getPaymentTypes(channelCode);
     }
 
     public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {

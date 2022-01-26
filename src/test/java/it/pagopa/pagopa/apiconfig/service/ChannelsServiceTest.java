@@ -7,6 +7,7 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanaleTipoVersamento;
@@ -199,6 +201,24 @@ class ChannelsServiceTest {
         try {
             channelsService.createPaymentType("1234", getMockPspChannelPaymentTypes());
         } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void createPaymentType_400() {
+        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.empty());
+        try {
+            PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
+            paymentTypes.setPaymentTypeList(new ArrayList<>());
+            channelsService.createPaymentType("1234", paymentTypes);
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        }
+        catch (Exception e) {
             fail();
         }
     }

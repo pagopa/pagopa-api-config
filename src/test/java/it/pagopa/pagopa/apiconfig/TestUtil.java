@@ -830,4 +830,5 @@ public class TestUtil {
     public static List<it.pagopa.pagopa.apiconfig.entity.FtpServers> getMockFtpServersEntities() {
         return List.of(getMockFtpServersEntity());
     }
+
 }
