@@ -113,7 +113,7 @@ public class ChannelsService {
 
     public PspChannelPaymentTypes createPaymentType(@NotBlank String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
         // necessary to prevent 201 status code without at least one payment type specified
-        if (pspChannelPaymentTypes.getPaymentTypeList().size() == 0) {
+        if (pspChannelPaymentTypes.getPaymentTypeList().isEmpty()) {
             throw new AppException(AppError.PAYMENT_TYPE_BAD_REQUEST);
         }
 
