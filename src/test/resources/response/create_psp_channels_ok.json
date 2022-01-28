@@ -1,5 +1,5 @@
 {
-  "payment_type": [
+  "payment_types": [
     "AD"
   ],
   "channel_code": "1234"

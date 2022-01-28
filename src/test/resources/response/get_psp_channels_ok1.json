@@ -3,7 +3,7 @@
     {
       "channel_code": "1234",
       "enabled": true,
-      "payment_type": [
+      "payment_types": [
         "PPAL"
       ]
     }

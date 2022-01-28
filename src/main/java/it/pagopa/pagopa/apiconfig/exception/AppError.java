@@ -39,6 +39,7 @@ public enum AppError {
     RELATION_CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Relation PSP-Channel not found", "No Relation PSP-Channel found between PSP with code %s and Channel with code %s and with payment type %s"),
     RELATION_CHANNEL_CONFLICT(HttpStatus.CONFLICT, "Relation PSP-Channel conflict", "Relation PSP-Channel between PSP with code %s and Channel with code %s and with payment type %s already exists"),
 
+    PAYMENT_TYPE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "PaymentType not found", "No PaymentType specified in the request"),
     PAYMENT_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "PaymentType not found", "No PaymentType found with code: %s"),
 
     CHANNEL_PAYMENT_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "Relation Channel-PaymentType not found", "Channel %s has not PaymentType %s"),

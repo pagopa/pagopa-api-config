@@ -77,7 +77,8 @@ public class CommonUtil {
      * @return a {@link Sort} object to use with SpringRepository
      */
     public static Sort getSort(FilterAndOrder filterAndOrder) {
-        return Sort.by(filterAndOrder.getOrder().getOrdering(), filterAndOrder.getOrder().getOrderBy().getColumnName());
+        var order = new Sort.Order(filterAndOrder.getOrder().getOrdering(), filterAndOrder.getOrder().getOrderBy().getColumnName());
+        return Sort.by(order.ignoreCase());
     }
 
 

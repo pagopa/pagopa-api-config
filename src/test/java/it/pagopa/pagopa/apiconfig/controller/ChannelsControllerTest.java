@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannels;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
@@ -56,11 +58,10 @@ class ChannelsControllerTest {
     @ParameterizedTest
     @CsvSource({
             "/channels?page=0",
-            "/channels/1234/paymenttypes",
-            "/channels/1234"
+            "/channels/1234",
+            "/channels/1234/paymenttypes"
     })
-    void getChannels() throws Exception {
-        String url = "/channels?page=0";
+    void getChannels(String url) throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -118,8 +119,8 @@ class ChannelsControllerTest {
     @Test
     void createPaymentType() throws Exception {
         mvc.perform(post("/channels/1234/paymenttypes")
-                        .content(TestUtil.toJson(getMockChannelDetails()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(TestUtil.toJson(getMockPspChannelPaymentTypes()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
