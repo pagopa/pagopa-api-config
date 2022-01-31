@@ -2,7 +2,9 @@ package it.pagopa.pagopa.apiconfig.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,5 +70,14 @@ public class LoggingAspect {
     @AfterReturning(value = "@within(org.springframework.web.bind.annotation.RestController)", returning = "result")
     public void returnApiInvocation(JoinPoint joinPoint, Object result) {
         log.info("Successful API operation {} - result: {}", joinPoint.getSignature().getName(), result);
+    }
+
+    @Around(value = "execution(* it.pagopa.pagopa.apiconfig.repository..*.*(..)) || execution(* it.pagopa.pagopa.apiconfig.service..*.*(..))")
+    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        long startTime = System.currentTimeMillis();
+        Object result = joinPoint.proceed();
+        long endTime = System.currentTimeMillis();
+        log.debug("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
+        return result;
     }
 }
