@@ -17,11 +17,13 @@ import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -44,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ChannelsServiceTest {
@@ -177,6 +179,22 @@ class ChannelsServiceTest {
             channelsService.deleteChannel("1234");
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deleteChannel_badRequest() {
+        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+        DataIntegrityViolationException exception = Mockito.mock(DataIntegrityViolationException.class);
+        doThrow(exception).when(canaliRepository).delete(any(Canali.class));
+
+        try {
+            channelsService.deleteChannel("1234");
+            fail("no exception thrown");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
         } catch (Exception e) {
             fail();
         }
