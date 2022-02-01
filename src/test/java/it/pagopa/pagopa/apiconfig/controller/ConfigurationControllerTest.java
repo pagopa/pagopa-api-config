@@ -97,20 +97,6 @@ class ConfigurationControllerTest {
     }
 
     @Test
-    void updateConfigurationKey_400() throws Exception {
-        mvc.perform(put("/configuration/paymenttypes/code")
-                .content(
-                        TestUtil.toJson(
-                                getMockConfigurationKey().toBuilder()
-                                        .configCategory("")
-                                        .configKey("")
-                                        .build())
-                ).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
     void deleteConfigurationKey() throws Exception {
         mvc.perform(delete("/configuration/paymenttypes/code").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -144,19 +130,6 @@ class ConfigurationControllerTest {
     }
 
     @Test
-    void updateWfespPlugin_400() throws Exception {
-        mvc.perform(put("/configuration/wfespplugins/idServPlugin")
-                .content(
-                        TestUtil.toJson(
-                                getMockModelWfespPluginConf().toBuilder()
-                                        .idServPlugin("")
-                                        .build())
-                ).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
     void deleteWfespPlugin() throws Exception {
         mvc.perform(delete("/configuration/wfespplugins/idServPlugin").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -187,19 +160,6 @@ class ConfigurationControllerTest {
                 .content(TestUtil.toJson(getMockPdd()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    void updatePdd_400() throws Exception {
-        mvc.perform(put("/configuration/pdds/idPdd")
-                .content(
-                        TestUtil.toJson(
-                                getMockPdd().toBuilder()
-                                        .idPdd("")
-                                        .build())
-                ).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
