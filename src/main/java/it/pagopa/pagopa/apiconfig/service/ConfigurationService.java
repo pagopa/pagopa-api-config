@@ -60,7 +60,7 @@ public class ConfigurationService {
         return modelMapper.map(configKeyEntity, ConfigurationKey.class);
     }
 
-    public ConfigurationKey updateConfigurationKey(String category, String key, ConfigurationKey configurationKey) {
+    public ConfigurationKey updateConfigurationKey(String category, String key, ConfigurationKeyBase configurationKey) {
         Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKey = configurationKeysRepository.findByConfigCategoryAndConfigKey(category, key);
         if (configKey.isEmpty()) {
             throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
@@ -102,7 +102,7 @@ public class ConfigurationService {
         return modelMapper.map(wpEntity, WfespPluginConf.class);
     }
 
-    public WfespPluginConf updateWfespPluginConfiguration(String idServPlugin, WfespPluginConf wfespPluginConf) {
+    public WfespPluginConf updateWfespPluginConfiguration(String idServPlugin, WfespPluginConfBase wfespPluginConf) {
         Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp = wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
         if (wp.isEmpty()) {
             throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
@@ -148,7 +148,7 @@ public class ConfigurationService {
         return modelMapper.map(pddEntity, Pdd.class);
     }
 
-    public Pdd updatePdd(String idPdd, Pdd pdd) {
+    public Pdd updatePdd(String idPdd, PddBase pdd) {
         Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> optPdd = pddRepository.findByIdPdd(idPdd);
         if (optPdd.isEmpty()) {
             throw new AppException(AppError.PDD_NOT_FOUND, idPdd);
@@ -231,7 +231,7 @@ public class ConfigurationService {
         return modelMapper.map(tipiVersamento, PaymentType.class);
     }
 
-    public PaymentType updatePaymentType(String paymentTypeCode, PaymentType paymentType) {
+    public PaymentType updatePaymentType(String paymentTypeCode, PaymentTypeBase paymentType) {
         TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
 
         tipiVersamento.setDescrizione(paymentType.getDescription());

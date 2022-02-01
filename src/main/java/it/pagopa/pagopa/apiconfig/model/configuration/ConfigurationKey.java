@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ConfigurationKey {
+public class ConfigurationKey extends ConfigurationKeyBase {
 
     @JsonProperty("config_category")
     @Schema(example = "GLOBAL", required = true)
@@ -28,14 +28,5 @@ public class ConfigurationKey {
     @Schema(example = "default_token_duration_validity_millis", required = true)
     @NotBlank
     private String configKey;
-
-    @JsonProperty("config_value")
-    @Schema(example = "180000", required = true)
-    @NotNull
-    private String configValue;
-
-    @JsonProperty("config_description")
-    @Schema(example = " default millisecondi validità token", required = false)
-    private String configDescription;
 
 }

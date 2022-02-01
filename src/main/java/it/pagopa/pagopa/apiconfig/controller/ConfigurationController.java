@@ -102,7 +102,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ConfigurationKey.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ConfigurationKeyBase.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -112,7 +112,7 @@ public class ConfigurationController {
     @PutMapping(value = "/keys/category/{category}/key/{key}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ConfigurationKey> updateConfigurationKey(@Parameter(description = "Configuration category") @PathVariable("category") String category,
                                                                    @Parameter(description = "Configuration key") @PathVariable("key") String key,
-                                                                   @RequestBody @Valid @NotNull ConfigurationKey configurationKey) {
+                                                                   @RequestBody @Valid @NotNull ConfigurationKeyBase configurationKey) {
         ConfigurationKey configKey = configurationService.updateConfigurationKey(category, key, configurationKey);
         return ResponseEntity.ok(configKey);
     }
@@ -209,7 +209,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update Wfesp plugin configuration", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WfespPluginConf.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WfespPluginConfBase.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -218,7 +218,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/wfespplugins/{idServPlugin}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<WfespPluginConf> updateWfespPlugin(@Parameter(description = "idServPlugin") @PathVariable("idServPlugin") String idServPlugin,
-                                                             @RequestBody @Valid @NotNull WfespPluginConf wfespPluginConf) {
+                                                             @RequestBody @Valid @NotNull WfespPluginConfBase wfespPluginConf) {
         WfespPluginConf wp = configurationService.updateWfespPluginConfiguration(idServPlugin, wfespPluginConf);
         return ResponseEntity.ok(wp);
     }
@@ -314,7 +314,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update pdd", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Pdd.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PddBase.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -323,7 +323,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/pdds/{id_pdd}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Pdd> updatePdd(@Parameter(description = "Configuration identifier") @PathVariable("id_pdd") String idPdd,
-                                         @RequestBody @Valid @NotNull Pdd pdd) {
+                                         @RequestBody @Valid @NotNull PddBase pdd) {
         Pdd updatedPdd = configurationService.updatePdd(idPdd, pdd);
         return ResponseEntity.ok(updatedPdd);
     }
@@ -538,7 +538,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update payment type", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentType.class))),
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentTypeBase.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -547,7 +547,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/paymenttypes/{paymentTypeCode}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<PaymentType> updateConfigurationKey(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode,
-                                                            @RequestBody @Valid @NotNull PaymentType paymentType) {
+                                                            @RequestBody @Valid @NotNull PaymentTypeBase paymentType) {
         PaymentType savedPaymentType = configurationService.updatePaymentType(paymentTypeCode, paymentType);
         return ResponseEntity.ok(savedPaymentType);
     }

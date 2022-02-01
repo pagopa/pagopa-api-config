@@ -5,11 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 /**
  * PaymentType
@@ -20,11 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PaymentType extends PaymentTypeBase {
+public class PaymentTypeBase {
 
-    @JsonProperty("payment_type")
-    @Schema(example = "AD", required = true)
-    @Size(max = 15)
-    private String paymentType;
+    @JsonProperty("description")
+    @Schema(example = "Addebito diretto")
+    @Size(max = 35)
+    private String description;
 
 }
