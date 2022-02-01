@@ -638,7 +638,7 @@ class ConfigurationServiceTest {
 
         try {
             PaymentType mock = getMockPaymentType();
-            mock.setPaymentType("PPAL");
+            mock.setPaymentTypeCode("PPAL");
             configurationService.createPaymentType(mock);
         }
         catch (AppException e) {

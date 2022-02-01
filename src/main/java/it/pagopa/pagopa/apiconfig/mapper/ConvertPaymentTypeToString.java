@@ -10,6 +10,6 @@ public class ConvertPaymentTypeToString implements Converter<PaymentType, String
     @Override
     public String convert(MappingContext<PaymentType, String> mappingContext) {
         @Valid PaymentType paymentType = mappingContext.getSource();
-        return paymentType.getPaymentType();
+        return paymentType.getPaymentTypeCode();
     }
 }

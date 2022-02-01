@@ -848,7 +848,7 @@ public class TestUtil {
 
     public static PaymentType getMockPaymentType() {
         return  PaymentType.builder()
-                .paymentType("code")
+                .paymentTypeCode("code")
                 .description("description")
                 .build();
     }

@@ -221,9 +221,9 @@ public class ConfigurationService {
     }
 
     public PaymentType createPaymentType(PaymentType paymentType) {
-        Optional<TipiVersamento> pt = tipiVersamentoRepository.findByTipoVersamento(paymentType.getPaymentType());
+        Optional<TipiVersamento> pt = tipiVersamentoRepository.findByTipoVersamento(paymentType.getPaymentTypeCode());
         if (pt.isPresent()) {
-            throw new AppException(AppError.PAYMENT_TYPE_CONFLICT, paymentType.getPaymentType());
+            throw new AppException(AppError.PAYMENT_TYPE_CONFLICT, paymentType.getPaymentTypeCode());
         }
 
         TipiVersamento tipiVersamento = modelMapper.map(paymentType, TipiVersamento.class);

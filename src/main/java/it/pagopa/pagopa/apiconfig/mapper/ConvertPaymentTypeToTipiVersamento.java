@@ -12,7 +12,7 @@ public class ConvertPaymentTypeToTipiVersamento implements Converter<PaymentType
     public TipiVersamento convert(MappingContext<PaymentType, TipiVersamento> mappingContext) {
         @Valid PaymentType paymentType = mappingContext.getSource();
         return TipiVersamento.builder()
-                .tipoVersamento(paymentType.getPaymentType())
+                .tipoVersamento(paymentType.getPaymentTypeCode())
                 .descrizione(paymentType.getDescription())
                 .build();
     }
