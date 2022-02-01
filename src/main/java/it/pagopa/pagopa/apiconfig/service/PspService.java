@@ -242,7 +242,7 @@ public class PspService {
                 .orElseThrow(() -> new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, paymentTypeCode));
 
         var canaleTipoVersamento = canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), tipoVersamento.getId())
-                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_NOT_FOUND, channel.get(), paymentTypeCode));
+                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_NOT_FOUND, channel.getIdCanale(), paymentTypeCode));
 
         // check if the relation already exists
         if (pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanaleAndCanaleTipoVersamento_FkTipoVersamento(psp.getObjId(), channel.getId(), tipoVersamento.getId()).isPresent()) {
