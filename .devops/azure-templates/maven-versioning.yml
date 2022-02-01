@@ -8,6 +8,7 @@ parameters:
       - major
       - minor
       - patch
+      - buildNumber
       - skip
 
 steps:
@@ -29,3 +30,9 @@ steps:
           mavenPomFile: "pom.xml"
           goals: 'build-helper:parse-version versions:set'
           options: '-DnewVersion=${parsedVersion.nextMajorVersion}.0.0'
+  - ${{ if eq(parameters.semver, 'buildNumber') }}:
+      - task: Maven@3
+        inputs:
+          mavenPomFile: "pom.xml"
+          goals: 'build-helper:parse-version versions:set'
+          options: '-DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}'
