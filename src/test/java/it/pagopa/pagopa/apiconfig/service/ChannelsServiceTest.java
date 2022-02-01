@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
@@ -122,6 +123,27 @@ class ChannelsServiceTest {
     }
 
     @Test
+    void createChannel_404() throws IOException, JSONException {
+        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
+        when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
+        when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
+//        when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
+        AppException exception = new AppException(AppError.SERV_PLUGIN_NOT_FOUND, "SERV_PLUGIN_NOT_FOUND");
+        doThrow(exception).when(wfespPluginConfRepository).findByIdServPlugin(anyString());
+
+        ChannelDetails channelDetails = getMockChannelDetails();
+        channelDetails.setServPlugin("UNKNOWN");
+        try {
+            channelsService.createChannel(channelDetails);
+            fail("no exception thrown");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
     void createChannel_conflict() {
         when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
         when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
@@ -144,7 +166,6 @@ class ChannelsServiceTest {
         when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
         when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
         when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
-
 
         ChannelDetails result = channelsService.updateChannel("1234", getMockChannelDetails());
         String actual = TestUtil.toJson(result);
