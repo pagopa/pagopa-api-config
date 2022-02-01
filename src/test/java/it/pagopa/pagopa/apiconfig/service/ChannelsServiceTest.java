@@ -30,6 +30,7 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanaleTipoVersamento;
@@ -219,6 +220,25 @@ class ChannelsServiceTest {
         try {
             channelsService.createPaymentType("1234", getMockPspChannelPaymentTypes());
         } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void createPaymentType_409() {
+        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+        try {
+            PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
+            paymentTypes.setPaymentTypeList(List.of("PO"));
+            channelsService.createPaymentType("1234", paymentTypes);
+            fail("no exception thrown");
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        }
+        catch (Exception e) {
             fail();
         }
     }
