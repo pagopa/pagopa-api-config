@@ -5,6 +5,7 @@ import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.mapper.*;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Broker;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -71,11 +72,14 @@ public class MappingsConfiguration {
         Converter<PaymentServiceProviderDetails, Psp> convertPaymentServiceProviderDetailsToPsp = new ConvertPaymentServiceProviderDetailsToPsp();
         Converter<ChannelDetails, Canali> convertChannelDetailsToCanali = new ConvertChannelDetailsToCanali();
         Converter<ConfigurationKeys, ConfigurationKey> convertConfigurationKeysConfigurationKey = new ConvertConfigurationKeysToConfigurationKey();
-        Converter<CanaleTipoVersamento, Service.PaymentTypeCode> convertCanaleTipoVersamentoToPaymentTypeCode = new ConvertCanaleTipoVersamentoToPaymentTypeCode();
+        Converter<CanaleTipoVersamento, PaymentType> convertCanaleTipoVersamentoToPaymentType = new ConvertCanaleTipoVersamentoToPaymentType();
         Converter<WfespPluginConf, it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf> convertConfWfespPluginConf = new ConvertWfespPluginConfToWfespPluginConf();
         Converter<Pdd, it.pagopa.pagopa.apiconfig.model.configuration.Pdd> convertPddEToPddM = new ConvertPddEToPddM();
         Converter<it.pagopa.pagopa.apiconfig.model.configuration.Pdd, Pdd> convertPddMToPddE = new ConvertPddMToPddE();
         Converter<FtpServers, FtpServer> convertFtpServersFtpServer = new ConvertFtpServersToFtpServer();
+        Converter<TipiVersamento, PaymentType> convertTipiVersamentoPaymentType = new ConvertTipiVersamentoToPaymentType();
+        Converter<PaymentType, String> convertPaymentTypeString = new ConvertPaymentTypeToString();
+        Converter<PaymentType, TipiVersamento> convertPaymentTypeTipiVersamento = new ConvertPaymentTypeToTipiVersamento();
 
         mapper.createTypeMap(Pa.class, CreditorInstitutionDetails.class).setConverter(convertPaToCreditorInstitutionDetails);
         mapper.createTypeMap(Pa.class, CreditorInstitution.class).setConverter(convertPaToCreditorInstitution);
@@ -106,11 +110,14 @@ public class MappingsConfiguration {
         mapper.createTypeMap(PaymentServiceProviderDetails.class, Psp.class).setConverter(convertPaymentServiceProviderDetailsToPsp);
         mapper.createTypeMap(ChannelDetails.class, Canali.class).setConverter(convertChannelDetailsToCanali);
         mapper.createTypeMap(ConfigurationKeys.class, ConfigurationKey.class).setConverter(convertConfigurationKeysConfigurationKey);
-        mapper.createTypeMap(CanaleTipoVersamento.class, Service.PaymentTypeCode.class).setConverter(convertCanaleTipoVersamentoToPaymentTypeCode);
+        mapper.createTypeMap(CanaleTipoVersamento.class, PaymentType.class).setConverter(convertCanaleTipoVersamentoToPaymentType);
         mapper.createTypeMap(WfespPluginConf.class, it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf.class).setConverter(convertConfWfespPluginConf);
         mapper.createTypeMap(Pdd.class, it.pagopa.pagopa.apiconfig.model.configuration.Pdd.class).setConverter(convertPddEToPddM);
         mapper.createTypeMap(it.pagopa.pagopa.apiconfig.model.configuration.Pdd.class, Pdd.class).setConverter(convertPddMToPddE);
         mapper.createTypeMap(FtpServers.class, FtpServer.class).setConverter(convertFtpServersFtpServer);
+        mapper.createTypeMap(TipiVersamento.class, PaymentType.class).setConverter(convertTipiVersamentoPaymentType);
+        mapper.createTypeMap(PaymentType.class, String.class).setConverter(convertPaymentTypeString);
+        mapper.createTypeMap(PaymentType.class, TipiVersamento.class).setConverter(convertPaymentTypeTipiVersamento);
 
         return mapper;
     }

@@ -616,19 +616,19 @@ public class TestUtil {
         return PspChannel.builder()
                 .enabled(true)
                 .channelCode("1234")
-                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
+                .paymentTypeList(List.of("AD"))
                 .build();
     }
 
     public static PspChannelCode getMockPspChannelCode() {
         return PspChannelCode.builder()
                 .channelCode("1234")
-                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
+                .paymentTypeList(List.of("AD"))
                 .build();
     }
     public static PspChannelPaymentTypes getMockPspChannelPaymentTypes() {
         return PspChannelPaymentTypes.builder()
-                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
+                .paymentTypeList(List.of("AD"))
                 .build();
     }
 

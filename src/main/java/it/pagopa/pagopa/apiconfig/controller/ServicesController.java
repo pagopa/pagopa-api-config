@@ -49,7 +49,7 @@ public class ServicesController {
             @Parameter() @RequestParam(required = false, name = "brokerpspcode") String brokerPspCode,
             @Parameter() @RequestParam(required = false, name = "channelcode") String channelCode,
             @Parameter() @RequestParam(required = false, name = "paymentmethodchannel") Long paymentMethodChannel,
-            @Parameter() @RequestParam(required = false, name = "paymenttypecode") Service.PaymentTypeCode paymentTypeCode,
+            @Parameter() @RequestParam(required = false, name = "paymenttypecode") String paymentTypeCode,
             @Parameter() @RequestParam(required = false, name = "pspflagftamp") Boolean pspFlagStamp,
             @Parameter() @RequestParam(required = false, name = "channelapp") Boolean channelApp,
             @Parameter() @RequestParam(required = false, name = "onus") Boolean onUs,

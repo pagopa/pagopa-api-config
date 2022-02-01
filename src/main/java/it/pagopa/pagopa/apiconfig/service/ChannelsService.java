@@ -5,6 +5,7 @@ import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.Channel;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
@@ -18,6 +19,7 @@ import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -101,8 +103,12 @@ public class ChannelsService {
 
     public void deleteChannel(String channelCode) {
         Canali canale = getCanaliIfExists(channelCode);
-
-        canaliRepository.delete(canale);
+        try {
+            canaliRepository.delete(canale);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new AppException(AppError.CHANNEL_PAYMENT_TYPE_FOUND, channelCode);
+        }
     }
 
     public PspChannelPaymentTypes getPaymentTypes(@NotBlank String channelCode) {
@@ -121,9 +127,9 @@ public class ChannelsService {
 
         var channel = getCanaliIfExists(channelCode);
         // foreach type in the request...
-        for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode type : pspChannelPaymentTypes.getPaymentTypeList()) {
+        for (String type : pspChannelPaymentTypes.getPaymentTypeList()) {
             // ...search the type in DB
-            var paymentType = getPaymentTypeIfExists(type.name());
+            var paymentType = getPaymentTypeIfExists(type);
             // check if already exists a relation Channel-PaymentType...
             if (canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), paymentType.getId()).isPresent()) {
                 throw new AppException(AppError.CHANNEL_PAYMENT_TYPE_CONFLICT, channel.getIdCanale(), paymentType.getTipoVersamento());
@@ -210,9 +216,10 @@ public class ChannelsService {
      * @param type list of CanaleTipoVersamento
      * @return map each element of the list in a PaymentTypeCode
      */
-    private List<it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode> getPaymentTypeList(List<CanaleTipoVersamento> type) {
+    private List<String> getPaymentTypeList(List<CanaleTipoVersamento> type) {
         return type.stream()
-                .map(elem -> modelMapper.map(elem, it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode.class))
+                .map(elem -> modelMapper.map(elem, PaymentType.class))
+                .map(elem -> modelMapper.map(elem, String.class))
                 .collect(Collectors.toList());
     }
 

@@ -58,7 +58,7 @@ public class Service {
     private Long paymentMethodChannel;
 
     @JsonProperty("payment_type_code")
-    private PaymentTypeCode paymentTypeCode;
+    private String paymentTypeCode;
 
     @JsonProperty("language_code")
     private LanguageCode languageCode;
@@ -145,23 +145,6 @@ public class Service {
 
     }
 
-    @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public enum PaymentTypeCode {
-        BBT("Bonifico Bancario di Tesoreria"),
-        BP("Bollettino Postale"),
-        AD("Addebito Diretto"),
-        CP("Carta di Pagamento"),
-        PO("Pagamento attivato presso PSP"),
-        OBEP("Online Banking Electronic Payment"),
-        JIF("Bancomat Pay"),
-        MYBK("MyBank Seller Bank"),
-        PPAL("PayPal");
-
-        private final String description;
-
-
-    }
 
     @Data
     @Builder
@@ -172,7 +155,7 @@ public class Service {
         private String brokerPspCode;
         private String channelCode;
         private Long paymentMethodChannel;
-        private Service.PaymentTypeCode paymentTypeCode;
+        private String paymentTypeCode;
         private Boolean pspFlagStamp;
         private Boolean channelApp;
         private Boolean onUs;
