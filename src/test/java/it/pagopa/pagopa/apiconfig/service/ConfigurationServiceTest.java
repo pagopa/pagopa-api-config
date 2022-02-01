@@ -3,13 +3,11 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pdd;
+import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.configuration.*;
-import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
-import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PddRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,6 +42,9 @@ class ConfigurationServiceTest {
 
     @MockBean
     private FtpServersRepository ftpServersRepository;
+
+    @MockBean
+    private TipiVersamentoRepository tipiVersamentoRepository;
 
     @Autowired
     @InjectMocks
@@ -160,7 +161,7 @@ class ConfigurationServiceTest {
     }
 
     @Test
-    void deleteConfigurationService() {
+    void deleteConfigurationKey() {
         when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key")).thenReturn(Optional.of(getMockConfigurationKeyEntity()));
 
         try {
@@ -171,7 +172,7 @@ class ConfigurationServiceTest {
     }
 
     @Test
-    void deleteConfigurationService_notfound() {
+    void deleteConfigurationKey_notfound() {
         when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key")).thenReturn(Optional.empty());
 
         try {
@@ -574,6 +575,124 @@ class ConfigurationServiceTest {
 
         try {
             configurationService.deleteFtpServer("host", 1, "service");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void getPaymentTypes_ok() throws IOException, JSONException {
+        List<TipiVersamento> tipiVersamento = getMockTipiVersamento();
+        when(tipiVersamentoRepository.findAll()).thenReturn(tipiVersamento);
+
+        PaymentTypes PaymentTypes = configurationService.getPaymentTypes();
+        String actual = TestUtil.toJson(PaymentTypes);
+        String expected = TestUtil.readJsonFromFile("response/get_payment_types_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+
+    @Test
+    void getPaymentType_ok() throws IOException, JSONException {
+        TipiVersamento tipoVersamento = getMockTipoVersamento();
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(java.util.Optional.ofNullable(tipoVersamento));
+
+        PaymentType PaymentType = configurationService.getPaymentType("PPAL");
+        String actual = TestUtil.toJson(PaymentType);
+        String expected = TestUtil.readJsonFromFile("response/get_payment_type_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getPaymentType_notFound() {
+        when(tipiVersamentoRepository.findByTipoVersamento("unknown")).thenReturn(Optional.empty());
+        try {
+            configurationService.getPaymentType("unknown");
+            fail();
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void createPaymentType() throws IOException, JSONException {
+        when(tipiVersamentoRepository.findByTipoVersamento("code")).thenReturn(Optional.empty());
+        when(tipiVersamentoRepository.save(any(TipiVersamento.class))).thenReturn(getMockTipoVersamento());
+
+        PaymentType result = configurationService.createPaymentType(getMockPaymentType());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/create_payment_type_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void createPaymentType_conflict() {
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(tipiVersamentoRepository.save(any(TipiVersamento.class))).thenReturn(getMockTipoVersamento());
+
+        try {
+            PaymentType mock = getMockPaymentType();
+            mock.setPaymentType("PPAL");
+            configurationService.createPaymentType(mock);
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void updatePaymentType() throws IOException, JSONException {
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(tipiVersamentoRepository.save(any(TipiVersamento.class))).thenReturn(getMockTipoVersamento());
+
+        PaymentType result = configurationService.updatePaymentType("PPAL", getMockPaymentType());
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/update_payment_type_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updatePaymentType_notFound() {
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.empty());
+        when(tipiVersamentoRepository.save(any(TipiVersamento.class))).thenReturn(getMockTipoVersamento());
+
+        try {
+            configurationService.updatePaymentType("PPAL", getMockPaymentType());
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deletePaymentType() {
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
+
+        try {
+            configurationService.deletePaymentType("PPAL");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deletePaymentType_notfound() {
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.empty());
+
+        try {
+            configurationService.deletePaymentType("PPAL");
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
         } catch (Exception e) {

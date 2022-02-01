@@ -473,6 +473,10 @@ public class TestUtil {
                 .build();
     }
 
+    public static List<TipiVersamento> getMockTipiVersamento() {
+        return List.of(getMockTipoVersamento());
+    }
+
     public static PspCanaleTipoVersamento getMockPspCanaleTipoVersamento() {
         return PspCanaleTipoVersamento.builder()
                 .id(1L)
@@ -846,6 +850,19 @@ public class TestUtil {
 
     public static List<it.pagopa.pagopa.apiconfig.entity.FtpServers> getMockFtpServersEntities() {
         return List.of(getMockFtpServersEntity());
+    }
+
+    public static PaymentType getMockPaymentType() {
+        return  PaymentType.builder()
+                .paymentType("code")
+                .description("description")
+                .build();
+    }
+
+    public static PaymentTypes getMockPaymentTypes() {
+        return  PaymentTypes.builder()
+                .paymentTypeList(List.of(getMockPaymentType()))
+                .build();
     }
 
 }
