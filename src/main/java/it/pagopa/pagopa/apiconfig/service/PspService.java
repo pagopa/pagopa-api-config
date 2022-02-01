@@ -120,7 +120,6 @@ public class PspService {
 
         // foreach payment type save a record in pspCanaleTipoVersamento
         for (String elem : pspChannelCode.getPaymentTypeList()) {
-            // TODO add check elem
             savePspChannelRelation(psp, canale, elem);
         }
         return pspChannelCode;
@@ -136,7 +135,6 @@ public class PspService {
 
         // foreach payment type save a record in pspCanaleTipoVersamento
         for (String elem : pspChannelPaymentTypes.getPaymentTypeList()) {
-            // TODO add check elem
             savePspChannelRelation(psp, canale, elem);
         }
         return pspChannelPaymentTypes;
@@ -244,7 +242,7 @@ public class PspService {
                 .orElseThrow(() -> new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, paymentTypeCode));
 
         var canaleTipoVersamento = canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), tipoVersamento.getId())
-                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_NOT_FOUND, channel.getIdCanale(), paymentTypeCode));
+                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_NOT_FOUND, channel.get(), paymentTypeCode));
 
         // check if the relation already exists
         if (pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanaleAndCanaleTipoVersamento_FkTipoVersamento(psp.getObjId(), channel.getId(), tipoVersamento.getId()).isPresent()) {
