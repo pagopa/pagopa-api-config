@@ -250,9 +250,9 @@ class ChannelsServiceTest {
         when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
         when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
         when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+        PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
+        paymentTypes.setPaymentTypeList(List.of("PO"));
         try {
-            PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
-            paymentTypes.setPaymentTypeList(List.of("PO"));
             channelsService.createPaymentType("1234", paymentTypes);
             fail("no exception thrown");
         }
