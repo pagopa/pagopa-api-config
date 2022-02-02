@@ -64,7 +64,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PostMapping(value = "/keys", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ConfigurationKey> createCreditorInstitution(@RequestBody @Valid @NotNull ConfigurationKey configurationKey) {
+    public ResponseEntity<ConfigurationKey> createConfigurationKey(@RequestBody @Valid @NotNull ConfigurationKey configurationKey) {
         ConfigurationKey configKey = configurationService.createConfigurationKey(configurationKey);
         return ResponseEntity.status(HttpStatus.CREATED).body(configKey);
     }
@@ -134,7 +134,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/keys/category/{category}/key/{key}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> deleteConfigurationKeys(@Parameter(description = "Configuration category") @PathVariable("category") String category,
+    public ResponseEntity<Void> deleteConfigurationKey(@Parameter(description = "Configuration category") @PathVariable("category") String category,
                                                         @Parameter(description = "Configuration key") @PathVariable("key") String key) {
         configurationService.deleteConfigurationKey(category, key);
         return ResponseEntity.ok().build();
@@ -434,7 +434,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/ftpservers/host/{host}/port/{port}/service/{service}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<FtpServer> updateConfigurationKey(@Parameter(description = "Host") @PathVariable("host") String host,
+    public ResponseEntity<FtpServer> updateFtpServer(@Parameter(description = "Host") @PathVariable("host") String host,
                                                             @Parameter(description = "Port") @PathVariable("port") Integer port,
                                                             @Parameter(description = "Service") @PathVariable("service") String service,
                                                             @RequestBody @Valid @NotNull FtpServer ftpServer) {
