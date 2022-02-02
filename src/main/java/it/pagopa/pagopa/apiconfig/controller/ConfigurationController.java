@@ -546,7 +546,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/paymenttypes/{paymentTypeCode}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PaymentType> updateConfigurationKey(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode,
+    public ResponseEntity<PaymentType> updatePaymentType(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode,
                                                             @RequestBody @Valid @NotNull PaymentTypeBase paymentType) {
         PaymentType savedPaymentType = configurationService.updatePaymentType(paymentTypeCode, paymentType);
         return ResponseEntity.ok(savedPaymentType);
@@ -569,7 +569,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "paymenttypes/{paymentTypeCode}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> deleteFtpServer(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode) {
+    public ResponseEntity<Void> deletePaymentType(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode) {
         configurationService.deletePaymentType(paymentTypeCode);
         return ResponseEntity.ok().build();
     }
