@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 /**
  * ConfigurationKey
@@ -20,7 +20,7 @@ public class ConfigurationKeyBase {
 
     @JsonProperty("config_value")
     @Schema(example = "180000", required = true)
-    @NotNull
+    @NotBlank
     private String configValue;
 
     @JsonProperty("config_description")
