@@ -73,4 +73,17 @@ class IcaControllerTest {
 
     }
 
+    @Test
+    void createIca() throws Exception {
+        File xml = TestUtil.readFile("file/ica_valid.xml");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        String url = "/icas";
+
+        mvc.perform(multipart(url)
+                        .file(multipartFile)
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isCreated());
+
+    }
+
 }

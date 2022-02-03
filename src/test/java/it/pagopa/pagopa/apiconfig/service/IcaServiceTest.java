@@ -6,7 +6,11 @@ import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
+import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
+import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -27,11 +31,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockInformativeContoAccreditoMaster;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +48,18 @@ class IcaServiceTest {
 
     @MockBean
     InformativeContoAccreditoMasterRepository informativeContoAccreditoMasterRepository;
+
+    @MockBean
+    PaRepository paRepository;
+
+    @MockBean
+    CodifichePaRepository codifichePaRepository;
+
+    @MockBean
+    BinaryFileRepository binaryFileRepository;
+
+    @MockBean
+    InformativeContoAccreditoDetailRepository informativeContoAccreditoDetailRepository;
 
     @Autowired
     @InjectMocks
@@ -96,5 +116,19 @@ class IcaServiceTest {
 //        String expected = TestUtil.readJsonFromFile("response/ica_not_valid_xml.json");
 //        JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
 //    }
+
+    @Test
+    void createIca() throws IOException {
+        File xml = TestUtil.readFile("file/ica_valid_h2.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        try {
+            icaService.createIca(file);
+        } catch (Exception e) {
+            fail();
+        }
+    }
 
 }
