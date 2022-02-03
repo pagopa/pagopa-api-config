@@ -12,12 +12,14 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
+@Validated
 public class ServicesService {
     @Autowired
     ModelMapper modelMapper;

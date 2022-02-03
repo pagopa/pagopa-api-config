@@ -2,7 +2,14 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.*;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
 import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
 import it.pagopa.pagopa.apiconfig.repository.PddRepository;
@@ -10,6 +17,7 @@ import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -17,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class ConfigurationService {
 
     @Autowired
@@ -101,7 +110,7 @@ public class ConfigurationService {
 
     public WfespPluginConf updateWfespPluginConfiguration(String idServPlugin, WfespPluginConf wfespPluginConf) {
         Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp = wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
-        if (!wp.isPresent()) {
+        if (wp.isEmpty()) {
             throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
         }
 
