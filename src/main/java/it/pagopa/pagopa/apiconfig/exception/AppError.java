@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum AppError {
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "Something was wrong"),
+
     CREDITOR_INSTITUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Creditor Institution not found", "No Creditor Institution found with code: %s"),
     CREDITOR_INSTITUTION_CONFLICT(HttpStatus.CONFLICT, "Creditor Institution conflict", "Creditor Institution code %s already exists"),
 
@@ -22,6 +24,7 @@ public enum AppError {
     STATION_CONFLICT(HttpStatus.CONFLICT, "Station conflict", "Station code %s already exists"),
 
     ICA_NOT_FOUND(HttpStatus.NOT_FOUND, "ICA not found", "No ICA found with id: %s"),
+    ICA_BAD_REQUEST(HttpStatus.BAD_REQUEST, "ICA bad request", "XML file is not valid: %s"),
 
     COUNTERPART_NOT_FOUND(HttpStatus.NOT_FOUND, "Counterpart not found", "No Counterpart found with id %s associated with Creditor Institution code %s"),
 

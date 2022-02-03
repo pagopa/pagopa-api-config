@@ -11,6 +11,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -50,6 +51,13 @@ public class CommonUtil {
         return timestamp != null ? OffsetDateTime.of(timestamp.toLocalDateTime(), ZoneOffset.UTC) : null;
     }
 
+    /**
+     * @param calendar to convert
+     * @return convert calendar to {@link Timestamp}
+     */
+    public static Timestamp toTimestamp(XMLGregorianCalendar calendar) {
+        return Timestamp.from(calendar.toGregorianCalendar().toZonedDateTime().toInstant());
+    }
 
     /**
      * @param value value to deNullify.
@@ -112,5 +120,21 @@ public class CommonUtil {
                 .withIgnoreCase(true)
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         return Example.of(example, matcher);
+    }
+
+    /**
+     * @param iban an italian IBAN with length 27
+     * @return ABI in the IBAN
+     */
+    public static String getAbiFromIban(String iban) {
+        return iban.substring(5, 10);
+    }
+
+    /**
+     * @param iban an italian IBAN with length 27
+     * @return Conto Corrente in the IBAN
+     */
+    public static String getCcFromIban(String iban) {
+        return iban.substring(15, 27);
     }
 }

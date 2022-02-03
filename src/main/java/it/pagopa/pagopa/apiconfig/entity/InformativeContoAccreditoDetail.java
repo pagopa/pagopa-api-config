@@ -1,7 +1,10 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -19,8 +22,10 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
+@Builder
 public class InformativeContoAccreditoDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
