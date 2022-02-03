@@ -137,7 +137,7 @@ public class ChannelsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/{channelcode}/paymenttypes", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PspChannelPaymentTypes> getPaymentTypes(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode) {
+    public ResponseEntity<PspChannelPaymentTypes> getChannelPaymentTypes(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode) {
         return ResponseEntity.ok().body(channelsService.getPaymentTypes(channelCode));
     }
 
@@ -153,7 +153,7 @@ public class ChannelsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PostMapping(value = "/{channelcode}/paymenttypes", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PspChannelPaymentTypes> createPaymentType(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode,
+    public ResponseEntity<PspChannelPaymentTypes> createChannelPaymentType(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode,
                                                                     @RequestBody PspChannelPaymentTypes pspChannelPaymentTypes) {
         return ResponseEntity.status(HttpStatus.CREATED).body(channelsService.createPaymentType(channelCode, pspChannelPaymentTypes));
     }
@@ -169,7 +169,7 @@ public class ChannelsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/{channelcode}/paymenttypes/{paymenttypecode}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PspChannelPaymentTypes> deletePaymentType(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode,
+    public ResponseEntity<PspChannelPaymentTypes> deleteChannelPaymentType(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode,
                                                                     @PathVariable("paymenttypecode") String paymentTypeCode) {
         channelsService.deletePaymentType(channelCode, paymentTypeCode);
         return ResponseEntity.ok().build();
