@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.pagopa.pagopa.apiconfig.model.AppInfo;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.service.HealthCheckService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,6 +30,9 @@ public class HomeController {
 
     @Value("${properties.environment}")
     private String environment;
+
+    @Autowired
+    HealthCheckService healthCheckService;
 
 
     /**
@@ -55,10 +60,12 @@ public class HomeController {
 
     @GetMapping("/info")
     public ResponseEntity<AppInfo> healthCheck() {
+
         AppInfo info = AppInfo.builder()
                 .name(name)
                 .version(version)
                 .environment(environment)
+                .dbConnection(healthCheckService.checkDatabaseConnection() ? "up" : "down")
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(info);
     }
