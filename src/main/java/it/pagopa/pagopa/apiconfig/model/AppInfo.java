@@ -29,4 +29,5 @@ public class AppInfo {
     private String version;
     @NotNull
     private String environment;
+    private String dbConnection;
 }
