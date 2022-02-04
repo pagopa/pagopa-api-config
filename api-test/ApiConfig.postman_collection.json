@@ -1,19 +1,19 @@
 {
-	"info": {
-      "_postman_id": "b3d35c13-0ee1-4832-9217-76fbb9770362",
-      "name": "ApiConfig",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-	"item": [
-		{
-			"name": "login",
-			"item": [
-				{
-					"name": "Login JWT",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
+  "info": {
+    "_postman_id": "b3d35c13-0ee1-4832-9217-76fbb9770362",
+    "name": "ApiConfig",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "login",
+      "item": [
+        {
+          "name": "Login JWT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
 								"exec": [
 									"pm.test(\"login JWT\", function () {",
 									"  pm.response.to.have.status(200);",
@@ -1416,25 +1416,25 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "src/test/resources/file/ica_valid_h2.xml"
-								}
-							]
-						},
-						"url": {
-                          "raw": "{{api-config-host}}/{{api-config-base-path}}/icas",
-                          "host": [
-                            "{{api-config-host}}"
-                          ],
-                          "path": [
-                            "{{api-config-base-path}}",
-                            "icas"
+                          "mode": "formdata",
+                          "formdata": [
+                            {
+                              "key": "file",
+                              "type": "file",
+                              "src": "src/test/resources/file/ica_valid_h2.xml"
+                            }
                           ]
-                        }
+                        },
+                      "url": {
+                        "raw": "{{api-config-host}}/{{api-config-base-path}}/icas",
+                        "host": [
+                          "{{api-config-host}}"
+                        ],
+                        "path": [
+                          "{{api-config-base-path}}",
+                          "icas"
+                        ]
+                      }
                     },
                   "response": []
                 },
@@ -1490,16 +1490,16 @@
                     "script": {
                       "exec": [
                         "pm.test(\"checkXSD\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
+                        "  pm.response.to.have.status(200);",
+                        "});"
+                      ],
+                      "type": "text/javascript"
+                    }
+                  }
+                ],
+                "protocolProfileBehavior": {
+                  "disabledSystemHeaders": {}
+                },
 					"request": {
 						"method": "POST",
 						"header": [
@@ -2532,7 +2532,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_type\": [\n    \"BBT\"\n  ]\n}"
+                          "raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_types\": [\n    \"BBT\"\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels",
@@ -2581,7 +2581,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_type\": [\n      \"BBT\"\n  ]\n}"
+                          "raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_types\": [\n      \"BBT\"\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
@@ -3245,7 +3245,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"payment_type\": [\n        \"PO\"\n    ]\n}"
+                          "raw": "{\n    \"payment_types\": [\n        \"PO\"\n    ]\n}"
 						},
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
@@ -4004,7 +4004,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"payment_type\": [\n        \"BBT\"\n    ]\n}"
+                          "raw": "{\n    \"payment_types\": [\n        \"BBT\"\n    ]\n}"
 						},
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
@@ -4193,20 +4193,40 @@
 							"script": {
 								"exec": [
 									"pm.test(\"createConfigurationKey\", function () {",
-									"  pm.response.to.have.status(201);  ",
-									"  ",
-									"  const requestJson = JSON.parse(pm.request.body.raw);",
-									"  const responseJson = pm.response.json();",
-									"  pm.expect(responseJson.config_category).to.eql(requestJson.config_category);",
-									"  pm.expect(responseJson.config_key).to.eql(requestJson.config_key);",
-									"  pm.expect(responseJson.config_value).to.eql(requestJson.config_value);",
-									"  pm.expect(responseJson.config_description).to.be.exist;",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+                                  "  pm.response.to.have.status(201);  ",
+                                  "  ",
+                                  "  const requestJson = JSON.parse(pm.request.body.raw);",
+                                  "  const responseJson = pm.response.json();",
+                                  "  pm.expect(responseJson.config_category).to.eql(requestJson.config_category);",
+                                  "  pm.expect(responseJson.config_key).to.eql(requestJson.config_key);",
+                                  "  pm.expect(responseJson.config_value).to.eql(requestJson.config_value);",
+                                  "  pm.expect(responseJson.config_description).to.be.exist;",
+                                  "});"
+                                ],
+                              "type": "text/javascript"
+                            }
+                        },
+                      {
+                        "listen": "prerequest",
+                        "script": {
+                          "exec": [
+                            "function makeid(length) {",
+                            "    var result           = '';",
+                            "    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+                            "    var charactersLength = characters.length;",
+                            "    for ( var i = 0; i < length; i++ ) {",
+                            "      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+                            "    }",
+                            "    return result;",
+                            "}",
+                            "",
+                            "pm.globals.set(\"configuration_category\", makeid(35));",
+                            "pm.globals.set(\"configuration_key\", \"conf-key\");"
+                          ],
+                          "type": "text/javascript"
+                        }
+                      }
+                    ],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -4217,14 +4237,14 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"config_category\": \"{{configuration_category}}\",\n    \"config_key\": \"pippo2\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
+                          "mode": "raw",
+                          "raw": "{\n    \"config_category\": \"{{configuration_category}}\",\n    \"config_key\": \"{{configuration_key}}\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
 							"host": [
@@ -4358,10 +4378,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getConfigurationKey\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
+                                  "pm.test(\"deleteConfigurationKey\", function () {",
+                                  "  pm.response.to.have.status(200);",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -4438,21 +4458,40 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createConfigurationKey\", function () {",
-									"  pm.response.to.have.status(201);  ",
-									"  ",
-									"  const requestJson = JSON.parse(pm.request.body.raw);",
-									"  const responseJson = pm.response.json();",
-									"  pm.expect(responseJson.config_category).to.eql(requestJson.config_category);",
-									"  pm.expect(responseJson.config_key).to.eql(requestJson.config_key);",
-									"  pm.expect(responseJson.config_value).to.eql(requestJson.config_value);",
-									"  pm.expect(responseJson.config_description).to.be.exist;",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+                                  "pm.test(\"createConfigurationKey\", function () {",
+                                  "  pm.response.to.have.status(201);  ",
+                                  "  ",
+                                  "  const requestJson = JSON.parse(pm.request.body.raw);",
+                                  "  const responseJson = pm.response.json();",
+                                  "  pm.expect(responseJson.pag_const_string_profile).to.eql(requestJson.pag_const_string_profile);",
+                                  "  pm.expect(responseJson.pag_soap_rule_profile).to.eql(requestJson.pag_soap_rule_profile);",
+                                  "  pm.expect(responseJson.pag_rpt_xpath_profile).to.eql(requestJson.pag_rpt_xpath_profile);",
+                                  "  pm.expect(responseJson.id_bean).to.eql(requestJson.id_bean);",
+                                  "});"
+                                ],
+                              "type": "text/javascript"
+                            }
+                        },
+                      {
+                        "listen": "prerequest",
+                        "script": {
+                          "exec": [
+                            "function makeid(length) {",
+                            "    var result           = '';",
+                            "    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+                            "    var charactersLength = characters.length;",
+                            "    for ( var i = 0; i < length; i++ ) {",
+                            "      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+                            "    }",
+                            "    return result;",
+                            "}",
+                            "",
+                            "pm.globals.set(\"wfesp_id_serv_plugin\", makeid(35));"
+                          ],
+                          "type": "text/javascript"
+                        }
+                      }
+                    ],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -4492,12 +4531,12 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getWfespPlugins\", function () {",
-									"  pm.response.to.have.status(200);",
-									"  const responseJson = pm.response.json();",
-									"  pm.expect(responseJson.wfesp_plugin_confs).to.be.exist",
-									"});"
-								],
+                                  "pm.test(\"getWfespPlugins\", function () {",
+                                  "  pm.response.to.have.status(200);",
+                                  "  const responseJson = pm.response.json();",
+                                  "  pm.expect(responseJson.id_serv_plugin).to.be.exist",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -4660,20 +4699,39 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createPdd\", function () {",
-									"  pm.response.to.have.status(201);  ",
-									"  ",
-									"  const requestJson = JSON.parse(pm.request.body.raw);",
-									"  const responseJson = pm.response.json();",
-									"  pm.expect(responseJson.enabled).to.eql(requestJson.enabled);",
-									"  pm.expect(responseJson.description).to.eql(requestJson.description);",
-									"  pm.expect(responseJson.ip).to.eql(requestJson.ip);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+                                  "pm.test(\"createPdd\", function () {",
+                                  "  pm.response.to.have.status(201);  ",
+                                  "  ",
+                                  "  const requestJson = JSON.parse(pm.request.body.raw);",
+                                  "  const responseJson = pm.response.json();",
+                                  "  pm.expect(responseJson.enabled).to.eql(requestJson.enabled);",
+                                  "  pm.expect(responseJson.description).to.eql(requestJson.description);",
+                                  "  pm.expect(responseJson.ip).to.eql(requestJson.ip);",
+                                  "});"
+                                ],
+                              "type": "text/javascript"
+                            }
+                        },
+                      {
+                        "listen": "prerequest",
+                        "script": {
+                          "exec": [
+                            "function makeid(length) {",
+                            "    var result           = '';",
+                            "    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+                            "    var charactersLength = characters.length;",
+                            "    for ( var i = 0; i < length; i++ ) {",
+                            "      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+                            "    }",
+                            "    return result;",
+                            "}",
+                            "",
+                            "pm.globals.set(\"pdd_id_pdd\", makeid(35));"
+                          ],
+                          "type": "text/javascript"
+                        }
+                      }
+                    ],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -4901,10 +4959,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createConfigurationKey\", function () {",
-									"  pm.response.to.have.status(409);",
-									"});"
-								],
+                                  "pm.test(\"createConfigurationKey_conflict\", function () {",
+                                  "  pm.response.to.have.status(409);",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -4948,10 +5006,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updateConfigurationKey\", function () {",
-									"  pm.response.to.have.status(200);  ",
-									"});"
-								],
+                                  "pm.test(\"updateConfigurationKey_badRequest\", function () {",
+                                  "  pm.response.to.have.status(400);  ",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5002,18 +5060,18 @@
 					},
 					"response": []
 				},
-				{
-					"name": "deleteConfigurationKey NotFound",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getConfigurationKey\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
-								"type": "text/javascript"
+              {
+                "name": "getConfigurationKey NotFound",
+                "event": [
+                  {
+                    "listen": "test",
+                    "script": {
+                      "exec": [
+                        "pm.test(\"getConfigurationKey_notFound\", function () {",
+                        "  pm.response.to.have.status(404);",
+                        "});"
+                      ],
+                      "type": "text/javascript"
 							}
 						}
 					],
@@ -5055,12 +5113,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getWfespPlugins\", function () {",
-									"  pm.response.to.have.status(200);",
-									"  const responseJson = pm.response.json();",
-									"  pm.expect(responseJson.wfesp_plugin_confs).to.be.exist",
-									"});"
-								],
+                                  "pm.test(\"getWfespPlugins_notFound\", function () {",
+                                  "  pm.response.to.have.status(404);",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5096,10 +5152,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createConfigurationKey\", function () {",
-									"  pm.response.to.have.status(409);",
-									"});"
-								],
+                                  "pm.test(\"createConfigurationKey_conflict\", function () {",
+                                  "  pm.response.to.have.status(409);",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5143,10 +5199,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updateConfigurationKey\", function () {",
-									"  pm.response.to.have.status(404);  ",
-									"});"
-								],
+                                  "pm.test(\"updateConfigurationKey_notFound\", function () {",
+                                  "  pm.response.to.have.status(404);  ",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5197,10 +5253,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getPdd\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
+                                  "pm.test(\"getPdd_notFound\", function () {",
+                                  "  pm.response.to.have.status(404);",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5236,10 +5292,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createPdd\", function () {",
-									"  pm.response.to.have.status(409);",
-									"});"
-								],
+                                  "pm.test(\"createPdd_conflict\", function () {",
+                                  "  pm.response.to.have.status(409);",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5283,10 +5339,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createPdd\", function () {",
-									"  pm.response.to.have.status(400);",
-									"});"
-								],
+                                  "pm.test(\"createPdd_badRequest\", function () {",
+                                  "  pm.response.to.have.status(400);",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5330,10 +5386,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updatePdd\", function () {",
-									"  pm.response.to.have.status(400);  ",
-									"});"
-								],
+                                  "pm.test(\"updatePdd_badRequest\", function () {",
+                                  "  pm.response.to.have.status(400);  ",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5384,10 +5440,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updatePdd\", function () {",
-									"  pm.response.to.have.status(404);  ",
-									"});"
-								],
+                                  "pm.test(\"updatePdd_notFound\", function () {",
+                                  "  pm.response.to.have.status(404);  ",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}
@@ -5438,10 +5494,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getConfigurationKey\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
+                                  "pm.test(\"deleteConfigurationKey_notFound\", function () {",
+                                  "  pm.response.to.have.status(404);",
+                                  "});"
+                                ],
 								"type": "text/javascript"
 							}
 						}

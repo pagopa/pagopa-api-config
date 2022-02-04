@@ -5,13 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @AllArgsConstructor
 @Builder
 public class Filter {
-    @NotNull
+    @Nullable
     private String code;
 
     @Nullable
