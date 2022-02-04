@@ -24,6 +24,7 @@ public enum AppError {
     STATION_CONFLICT(HttpStatus.CONFLICT, "Station conflict", "Station code %s already exists"),
 
     ICA_NOT_FOUND(HttpStatus.NOT_FOUND, "ICA not found", "No ICA found with id: %s"),
+    ICA_CONFLICT(HttpStatus.CONFLICT, "ICA conflict", "ICA with code %s already exists"),
     ICA_BAD_REQUEST(HttpStatus.BAD_REQUEST, "ICA bad request", "XML file is not valid: %s"),
 
     COUNTERPART_NOT_FOUND(HttpStatus.NOT_FOUND, "Counterpart not found", "No Counterpart found with id %s associated with Creditor Institution code %s"),

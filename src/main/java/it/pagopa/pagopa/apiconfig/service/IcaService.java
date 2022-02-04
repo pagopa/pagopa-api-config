@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +48,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -93,11 +93,8 @@ public class IcaService {
     }
 
     public byte[] getIca(@NotNull String idIca, String creditorInstitutionCode) {
-        Optional<InformativeContoAccreditoMaster> result = informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(idIca, creditorInstitutionCode);
-        if (result.isEmpty()) {
-            throw new AppException(AppError.ICA_NOT_FOUND, idIca);
-        }
-        return result.get().getFkBinaryFile().getFileContent();
+        var result = getIcaMasterIfExists(idIca, creditorInstitutionCode);
+        return result.getFkBinaryFile().getFileContent();
     }
 
     public XSDValidation verifyXSD(MultipartFile xml) {
@@ -135,17 +132,14 @@ public class IcaService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createIca(@NotNull MultipartFile file) {
         // syntactic checks
-        try {
-            syntacticValidationIcaXml(file);
-        } catch (SAXException | IOException | XMLStreamException e) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, e, e.getMessage());
-        }
+        checkSyntax(file);
 
-        // map into model class
+        // map file into model class
         IcaXml icaXml = mapIcaXml(file);
 
         // semantics checks
-        var pa = getPaIfExists(icaXml);
+        var pa = getPaIfExists(icaXml.getIdentificativoDominio());
+        checkFlusso(icaXml, pa);
         checkRagioneSociale(icaXml, pa);
         checkQrCode(pa);
         checkValidityDate(icaXml);
@@ -156,6 +150,37 @@ public class IcaService {
         var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
         for (Object elem : icaXml.getContiDiAccredito()) {
             saveIcaDetail(elem, icaMaster);
+        }
+    }
+
+    public void deleteIca(String idIca, String creditorInstitutionCode) {
+        var icaMasters = informativeContoAccreditoMasterRepository.findByFkPa_IdDominioAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(creditorInstitutionCode, Timestamp.valueOf(LocalDateTime.now()));
+        var icaMaster = getIcaMasterIfExists(idIca, creditorInstitutionCode);
+        if (!icaMasters.isEmpty() && icaMasters.get(0).getId().equals(icaMaster.getId())) {
+            throw new AppException(HttpStatus.CONFLICT, "ICA conflict", "This ICA is used.");
+        }
+        informativeContoAccreditoMasterRepository.delete(icaMaster);
+    }
+
+    /**
+     * @param idIca                   id ICA
+     * @param creditorInstitutionCode id dominio
+     * @return return the entity from the DB if exists
+     */
+    private InformativeContoAccreditoMaster getIcaMasterIfExists(String idIca, String creditorInstitutionCode) {
+        return informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(idIca, creditorInstitutionCode)
+                .orElseThrow(() -> new AppException(AppError.ICA_NOT_FOUND, idIca));
+    }
+
+    /**
+     * check if flusso in the xml already exists
+     *
+     * @param icaXml XML file
+     * @param pa     the PA from DB
+     */
+    private void checkFlusso(IcaXml icaXml, Pa pa) {
+        if (informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(icaXml.getIdentificativoFlusso(), pa.getIdDominio()).isPresent()) {
+            throw new AppException(AppError.ICA_CONFLICT, icaXml.getIdentificativoFlusso());
         }
     }
 
@@ -241,12 +266,12 @@ public class IcaService {
     }
 
     /**
-     * @param icaXml XML file with identificativoDominio
+     * @param creditorInstitutionCode identificativo Dominio
      * @return get the PA from DB using identificativoDominio
      */
-    private Pa getPaIfExists(IcaXml icaXml) {
-        return paRepository.findByIdDominio(icaXml.getIdentificativoDominio())
-                .orElseThrow(() -> new AppException(AppError.ICA_BAD_REQUEST, icaXml.getIdentificativoDominio() + " not found"));
+    private Pa getPaIfExists(String creditorInstitutionCode) {
+        return paRepository.findByIdDominio(creditorInstitutionCode)
+                .orElseThrow(() -> new AppException(AppError.ICA_BAD_REQUEST, creditorInstitutionCode + " not found"));
     }
 
     /**
@@ -351,7 +376,6 @@ public class IcaService {
         validator.validate(source);
     }
 
-
     /**
      * Maps InformativeContoAccreditoMaster objects stored in the DB in a List of Ica
      *
@@ -362,5 +386,18 @@ public class IcaService {
         return page.stream()
                 .map(elem -> modelMapper.map(elem, Ica.class))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * check syntactic and XSD of a ICA file
+     *
+     * @param file ICA XML to check
+     */
+    private void checkSyntax(MultipartFile file) {
+        try {
+            syntacticValidationIcaXml(file);
+        } catch (SAXException | IOException | XMLStreamException e) {
+            throw new AppException(AppError.ICA_BAD_REQUEST, e, e.getMessage());
+        }
     }
 }
