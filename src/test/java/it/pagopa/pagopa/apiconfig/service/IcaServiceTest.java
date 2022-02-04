@@ -127,7 +127,19 @@ class IcaServiceTest {
         try {
             icaService.createIca(file);
         } catch (Exception e) {
-            fail();
+            fail(e);
+        }
+    }
+
+
+    @Test
+    void deleteIca() {
+        when(informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(anyString(), anyString()))
+                .thenReturn(Optional.of(getMockInformativeContoAccreditoMaster()));
+        try {
+            icaService.deleteIca("1234", "2");
+        } catch (Exception e) {
+            fail(e);
         }
     }
 

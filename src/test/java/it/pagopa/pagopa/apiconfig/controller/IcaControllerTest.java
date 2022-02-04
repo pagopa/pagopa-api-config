@@ -21,6 +21,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockXSDValidation;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -86,4 +87,9 @@ class IcaControllerTest {
 
     }
 
+    @Test
+    void deleteIca() throws Exception {
+        mvc.perform(delete("/icas/1234?creditorinstitutioncode=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
