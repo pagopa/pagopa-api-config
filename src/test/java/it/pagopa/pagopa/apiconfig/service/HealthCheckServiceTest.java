@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -50,7 +50,7 @@ class HealthCheckServiceTest {
 
     @Test
     void getDBConnection_down() {
-        when(healthCheckRepository.findBy()).thenReturn(Optional.of(false));
+        when(healthCheckRepository.findBy()).thenReturn(Optional.empty());
 
         boolean actual = healthCheckService.checkDatabaseConnection();
         assertFalse(actual);
