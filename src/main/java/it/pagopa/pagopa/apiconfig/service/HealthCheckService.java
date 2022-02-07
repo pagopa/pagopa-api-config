@@ -10,7 +10,7 @@ public class HealthCheckService {
     @Autowired
     HealthCheckRepository healthCheckRepository;
 
-    public Boolean checkDatabaseConnection() {
+    public boolean checkDatabaseConnection() {
         return healthCheckRepository.findBy().isPresent();
     }
 }
