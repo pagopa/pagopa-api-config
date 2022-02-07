@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<informativaControparte xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:noNamespaceSchemaLocation="TabellaDelleControparti_1_0_6.xsd">
+    <identificativoFlusso>RL000000002</identificativoFlusso>
+    <identificativoDominio>80143490581</identificativoDominio>
+    <ragioneSociale>Regione Lazio</ragioneSociale>
+    <dataPubblicazione>2015-10-09T00:00:00</dataPubblicazione>
+    <dataInizioValidita>2015-10-19T00:00:00</dataInizioValidita>
+    <erogazioneServizio>
+        <disponibilita>
+            <tipoPeriodo>annuale</tipoPeriodo>
+            <fasciaOraria>
+                <da>00:00:00</da>
+                <a>23:59:59</a>
+            </fasciaOraria>
+        </disponibilita>
+    </erogazioneServizio>
+</informativaControparte>

@@ -1,5 +1,7 @@
 package it.pagopa.pagopa.apiconfig.util;
 
+import it.pagopa.pagopa.apiconfig.exception.AppError;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Filter;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
@@ -10,8 +12,22 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -57,6 +73,14 @@ public class CommonUtil {
      */
     public static Timestamp toTimestamp(XMLGregorianCalendar calendar) {
         return Timestamp.from(calendar.toGregorianCalendar().toZonedDateTime().toInstant());
+    }
+
+    /**
+     * @param offsetDateTime to convert
+     * @return convert offsetDateTime to {@link Timestamp}
+     */
+    public static Timestamp toTimestamp(OffsetDateTime offsetDateTime) {
+        return Timestamp.from(offsetDateTime.toInstant());
     }
 
     /**
@@ -139,10 +163,45 @@ public class CommonUtil {
     }
 
     /**
-     * @param offsetDateTime to convert
-     * @return convert offsetDateTime to {@link Timestamp}
+     * @param xml    file XML to validate
+     * @param xsdUrl url of XSD
+     * @throws SAXException       if XML is not valid
+     * @throws IOException        if XSD schema not found
+     * @throws XMLStreamException error during read XML
      */
-    public static Timestamp toTimestamp(OffsetDateTime offsetDateTime) {
-        return Timestamp.from(offsetDateTime.toInstant());
+    public static void syntacticValidationXml(MultipartFile xml, String xsdUrl) throws SAXException, IOException, XMLStreamException {
+        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        // to be compliant, prohibit the use of all protocols by external entities:
+        factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+
+        javax.xml.validation.Schema schema = factory.newSchema(new URL(xsdUrl));
+        Validator validator = schema.newValidator();
+
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        // to be compliant, completely disable DOCTYPE declaration:
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+
+        InputStream inputStream = xml.getInputStream();
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
+        StAXSource source = new StAXSource(xmlStreamReader);
+        validator.validate(source);
+    }
+
+    /**
+     * @param file  XML to map
+     * @param clazz class of model result
+     * @return XML mapped in the model
+     */
+    public static <T> T mapXml(MultipartFile file, Class<T> clazz) {
+        T icaXml;
+        try {
+            JAXBContext context = JAXBContext.newInstance(clazz);
+            icaXml = (T) context.createUnmarshaller()
+                    .unmarshal(file.getInputStream());
+        } catch (IOException | JAXBException e) {
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
+        }
+        return icaXml;
     }
 }

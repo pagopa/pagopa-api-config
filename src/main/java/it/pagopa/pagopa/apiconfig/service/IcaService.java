@@ -31,18 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stax.StAXSource;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -54,6 +44,8 @@ import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getAbiFromIban;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getCcFromIban;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntacticValidationXml;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
 
 @Service
@@ -103,7 +95,7 @@ public class IcaService {
         String detail;
 
         try {
-            syntacticValidationIcaXml(xml);
+            syntacticValidationXml(xml, xsdIca);
             xsdEvaluated = true;
             detail = "XML is valid against the XSD schema.";
         } catch (SAXException | IOException | XMLStreamException e) {
@@ -135,7 +127,7 @@ public class IcaService {
         checkSyntax(file);
 
         // map file into model class
-        IcaXml icaXml = mapIcaXml(file);
+        IcaXml icaXml = mapXml(file, IcaXml.class);
 
         // semantics checks
         var pa = getPaIfExists(icaXml.getIdentificativoDominio());
@@ -274,21 +266,6 @@ public class IcaService {
                 .orElseThrow(() -> new AppException(AppError.ICA_BAD_REQUEST, creditorInstitutionCode + " not found"));
     }
 
-    /**
-     * @param file ICA XML to map
-     * @return XML mapped in the model
-     */
-    private IcaXml mapIcaXml(MultipartFile file) {
-        IcaXml icaXml;
-        try {
-            JAXBContext context = JAXBContext.newInstance(IcaXml.class);
-            icaXml = (IcaXml) context.createUnmarshaller()
-                    .unmarshal(file.getInputStream());
-        } catch (IOException | JAXBException e) {
-            throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
-        }
-        return icaXml;
-    }
 
     /**
      * @param contoAccredito info icaDetail
@@ -351,30 +328,7 @@ public class IcaService {
         return binaryFileRepository.save(binaryFile);
     }
 
-    /**
-     * @param xml file ICA to validate
-     * @throws SAXException       if XML is not valid
-     * @throws IOException        if XSD schema not found
-     * @throws XMLStreamException error during read XML
-     */
-    private void syntacticValidationIcaXml(MultipartFile xml) throws SAXException, IOException, XMLStreamException {
-        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        // to be compliant, prohibit the use of all protocols by external entities:
-        factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 
-        javax.xml.validation.Schema schema = factory.newSchema(new URL(xsdIca));
-        Validator validator = schema.newValidator();
-
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        // to be compliant, completely disable DOCTYPE declaration:
-        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-
-        InputStream inputStream = xml.getInputStream();
-        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
-        StAXSource source = new StAXSource(xmlStreamReader);
-        validator.validate(source);
-    }
 
     /**
      * Maps InformativeContoAccreditoMaster objects stored in the DB in a List of Ica
@@ -395,7 +349,7 @@ public class IcaService {
      */
     private void checkSyntax(MultipartFile file) {
         try {
-            syntacticValidationIcaXml(file);
+            syntacticValidationXml(file, xsdIca);
         } catch (SAXException | IOException | XMLStreamException e) {
             throw new AppException(AppError.ICA_BAD_REQUEST, e, e.getMessage());
         }
