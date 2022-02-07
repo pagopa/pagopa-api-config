@@ -41,11 +41,19 @@ class HealthCheckServiceTest {
     private HealthCheckService healthCheckService;
 
     @Test
-    void getDBConnection() {
+    void getDBConnection_up() {
         when(healthCheckRepository.findBy()).thenReturn(Optional.of(true));
 
         boolean actual = healthCheckService.checkDatabaseConnection();
         assertTrue(actual);
+    }
+
+    @Test
+    void getDBConnection_down() {
+        when(healthCheckRepository.findBy()).thenReturn(Optional.of(false));
+
+        boolean actual = healthCheckService.checkDatabaseConnection();
+        assertFalse(actual);
     }
 
 }
