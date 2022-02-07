@@ -24,7 +24,7 @@ class HealthCheckServiceTest {
 
     @Test
     void getDBConnection_up() {
-        when(healthCheckRepository.findBy()).thenReturn(Optional.of(true));
+        when(healthCheckRepository.health()).thenReturn(Optional.of(true));
 
         boolean actual = healthCheckService.checkDatabaseConnection();
         assertTrue(actual);
@@ -32,7 +32,7 @@ class HealthCheckServiceTest {
 
     @Test
     void getDBConnection_down() {
-        when(healthCheckRepository.findBy()).thenReturn(Optional.empty());
+        when(healthCheckRepository.health()).thenReturn(Optional.empty());
 
         boolean actual = healthCheckService.checkDatabaseConnection();
         assertFalse(actual);
