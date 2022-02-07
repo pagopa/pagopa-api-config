@@ -36,11 +36,6 @@ class HomeControllerTest {
     @MockBean
     private HealthCheckService healthCheckService;
 
-    @BeforeEach
-    void setUp() {
-        when(healthCheckService.checkDatabaseConnection()).thenReturn(true);
-    }
-
     @Test
     void getHome() throws Exception {
         String url = "/";
@@ -49,7 +44,19 @@ class HomeControllerTest {
     }
 
     @Test
-    void getInfo() throws Exception {
+    void getInfo_up() throws Exception {
+        when(healthCheckService.checkDatabaseConnection()).thenReturn(true);
+
+        String url = "/info";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getInfo_down() throws Exception {
+        when(healthCheckService.checkDatabaseConnection()).thenReturn(false);
+
         String url = "/info";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
