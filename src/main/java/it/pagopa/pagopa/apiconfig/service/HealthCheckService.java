@@ -11,6 +11,6 @@ public class HealthCheckService {
     HealthCheckRepository healthCheckRepository;
 
     public boolean checkDatabaseConnection() {
-        return healthCheckRepository.findBy().isPresent();
+        return healthCheckRepository.health().isPresent();
     }
 }
