@@ -42,6 +42,13 @@ class HomeControllerTest {
     }
 
     @Test
+    void getHome() throws Exception {
+        String url = "/";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
     void getInfo() throws Exception {
         String url = "/info";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
