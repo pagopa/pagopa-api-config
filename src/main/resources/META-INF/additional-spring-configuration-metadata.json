@@ -29,5 +29,10 @@
       "name": "xsd.ica",
       "type": "java.lang.String",
       "description": "Path of XSD for ICA service."
+    },
+    {
+      "name": "xsd.counterpart",
+      "type": "java.lang.String",
+      "description": "Path of XSD for Counter Part service."
     }
   ] }

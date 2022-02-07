@@ -28,6 +28,8 @@ public enum AppError {
     ICA_BAD_REQUEST(HttpStatus.BAD_REQUEST, "ICA bad request", "XML file is not valid: %s"),
 
     COUNTERPART_NOT_FOUND(HttpStatus.NOT_FOUND, "Counterpart not found", "No Counterpart found with id %s associated with Creditor Institution code %s"),
+    COUNTERPART_CONFLICT(HttpStatus.CONFLICT, "Counterpart conflict", "Counterpart with code %s already exists"),
+    COUNTERPART_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Counterpart bad request", "XML file is not valid: %s"),
 
     PSP_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment Service Provider not found", "No Payment Service Provider found with code: %s"),
     PSP_CONFLICT(HttpStatus.CONFLICT, "Payment Service Provider conflict", "Payment Service Provider code %s already exists"),
