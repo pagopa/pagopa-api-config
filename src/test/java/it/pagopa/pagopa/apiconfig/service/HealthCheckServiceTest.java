@@ -7,9 +7,12 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessResourceFailureException;
+
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -33,6 +36,15 @@ class HealthCheckServiceTest {
     @Test
     void getDBConnection_down() {
         when(healthCheckRepository.health()).thenReturn(Optional.empty());
+
+        boolean actual = healthCheckService.checkDatabaseConnection();
+        assertFalse(actual);
+    }
+
+    @Test
+    void getDBConnection_noConnection() {
+        DataAccessResourceFailureException exception = new DataAccessResourceFailureException("no db connection");
+        doThrow(exception).when(healthCheckRepository).health();
 
         boolean actual = healthCheckService.checkDatabaseConnection();
         assertFalse(actual);
