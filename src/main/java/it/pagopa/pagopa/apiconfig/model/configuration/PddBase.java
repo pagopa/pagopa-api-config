@@ -31,7 +31,7 @@ public class PddBase {
     private String description;
 
     @JsonProperty("ip")
-    @Schema(example = "locahost", required = true)
+    @Schema(example = "localhost", required = true)
     @NotNull
     private String ip;
 
