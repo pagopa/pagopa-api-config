@@ -194,14 +194,14 @@ public class CommonUtil {
      * @return XML mapped in the model
      */
     public static <T> T mapXml(MultipartFile file, Class<T> clazz) {
-        T icaXml;
+        T model;
         try {
             JAXBContext context = JAXBContext.newInstance(clazz);
-            icaXml = (T) context.createUnmarshaller()
+            model = (T) context.createUnmarshaller()
                     .unmarshal(file.getInputStream());
         } catch (IOException | JAXBException e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
         }
-        return icaXml;
+        return model;
     }
 }

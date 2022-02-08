@@ -146,9 +146,9 @@ public class IcaService {
     }
 
     public void deleteIca(String idIca, String creditorInstitutionCode) {
-        var icaMasters = informativeContoAccreditoMasterRepository.findByFkPa_IdDominioAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(creditorInstitutionCode, Timestamp.valueOf(LocalDateTime.now()));
         var icaMaster = getIcaMasterIfExists(idIca, creditorInstitutionCode);
-        if (!icaMasters.isEmpty() && icaMasters.get(0).getId().equals(icaMaster.getId())) {
+        var valid = informativeContoAccreditoMasterRepository.findByFkPa_IdDominioAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(creditorInstitutionCode, Timestamp.valueOf(LocalDateTime.now()));
+        if (!valid.isEmpty() && valid.get(0).getId().equals(icaMaster.getId())) {
             throw new AppException(HttpStatus.CONFLICT, "ICA conflict", "This ICA is used.");
         }
         informativeContoAccreditoMasterRepository.delete(icaMaster);

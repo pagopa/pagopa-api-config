@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.sql.Time;
+import java.util.List;
 
-@XmlRootElement(name = "informativaContoAccredito")
+@XmlRootElement(name = "informativaControparte")
 @XmlAccessorType(XmlAccessType.FIELD)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,8 +35,8 @@ public class CounterpartXml {
     @Builder
     @Getter
     public static class ErogazioneServizio {
-        private Erogazione disponibilita;
-        private Erogazione indisponibilita;
+        private List<Erogazione> disponibilita;
+        private List<Erogazione> indisponibilita;
     }
 
     @XmlRootElement
@@ -58,8 +58,8 @@ public class CounterpartXml {
     @Builder
     @Getter
     public static class FasciaOraria {
-        private Time fasciaOrariaDa;
-        private Time fasciaOrariaA;
+        private XMLGregorianCalendar fasciaOrariaDa;
+        private XMLGregorianCalendar fasciaOrariaA;
     }
 
 }

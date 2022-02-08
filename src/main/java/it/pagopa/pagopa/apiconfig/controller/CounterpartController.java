@@ -14,6 +14,7 @@ import it.pagopa.pagopa.apiconfig.service.CounterpartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -94,7 +96,7 @@ public class CounterpartController {
     @PostMapping(value = "", produces = {"application/json"})
     public ResponseEntity<Void> createCounterpartTable(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The file to upload", required = true) @RequestBody @NotNull MultipartFile file) {
         counterpartService.createCounterpartTable(file);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "Delete a counterpart table", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
@@ -108,7 +110,7 @@ public class CounterpartController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/{idcounterparttable}", produces = {"application/json"})
     public ResponseEntity<Void> deleteCounterpartTable(@Size(max = 50) @Parameter(description = "ID of a counterpart table", required = true) @PathVariable("idcounterparttable") String idCounterpartTable,
-                                                       @Parameter(description = "Creditor institution code", required = true) @RequestParam("creditorinstitutioncode") @NotEmpty String creditorInstitutionCode) {
+                                                       @Parameter(description = "Creditor institution code", required = true) @RequestParam("creditorinstitutioncode") @NotBlank String creditorInstitutionCode) {
         counterpartService.deleteCounterpartTable(idCounterpartTable, creditorInstitutionCode);
         return ResponseEntity.ok().build();
     }
