@@ -77,7 +77,7 @@ public class LoggingAspect {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
-        log.info("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
+        log.debug("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
         return result;
     }
 }
