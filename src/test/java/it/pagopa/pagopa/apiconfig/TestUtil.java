@@ -25,13 +25,7 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
+import it.pagopa.pagopa.apiconfig.model.configuration.*;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -473,6 +467,10 @@ public class TestUtil {
                 .build();
     }
 
+    public static List<TipiVersamento> getMockTipiVersamento() {
+        return List.of(getMockTipoVersamento());
+    }
+
     public static PspCanaleTipoVersamento getMockPspCanaleTipoVersamento() {
         return PspCanaleTipoVersamento.builder()
                 .id(1L)
@@ -616,19 +614,19 @@ public class TestUtil {
         return PspChannel.builder()
                 .enabled(true)
                 .channelCode("1234")
-                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
+                .paymentTypeList(List.of("AD"))
                 .build();
     }
 
     public static PspChannelCode getMockPspChannelCode() {
         return PspChannelCode.builder()
                 .channelCode("1234")
-                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
+                .paymentTypeList(List.of("AD"))
                 .build();
     }
     public static PspChannelPaymentTypes getMockPspChannelPaymentTypes() {
         return PspChannelPaymentTypes.builder()
-                .paymentTypeList(List.of(Service.PaymentTypeCode.AD))
+                .paymentTypeList(List.of("AD"))
                 .build();
     }
 
@@ -846,6 +844,19 @@ public class TestUtil {
 
     public static List<it.pagopa.pagopa.apiconfig.entity.FtpServers> getMockFtpServersEntities() {
         return List.of(getMockFtpServersEntity());
+    }
+
+    public static PaymentType getMockPaymentType() {
+        return  PaymentType.builder()
+                .paymentTypeCode("code")
+                .description("description")
+                .build();
+    }
+
+    public static PaymentTypes getMockPaymentTypes() {
+        return  PaymentTypes.builder()
+                .paymentTypeList(List.of(getMockPaymentType()))
+                .build();
     }
 
 }

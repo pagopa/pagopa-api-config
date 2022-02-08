@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
 import it.pagopa.pagopa.apiconfig.model.psp.Service;
 import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import it.pagopa.pagopa.apiconfig.repository.ElencoServiziRepository;
+import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class ServicesService {
     @Autowired
     ElencoServiziRepository elencoServiziRepository;
 
+    @Autowired
+    TipiVersamentoRepository tipiVersamentoRepository;
+
     public Services getServices(Integer limit, Integer pageNumber, Service.Filter filters) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
         // filter only if is not null
@@ -36,7 +40,7 @@ public class ServicesService {
                 .intmId(filters.getBrokerPspCode())
                 .canaleId(filters.getChannelCode())
                 .canaleModPag(filters.getPaymentMethodChannel())
-                .tipoVersCod(filters.getPaymentTypeCode() != null ? filters.getPaymentTypeCode().name() : null)
+                .tipoVersCod(filters.getPaymentTypeCode())
                 .pspFlagBollo(filters.getPspFlagStamp())
                 .canaleApp(filters.getChannelApp())
                 .onUs(filters.getOnUs())

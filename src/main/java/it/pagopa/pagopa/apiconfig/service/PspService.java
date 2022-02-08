@@ -32,12 +32,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
@@ -124,7 +119,7 @@ public class PspService {
         var canale = getChannelIfExists(pspChannelCode.getChannelCode());
 
         // foreach payment type save a record in pspCanaleTipoVersamento
-        for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode elem : pspChannelCode.getPaymentTypeList()) {
+        for (String elem : pspChannelCode.getPaymentTypeList()) {
             savePspChannelRelation(psp, canale, elem);
         }
         return pspChannelCode;
@@ -139,7 +134,7 @@ public class PspService {
         pspCanaleTipoVersamentoRepository.deleteAll(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(psp.getObjId(), canale.getId()));
 
         // foreach payment type save a record in pspCanaleTipoVersamento
-        for (it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode elem : pspChannelPaymentTypes.getPaymentTypeList()) {
+        for (String elem : pspChannelPaymentTypes.getPaymentTypeList()) {
             savePspChannelRelation(psp, canale, elem);
         }
         return pspChannelPaymentTypes;
@@ -208,11 +203,8 @@ public class PspService {
      * @param channelCode        the channel code key of the data structure
      * @return a list of PaymentTypeCode get from data structure
      */
-    private List<it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode> getPaymentTypeList(Map<String, Set<String>> channelPaymentType, String channelCode) {
-        return channelPaymentType.get(channelCode)
-                .stream()
-                .map(it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode::valueOf)
-                .collect(Collectors.toList());
+    private List<String> getPaymentTypeList(Map<String, Set<String>> channelPaymentType, String channelCode) {
+        return new ArrayList<>(channelPaymentType.get(channelCode));
     }
 
     /**
@@ -245,16 +237,16 @@ public class PspService {
      * @param channel         channel entity
      * @param paymentTypeCode paymentTypeCode entity
      */
-    private void savePspChannelRelation(Psp psp, Canali channel, it.pagopa.pagopa.apiconfig.model.psp.Service.PaymentTypeCode paymentTypeCode) {
-        var tipoVersamento = tipiVersamentoRepository.findByTipoVersamento(paymentTypeCode.name())
-                .orElseThrow(() -> new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, paymentTypeCode.name()));
+    private void savePspChannelRelation(Psp psp, Canali channel, String paymentTypeCode) {
+        var tipoVersamento = tipiVersamentoRepository.findByTipoVersamento(paymentTypeCode)
+                .orElseThrow(() -> new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, paymentTypeCode));
 
         var canaleTipoVersamento = canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), tipoVersamento.getId())
-                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_NOT_FOUND, channel.getIdCanale(), paymentTypeCode.name()));
+                .orElseThrow(() -> new AppException(AppError.CHANNEL_PAYMENT_TYPE_NOT_FOUND, channel.getIdCanale(), paymentTypeCode));
 
         // check if the relation already exists
         if (pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanaleAndCanaleTipoVersamento_FkTipoVersamento(psp.getObjId(), channel.getId(), tipoVersamento.getId()).isPresent()) {
-            throw new AppException(AppError.RELATION_CHANNEL_CONFLICT, psp.getIdPsp(), channel.getIdCanale(), paymentTypeCode.name());
+            throw new AppException(AppError.RELATION_CHANNEL_CONFLICT, psp.getIdPsp(), channel.getIdCanale(), paymentTypeCode);
         }
 
         // save pspCanaleTipoVersamento

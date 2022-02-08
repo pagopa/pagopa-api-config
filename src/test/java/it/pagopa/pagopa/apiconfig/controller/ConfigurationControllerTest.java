@@ -44,18 +44,23 @@ class ConfigurationControllerTest {
 
         when(configurationService.getFtpServers()).thenReturn(getMockFtpServers());
         when(configurationService.getFtpServer("host", 1, "service")).thenReturn(getMockFtpServer());
+
+        when(configurationService.getPaymentTypes()).thenReturn(getMockPaymentTypes());
+        when(configurationService.getPaymentType("code")).thenReturn(getMockPaymentType());
     }
 
     @ParameterizedTest
     @CsvSource({
             "/configuration/keys",
-            "/configuration/keys/category/category/key/key",
+            "/configuration/paymenttypes/code",
             "/configuration/wfespplugins",
             "/configuration/wfespplugins/idServPlugin",
             "/configuration/pdds",
             "/configuration/pdds/idPdd",
             "/configuration/ftpservers",
-            "/configuration/ftpservers/host/host/port/1/service/service"
+            "/configuration/ftpservers/host/host/port/1/service/service",
+            "/configuration/paymenttypes",
+            "/configuration/paymenttypes/code"
     })
     void testGets(String url) throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -85,29 +90,15 @@ class ConfigurationControllerTest {
 
     @Test
     void updateConfigurationKey() throws Exception {
-        mvc.perform(put("/configuration/keys/category/category/key/key")
+        mvc.perform(put("/configuration/paymenttypes/code")
                 .content(TestUtil.toJson(getMockConfigurationKey()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void updateConfigurationKey_400() throws Exception {
-        mvc.perform(put("/configuration/keys/category/category/key/key")
-                .content(
-                        TestUtil.toJson(
-                                getMockConfigurationKey().toBuilder()
-                                        .configCategory("")
-                                        .configKey("")
-                                        .build())
-                ).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
     void deleteConfigurationKey() throws Exception {
-        mvc.perform(delete("/configuration/keys/category/category/key/key").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/configuration/paymenttypes/code").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -136,19 +127,6 @@ class ConfigurationControllerTest {
                 .content(TestUtil.toJson(getMockModelWfespPluginConf()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    void updateWfespPlugin_400() throws Exception {
-        mvc.perform(put("/configuration/wfespplugins/idServPlugin")
-                .content(
-                        TestUtil.toJson(
-                                getMockModelWfespPluginConf().toBuilder()
-                                        .idServPlugin("")
-                                        .build())
-                ).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -182,19 +160,6 @@ class ConfigurationControllerTest {
                 .content(TestUtil.toJson(getMockPdd()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    void updatePdd_400() throws Exception {
-        mvc.perform(put("/configuration/pdds/idPdd")
-                .content(
-                        TestUtil.toJson(
-                                getMockPdd().toBuilder()
-                                        .idPdd("")
-                                        .build())
-                ).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -247,6 +212,28 @@ class ConfigurationControllerTest {
     @Test
     void deleteFtpServer() throws Exception {
         mvc.perform(delete("/configuration/ftpservers/host/host/port/1/service/service").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createPaymentType() throws Exception {
+        mvc.perform(post("/configuration/paymenttypes")
+                .content(TestUtil.toJson(getMockPaymentType()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void updatePaymentType() throws Exception {
+        mvc.perform(put("/configuration/paymenttypes/code")
+                .content(TestUtil.toJson(getMockPaymentType()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deletePaymentType() throws Exception {
+        mvc.perform(delete("/configuration/paymenttypes/code").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

@@ -16,16 +16,15 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ConfigurationKey extends ConfigurationKeyBase {
+public class ConfigurationKeyBase {
 
-    @JsonProperty("config_category")
-    @Schema(example = "GLOBAL", required = true)
+    @JsonProperty("config_value")
+    @Schema(example = "180000", required = true)
     @NotBlank
-    private String configCategory;
+    private String configValue;
 
-    @JsonProperty("config_key")
-    @Schema(example = "default_token_duration_validity_millis", required = true)
-    @NotBlank
-    private String configKey;
+    @JsonProperty("config_description")
+    @Schema(example = " default millisecondi validità token", required = false)
+    private String configDescription;
 
 }

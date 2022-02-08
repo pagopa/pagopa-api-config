@@ -2649,7 +2649,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "BPPIITRRZZZ"
+									"value": "{{psp_code}}"
 								}
 							]
 						}
@@ -3362,7 +3362,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "00001060966_01"
+									"value": "{{channel_code}}"
 								}
 							]
 						}
@@ -4437,7 +4437,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"config_category\": \"test1\",\n    \"config_key\": \"pippo2\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"raw": "{\n    \"config_value\": \"test modified value\",\n    \"config_description\": \"this is a modified test description\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4692,7 +4692,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id_serv_plugin\": \"{{wfesp_id_serv_plugin}}\",\n    \"pag_const_string_profile\": \"const string 1\",\n    \"pag_soap_rule_profile\": \"soap rule 1\",\n    \"pag_rpt_xpath_profile\": \"xpath rtp 1\",\n    \"id_bean\": \"id bean 1\"\n}",
+							"raw": "{\n    \"pag_const_string_profile\": \"const string 1\",\n    \"pag_soap_rule_profile\": \"soap rule 1\",\n    \"pag_rpt_xpath_profile\": \"xpath rtp 1\",\n    \"id_bean\": \"id bean 1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4970,7 +4970,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getConfigurationKey\", function () {",
+									"pm.test(\"deletePdd\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
@@ -5001,21 +5001,18 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "api test error - configuration",
-			"item": [
+				},
 				{
-					"name": "getConfigurationKey NotFound",
+					"name": "getFtpServers",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getPaymentServiceProvider_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
+									"pm.test(\"getFtpServers\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.ftp_servers).to.be.exist",
 									"});"
 								],
 								"type": "text/javascript"
@@ -5026,42 +5023,28 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/ftpservers",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
 								"configuration",
-								"keys",
-								"category",
-								":category",
-								"key",
-								":key"
-							],
-							"variable": [
-								{
-									"key": "category",
-									"value": "unknown"
-								},
-								{
-									"key": "key",
-									"value": "unknown"
-								}
+								"ftpservers"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "createConfigurationKey Conflict",
+					"name": "createFtpServer",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createConfigurationKey_conflict\", function () {",
-									"  pm.response.to.have.status(409);",
+									"pm.test(\"createFtpServer\", function () {",
+									"  pm.response.to.have.status(201);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -5079,7 +5062,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"config_category\": \"GLOBAL\",\n    \"config_key\": \"scheduler.jobName_mod3UpdateNotifiedPositionPayment.jobDescription\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"raw": "{\n    \"host\": \"{{ftpserver_host}}\",\n    \"port\": {{ftpserver_port}},\n    \"username\": \"avvisti\",\n    \"password\": \"avvisti01\",\n    \"root_path\": \"/\",\n    \"service\": \"{{ftpserver_service}}\",\n    \"type\": \"out\",\n    \"in_path\": \"/in/{{ftpserver_service}}\",\n    \"out_path\": \"/out/{{ftpserver_service}}\",\n    \"history_path\": \"/out/history/{{ftpserver_service}}\",\n    \"enabled\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5087,28 +5070,80 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/ftpservers",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
 								"configuration",
-								"keys"
+								"ftpservers"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "updateConfigurationKey BadRequest",
+					"name": "getFtpServer",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updateConfigurationKey_badRequest\", function () {",
-									"  pm.response.to.have.status(400);  ",
+									"pm.test(\"getFtpServer\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/ftpservers/host/:host/port/:port/service/:service",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"ftpservers",
+								"host",
+								":host",
+								"port",
+								":port",
+								"service",
+								":service"
+							],
+							"variable": [
+								{
+									"key": "host",
+									"value": "{{ftpserver_host}}"
+								},
+								{
+									"key": "port",
+									"value": "{{ftpserver_port}}"
+								},
+								{
+									"key": "service",
+									"value": "{{ftpserver_service}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateFtpServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateFtpServer\", function () {",
+									"  pm.response.to.have.status(200);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -5125,37 +5160,316 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": []
+							"mode": "raw",
+							"raw": "{\n    \"host\": \"{{ftpserver_host}}\",\n    \"port\": {{ftpserver_port}},\n    \"username\": \"avvisti\",\n    \"password\": \"avvisti01\",\n    \"root_path\": \"/\",\n    \"service\": \"{{ftpserver_service}}\",\n    \"type\": \"out\",\n    \"in_path\": \"/in/{{ftpserver_service}}\",\n    \"out_path\": \"/out/{{ftpserver_service}}\",\n    \"history_path\": \"/out/history/{{ftpserver_service}}\",\n    \"enabled\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/ftpservers/host/:host/port/:port/service/:service",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
 								"configuration",
-								"keys",
-								"category",
-								":category",
-								"key",
-								":key"
+								"ftpservers",
+								"host",
+								":host",
+								"port",
+								":port",
+								"service",
+								":service"
 							],
 							"variable": [
 								{
-									"key": "category",
-									"value": "{{configuration_category}}"
+									"key": "host",
+									"value": "{{ftpserver_host}}"
 								},
 								{
-									"key": "key",
-									"value": "{{configuration_key}}"
+									"key": "port",
+									"value": "{{ftpserver_port}}"
+								},
+								{
+									"key": "service",
+									"value": "{{ftpserver_service}}"
 								}
 							]
 						}
 					},
 					"response": []
 				},
+				{
+					"name": "deleteFtpServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteFtpServer\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/ftpservers/host/:host/port/:port/service/:service",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"ftpservers",
+								"host",
+								":host",
+								"port",
+								":port",
+								"service",
+								":service"
+							],
+							"variable": [
+								{
+									"key": "host",
+									"value": "{{ftpserver_host}}"
+								},
+								{
+									"key": "port",
+									"value": "{{ftpserver_port}}"
+								},
+								{
+									"key": "service",
+									"value": "{{ftpserver_service}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPaymentTypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentTypes\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.payment_types).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPaymentType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPaymentType\", function () {",
+									"  pm.response.to.have.status(201);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.payment_type).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_type\": \"{{payment_type}}\",\n    \"description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPaymentType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentType\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.payment_type).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes/:paymentTypeCode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes",
+								":paymentTypeCode"
+							],
+							"variable": [
+								{
+									"key": "paymentTypeCode",
+									"value": "{{payment_type}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePaymentType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePaymentType\", function () {",
+									"  pm.response.to.have.status(200);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"this is a modified description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes/:paymentTypeCode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes",
+								":paymentTypeCode"
+							],
+							"variable": [
+								{
+									"key": "paymentTypeCode",
+									"value": "{{payment_type}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePaymentType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deletePaymentType\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes/:paymentTypeCode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes",
+								":paymentTypeCode"
+							],
+							"variable": [
+								{
+									"key": "paymentTypeCode",
+									"value": "{{payment_type}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "api test error - configuration",
+			"item": [
 				{
 					"name": "getConfigurationKey NotFound",
 					"event": [
@@ -5203,14 +5517,170 @@
 					"response": []
 				},
 				{
+					"name": "createConfigurationKey Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createConfigurationKey\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"config_category\": \"GLOBAL\",\n    \"config_key\": \"scheduler.jobName_mod3UpdateNotifiedPositionPayment.jobDescription\",\n    \"config_value\": \"test value\",\n    \"config_description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateConfigurationKey BadRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateConfigurationKey\", function () {",
+									"  pm.response.to.have.status(200);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "{{configuration_category}}"
+								},
+								{
+									"key": "key",
+									"value": "{{configuration_key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteConfigurationKey NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getConfigurationKey\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/keys/category/:category/key/:key",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"keys",
+								"category",
+								":category",
+								"key",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "category",
+									"value": "unknown"
+								},
+								{
+									"key": "key",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getWfespPlugin NotFound",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getWfespPlugins_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
+									"pm.test(\"getWfespPlugins\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.wfesp_plugin_confs).to.be.exist",
 									"});"
 								],
 								"type": "text/javascript"
@@ -5248,7 +5718,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createConfigurationKey_conflict\", function () {",
+									"pm.test(\"createConfigurationKey\", function () {",
 									"  pm.response.to.have.status(409);",
 									"});"
 								],
@@ -5295,7 +5765,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updateConfigurationKey_notFound\", function () {",
+									"pm.test(\"updateConfigurationKey\", function () {",
 									"  pm.response.to.have.status(404);  ",
 									"});"
 								],
@@ -5435,7 +5905,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createPdd_badRequest\", function () {",
+									"pm.test(\"createPdd\", function () {",
 									"  pm.response.to.have.status(400);",
 									"});"
 								],
@@ -5470,60 +5940,6 @@
 								"{{api-config-base-path}}",
 								"configuration",
 								"pdds"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updatePdd BadRequest",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updatePdd_badRequest\", function () {",
-									"  pm.response.to.have.status(400);  ",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "default"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/pdds/:idpdd",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"configuration",
-								"pdds",
-								":idpdd"
-							],
-							"variable": [
-								{
-									"key": "idpdd",
-									"value": "{{pdd_id_pdd}}"
-								}
 							]
 						}
 					},
@@ -5590,7 +6006,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"deleteConfigurationKey_notFound\", function () {",
+									"pm.test(\"deletePdd_notFound\", function () {",
 									"  pm.response.to.have.status(404);",
 									"});"
 								],
@@ -5615,6 +6031,279 @@
 							"variable": [
 								{
 									"key": "idpdd",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createFtpServer Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createFtpServer_conflict\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"host\": \"{{ftpserver_host}}\",\n    \"port\": {{ftpserver_port}},\n    \"username\": \"avvisti\",\n    \"password\": \"avvisti01\",\n    \"root_path\": \"/\",\n    \"service\": \"{{ftpserver_service}}\",\n    \"type\": \"out\",\n    \"in_path\": \"/in/{{ftpserver_service}}\",\n    \"out_path\": \"/out/{{ftpserver_service}}\",\n    \"history_path\": \"/out/history/{{ftpserver_service}}\",\n    \"enabled\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/ftpservers",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"ftpservers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFtpServer NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getFtpServer_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/ftpservers/host/:host/port/:port/service/:service",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"ftpservers",
+								"host",
+								":host",
+								"port",
+								":port",
+								"service",
+								":service"
+							],
+							"variable": [
+								{
+									"key": "host",
+									"value": "unknown"
+								},
+								{
+									"key": "port",
+									"value": "{{ftpserver_port}}"
+								},
+								{
+									"key": "service",
+									"value": "{{ftpserver_service}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPaymentType Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPaymentType_conflict\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_type\": \"PO\",\n    \"description\": \"this is a test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPaymentType NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getPaymentType_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes/:paymentTypeCode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes",
+								":paymentTypeCode"
+							],
+							"variable": [
+								{
+									"key": "paymentTypeCode",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePaymentType NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePaymentType_notFound\", function () {",
+									"  pm.response.to.have.status(404);  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"this is a modified description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes/:paymentTypeCode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes",
+								":paymentTypeCode"
+							],
+							"variable": [
+								{
+									"key": "paymentTypeCode",
+									"value": "unknown"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePaymentType NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deletePaymentType_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/configuration/paymenttypes/:paymentTypeCode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"configuration",
+								"paymenttypes",
+								":paymentTypeCode"
+							],
+							"variable": [
+								{
+									"key": "paymentTypeCode",
 									"value": "unknown"
 								}
 							]

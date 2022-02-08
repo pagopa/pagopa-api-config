@@ -1,19 +1,10 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
-import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
-import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PddRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
+import it.pagopa.pagopa.apiconfig.model.configuration.*;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +32,9 @@ public class ConfigurationService {
     private FtpServersRepository ftpServersRepository;
 
     @Autowired
+    private TipiVersamentoRepository tipiVersamentoRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public ConfigurationKeys getConfigurationKeys() {
@@ -66,7 +60,7 @@ public class ConfigurationService {
         return modelMapper.map(configKeyEntity, ConfigurationKey.class);
     }
 
-    public ConfigurationKey updateConfigurationKey(String category, String key, ConfigurationKey configurationKey) {
+    public ConfigurationKey updateConfigurationKey(String category, String key, ConfigurationKeyBase configurationKey) {
         Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKey = configurationKeysRepository.findByConfigCategoryAndConfigKey(category, key);
         if (configKey.isEmpty()) {
             throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
@@ -108,7 +102,7 @@ public class ConfigurationService {
         return modelMapper.map(wpEntity, WfespPluginConf.class);
     }
 
-    public WfespPluginConf updateWfespPluginConfiguration(String idServPlugin, WfespPluginConf wfespPluginConf) {
+    public WfespPluginConf updateWfespPluginConfiguration(String idServPlugin, WfespPluginConfBase wfespPluginConf) {
         Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp = wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
         if (wp.isEmpty()) {
             throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
@@ -154,7 +148,7 @@ public class ConfigurationService {
         return modelMapper.map(pddEntity, Pdd.class);
     }
 
-    public Pdd updatePdd(String idPdd, Pdd pdd) {
+    public Pdd updatePdd(String idPdd, PddBase pdd) {
         Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> optPdd = pddRepository.findByIdPdd(idPdd);
         if (optPdd.isEmpty()) {
             throw new AppException(AppError.PDD_NOT_FOUND, idPdd);
@@ -197,7 +191,6 @@ public class ConfigurationService {
         return modelMapper.map(ftpServerE, FtpServer.class);
     }
 
-
     public FtpServer updateFtpServer(String host, Integer port, String service, FtpServer ftpServer) {
         it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServerE = getFtpServerIfExists(host, port, service);
 
@@ -205,6 +198,7 @@ public class ConfigurationService {
                 .toBuilder()
                 .id(ftpServerE.getId())
                 .build();
+        ftpServersRepository.save(updatedFtpServer);
 
         return modelMapper.map(updatedFtpServer, FtpServer.class);
     }
@@ -212,6 +206,43 @@ public class ConfigurationService {
     public void deleteFtpServer(String host, Integer port, String service) {
         it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServerE = getFtpServerIfExists(host, port, service);
         ftpServersRepository.delete(ftpServerE);
+    }
+
+    public PaymentTypes getPaymentTypes() {
+        List<it.pagopa.pagopa.apiconfig.entity.TipiVersamento> paymentTypeList = tipiVersamentoRepository.findAll();
+        return it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes.builder()
+                .paymentTypeList(getPaymentTypes(paymentTypeList))
+                .build();
+    }
+
+    public PaymentType getPaymentType(@NotNull String paymentTypeCode) {
+        TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
+        return modelMapper.map(tipiVersamento, PaymentType.class);
+    }
+
+    public PaymentType createPaymentType(PaymentType paymentType) {
+        Optional<TipiVersamento> pt = tipiVersamentoRepository.findByTipoVersamento(paymentType.getPaymentTypeCode());
+        if (pt.isPresent()) {
+            throw new AppException(AppError.PAYMENT_TYPE_CONFLICT, paymentType.getPaymentTypeCode());
+        }
+
+        TipiVersamento tipiVersamento = modelMapper.map(paymentType, TipiVersamento.class);
+        tipiVersamentoRepository.save(tipiVersamento);
+        return modelMapper.map(tipiVersamento, PaymentType.class);
+    }
+
+    public PaymentType updatePaymentType(String paymentTypeCode, PaymentTypeBase paymentType) {
+        TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
+
+        tipiVersamento.setDescrizione(paymentType.getDescription());
+
+        tipiVersamentoRepository.save(tipiVersamento);
+        return modelMapper.map(tipiVersamento, PaymentType.class);
+    }
+
+    public void deletePaymentType(String paymentTypeCode) {
+        TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
+        tipiVersamentoRepository.delete(tipiVersamento);
     }
 
     /**
@@ -313,6 +344,31 @@ public class ConfigurationService {
         Optional<it.pagopa.pagopa.apiconfig.entity.FtpServers> result = ftpServersRepository.findByHostAndPortAndService(host, port, service);
         if (result.isEmpty()) {
             throw new AppException(AppError.FTP_SERVER_NOT_FOUND, host, port, service);
+        }
+        return result.get();
+    }
+
+    /**
+     * Maps TipiVersamento objects stored in the DB in a List of PaymentType
+     *
+     * @param paymentTypes list of tipi versamento returned from the database
+     * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.FtpServer}.
+     */
+    private List<PaymentType> getPaymentTypes(List<it.pagopa.pagopa.apiconfig.entity.TipiVersamento> paymentTypes) {
+        return paymentTypes.stream()
+                .map(elem -> modelMapper.map(elem, PaymentType.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @param paymentTypeCode payment type code
+     * @return return the configuration key record from DB if exists
+     * @throws AppException if not found
+     */
+    private TipiVersamento getTipiVersamentoIfExists(String paymentTypeCode) throws AppException {
+        Optional<TipiVersamento> result = tipiVersamentoRepository.findByTipoVersamento(paymentTypeCode);
+        if (result.isEmpty()) {
+            throw new AppException(AppError.PAYMENT_TYPE_NOT_FOUND, paymentTypeCode);
         }
         return result.get();
     }

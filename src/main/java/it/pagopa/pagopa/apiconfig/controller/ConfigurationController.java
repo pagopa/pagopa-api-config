@@ -102,7 +102,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ConfigurationKey.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ConfigurationKeyBase.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -112,7 +112,7 @@ public class ConfigurationController {
     @PutMapping(value = "/keys/category/{category}/key/{key}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ConfigurationKey> updateConfigurationKey(@Parameter(description = "Configuration category") @PathVariable("category") String category,
                                                                    @Parameter(description = "Configuration key") @PathVariable("key") String key,
-                                                                   @RequestBody @Valid @NotNull ConfigurationKey configurationKey) {
+                                                                   @RequestBody @Valid @NotNull ConfigurationKeyBase configurationKey) {
         ConfigurationKey configKey = configurationService.updateConfigurationKey(category, key, configurationKey);
         return ResponseEntity.ok(configKey);
     }
@@ -167,7 +167,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Create configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ConfigurationKey.class))),
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WfespPluginConf.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -209,7 +209,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update Wfesp plugin configuration", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WfespPluginConf.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WfespPluginConfBase.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -218,7 +218,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/wfespplugins/{idServPlugin}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<WfespPluginConf> updateWfespPlugin(@Parameter(description = "idServPlugin") @PathVariable("idServPlugin") String idServPlugin,
-                                                             @RequestBody @Valid @NotNull WfespPluginConf wfespPluginConf) {
+                                                             @RequestBody @Valid @NotNull WfespPluginConfBase wfespPluginConf) {
         WfespPluginConf wp = configurationService.updateWfespPluginConfiguration(idServPlugin, wfespPluginConf);
         return ResponseEntity.ok(wp);
     }
@@ -314,7 +314,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update pdd", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Pdd.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PddBase.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -323,7 +323,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/pdds/{id_pdd}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Pdd> updatePdd(@Parameter(description = "Configuration identifier") @PathVariable("id_pdd") String idPdd,
-                                         @RequestBody @Valid @NotNull Pdd pdd) {
+                                         @RequestBody @Valid @NotNull PddBase pdd) {
         Pdd updatedPdd = configurationService.updatePdd(idPdd, pdd);
         return ResponseEntity.ok(updatedPdd);
     }
@@ -465,6 +465,112 @@ public class ConfigurationController {
                                                 @Parameter(description = "Port") @PathVariable("port") Integer port,
                                                 @Parameter(description = "Service") @PathVariable("service") String service) {
         configurationService.deleteFtpServer(host, port, service);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * GET /configuration/paymenttype : Get list of payment type
+     *
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Get list of payment type", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentTypes.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/paymenttypes", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<PaymentTypes> getPaymentTypes() {
+        return ResponseEntity.ok(configurationService.getPaymentTypes());
+    }
+
+    /**
+     * POST /configuration/paymenttypes : Create a payment type
+     *
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Create payment type", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentType.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @PostMapping(value = "/paymenttypes", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<PaymentType> createPaymentType(@RequestBody @Valid @NotNull PaymentType paymentType) {
+        PaymentType createdPaymentType = configurationService.createPaymentType(paymentType);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPaymentType);
+    }
+
+    /**
+     * GET /configuration/paymenttypes/{paymentTypeCode} : Get details of a payment type
+     *
+     * @param paymentTypeCode payment type code (required)
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Get details of payment type", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentType.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/paymenttypes/{paymentTypeCode}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<PaymentType> getPaymentType(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode) {
+        return ResponseEntity.ok(configurationService.getPaymentType(paymentTypeCode));
+    }
+
+    /**
+     * PUT /configuration/paymenttypes/{paymentTypeCode} : Update details of a payment type
+     *
+     * @param paymentTypeCode payment type code (required)
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Update payment type", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentTypeBase.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @PutMapping(value = "/paymenttypes/{paymentTypeCode}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<PaymentType> updatePaymentType(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode,
+                                                            @RequestBody @Valid @NotNull PaymentTypeBase paymentType) {
+        PaymentType savedPaymentType = configurationService.updatePaymentType(paymentTypeCode, paymentType);
+        return ResponseEntity.ok(savedPaymentType);
+    }
+
+    /**
+     * DELETE /configuration/paymenttypes/{paymentTypeCode} : Delete details of a payment type
+     *
+     * @param paymentTypeCode payment type code (required)
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Delete payment type", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @DeleteMapping(value = "paymenttypes/{paymentTypeCode}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> deletePaymentType(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode) {
+        configurationService.deletePaymentType(paymentTypeCode);
         return ResponseEntity.ok().build();
     }
 
