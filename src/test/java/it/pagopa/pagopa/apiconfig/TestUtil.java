@@ -13,6 +13,7 @@ import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
+import it.pagopa.pagopa.apiconfig.entity.InformativePaDetail;
 import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
@@ -23,8 +24,14 @@ import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
-import it.pagopa.pagopa.apiconfig.model.configuration.*;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -239,6 +246,16 @@ public class TestUtil {
                 .fkBinaryFile(getMockBinaryFile())
                 .dataInizioValidita(Timestamp.valueOf("2017-03-09 00:00:00"))
                 .dataPubblicazione(Timestamp.valueOf("2017-03-09 00:00:00"))
+                .build();
+    }
+
+    public static InformativePaDetail getMockInformativePaDetail() {
+        return InformativePaDetail.builder()
+                .id(1L)
+                .giorno("lunedì")
+                .tipo("settimanale")
+                .flagDisponibilita(true)
+                .fkInformativaPaMaster(getMockInformativePaMaster())
                 .build();
     }
 

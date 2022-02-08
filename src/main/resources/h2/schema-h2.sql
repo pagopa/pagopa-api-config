@@ -251,6 +251,33 @@ create table NODO4_CFG.INFORMATIVE_PA_MASTER
         unique (FK_PA, ID_INFORMATIVA_PA)
 );
 
+create table NODO4_CFG.INFORMATIVE_PA_DETAIL
+(
+    OBJ_ID                   numeric not null IDENTITY,
+    FLAG_DISPONIBILITA       char(1) not null,
+    GIORNO                   varchar(35),
+    TIPO                     varchar(35),
+    FK_INFORMATIVA_PA_MASTER numeric not null,
+    constraint PK_INFORMATIVE_PA_DETAIL
+        primary key (OBJ_ID),
+    constraint FK_INFORMATIVE_PA_MASTER
+        foreign key (FK_INFORMATIVA_PA_MASTER)
+            references NODO4_CFG.INFORMATIVE_PA_MASTER
+);
+
+create table NODO4_CFG.INFORMATIVE_PA_FASCE
+(
+    OBJ_ID                   numeric not null IDENTITY,
+    ORA_A                    varchar(35),
+    ORA_DA                   varchar(35),
+    FK_INFORMATIVA_PA_DETAIL numeric not null,
+    constraint PK_INFORMATIVE_PA_FASCE
+        primary key (OBJ_ID),
+    constraint FK_INFORMATIVE_PA_DETAIL
+        foreign key (FK_INFORMATIVA_PA_DETAIL)
+            references NODO4_CFG.INFORMATIVE_PA_DETAIL
+);
+
 create table NODO4_CFG.INTERMEDIARI_PSP
 (
     OBJ_ID               numeric     not null identity,

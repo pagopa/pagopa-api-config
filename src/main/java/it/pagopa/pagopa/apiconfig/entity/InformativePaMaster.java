@@ -8,15 +8,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Table(name = "INFORMATIVE_PA_MASTER", schema = "NODO4_CFG")
 @Entity
@@ -44,10 +48,12 @@ public class InformativePaMaster {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "FK_PA", nullable = false)
+    @ToString.Exclude
     private Pa fkPa;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_BINARY_FILE")
+    @ToString.Exclude
     private BinaryFile fkBinaryFile;
 
     @Column(name = "VERSIONE", length = 35)
@@ -57,4 +63,7 @@ public class InformativePaMaster {
     private Boolean pagamentiPressoPsp;
 
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkInformativaPaMaster", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private List<InformativePaDetail> details;
 }

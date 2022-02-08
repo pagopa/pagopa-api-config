@@ -1,6 +1,8 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
+import it.pagopa.pagopa.apiconfig.entity.InformativePaDetail;
+import it.pagopa.pagopa.apiconfig.entity.InformativePaFasce;
 import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
@@ -9,6 +11,8 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartXml;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
+import it.pagopa.pagopa.apiconfig.repository.InformativePaDetailRepository;
+import it.pagopa.pagopa.apiconfig.repository.InformativePaFasceRepository;
 import it.pagopa.pagopa.apiconfig.repository.InformativePaMasterRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -18,12 +22,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
@@ -44,6 +49,12 @@ public class CounterpartService {
 
     @Autowired
     InformativePaMasterRepository informativePaMasterRepository;
+
+    @Autowired
+    InformativePaDetailRepository informativePaDetailRepository;
+
+    @Autowired
+    InformativePaFasceRepository informativePaFasceRepository;
 
     @Autowired
     BinaryFileRepository binaryFileRepository;
@@ -99,15 +110,64 @@ public class CounterpartService {
                 .pagamentiPressoPsp(counterpartXml.getPagamentiPressoPSP())
                 .fkPa(pa)
                 .build());
-
-
+        saveDetail(counterpartXml, infoMaster);
     }
 
-    public void deleteCounterpartTable(@NotEmpty String idCounterpartTable, @NotEmpty String creditorInstitutionCode) {
-        InformativePaMaster result = getInformativePaMasterIfExists(idCounterpartTable, creditorInstitutionCode);
-        binaryFileRepository.delete(result.getFkBinaryFile());
-        // TODO delete INFORMATIVE_PA_DETAIL and FASCE?
-        informativePaMasterRepository.delete(result);
+
+    public void deleteCounterpartTable(@NotBlank String idCounterpartTable, @NotBlank String creditorInstitutionCode) {
+        InformativePaMaster master = getInformativePaMasterIfExists(idCounterpartTable, creditorInstitutionCode);
+        InformativePaMaster valid = getValidCounterpart(creditorInstitutionCode);
+        if (valid != null && valid.getId().equals(master.getId())) {
+            throw new AppException(HttpStatus.CONFLICT, "Counterpart conflict", "This Counterpart is used.");
+        }
+        informativePaMasterRepository.delete(master);
+    }
+
+    /**
+     * @param creditorInstitutionCode ID dominio
+     * @return the valid configuration in the DB. Null if not valid configuration is found
+     */
+    private InformativePaMaster getValidCounterpart(String creditorInstitutionCode) {
+        return informativePaMasterRepository.findByFkPa_IdDominioAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(creditorInstitutionCode, Timestamp.valueOf(LocalDateTime.now()))
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * save in the DB InformativePaMaster
+     *
+     * @param counterpartXml file xml
+     * @param infoMaster     info {@link InformativePaMaster}
+     */
+    private void saveDetail(CounterpartXml counterpartXml, InformativePaMaster infoMaster) {
+        counterpartXml.getErogazioneServizio().getDisponibilita().forEach(elem -> {
+            var detail = informativePaDetailRepository.save(InformativePaDetail.builder()
+                    .fkInformativaPaMaster(infoMaster)
+                    .tipo(elem.getTipoPeriodo())
+                    .giorno(elem.getGiorno())
+                    .flagDisponibilita(true)
+                    .build());
+            informativePaFasceRepository.save(InformativePaFasce.builder()
+                    .fkInformativaPaDetail(detail)
+                    .oraA(elem.getFasciaOraria().getFasciaOrariaA().toString())
+                    .oraDa(elem.getFasciaOraria().getFasciaOrariaDa().toString())
+                    .build());
+
+        });
+        counterpartXml.getErogazioneServizio().getIndisponibilita().forEach(elem -> {
+            var detail = informativePaDetailRepository.save(InformativePaDetail.builder()
+                    .fkInformativaPaMaster(infoMaster)
+                    .tipo(elem.getTipoPeriodo())
+                    .giorno(elem.getGiorno())
+                    .flagDisponibilita(false)
+                    .build());
+            informativePaFasceRepository.save(InformativePaFasce.builder()
+                    .fkInformativaPaDetail(detail)
+                    .oraA(elem.getFasciaOraria().getFasciaOrariaA().toString())
+                    .oraDa(elem.getFasciaOraria().getFasciaOrariaDa().toString())
+                    .build());
+        });
     }
 
 
