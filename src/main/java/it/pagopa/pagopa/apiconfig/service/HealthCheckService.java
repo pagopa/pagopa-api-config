@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.repository.HealthCheckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +12,10 @@ public class HealthCheckService {
     HealthCheckRepository healthCheckRepository;
 
     public boolean checkDatabaseConnection() {
-        return healthCheckRepository.health().isPresent();
+        try {
+            return healthCheckRepository.health().isPresent();
+        } catch (DataAccessResourceFailureException e) {
+            return false;
+        }
     }
 }
