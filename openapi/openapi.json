@@ -3,6 +3,9 @@
         "schemas": {
             "AppInfo": {
                 "properties": {
+                    "dbConnection": {
+                        "type": "string"
+                    },
                     "environment": {
                         "type": "string"
                     },
