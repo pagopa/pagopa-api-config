@@ -5217,7 +5217,7 @@
             "in": "formData",
             "name": "file",
             "required": true,
-            "type": "string"
+            "type": "file"
           }
         ],
         "responses": {
@@ -7212,7 +7212,7 @@
             "in": "formData",
             "name": "file",
             "required": true,
-            "type": "string"
+            "type": "file"
           }
         ],
         "responses": {
