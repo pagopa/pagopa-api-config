@@ -34,5 +34,10 @@
       "name": "xsd.counterpart",
       "type": "java.lang.String",
       "description": "Path of XSD for Counter Part service."
+    },
+    {
+      "name": "xsd.cdi",
+      "type": "java.lang.String",
+      "description": "Path of XSD for CDI service."
     }
   ] }
