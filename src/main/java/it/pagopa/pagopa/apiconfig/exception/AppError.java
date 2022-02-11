@@ -54,6 +54,8 @@ public enum AppError {
     CHANNEL_PAYMENT_TYPE_CONFLICT(HttpStatus.CONFLICT, "Relation Channel-PaymentType conflict", "Relation Channel-PaymentType between Channel with code %s and PaymentType with code %s already exists"),
 
     CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
+    CDI_CONFLICT(HttpStatus.CONFLICT, "CDI conflict", "CDI with code %s already exists"),
+    CDI_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CDI bad request", "XML file is not valid: %s"),
 
     CONFIGURATION_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "Configuration key not found", "No Configuration key found with category: %s key: %s"),
     CONFIGURATION_KEY_CONFLICT(HttpStatus.CONFLICT, "Configuration key conflict", "Configuration key with category %s and key %s already exists"),
