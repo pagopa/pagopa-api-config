@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.33-1"
+    "version": "0.2.33-2"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -2126,7 +2126,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "getPaymentTypes_1",
+        "operationId": "getChannelPaymentTypes",
         "summary": "Get a payment types of a channel"
       },
       "post": {
@@ -2255,7 +2255,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "createPaymentType_1",
+        "operationId": "createChannelPaymentType",
         "summary": "Create a payment types of a channel"
       }
     },
@@ -2374,7 +2374,7 @@
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "deletePaymentType",
+        "operationId": "deleteChannelPaymentType",
         "summary": "Delete a payment types of a channel"
       }
     },
@@ -2702,7 +2702,7 @@
         "tags": [
           "Configuration"
         ],
-        "operationId": "deleteFtpServer_1",
+        "operationId": "deleteFtpServer",
         "summary": "Delete configuration key"
       },
       "get": {
@@ -3504,7 +3504,7 @@
         "tags": [
           "Configuration"
         ],
-        "operationId": "updateConfigurationKey_1",
+        "operationId": "updateConfigurationKey",
         "summary": "Update configuration key"
       }
     },
@@ -3817,7 +3817,7 @@
         "tags": [
           "Configuration"
         ],
-        "operationId": "deleteFtpServer",
+        "operationId": "deletePaymentType",
         "summary": "Delete payment type"
       },
       "get": {
@@ -4036,7 +4036,7 @@
         "tags": [
           "Configuration"
         ],
-        "operationId": "updateConfigurationKey",
+        "operationId": "updatePaymentType",
         "summary": "Update payment type"
       }
     },
@@ -4692,7 +4692,7 @@
               }
             },
             "schema": {
-              "$ref": "#/definitions/ConfigurationKey"
+              "$ref": "#/definitions/WfespPluginConf"
             }
           },
           "400": {
@@ -5205,7 +5205,7 @@
       },
       "post": {
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
         "produces": [
           "application/json"
@@ -5213,18 +5213,11 @@
         "parameters": [
           {
             "description": "The file to upload",
-            "in": "body",
-            "name": "body",
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
             "required": true,
-            "schema": {
-              "properties": {
-                "file": {
-                  "format": "binary",
-                  "type": "string"
-                }
-              },
-              "type": "object"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -5313,7 +5306,7 @@
           "Creditor Institutions"
         ],
         "operationId": "createCounterpartTable",
-        "summary": "Update a counterpart table"
+        "summary": "Upload a XML file containing the details of a Counterpart table"
       }
     },
     "/counterparttables/{idcounterparttable}": {
@@ -5433,7 +5426,7 @@
           "Creditor Institutions"
         ],
         "operationId": "deleteCounterpartTable",
-        "summary": "Delete a counterpart table"
+        "summary": "Delete a Counterpart table XML file "
       },
       "get": {
         "produces": [
@@ -7308,7 +7301,7 @@
           "Creditor Institutions"
         ],
         "operationId": "createIca",
-        "summary": "Update a XML file containing the details of an ICA"
+        "summary": "Upload a XML file containing the details of an ICA"
       }
     },
     "/icas/xsd": {
@@ -7532,7 +7525,7 @@
           "Creditor Institutions"
         ],
         "operationId": "deleteIca",
-        "summary": "Delete an ICA file"
+        "summary": "Delete an ICA XML file"
       },
       "get": {
         "produces": [
@@ -10698,7 +10691,7 @@
           "type": "string"
         },
         "ip": {
-          "example": "locahost",
+          "example": "localhost",
           "type": "string"
         },
         "port": {
@@ -10726,7 +10719,7 @@
           "type": "boolean"
         },
         "ip": {
-          "example": "locahost",
+          "example": "localhost",
           "type": "string"
         },
         "port": {
