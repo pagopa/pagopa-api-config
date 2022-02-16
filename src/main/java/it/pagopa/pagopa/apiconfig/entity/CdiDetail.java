@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,7 +17,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 
 @Table(name = "CDI_DETAIL", schema = "NODO4_CFG")
@@ -60,5 +63,17 @@ public class CdiDetail {
 
     @Column(name = "LOGO_SERVIZIO")
     private byte[] logoServizio;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkCdiDetail", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private List<CdiInformazioniServizio> cdiInformazioniServizio;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkCdiDetail", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private List<CdiFasciaCostoServizio> cdiFasciaCostoServizio;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cdiDetail", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private List<CdiPreference> cdiPreference;
 
 }
