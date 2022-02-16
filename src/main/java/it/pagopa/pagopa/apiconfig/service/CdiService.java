@@ -186,21 +186,22 @@ public class CdiService {
                 var fascia = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i);
                 // importoMinimo is equals to importoMassimo of previous element, sorted by importoMassimo (equals to 0 for the first element)
                 var prev = i > 0 ? costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i - 1).getImportoMassimoFascia() : 0;
+                CdiXml.ConvenzioniCosti convenzione = null;
                 if (fascia.getListaConvenzioniCosti() != null) {
-                    var convenzione = fascia.getListaConvenzioniCosti()
+                    convenzione = fascia.getListaConvenzioniCosti()
                             .stream()
                             .findFirst() // TODO handle list with size > 1 ?
                             .orElse(null);
-
-                    cdiFasciaCostoServizioRepository.save(CdiFasciaCostoServizio.builder()
-                            .importoMassimo(fascia.getImportoMassimoFascia())
-                            .importoMinimo(prev)
-                            .costoFisso(fascia.getCostoFisso())
-                            .fkCdiDetail(detailEntity)
-                            .valoreCommissione(fascia.getValoreCommissione())
-                            .codiceConvenzione(convenzione != null ? convenzione.getCodiceConvenzione() : null)
-                            .build());
                 }
+                cdiFasciaCostoServizioRepository.save(CdiFasciaCostoServizio.builder()
+                        .importoMassimo(fascia.getImportoMassimoFascia())
+                        .importoMinimo(prev)
+                        .costoFisso(fascia.getCostoFisso())
+                        .fkCdiDetail(detailEntity)
+                        .valoreCommissione(fascia.getValoreCommissione())
+                        .codiceConvenzione(convenzione != null ? convenzione.getCodiceConvenzione() : null)
+                        .build());
+
             }
         }
 

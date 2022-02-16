@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
@@ -106,11 +107,9 @@ class CdiServiceTest {
         when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
         when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(anyLong(), anyString(), anyString()))
                 .thenReturn(Optional.of(getMockPspCanaleTipoVersamento()));
-        try {
-            cdiService.createCdi(file);
-        } catch (Exception e) {
-            fail(e);
-        }
+
+        cdiService.createCdi(file);
+
         ArgumentCaptor<CdiDetail> cdiDetail = ArgumentCaptor.forClass(CdiDetail.class);
         verify(cdiDetailRepository, times(1)).save(cdiDetail.capture());
         assertEquals("Pagamento con Carte", cdiDetail.getValue().getNomeServizio());
@@ -119,9 +118,13 @@ class CdiServiceTest {
         assertEquals(0L, cdiDetail.getValue().getCanaleApp());
         assertEquals("Visa;Mastercard", cdiDetail.getValue().getTags());
         assertEquals(Arrays.toString("YQ==".getBytes()), Arrays.toString(cdiDetail.getValue().getLogoServizio()));
-        verify(cdiInformazioniServizioRepository, times(1)).save(any());
-        verify(cdiFasciaCostoServizioRepository, times(1)).save(any());
-        verify(cdiPreferenceRepository, times(1)).save(any());
+        verify(cdiInformazioniServizioRepository, times(5)).save(any());
+        verify(cdiFasciaCostoServizioRepository, times(8)).save(any());
+
+        ArgumentCaptor<CdiPreference> cdiPreference = ArgumentCaptor.forClass(CdiPreference.class);
+        verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
+        assertEquals("MYBANK11", cdiPreference.getValue().getSeller());
+        assertEquals(1.00, cdiPreference.getValue().getCostoConvenzione());
     }
 
 
