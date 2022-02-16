@@ -5,6 +5,7 @@ import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
 import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
@@ -17,6 +18,7 @@ import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -26,7 +28,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
@@ -41,6 +46,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
@@ -56,19 +62,28 @@ public class CdiService {
 
     @Autowired
     PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
+
     @Autowired
     PspRepository pspRepository;
+
     @Autowired
     BinaryFileRepository binaryFileRepository;
+
     @Autowired
     private CdiDetailRepository cdiDetailRepository;
+
     @Autowired
     private CdiInformazioniServizioRepository cdiInformazioniServizioRepository;
+
     @Autowired
     private CdiFasciaCostoServizioRepository cdiFasciaCostoServizioRepository;
 
     @Autowired
+    CdiPreferenceRepository cdiPreferenceRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
+
     @Value("${xsd.cdi}")
     private String xsdCdi;
 
@@ -88,6 +103,7 @@ public class CdiService {
         return cdiMaster.getFkBinaryFile().getFileContent();
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createCdi(MultipartFile file) {
         // syntactic checks
         try {
@@ -105,71 +121,147 @@ public class CdiService {
         checkRagioneSociale(xml, psp);
         checkValidityDate(xml);
 
-        // save
+        // save BINARY_FILE and CDI_MASTER
         var binaryFile = saveBinaryFile(file);
-        var master = saveCdiMastser(xml, psp, binaryFile);
-        // for each detail save in DETAIL, INFORMAZIONI_SERVIZIO, FASCIE_COSTO, PREFERENCES
-        for (var detail : xml.getListaInformativaDetail()) {
-            var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, detail);
-            var detailEntity = saveCdiDetail(master, detail, pspCanaleTipoVersamento);
-            for (var info : detail.getListaInformazioniServizio()) {
-                saveCdiInformazioniServizio(detailEntity, info);
-            }
-            saveCdiFasciaCostiServizio(detail, detailEntity);
+        var master = saveCdiMaster(xml, psp, binaryFile);
+        // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCIE_COSTO, PREFERENCES
+        for (var xmlDetail : xml.getListaInformativaDetail()) {
+            var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
+
+            var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
+            saveCdiInformazioniServizio(xmlDetail, detail);
+            saveCdiFasciaCostiServizio(xmlDetail, detail);
+            saveCdiPreferences(xml, xmlDetail, detail);
         }
+
 
     }
 
     public void deleteCdi(String idCdi, String pspCode) {
+        CdiMaster cdiMaster = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(idCdi, pspCode)
+                .orElseThrow(() -> new AppException(AppError.CDI_NOT_FOUND, idCdi));
+
+        var valid = cdiMasterRepository.findByFkPsp_IdPspAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(pspCode, Timestamp.valueOf(LocalDateTime.now()));
+        if (!valid.isEmpty() && valid.get(0).getId().equals(cdiMaster.getId())) {
+            throw new AppException(HttpStatus.CONFLICT, "CDI conflict", "This CDI is used.");
+        }
+        cdiMasterRepository.delete(cdiMaster);
     }
 
-
-    private void saveCdiFasciaCostiServizio(CdiXml.InformativaDetail detail, CdiDetail detailEntity) {
-        detail.getCostiServizio().getListaFasceCostoServizio().sort(Comparator.comparing(CdiXml.FasciaCostoServizio::getImportoMassimoFascia));
-        for (int i = 0; i < detail.getCostiServizio().getListaFasceCostoServizio().size(); i++) {
-            var fascia = detail.getCostiServizio().getListaFasceCostoServizio().get(i);
-            var prev = i > 0 ? detail.getCostiServizio().getListaFasceCostoServizio().get(i - 1).getImportoMassimoFascia() : 0;
-            var convenzione = fascia.getListaConvenzioniCosti().stream().findFirst().orElse(null); // TODO handle list with size > 1
-            cdiFasciaCostoServizioRepository.save(CdiFasciaCostoServizio.builder()
-                    .importoMassimo(fascia.getImportoMassimoFascia())
-                    .importoMinimo(prev)
-                    .costoFisso(fascia.getCostoFisso())
-                    .fkCdiDetail(detailEntity)
-                    .valoreCommissione(fascia.getValoreCommissione())
-                    .codiceConvenzione(convenzione != null ? convenzione.getCodiceConvenzione() : null)
-                    .build());
+    /**
+     * save CdiPreference in DB
+     *
+     * @param xml       CDI file
+     * @param xmlDetail informativaDetail: detail element to save
+     * @param detail    FK CdiDetail
+     */
+    private void saveCdiPreferences(CdiXml xml, CdiXml.InformativaDetail xmlDetail, CdiDetail detail) {
+        if (xmlDetail.getListaConvenzioni() != null) {
+            xmlDetail.getListaConvenzioni().forEach(elem ->
+            {
+                double costoConvenzione = xmlDetail.getCostiServizio() != null && xmlDetail.getCostiServizio().getCostoConvenzione() != null
+                        ? xmlDetail.getCostiServizio().getCostoConvenzione()
+                        : 0;
+                cdiPreferenceRepository.save(CdiPreference.builder()
+                        .cdiDetail(detail)
+                        .seller(xml.getMybankIDVS())
+                        .buyer(elem.getCodiceConvenzione())
+                        .costoConvenzione(costoConvenzione)
+                        .build());
+            });
         }
     }
 
-    private void saveCdiInformazioniServizio(CdiDetail detailEntity, CdiXml.InformazioniServizio info) {
-        cdiInformazioniServizioRepository.save(CdiInformazioniServizio.builder()
-                .codiceLingua(info.getCodiceLingua())
-                .descrizioneServizio(info.getDescrizioneServizio())
-                .disponibilitaServizio(info.getDisponibilitaServizio())
-                .urlInformazioniCanale(info.getUrlInformazioniCanale())
-                .fkCdiDetail(detailEntity)
-                .limitazioniServizio(info.getLimitazioniServizio())
-                .build());
+    /**
+     * @param detail       info detail in the XML
+     * @param detailEntity FK CdiDetail
+     */
+    private void saveCdiFasciaCostiServizio(CdiXml.InformativaDetail detail, CdiDetail detailEntity) {
+        CdiXml.CostiServizio costiServizio = detail.getCostiServizio();
+        if (costiServizio != null && costiServizio.getListaFasceCostoServizio() != null) {
+            // sort by importoMassimo
+            costiServizio.getListaFasceCostoServizio().sort(Comparator.comparing(CdiXml.FasciaCostoServizio::getImportoMassimoFascia));
+            // for each fascia save an element in the database
+            for (int i = 0; i < costiServizio.getListaFasceCostoServizio().size(); i++) {
+                var fascia = costiServizio.getListaFasceCostoServizio().get(i);
+                // importoMinimo is equals to importoMassimo of previous element, sorted by importoMassimo (equals to 0 for the first element)
+                var prev = i > 0 ? costiServizio.getListaFasceCostoServizio().get(i - 1).getImportoMassimoFascia() : 0;
+                if (fascia.getListaConvenzioniCosti() != null) {
+                    var convenzione = fascia.getListaConvenzioniCosti()
+                            .stream()
+                            .findFirst()// TODO handle list with size > 1 ?
+                            .orElse(null);
+
+                    cdiFasciaCostoServizioRepository.save(CdiFasciaCostoServizio.builder()
+                            .importoMassimo(fascia.getImportoMassimoFascia())
+                            .importoMinimo(prev)
+                            .costoFisso(fascia.getCostoFisso())
+                            .fkCdiDetail(detailEntity)
+                            .valoreCommissione(fascia.getValoreCommissione())
+                            .codiceConvenzione(convenzione != null ? convenzione.getCodiceConvenzione() : null)
+                            .build());
+                }
+            }
+        }
+
     }
 
+    /**
+     * @param detail       info detail in the XML
+     * @param detailEntity FK CdiDetail
+     */
+    private void saveCdiInformazioniServizio(CdiXml.InformativaDetail detail, CdiDetail detailEntity) {
+        if (detail.getListaInformazioniServizio() != null) {
+            for (var info : detail.getListaInformazioniServizio()) {
+                cdiInformazioniServizioRepository.save(CdiInformazioniServizio.builder()
+                        .codiceLingua(info.getCodiceLingua())
+                        .descrizioneServizio(info.getDescrizioneServizio())
+                        .disponibilitaServizio(info.getDisponibilitaServizio())
+                        .urlInformazioniCanale(info.getUrlInformazioniCanale())
+                        .fkCdiDetail(detailEntity)
+                        .limitazioniServizio(info.getLimitazioniServizio())
+                        .build());
+            }
+        }
+
+    }
+
+    /**
+     * @param master                  CdiMaster entity
+     * @param detail                  Info Detail of XML
+     * @param pspCanaleTipoVersamento FK PspCanaleTipoVersamento
+     * @return save and return a CdiDetail entity
+     */
     private CdiDetail saveCdiDetail(CdiMaster master, CdiXml.InformativaDetail detail, PspCanaleTipoVersamento pspCanaleTipoVersamento) {
-        var identificazioneServizio = detail.getIdentificazioneServizio();
         CdiDetail.CdiDetailBuilder builder = CdiDetail.builder()
                 .priorita(detail.getPriorita())
                 .modelloPagamento(detail.getModelloPagamento())
                 .fkCdiMaster(master)
                 .fkPspCanaleTipoVersamento(pspCanaleTipoVersamento)
                 .canaleApp(detail.getCanaleApp());
-        if (identificazioneServizio != null) {
+        if (detail.getIdentificazioneServizio() != null) {
+            var identificazioneServizio = detail.getIdentificazioneServizio();
             builder.nomeServizio(identificazioneServizio.getNomeServizio())
                     .logoServizio(identificazioneServizio.getLogoServizio() != null ? identificazioneServizio.getLogoServizio().getBytes() : null);
         }
-        if (detail.getListaParoleChiave())
-            return cdiDetailRepository.save(builder
-//                        .tags()
-                    .build());
+        if (detail.getListaParoleChiave() != null) {
+            // join list of ParolaChiave in a string semicolon separated ([tag1, tag2,tag3] -> "tag1;tag2;tag3")
+            String tags = detail.getListaParoleChiave().stream()
+                    .filter(Objects::nonNull)
+                    .map(CdiXml.ParolaChiave::getParoleChiave)
+                    .filter(Objects::nonNull)
+                    .reduce((a, b) -> a + ";" + b)
+                    .orElse(null);
+            builder.tags(tags);
+        }
+        return cdiDetailRepository.save(builder.build());
     }
 
+    /**
+     * @param psp    entity PSP
+     * @param detail InformativaDetail
+     * @return save in DB and return a PspCanaleTipoVersamento
+     */
     private PspCanaleTipoVersamento findPspCanaleTipoVersamentoIfExists(Psp psp, CdiXml.InformativaDetail detail) {
         return pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(psp.getObjId(),
                         detail.getIdentificativoCanale(),
@@ -177,7 +269,15 @@ public class CdiService {
                 .orElseThrow(() -> new AppException(AppError.CDI_BAD_REQUEST, detail.getTipoVersamento() + " not found"));
     }
 
-    private CdiMaster saveCdiMastser(CdiXml xml, Psp psp, BinaryFile binaryFile) {
+    /**
+     * save CdiMaster in DB and return the entity
+     *
+     * @param xml        CDI file
+     * @param psp        FK PSP
+     * @param binaryFile FK BinaryFile
+     * @return entity saved in DB
+     */
+    private CdiMaster saveCdiMaster(CdiXml xml, Psp psp, BinaryFile binaryFile) {
         return cdiMasterRepository.save(CdiMaster.builder()
                 .dataPubblicazione(toTimestamp(xml.getInformativaMaster().getDataPubblicazione()))
                 .dataInizioValidita(toTimestamp(xml.getInformativaMaster().getDataInizioValidita()))
@@ -191,14 +291,12 @@ public class CdiService {
                 .build());
     }
 
-
     /**
      * Maps CdiMaster objects stored in the DB in a List of Cdi
      *
      * @param page page of {@link CdiMaster} returned from the database
      * @return a list of {@link Cdi}.
      */
-
     private List<Cdi> getCdiList(Page<CdiMaster> page) {
         return page.stream()
                 .map(elem -> modelMapper.map(elem, Cdi.class))

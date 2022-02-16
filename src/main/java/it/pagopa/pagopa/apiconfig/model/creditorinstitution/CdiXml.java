@@ -25,6 +25,9 @@ public class CdiXml {
     private String ragioneSociale;
     private InformativaMaster informativaMaster;
     private List<InformativaDetail> listaInformativaDetail;
+    @Nullable
+    private String mybankIDVS;
+
 
     @XmlRootElement(name = "informativaMaster")
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -39,6 +42,7 @@ public class CdiXml {
         private Boolean stornoPagamento;
         private Boolean marcaBolloDigitale;
         private String logoPSP;
+
     }
 
     @XmlRootElement(name = "informativaDetail")
@@ -62,6 +66,8 @@ public class CdiXml {
         private CostiServizio costiServizio;
         @Nullable
         private List<ParolaChiave> listaParoleChiave;
+        @Nullable
+        private List<ConvenzioniCosti> listaConvenzioni;
     }
 
     @XmlRootElement(name = "paroleChiave")
@@ -110,9 +116,10 @@ public class CdiXml {
         private String tipoCommissione;
         @Nullable
         private List<FasciaCostoServizio> listaFasceCostoServizio;
+        @Nullable
+        private Double costoConvenzione;
     }
 
-    @XmlRootElement(name = "fasciaCostoServizio")
     @XmlAccessorType(XmlAccessType.FIELD)
     @AllArgsConstructor
     @NoArgsConstructor
@@ -126,7 +133,6 @@ public class CdiXml {
         private List<ConvenzioniCosti> listaConvenzioniCosti;
     }
 
-    @XmlRootElement(name = "codiceConvenzione")
     @XmlAccessorType(XmlAccessType.FIELD)
     @AllArgsConstructor
     @NoArgsConstructor
