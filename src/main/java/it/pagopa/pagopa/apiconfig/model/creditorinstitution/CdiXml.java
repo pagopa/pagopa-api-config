@@ -9,6 +9,9 @@ import org.springframework.lang.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.List;
@@ -25,7 +28,7 @@ public class CdiXml {
     private String identificativoPSP;
     private String ragioneSociale;
     private InformativaMaster informativaMaster;
-    private List<InformativaDetail> listaInformativaDetail;
+    private ListaInformativaDetail listaInformativaDetail;
     @Nullable
     private String mybankIDVS;
 
@@ -43,7 +46,16 @@ public class CdiXml {
         private Boolean stornoPagamento;
         private Boolean marcaBolloDigitale;
         private String logoPSP;
+    }
 
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @Getter
+    public static class ListaInformativaDetail {
+        private List<InformativaDetail> informativaDetail;
     }
 
     @XmlRootElement(name = "informativaDetail")
@@ -63,23 +75,17 @@ public class CdiXml {
         @Nullable
         private IdentificazioneServizio identificazioneServizio;
         @Nullable
-        private List<InformazioniServizio> listaInformazioniServizio;
+        private ListaInformazioniServizio listaInformazioniServizio;
         @Nullable
         private CostiServizio costiServizio;
         @Nullable
-        private List<ParolaChiave> listaParoleChiave;
+        @XmlElementWrapper
+        @XmlElements({
+                @XmlElement(name = "paroleChiave", type = String.class)
+        })
+        private List<String> listaParoleChiave;
         @Nullable
         private List<ConvenzioniCosti> listaConvenzioni;
-    }
-
-    @XmlRootElement(name = "paroleChiave")
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    @Getter
-    public static class ParolaChiave {
-        private String paroleChiave;
     }
 
     @XmlRootElement(name = "identificazioneServizio")
@@ -91,6 +97,16 @@ public class CdiXml {
     public static class IdentificazioneServizio {
         private String nomeServizio;
         private String logoServizio;
+    }
+
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @Getter
+    public static class ListaInformazioniServizio {
+        private List<InformazioniServizio> informazioniServizio;
     }
 
     @XmlRootElement(name = "informazioniServizio")
@@ -117,9 +133,20 @@ public class CdiXml {
         private String tipoCostoTransazione;
         private String tipoCommissione;
         @Nullable
-        private List<FasciaCostoServizio> listaFasceCostoServizio;
+        private ListaFasceCostoServizio listaFasceCostoServizio;
         @Nullable
         private Double costoConvenzione;
+    }
+
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @Getter
+    public static class ListaFasceCostoServizio {
+        private List<FasciaCostoServizio> fasciaCostoServizio;
+
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

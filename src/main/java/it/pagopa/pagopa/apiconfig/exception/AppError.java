@@ -25,11 +25,11 @@ public enum AppError {
 
     ICA_NOT_FOUND(HttpStatus.NOT_FOUND, "ICA not found", "No ICA found with id: %s"),
     ICA_CONFLICT(HttpStatus.CONFLICT, "ICA conflict", "ICA with code %s already exists"),
-    ICA_BAD_REQUEST(HttpStatus.BAD_REQUEST, "ICA bad request", "XML file is not valid: %s"),
+    ICA_BAD_REQUEST(HttpStatus.BAD_REQUEST, "ICA bad request", "XML ICA file is not valid: %s"),
 
     COUNTERPART_NOT_FOUND(HttpStatus.NOT_FOUND, "Counterpart not found", "No Counterpart found with id %s associated with Creditor Institution code %s"),
     COUNTERPART_CONFLICT(HttpStatus.CONFLICT, "Counterpart conflict", "Counterpart with code %s already exists"),
-    COUNTERPART_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Counterpart bad request", "XML file is not valid: %s"),
+    COUNTERPART_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Counterpart bad request", "XML Counterpart file is not valid: %s"),
 
     PSP_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment Service Provider not found", "No Payment Service Provider found with code: %s"),
     PSP_CONFLICT(HttpStatus.CONFLICT, "Payment Service Provider conflict", "Payment Service Provider code %s already exists"),
@@ -55,7 +55,7 @@ public enum AppError {
 
     CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
     CDI_CONFLICT(HttpStatus.CONFLICT, "CDI conflict", "CDI with code %s already exists"),
-    CDI_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CDI bad request", "XML file is not valid: %s"),
+    CDI_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CDI bad request", "XML CDI file is not valid: %s"),
 
     CONFIGURATION_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "Configuration key not found", "No Configuration key found with category: %s key: %s"),
     CONFIGURATION_KEY_CONFLICT(HttpStatus.CONFLICT, "Configuration key conflict", "Configuration key with category %s and key %s already exists"),
