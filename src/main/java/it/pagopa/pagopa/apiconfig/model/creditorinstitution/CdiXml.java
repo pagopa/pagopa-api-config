@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,7 +28,7 @@ public class CdiXml {
     private String ragioneSociale;
     private InformativaMaster informativaMaster;
     private ListaInformativaDetail listaInformativaDetail;
-    @Nullable
+
     private String mybankIDVS;
 
 
@@ -72,19 +71,19 @@ public class CdiXml {
         private Long modelloPagamento;
         private Long priorita;
         private Long canaleApp;
-        @Nullable
+
         private IdentificazioneServizio identificazioneServizio;
-        @Nullable
+
         private ListaInformazioniServizio listaInformazioniServizio;
-        @Nullable
+
         private CostiServizio costiServizio;
-        @Nullable
+
         @XmlElementWrapper
         @XmlElements({
                 @XmlElement(name = "paroleChiave", type = String.class)
         })
         private List<String> listaParoleChiave;
-        @Nullable
+
         private List<ConvenzioniCosti> listaConvenzioni;
     }
 
@@ -132,9 +131,9 @@ public class CdiXml {
     public static class CostiServizio {
         private String tipoCostoTransazione;
         private String tipoCommissione;
-        @Nullable
+
         private ListaFasceCostoServizio listaFasceCostoServizio;
-        @Nullable
+
         private Double costoConvenzione;
     }
 
@@ -158,7 +157,7 @@ public class CdiXml {
         private Double importoMassimoFascia;
         private Double costoFisso;
         private Double valoreCommissione;
-        @Nullable
+
         private List<ConvenzioniCosti> listaConvenzioniCosti;
     }
 
