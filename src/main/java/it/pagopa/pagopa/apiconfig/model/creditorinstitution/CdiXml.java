@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -51,6 +52,7 @@ public class CdiXml {
     @NoArgsConstructor
     @Builder
     @Getter
+    @NotNull
     public static class InformativaDetail {
         private String identificativoIntermediario;
         private String identificativoCanale;
