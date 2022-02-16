@@ -240,8 +240,8 @@ public class CdiService {
                 .fkCdiMaster(master)
                 .fkPspCanaleTipoVersamento(pspCanaleTipoVersamento)
                 .canaleApp(detail.getCanaleApp() != null ? detail.getCanaleApp() : 0L);
-        if (detail.getIdentificazioneServizio() != null) {
-            var identificazioneServizio = detail.getIdentificazioneServizio();
+        var identificazioneServizio = detail.getIdentificazioneServizio();
+        if (identificazioneServizio != null) {
             builder.nomeServizio(identificazioneServizio.getNomeServizio())
                     .logoServizio(identificazioneServizio.getLogoServizio() != null ? identificazioneServizio.getLogoServizio().strip().getBytes() : null);
         }
