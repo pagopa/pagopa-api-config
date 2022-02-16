@@ -125,7 +125,7 @@ public class CdiService {
         var binaryFile = saveBinaryFile(file);
         var master = saveCdiMaster(xml, psp, binaryFile);
         // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCIE_COSTO, PREFERENCES
-        for (var xmlDetail : xml.getListaInformativaDetail()) {
+        for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
             var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
 
             var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
@@ -155,7 +155,7 @@ public class CdiService {
      * @param xmlDetail informativaDetail: detail element to save
      * @param detail    FK CdiDetail
      */
-    private void saveCdiPreferences(CdiXml xml, CdiXml.InformativaDetail xmlDetail, CdiDetail detail) {
+    private void saveCdiPreferences(@NotNull CdiXml xml, @NotNull CdiXml.InformativaDetail xmlDetail, @NotNull CdiDetail detail) {
         if (xmlDetail.getListaConvenzioni() != null) {
             xmlDetail.getListaConvenzioni().forEach(elem ->
             {
@@ -176,20 +176,20 @@ public class CdiService {
      * @param detail       info detail in the XML
      * @param detailEntity FK CdiDetail
      */
-    private void saveCdiFasciaCostiServizio(CdiXml.InformativaDetail detail, CdiDetail detailEntity) {
+    private void saveCdiFasciaCostiServizio(@NotNull CdiXml.InformativaDetail detail, @NotNull CdiDetail detailEntity) {
         CdiXml.CostiServizio costiServizio = detail.getCostiServizio();
-        if (costiServizio != null && costiServizio.getListaFasceCostoServizio() != null) {
+        if (costiServizio != null && costiServizio.getListaFasceCostoServizio() != null && costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio() != null) {
             // sort by importoMassimo
-            costiServizio.getListaFasceCostoServizio().sort(Comparator.comparing(CdiXml.FasciaCostoServizio::getImportoMassimoFascia));
+            costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().sort(Comparator.comparing(CdiXml.FasciaCostoServizio::getImportoMassimoFascia));
             // for each fascia save an element in the database
-            for (int i = 0; i < costiServizio.getListaFasceCostoServizio().size(); i++) {
-                var fascia = costiServizio.getListaFasceCostoServizio().get(i);
+            for (int i = 0; i < costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().size(); i++) {
+                var fascia = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i);
                 // importoMinimo is equals to importoMassimo of previous element, sorted by importoMassimo (equals to 0 for the first element)
-                var prev = i > 0 ? costiServizio.getListaFasceCostoServizio().get(i - 1).getImportoMassimoFascia() : 0;
+                var prev = i > 0 ? costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i - 1).getImportoMassimoFascia() : 0;
                 if (fascia.getListaConvenzioniCosti() != null) {
                     var convenzione = fascia.getListaConvenzioniCosti()
                             .stream()
-                            .findFirst()// TODO handle list with size > 1 ?
+                            .findFirst() // TODO handle list with size > 1 ?
                             .orElse(null);
 
                     cdiFasciaCostoServizioRepository.save(CdiFasciaCostoServizio.builder()
@@ -210,13 +210,13 @@ public class CdiService {
      * @param detail       info detail in the XML
      * @param detailEntity FK CdiDetail
      */
-    private void saveCdiInformazioniServizio(CdiXml.InformativaDetail detail, CdiDetail detailEntity) {
-        if (detail.getListaInformazioniServizio() != null) {
-            for (var info : detail.getListaInformazioniServizio()) {
+    private void saveCdiInformazioniServizio(@NotNull CdiXml.InformativaDetail detail, @NotNull CdiDetail detailEntity) {
+        if (detail.getListaInformazioniServizio() != null && detail.getListaInformazioniServizio().getInformazioniServizio() != null) {
+            for (var info : detail.getListaInformazioniServizio().getInformazioniServizio()) {
                 cdiInformazioniServizioRepository.save(CdiInformazioniServizio.builder()
-                        .codiceLingua(info.getCodiceLingua())
-                        .descrizioneServizio(info.getDescrizioneServizio())
-                        .disponibilitaServizio(info.getDisponibilitaServizio())
+                        .codiceLingua(info.getCodiceLingua() != null ? info.getCodiceLingua() : "IT")
+                        .descrizioneServizio(info.getDescrizioneServizio() != null ? info.getDescrizioneServizio() : "Pagamento con CBILL")
+                        .disponibilitaServizio(info.getDisponibilitaServizio() != null ? info.getDisponibilitaServizio() : "24/7/7")
                         .urlInformazioniCanale(info.getUrlInformazioniCanale())
                         .fkCdiDetail(detailEntity)
                         .limitazioniServizio(info.getLimitazioniServizio())
@@ -232,23 +232,21 @@ public class CdiService {
      * @param pspCanaleTipoVersamento FK PspCanaleTipoVersamento
      * @return save and return a CdiDetail entity
      */
-    private CdiDetail saveCdiDetail(CdiMaster master, CdiXml.InformativaDetail detail, PspCanaleTipoVersamento pspCanaleTipoVersamento) {
+    private CdiDetail saveCdiDetail(@NotNull CdiMaster master, @NotNull CdiXml.InformativaDetail detail, @NotNull PspCanaleTipoVersamento pspCanaleTipoVersamento) {
         CdiDetail.CdiDetailBuilder builder = CdiDetail.builder()
-                .priorita(detail.getPriorita())
-                .modelloPagamento(detail.getModelloPagamento())
+                .priorita(detail.getPriorita() != null ? detail.getPriorita() : 0L)
+                .modelloPagamento(detail.getModelloPagamento() != null ? detail.getModelloPagamento() : 4L)
                 .fkCdiMaster(master)
                 .fkPspCanaleTipoVersamento(pspCanaleTipoVersamento)
-                .canaleApp(detail.getCanaleApp());
+                .canaleApp(detail.getCanaleApp() != null ? detail.getCanaleApp() : 0L);
         if (detail.getIdentificazioneServizio() != null) {
             var identificazioneServizio = detail.getIdentificazioneServizio();
             builder.nomeServizio(identificazioneServizio.getNomeServizio())
-                    .logoServizio(identificazioneServizio.getLogoServizio() != null ? identificazioneServizio.getLogoServizio().getBytes() : null);
+                    .logoServizio(identificazioneServizio.getLogoServizio() != null ? identificazioneServizio.getLogoServizio().strip().getBytes() : null);
         }
         if (detail.getListaParoleChiave() != null) {
             // join list of ParolaChiave in a string semicolon separated ([tag1, tag2,tag3] -> "tag1;tag2;tag3")
             String tags = detail.getListaParoleChiave().stream()
-                    .filter(Objects::nonNull)
-                    .map(CdiXml.ParolaChiave::getParoleChiave)
                     .filter(Objects::nonNull)
                     .reduce((a, b) -> a + ";" + b)
                     .orElse(null);
@@ -262,11 +260,12 @@ public class CdiService {
      * @param detail InformativaDetail
      * @return save in DB and return a PspCanaleTipoVersamento
      */
-    private PspCanaleTipoVersamento findPspCanaleTipoVersamentoIfExists(Psp psp, CdiXml.InformativaDetail detail) {
+    private PspCanaleTipoVersamento findPspCanaleTipoVersamentoIfExists(@NotNull Psp psp, @NotNull CdiXml.InformativaDetail detail) {
+        String paymentType = detail.getTipoVersamento() != null ? detail.getTipoVersamento() : "PO";
         return pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(psp.getObjId(),
                         detail.getIdentificativoCanale(),
-                        detail.getTipoVersamento())
-                .orElseThrow(() -> new AppException(AppError.CDI_BAD_REQUEST, detail.getTipoVersamento() + " not found"));
+                        paymentType)
+                .orElseThrow(() -> new AppException(AppError.CDI_BAD_REQUEST, "tipoVersamento: " + paymentType + " not found"));
     }
 
     /**
@@ -282,7 +281,7 @@ public class CdiService {
                 .dataPubblicazione(toTimestamp(xml.getInformativaMaster().getDataPubblicazione()))
                 .dataInizioValidita(toTimestamp(xml.getInformativaMaster().getDataInizioValidita()))
                 .idInformativaPsp(xml.getIdentificativoFlusso())
-                .logoPsp(xml.getInformativaMaster().getLogoPSP().getBytes())
+                .logoPsp(xml.getInformativaMaster().getLogoPSP().strip().getBytes())
                 .urlInformazioniPsp(xml.getInformativaMaster().getUrlInformazioniPSP())
                 .marcaBolloDigitale(xml.getInformativaMaster().getMarcaBolloDigitale())
                 .stornoPagamento(xml.getInformativaMaster().getStornoPagamento())
@@ -332,7 +331,7 @@ public class CdiService {
      */
     private void checkRagioneSociale(CdiXml xml, Psp psp) {
         if (!psp.getRagioneSociale().equals(xml.getRagioneSociale())) {
-            throw new AppException(AppError.CDI_CONFLICT, "There is an error in '" + xml.getRagioneSociale() + "'");
+            throw new AppException(AppError.CDI_BAD_REQUEST, "There is an error in ragioneSociale '" + xml.getRagioneSociale() + "'");
         }
     }
 

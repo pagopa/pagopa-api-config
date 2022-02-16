@@ -25,7 +25,15 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
-import it.pagopa.pagopa.apiconfig.model.configuration.*;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
@@ -229,6 +237,8 @@ public class TestUtil {
 
     public static BinaryFile getMockBinaryFile() {
         return BinaryFile.builder()
+                .id(1L)
+                .fileSize(2L)
                 .fileContent(new byte[]{1, 11})
                 .build();
     }
@@ -624,6 +634,7 @@ public class TestUtil {
                 .paymentTypeList(List.of("AD"))
                 .build();
     }
+
     public static PspChannelPaymentTypes getMockPspChannelPaymentTypes() {
         return PspChannelPaymentTypes.builder()
                 .paymentTypeList(List.of("AD"))
@@ -722,7 +733,7 @@ public class TestUtil {
     }
 
     public static ConfigurationKey getMockConfigurationKey() {
-        return  ConfigurationKey.builder()
+        return ConfigurationKey.builder()
                 .configCategory("category")
                 .configKey("key")
                 .configValue("value")
@@ -735,13 +746,13 @@ public class TestUtil {
     }
 
     public static ConfigurationKeys getMockConfigurationKeys() {
-        return  ConfigurationKeys.builder()
+        return ConfigurationKeys.builder()
                 .configurationKeyList(List.of(getMockConfigurationKey()))
                 .build();
     }
 
     public static it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys getMockConfigurationKeyEntity() {
-        return  it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.builder()
+        return it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.builder()
                 .configCategory("category")
                 .configKey("key")
                 .configValue("value")
@@ -773,7 +784,7 @@ public class TestUtil {
     }
 
     public static WfespPluginConfs getMockWfespPluginConfigurations() {
-        return  WfespPluginConfs.builder()
+        return WfespPluginConfs.builder()
                 .wfespPluginConfList(List.of(getMockModelWfespPluginConf()))
                 .build();
     }
@@ -783,7 +794,7 @@ public class TestUtil {
     }
 
     public static Pdd getMockPdd() {
-        return  Pdd.builder()
+        return Pdd.builder()
                 .idPdd("idPdd")
                 .description("description")
                 .enabled(true)
@@ -792,13 +803,13 @@ public class TestUtil {
     }
 
     public static Pdds getMockPdds() {
-        return  Pdds.builder()
+        return Pdds.builder()
                 .pddList(List.of(getMockPdd()))
                 .build();
     }
 
     public static it.pagopa.pagopa.apiconfig.entity.Pdd getMockPddEntity() {
-        return  it.pagopa.pagopa.apiconfig.entity.Pdd.builder()
+        return it.pagopa.pagopa.apiconfig.entity.Pdd.builder()
                 .idPdd("idPdd")
                 .descrizione("description")
                 .enabled(true)
@@ -811,7 +822,7 @@ public class TestUtil {
     }
 
     public static FtpServer getMockFtpServer() {
-        return  FtpServer.builder()
+        return FtpServer.builder()
                 .host("host")
                 .port(1)
                 .service("service")
@@ -824,13 +835,13 @@ public class TestUtil {
     }
 
     public static FtpServers getMockFtpServers() {
-        return  FtpServers.builder()
+        return FtpServers.builder()
                 .ftpServerList(List.of(getMockFtpServer()))
                 .build();
     }
 
     public static it.pagopa.pagopa.apiconfig.entity.FtpServers getMockFtpServersEntity() {
-        return  it.pagopa.pagopa.apiconfig.entity.FtpServers.builder()
+        return it.pagopa.pagopa.apiconfig.entity.FtpServers.builder()
                 .host("host")
                 .port(1)
                 .service("service")
@@ -847,14 +858,14 @@ public class TestUtil {
     }
 
     public static PaymentType getMockPaymentType() {
-        return  PaymentType.builder()
+        return PaymentType.builder()
                 .paymentTypeCode("code")
                 .description("description")
                 .build();
     }
 
     public static PaymentTypes getMockPaymentTypes() {
-        return  PaymentTypes.builder()
+        return PaymentTypes.builder()
                 .paymentTypeList(List.of(getMockPaymentType()))
                 .build();
     }
