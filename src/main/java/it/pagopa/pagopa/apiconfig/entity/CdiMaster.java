@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,8 +17,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.List;
 
 
 @Table(name = "CDI_MASTER", schema = "NODO4_CFG")
@@ -61,11 +64,15 @@ public class CdiMaster {
     private Psp fkPsp;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_BINARY_FILE", nullable = false)
     private BinaryFile fkBinaryFile;
 
     @Column(name = "VERSIONE", length = 35)
     private String versione;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkCdiMaster", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private List<CdiDetail> cdiDetail;
 
 }
