@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.2.33-2"
+    "version": "0.3.1"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -1312,6 +1312,111 @@
         ],
         "operationId": "getCdis",
         "summary": "Get paginated list of CDIs"
+      },
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "XML file regarding CDI to create",
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "createCdi",
+        "summary": "Update a XML file containing the details of an CDI"
       }
     },
     "/cdis/{idcdi}": {
@@ -1323,6 +1428,116 @@
           "type": "string"
         }
       ],
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Id of a CDI",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "idcdi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "PSP code",
+            "in": "query",
+            "name": "pspcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "deleteCdi",
+        "summary": "Delete an CDI file"
+      },
       "get": {
         "produces": [
           "application/xml",

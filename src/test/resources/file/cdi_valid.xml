@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <informativaPSP>
     <identificativoFlusso>BCITITMM_20-20-0817</identificativoFlusso>
-    <identificativoPSP>BCITITMM</identificativoPSP>
-    <ragioneSociale>Banca</ragioneSociale>
+    <identificativoPSP>BPPIITRRZZZ</identificativoPSP>
+    <ragioneSociale>Poste Italiane</ragioneSociale>
     <codiceABI>03069</codiceABI>
     <codiceBIC>BCITITMM</codiceBIC>
     <mybankIDVS>MYBANK11</mybankIDVS>
@@ -19,8 +19,8 @@
     <listaInformativaDetail>
         <informativaDetail>
             <identificativoIntermediario>00799960158</identificativoIntermediario>
-            <identificativoCanale>00799960158_07</identificativoCanale>
-            <tipoVersamento>CP</tipoVersamento>
+            <identificativoCanale>00001060966_01</identificativoCanale>
+            <tipoVersamento>BP</tipoVersamento>
             <modelloPagamento>1</modelloPagamento>
             <priorita>1</priorita>
             <canaleApp>0</canaleApp>
