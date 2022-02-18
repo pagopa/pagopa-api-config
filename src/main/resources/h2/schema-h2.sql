@@ -442,18 +442,18 @@ create table NODO4_CFG.ELENCO_SERVIZI (
                                               primary key (OBJ_ID)
 );
 
-create table NODO4_CFG.CDI_MASTER (
-                                      OBJ_ID numeric not null,
-                                      ID_INFORMATIVA_PSP varchar(35) not null,
-                                      DATA_INIZIO_VALIDITA timestamp(6),
-                                      DATA_PUBBLICAZIONE timestamp(6),
-                                      LOGO_PSP blob,
-                                      URL_INFORMAZIONI_PSP varchar(255),
-                                      MARCA_BOLLO_DIGITALE numeric not null,
-                                      STORNO_PAGAMENTO numeric not null,
-                                      FK_PSP numeric not null,
-                                      FK_BINARY_FILE numeric not null,
-                                      VERSIONE varchar(35),
+create table NODO4_CFG.CDI_MASTER(
+                                     OBJ_ID               numeric     not null IDENTITY,
+                                     ID_INFORMATIVA_PSP   varchar(35) not null,
+                                     DATA_INIZIO_VALIDITA timestamp(6),
+                                     DATA_PUBBLICAZIONE   timestamp(6),
+                                     LOGO_PSP             blob,
+                                     URL_INFORMAZIONI_PSP varchar(255),
+                                     MARCA_BOLLO_DIGITALE numeric     not null,
+                                     STORNO_PAGAMENTO     numeric     not null,
+                                     FK_PSP               numeric     not null,
+                                     FK_BINARY_FILE       numeric     not null,
+                                     VERSIONE             varchar(35),
                                       constraint PK_CDI_MASTER
                                           primary key (OBJ_ID),
                                       constraint FK_CDI_MASTER_TO_PSP
@@ -466,76 +466,9 @@ create table NODO4_CFG.CDI_MASTER (
                                           unique (FK_PSP, ID_INFORMATIVA_PSP)
 );
 
-create table NODO4_CFG.CDI_DETAIL
-(
-    OBJ_ID                        numeric     not null,
-    NOME_SERVIZIO                 varchar(35) not null,
-    PRIORITA                      numeric     not null,
-    MODELLO_PAGAMENTO             numeric     not null,
-    FK_CDI_MASTER                 numeric     not null,
-    FK_PSP_CANALE_TIPO_VERSAMENTO numeric     not null,
-    CANALE_APP                    numeric,
-    TAGS                          varchar(135),
-    LOGO_SERVIZIO                 blob,
-    constraint PK_CDI_DETAIL
-        primary key (OBJ_ID),
-    constraint FK_CDI_DETAIL_TO_CDI_MASTER
-        foreign key (FK_CDI_MASTER)
-            references NODO4_CFG.CDI_MASTER,
-    constraint FK_CDI_DETAIL_TO_PSP_CANALE_TIPO_VERSAMENTO
-        foreign key (FK_PSP_CANALE_TIPO_VERSAMENTO)
-            references NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO
-);
-
-create table NODO4_CFG.CDI_FASCIA_COSTO_SERVIZIO
-(
-    OBJ_ID             numeric not null,
-    IMPORTO_MINIMO     float   not null,
-    IMPORTO_MASSIMO    float   not null,
-    COSTO_FISSO        float   not null,
-    FK_CDI_DETAIL      numeric not null,
-    VALORE_COMMISSIONE float,
-    CODICE_CONVENZIONE varchar(35),
-    constraint PK_CDI_FASCIA_COSTO_SERVIZIO
-        primary key (OBJ_ID),
-    constraint FK_CDI_FASCIA_COSTO_SERVIZIO_TO_CDI_DETAIL
-        foreign key (FK_CDI_DETAIL)
-            references NODO4_CFG.CDI_DETAIL
-);
-
-create table NODO4_CFG.CDI_INFORMAZIONI_SERVIZIO
-(
-    OBJ_ID                  numeric      not null,
-    CODICE_LINGUA           char(2)      not null,
-    DESCRIZIONE_SERVIZIO    varchar(140) not null,
-    DISPONIBILITA_SERVIZIO  varchar(140) not null,
-    URL_INFORMAZIONI_CANALE varchar(255),
-    FK_CDI_DETAIL           numeric      not null,
-    LIMITAZIONI_SERVIZIO    varchar(140),
-    constraint PK_CDI_INFORMAZIONI_SERVIZIO
-        primary key (OBJ_ID),
-    constraint FK_CDI_INFORMAZIONI_SERVIZIO_TO_CDI_DETAIL
-        foreign key (FK_CDI_DETAIL)
-            references NODO4_CFG.CDI_DETAIL
-);
-
-create table NODO4_CFG.CDI_PREFERENCES
-(
-    OBJ_ID                numeric      not null,
-    FK_INFORMATIVA_DETAIL numeric      not null,
-    SELLER                varchar(255) not null,
-    BUYER                 varchar(255),
-    COSTO_CONVENZIONE     numeric      not null,
-    constraint PK__CDI_PREF__755589F03429BB53
-        primary key (OBJ_ID),
-    constraint FK_INFORMATIVA_DETAIL_TO_CDI_DETAIL
-        foreign key (FK_INFORMATIVA_DETAIL)
-            references NODO4_CFG.CDI_DETAIL
-);
-
 create table NODO4_CFG.TIPI_VERSAMENTO
 (
-    OBJ_ID          numeric     not null,
+    OBJ_ID          numeric     not null IDENTITY,
     DESCRIZIONE     varchar(35),
     TIPO_VERSAMENTO varchar(15) not null,
     constraint PK_TIPI_VERSAMENTO
@@ -595,20 +528,89 @@ create table NODO4_CFG.PDD (
 create unique index NODO4_CFG.PK_PDD on NODO4_CFG.PDD(OBJ_ID);
 create unique index NODO4_CFG.UQ_PDD on NODO4_CFG.PDD(ID_PDD);
 
-create table NODO4_CFG.FTP_SERVERS (
-                                       OBJ_ID numeric not null,
-                                       HOST varchar(255) not null,
-                                       PORT numeric not null,
-                                       USERNAME varchar(35) not null,
-                                       PASSWORD varchar(35) not null,
-                                       ROOT_PATH varchar(255) not null,
-                                       SERVICE varchar(255) not null,
-                                       TYPE varchar(35) not null,
-                                       IN_PATH varchar(255),
-                                       OUT_PATH varchar(255),
-                                       HISTORY_PATH varchar(255),
-                                       ENABLED char,
-                                       constraint PK_FTP_SERVER
-                                           primary key (OBJ_ID)
+create table NODO4_CFG.FTP_SERVERS
+(
+    OBJ_ID       numeric      not null,
+    HOST         varchar(255) not null,
+    PORT         numeric      not null,
+    USERNAME     varchar(35)  not null,
+    PASSWORD     varchar(35)  not null,
+    ROOT_PATH    varchar(255) not null,
+    SERVICE      varchar(255) not null,
+    TYPE         varchar(35)  not null,
+    IN_PATH      varchar(255),
+    OUT_PATH     varchar(255),
+    HISTORY_PATH varchar(255),
+    ENABLED      char,
+    constraint PK_FTP_SERVER
+        primary key (OBJ_ID)
 );
-create unique index NODO4_CFG.PK_FTP_SERVER on NODO4_CFG.FTP_SERVERS(OBJ_ID);
+create unique index NODO4_CFG.PK_FTP_SERVER on NODO4_CFG.FTP_SERVERS (OBJ_ID);
+
+
+create table NODO4_CFG.CDI_DETAIL
+(
+    OBJ_ID                        numeric     not null IDENTITY,
+    NOME_SERVIZIO                 varchar(35) not null,
+    PRIORITA                      numeric     not null,
+    MODELLO_PAGAMENTO             numeric     not null,
+    FK_CDI_MASTER                 numeric     not null,
+    FK_PSP_CANALE_TIPO_VERSAMENTO numeric     not null,
+    CANALE_APP                    numeric,
+    TAGS                          varchar(135),
+    LOGO_SERVIZIO                 blob,
+    constraint PK_CDI_DETAIL
+        primary key (OBJ_ID),
+    constraint FK_CDI_DETAIL_TO_CDI_MASTER
+        foreign key (FK_CDI_MASTER)
+            references NODO4_CFG.CDI_MASTER,
+    constraint FK_CDI_DETAIL_TO_PSP_CANALE_TIPO_VERSAMENTO
+        foreign key (FK_PSP_CANALE_TIPO_VERSAMENTO)
+            references NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO
+);
+
+create table NODO4_CFG.CDI_FASCIA_COSTO_SERVIZIO
+(
+    OBJ_ID             numeric not null IDENTITY,
+    IMPORTO_MINIMO     float   not null,
+    IMPORTO_MASSIMO    float   not null,
+    COSTO_FISSO        float   not null,
+    FK_CDI_DETAIL      numeric not null,
+    VALORE_COMMISSIONE float,
+    CODICE_CONVENZIONE varchar(35),
+    constraint PK_CDI_FASCIA_COSTO_SERVIZIO
+        primary key (OBJ_ID),
+    constraint FK_CDI_FASCIA_COSTO_SERVIZIO_TO_CDI_DETAIL
+        foreign key (FK_CDI_DETAIL)
+            references NODO4_CFG.CDI_DETAIL
+);
+
+create table NODO4_CFG.CDI_INFORMAZIONI_SERVIZIO
+(
+    OBJ_ID                  numeric      not null IDENTITY,
+    CODICE_LINGUA           char(2)      not null,
+    DESCRIZIONE_SERVIZIO    varchar(140) not null,
+    DISPONIBILITA_SERVIZIO  varchar(140) not null,
+    URL_INFORMAZIONI_CANALE varchar(255),
+    FK_CDI_DETAIL           numeric      not null,
+    LIMITAZIONI_SERVIZIO    varchar(140),
+    constraint PK_CDI_INFORMAZIONI_SERVIZIO
+        primary key (OBJ_ID),
+    constraint FK_CDI_INFORMAZIONI_SERVIZIO_TO_CDI_DETAIL
+        foreign key (FK_CDI_DETAIL)
+            references NODO4_CFG.CDI_DETAIL
+);
+
+create table NODO4_CFG.CDI_PREFERENCES
+(
+    OBJ_ID                numeric      not null IDENTITY,
+    FK_INFORMATIVA_DETAIL numeric      not null,
+    SELLER                varchar(255) not null,
+    BUYER                 varchar(255),
+    COSTO_CONVENZIONE     numeric      not null,
+    constraint PK__CDI_PREF__755589F03429BB53
+        primary key (OBJ_ID),
+    constraint FK_INFORMATIVA_DETAIL_TO_CDI_DETAIL
+        foreign key (FK_INFORMATIVA_DETAIL)
+            references NODO4_CFG.CDI_DETAIL
+);

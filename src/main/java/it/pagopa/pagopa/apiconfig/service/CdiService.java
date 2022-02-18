@@ -44,7 +44,6 @@ import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -179,13 +178,20 @@ public class CdiService {
     private void saveCdiFasciaCostiServizio(@NotNull CdiXml.InformativaDetail detail, @NotNull CdiDetail detailEntity) {
         CdiXml.CostiServizio costiServizio = detail.getCostiServizio();
         if (costiServizio != null && costiServizio.getListaFasceCostoServizio() != null && costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio() != null) {
-            // sort by importoMassimo
-            costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().sort(Comparator.comparing(CdiXml.FasciaCostoServizio::getImportoMassimoFascia));
+            // sort by importoMassimo and create fascia costi servizio
+            var importi = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().stream()
+                    .map(CdiXml.FasciaCostoServizio::getImportoMassimoFascia)
+                    .sorted(Double::compareTo)
+                    .distinct()
+                    .collect(Collectors.toList());
             // for each fascia save an element in the database
             for (int i = 0; i < costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().size(); i++) {
                 var fascia = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i);
-                // importoMinimo is equals to importoMassimo of previous element, sorted by importoMassimo (equals to 0 for the first element)
-                var prev = i > 0 ? costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i - 1).getImportoMassimoFascia() : 0;
+                // importoMinimo is equals to previous importoMassimo (equals to 0 for the first element)
+                var prev = importi.stream()
+                        .filter(elem -> elem < fascia.getImportoMassimoFascia())
+                        .max(Double::compareTo)
+                        .orElse(0.0);
                 CdiXml.ConvenzioniCosti convenzione = null;
                 if (fascia.getListaConvenzioniCosti() != null) {
                     convenzione = fascia.getListaConvenzioniCosti()
