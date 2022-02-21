@@ -38,7 +38,7 @@ class CounterpartControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(counterpartService.getCounterpartTables(50, 0)).thenReturn(getMockCounterpartTables());
+        when(counterpartService.getCounterpartTables(50, 0, null, null)).thenReturn(getMockCounterpartTables());
         when(counterpartService.getCounterpartTable(anyString(), anyString())).thenReturn(new byte[]{});
     }
 

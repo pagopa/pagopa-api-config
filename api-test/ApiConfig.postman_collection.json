@@ -1331,6 +1331,16 @@
 								{
 									"key": "page",
 									"value": "0"
+								},
+								{
+									"key": "idica",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "creditorinstitutioncode",
+									"value": null,
+									"disabled": true
 								}
 							]
 						}
@@ -1575,6 +1585,16 @@
 								{
 									"key": "page",
 									"value": "0"
+								},
+								{
+									"key": "idcounterparttable",
+									"value": "01",
+									"disabled": true
+								},
+								{
+									"key": "creditorinstitutioncode",
+									"value": "gra",
+									"disabled": true
 								}
 							]
 						}
@@ -3497,6 +3517,16 @@
 								{
 									"key": "page",
 									"value": "0"
+								},
+								{
+									"key": "pspcode",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "idcdi",
+									"value": "1",
+									"disabled": true
 								}
 							]
 						}

@@ -64,9 +64,9 @@ class CounterpartServiceTest {
     @Test
     void getCounterpartTables() throws IOException, JSONException {
         Page<InformativePaMaster> page = TestUtil.mockPage(Lists.newArrayList(getMockInformativePaMaster()), 50, 0);
-        when(informativePaMasterRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(informativePaMasterRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        CounterpartTables result = counterpartService.getCounterpartTables(50, 0);
+        CounterpartTables result = counterpartService.getCounterpartTables(50, 0, null, null);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_counterparttables_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

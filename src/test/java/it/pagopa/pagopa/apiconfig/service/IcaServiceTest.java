@@ -68,9 +68,9 @@ class IcaServiceTest {
     @Test
     void getIcas() throws JSONException, IOException {
         Page<InformativeContoAccreditoMaster> page = TestUtil.mockPage(Lists.newArrayList(getMockInformativeContoAccreditoMaster()), 50, 0);
-        when(informativeContoAccreditoMasterRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(informativeContoAccreditoMasterRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        Icas result = icaService.getIcas(50, 0);
+        Icas result = icaService.getIcas(50, 0, null, null);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_icas_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

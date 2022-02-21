@@ -75,9 +75,15 @@ public class IcaService {
     @Value("${xsd.ica}")
     private String xsdIca;
 
-    public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber) {
+    public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber, String idIca, String creditorInstitutionCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<InformativeContoAccreditoMaster> page = informativeContoAccreditoMasterRepository.findAll(pageable);
+        var filters = CommonUtil.getFilters(InformativeContoAccreditoMaster.builder()
+                .idInformativaContoAccreditoPa(idIca)
+                .fkPa(Pa.builder()
+                        .idDominio(creditorInstitutionCode)
+                        .build())
+                .build());
+        Page<InformativeContoAccreditoMaster> page = informativeContoAccreditoMasterRepository.findAll(filters, pageable);
         return Icas.builder()
                 .icaList(getIcaList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))
@@ -327,7 +333,6 @@ public class IcaService {
         }
         return binaryFileRepository.save(binaryFile);
     }
-
 
 
     /**

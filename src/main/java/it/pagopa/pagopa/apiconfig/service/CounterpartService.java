@@ -68,9 +68,15 @@ public class CounterpartService {
     @Value("${xsd.counterpart}")
     private String xsdCounterpart;
 
-    public CounterpartTables getCounterpartTables(@NotNull Integer limit, @NotNull Integer pageNumber) {
+    public CounterpartTables getCounterpartTables(@NotNull Integer limit, @NotNull Integer pageNumber, String idCounterpartTable, String creditorInstitutionCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<InformativePaMaster> page = informativePaMasterRepository.findAll(pageable);
+        var filters = CommonUtil.getFilters(InformativePaMaster.builder()
+                .idInformativaPa(idCounterpartTable)
+                .fkPa(Pa.builder()
+                        .idDominio(creditorInstitutionCode)
+                        .build())
+                .build());
+        Page<InformativePaMaster> page = informativePaMasterRepository.findAll(filters, pageable);
         return CounterpartTables.builder()
                 .counterpartTableList(getCounterpartList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

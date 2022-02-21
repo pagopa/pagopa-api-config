@@ -81,9 +81,9 @@ class CdiServiceTest {
     @Test
     void getCdis() throws IOException, JSONException {
         Page<CdiMaster> page = TestUtil.mockPage(Lists.newArrayList(getMockCdiMaster()), 50, 0);
-        when(cdiMasterRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(cdiMasterRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-        Cdis result = cdiService.getCdis(50, 0);
+        Cdis result = cdiService.getCdis(50, 0, null, null);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_cdis_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

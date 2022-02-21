@@ -55,8 +55,10 @@ public class IcaController {
     )
     public ResponseEntity<Icas> getIcas(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
-        return ResponseEntity.ok(icaService.getIcas(limit, page));
+            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @Parameter(description = "filter by Id ICA") @RequestParam(value = "idica", required = false) String idIca,
+            @Parameter(description = "filter by Creditor Institution") @RequestParam(value = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
+        return ResponseEntity.ok(icaService.getIcas(limit, page, idIca, creditorInstitutionCode));
     }
 
 
