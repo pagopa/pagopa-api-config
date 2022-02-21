@@ -363,7 +363,7 @@ public class TestUtil {
                 .flagRepoCommissioneCaricoPa(false)
                 .pspNodo(true)
                 .marcaBolloDigitale(true)
-                .ragioneSociale("Banca")
+                .ragioneSociale("Poste Italiane")
                 .stornoPagamento(false)
                 .vatNumber("123123123")
                 .build();
