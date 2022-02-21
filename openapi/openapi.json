@@ -3181,6 +3181,24 @@
                             "format": "int32",
                             "type": "integer"
                         }
+                    },
+                    {
+                        "description": "filter by Id CDI",
+                        "in": "query",
+                        "name": "idcdi",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "filter by PSP",
+                        "in": "query",
+                        "name": "pspcode",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -8323,6 +8341,24 @@
                             "format": "int32",
                             "type": "integer"
                         }
+                    },
+                    {
+                        "description": "filter by Id of counterpart table",
+                        "in": "query",
+                        "name": "idcounterparttable",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "filter by Creditor Institution",
+                        "in": "query",
+                        "name": "creditorinstitutioncode",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -10831,6 +10867,24 @@
                         "schema": {
                             "format": "int32",
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "filter by Id ICA",
+                        "in": "query",
+                        "name": "idica",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "filter by Creditor Institution",
+                        "in": "query",
+                        "name": "creditorinstitutioncode",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],

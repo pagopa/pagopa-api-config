@@ -38,7 +38,7 @@ class CdiControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(cdiService.getCdis(50, 0)).thenReturn(getMockCdis());
+        when(cdiService.getCdis(50, 0, null, null)).thenReturn(getMockCdis());
         when(cdiService.getCdi(anyString(), anyString())).thenReturn(new byte[]{});
 
     }

@@ -86,9 +86,15 @@ public class CdiService {
     @Value("${xsd.cdi}")
     private String xsdCdi;
 
-    public Cdis getCdis(@NotNull Integer limit, @NotNull Integer pageNumber) {
+    public Cdis getCdis(@NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
-        Page<CdiMaster> page = cdiMasterRepository.findAll(pageable);
+        var filters = CommonUtil.getFilters(CdiMaster.builder()
+                .idInformativaPsp(idCdi)
+                .fkPsp(Psp.builder()
+                        .idPsp(pspCode)
+                        .build())
+                .build());
+        Page<CdiMaster> page = cdiMasterRepository.findAll(filters, pageable);
         return Cdis.builder()
                 .cdiList(getCdiList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

@@ -39,7 +39,7 @@ class IcaControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(icaService.getIcas(50, 0)).thenReturn(getMockIcas());
+        when(icaService.getIcas(50, 0, null, null)).thenReturn(getMockIcas());
         when(icaService.getIca(anyString(), anyString())).thenReturn(new byte[]{});
         when(icaService.verifyXSD(any())).thenReturn(getMockXSDValidation());
     }
