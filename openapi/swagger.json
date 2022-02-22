@@ -1516,6 +1516,18 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "409": {
+            "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
           "429": {
             "description": "Too many requests",
             "headers": {
@@ -5635,6 +5647,18 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "409": {
+            "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
           "429": {
             "description": "Too many requests",
             "headers": {
@@ -7738,6 +7762,18 @@
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
