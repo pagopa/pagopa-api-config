@@ -20,3 +20,4 @@ sed -i '' 's/\"type\": \"http\"/\"type\": \"apiKey\",\n      \"in\": \"header\",
 jq  '."paths"."/icas/xsd".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/icas".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/counterparttables".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
+jq  '."paths"."/cdis".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
