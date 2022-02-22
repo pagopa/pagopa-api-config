@@ -3550,6 +3550,24 @@
                             }
                         }
                     },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Conflict",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
                     "429": {
                         "description": "Too many requests",
                         "headers": {
@@ -8710,6 +8728,24 @@
                             }
                         }
                     },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Conflict",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
                     "429": {
                         "description": "Too many requests",
                         "headers": {
@@ -11362,6 +11398,24 @@
                             }
                         },
                         "description": "Not Found",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Conflict",
                         "headers": {
                             "X-Request-Id": {
                                 "description": "This header identifies the call",
