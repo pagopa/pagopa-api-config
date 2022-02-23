@@ -161,7 +161,7 @@ public class CounterpartService {
             existsIndisponibilita = saved ? saved : existsIndisponibilita;
         }
 
-        if (infoMaster.getPagamentiPressoPsp() && !existsDisponibilita && !existsIndisponibilita) {
+        if (Boolean.TRUE.equals(infoMaster.getPagamentiPressoPsp()) && !existsDisponibilita && !existsIndisponibilita) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Counterpart bad request", "Availability details not specified");
         }
     }
@@ -176,8 +176,9 @@ public class CounterpartService {
                     .build());
 
             if (elem.getFasciaOraria() != null) {
-                String oraA = elem.getFasciaOraria().getFasciaOrariaA() != null ? elem.getFasciaOraria().getFasciaOrariaA().toString() : null;
-                String oraDa = elem.getFasciaOraria().getFasciaOrariaDa() != null ? elem.getFasciaOraria().getFasciaOrariaDa().toString() : null;
+                CounterpartXml.FasciaOraria timeSlot = elem.getFasciaOraria();
+                String oraA = timeSlot.getFasciaOrariaA() != null ? timeSlot.getFasciaOrariaA().toString() : null;
+                String oraDa = timeSlot.getFasciaOrariaDa() != null ? timeSlot.getFasciaOrariaDa().toString() : null;
                 if (oraA != null || oraDa != null) {
                     informativePaFasceRepository.save(InformativePaFasce.builder()
                             .fkInformativaPaDetail(detail)
@@ -185,10 +186,8 @@ public class CounterpartService {
                             .oraDa(oraDa)
                             .build());
                 }
-                else {
-                    if (infoMaster.getPagamentiPressoPsp()) {
-                        throw new AppException(HttpStatus.BAD_REQUEST, "Counterpart bad request", "One of from and to time slots should be specified.");
-                    }
+                else if (Boolean.TRUE.equals(infoMaster.getPagamentiPressoPsp())){
+                    throw new AppException(HttpStatus.BAD_REQUEST, "Counterpart bad request", "One of from and to time slots should be specified.");
                 }
             }
             return true;
