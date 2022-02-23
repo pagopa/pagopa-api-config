@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
@@ -89,6 +90,7 @@ public class CounterpartService {
         return result.getFkBinaryFile().getFileContent();
     }
 
+    @Transactional
     public void createCounterpartTable(MultipartFile file) {
         // syntactic checks
         try {
@@ -119,7 +121,6 @@ public class CounterpartService {
         saveDetail(counterpartXml, infoMaster);
     }
 
-
     public void deleteCounterpartTable(@NotBlank String idCounterpartTable, @NotBlank String creditorInstitutionCode) {
         InformativePaMaster master = getInformativePaMasterIfExists(idCounterpartTable, creditorInstitutionCode);
         InformativePaMaster valid = getValidCounterpart(creditorInstitutionCode);
@@ -147,33 +148,54 @@ public class CounterpartService {
      * @param infoMaster     info {@link InformativePaMaster}
      */
     private void saveDetail(CounterpartXml counterpartXml, InformativePaMaster infoMaster) {
-        counterpartXml.getErogazioneServizio().getDisponibilita().forEach(elem -> {
+        boolean existsDisponibilita = false;
+        boolean existsIndisponibilita = false;
+
+        for (CounterpartXml.Erogazione elem : counterpartXml.getErogazioneServizio().getDisponibilita()) {
+            boolean saved = saveAvailabilityDetail(infoMaster, elem, true);
+            existsDisponibilita = saved ? saved : existsDisponibilita;
+        }
+
+        for (CounterpartXml.Erogazione elem : counterpartXml.getErogazioneServizio().getIndisponibilita()) {
+            boolean saved = saveAvailabilityDetail(infoMaster, elem, false);
+            existsIndisponibilita = saved ? saved : existsIndisponibilita;
+        }
+
+        if (infoMaster.getPagamentiPressoPsp() && !existsDisponibilita && !existsIndisponibilita) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "Counterpart bad request", "Availability details not specified");
+        }
+    }
+
+    private boolean saveAvailabilityDetail(InformativePaMaster infoMaster, CounterpartXml.Erogazione elem, boolean availability) {
+        if (elem.getTipoPeriodo() != null || elem.getGiorno() != null) {
             var detail = informativePaDetailRepository.save(InformativePaDetail.builder()
                     .fkInformativaPaMaster(infoMaster)
                     .tipo(elem.getTipoPeriodo())
                     .giorno(elem.getGiorno())
-                    .flagDisponibilita(true)
-                    .build());
-            informativePaFasceRepository.save(InformativePaFasce.builder()
-                    .fkInformativaPaDetail(detail)
-                    .oraA(elem.getFasciaOraria().getFasciaOrariaA().toString())
-                    .oraDa(elem.getFasciaOraria().getFasciaOrariaDa().toString())
+                    .flagDisponibilita(availability)
                     .build());
 
-        });
-        counterpartXml.getErogazioneServizio().getIndisponibilita().forEach(elem -> {
-            var detail = informativePaDetailRepository.save(InformativePaDetail.builder()
-                    .fkInformativaPaMaster(infoMaster)
-                    .tipo(elem.getTipoPeriodo())
-                    .giorno(elem.getGiorno())
-                    .flagDisponibilita(false)
-                    .build());
-            informativePaFasceRepository.save(InformativePaFasce.builder()
-                    .fkInformativaPaDetail(detail)
-                    .oraA(elem.getFasciaOraria().getFasciaOrariaA().toString())
-                    .oraDa(elem.getFasciaOraria().getFasciaOrariaDa().toString())
-                    .build());
-        });
+            if (elem.getFasciaOraria() != null) {
+                String oraA = elem.getFasciaOraria().getFasciaOrariaA() != null ? elem.getFasciaOraria().getFasciaOrariaA().toString() : null;
+                String oraDa = elem.getFasciaOraria().getFasciaOrariaDa() != null ? elem.getFasciaOraria().getFasciaOrariaDa().toString() : null;
+                if (oraA != null || oraDa != null) {
+                    informativePaFasceRepository.save(InformativePaFasce.builder()
+                            .fkInformativaPaDetail(detail)
+                            .oraA(oraA)
+                            .oraDa(oraDa)
+                            .build());
+                }
+                else {
+                    if (infoMaster.getPagamentiPressoPsp()) {
+                        throw new AppException(HttpStatus.BAD_REQUEST, "Counterpart bad request", "One of from and to time slots should be specified.");
+                    }
+                }
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 
