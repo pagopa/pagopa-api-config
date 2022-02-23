@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<informativaControparte xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+						xsi:noNamespaceSchemaLocation="TabellaDelleControparti_1_0_6.xsd">
+	<identificativoFlusso>001</identificativoFlusso>
+	<identificativoDominio>00168480242</identificativoDominio>
+	<ragioneSociale>Comune di Bassano del Grappa</ragioneSociale>
+	<dataPubblicazione>2015-10-09T00:00:00</dataPubblicazione>
+	<dataInizioValidita>2122-10-19T00:00:00</dataInizioValidita>
+	<pagamentiPressoPSP>1</pagamentiPressoPSP>
+	<erogazioneServizio>
+		<disponibilita/>
+		<indisponibilita>
+			<tipoPeriodo>settimanale</tipoPeriodo>
+			<giorno>lunedi</giorno>
+		</indisponibilita>
+	</erogazioneServizio>
+</informativaControparte>

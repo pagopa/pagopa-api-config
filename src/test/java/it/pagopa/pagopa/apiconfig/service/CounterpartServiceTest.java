@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
 import it.pagopa.pagopa.apiconfig.repository.InformativePaDetailRepository;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -96,6 +98,85 @@ class CounterpartServiceTest {
         }
     }
 
+    @Test
+    void createCounterpartTable_2() throws IOException {
+        File xml = TestUtil.readFile("file/counterpart_valid_2.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        when(informativePaMasterRepository.save(any())).thenReturn(getMockInformativePaMaster());
+        when(informativePaDetailRepository.save(any())).thenReturn(getMockInformativePaDetail());
+        try {
+            counterpartService.createCounterpartTable(file);
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    void createCounterpartTable_3() throws IOException {
+        File xml = TestUtil.readFile("file/counterpart_valid_3.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        when(informativePaMasterRepository.save(any())).thenReturn(getMockInformativePaMaster());
+        when(informativePaDetailRepository.save(any())).thenReturn(getMockInformativePaDetail());
+        try {
+            counterpartService.createCounterpartTable(file);
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    void createCounterpartTable_4() throws IOException {
+        File xml = TestUtil.readFile("file/counterpart_valid_4.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        when(informativePaMasterRepository.save(any())).thenReturn(getMockInformativePaMaster());
+        when(informativePaDetailRepository.save(any())).thenReturn(getMockInformativePaDetail());
+        try {
+            counterpartService.createCounterpartTable(file);
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    void createCounterpartTable_5() throws IOException {
+        File xml = TestUtil.readFile("file/counterpart_valid_5.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        when(informativePaMasterRepository.save(any())).thenReturn(getMockInformativePaMaster());
+        when(informativePaDetailRepository.save(any())).thenReturn(getMockInformativePaDetail());
+        try {
+            counterpartService.createCounterpartTable(file);
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    void createCounterpartTable_notValid_1() throws IOException {
+        File xml = TestUtil.readFile("file/counterpart_not_valid_1.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        when(informativePaMasterRepository.save(any())).thenReturn(getMockInformativePaMaster());
+        when(informativePaDetailRepository.save(any())).thenReturn(getMockInformativePaDetail());
+
+        try {
+            counterpartService.createCounterpartTable(file);
+            fail();
+        }
+        catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
 
     @Test
     void deleteCounterpartTable() {
