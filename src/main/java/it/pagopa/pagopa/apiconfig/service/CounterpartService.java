@@ -147,7 +147,7 @@ public class CounterpartService {
      * @param counterpartXml file xml
      * @param infoMaster     info {@link InformativePaMaster}
      */
-    private void saveDetail(CounterpartXml counterpartXml, InformativePaMaster infoMaster) {
+    private void    saveDetail(CounterpartXml counterpartXml, InformativePaMaster infoMaster) {
         boolean existsDisponibilita = false;
         boolean existsIndisponibilita = false;
 

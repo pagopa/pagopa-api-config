@@ -248,6 +248,7 @@ public class TestUtil {
                 .idInformativaPa("111")
                 .fkPa(getMockPa())
                 .fkBinaryFile(getMockBinaryFile())
+                .pagamentiPressoPsp(true)
                 .dataInizioValidita(Timestamp.valueOf("2017-03-09 00:00:00"))
                 .dataPubblicazione(Timestamp.valueOf("2017-03-09 00:00:00"))
                 .build();
