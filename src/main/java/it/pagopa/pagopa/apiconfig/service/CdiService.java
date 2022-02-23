@@ -202,7 +202,7 @@ public class CdiService {
                 if (fascia.getListaConvenzioniCosti() != null) {
                     convenzione = fascia.getListaConvenzioniCosti()
                             .stream()
-                            .findFirst() // TODO handle list with size > 1 ?
+                            .findFirst()
                             .orElse(null);
                 }
                 cdiFasciaCostoServizioRepository.save(CdiFasciaCostoServizio.builder()
