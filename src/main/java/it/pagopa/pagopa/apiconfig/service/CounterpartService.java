@@ -192,9 +192,7 @@ public class CounterpartService {
             }
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
 
