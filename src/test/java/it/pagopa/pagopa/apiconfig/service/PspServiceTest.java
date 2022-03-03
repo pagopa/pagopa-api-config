@@ -5,9 +5,7 @@ import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
+import it.pagopa.pagopa.apiconfig.model.psp.*;
 import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
@@ -27,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanaleTipoVersamento;
@@ -198,6 +197,25 @@ class PspServiceTest {
     }
 
     @Test
+    void createPaymentServiceProvidersChannels_400() {
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
+        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+
+        PspChannelCode mock = getMockPspChannelCode();
+        mock.setPaymentTypeList(new ArrayList<>());
+        try {
+            pspService.createPaymentServiceProvidersChannels("1234", mock);
+            fail();
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
     void updatePaymentServiceProvidersChannels() throws IOException, JSONException {
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
         when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
@@ -208,6 +226,25 @@ class PspServiceTest {
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/update_psp_channels_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void updatePaymentServiceProvidersChannels_400() {
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
+        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+
+        try {
+            PspChannelPaymentTypes paymentTypes = new PspChannelPaymentTypes();
+            paymentTypes.setPaymentTypeList(new ArrayList<>());
+            pspService.updatePaymentServiceProvidersChannels("1234", "2", paymentTypes);
+            fail();
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     @Test

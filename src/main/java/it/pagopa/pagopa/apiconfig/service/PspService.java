@@ -118,6 +118,10 @@ public class PspService {
         var psp = getPspIfExists(pspCode);
         var canale = getChannelIfExists(pspChannelCode.getChannelCode());
 
+        if (pspChannelCode.getPaymentTypeList().size() == 0) {
+            throw new AppException(AppError.RELATION_CHANNEL_BAD_REQUEST, pspCode, pspChannelCode.getChannelCode());
+        }
+
         // foreach payment type save a record in pspCanaleTipoVersamento
         for (String elem : pspChannelCode.getPaymentTypeList()) {
             savePspChannelRelation(psp, canale, elem);
@@ -130,6 +134,10 @@ public class PspService {
     public PspChannelPaymentTypes updatePaymentServiceProvidersChannels(String pspCode, String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
         var psp = getPspIfExists(pspCode);
         var canale = getChannelIfExists(channelCode);
+
+        if (pspChannelPaymentTypes.getPaymentTypeList().size() == 0) {
+            throw new AppException(AppError.RELATION_CHANNEL_BAD_REQUEST, pspCode, channelCode);
+        }
 
         pspCanaleTipoVersamentoRepository.deleteAll(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(psp.getObjId(), canale.getId()));
 
