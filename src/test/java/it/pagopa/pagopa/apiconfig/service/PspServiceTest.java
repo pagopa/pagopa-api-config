@@ -37,9 +37,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelCode;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockTipoVersamento;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -208,8 +206,8 @@ class PspServiceTest {
         try {
             pspService.createPaymentServiceProvidersChannels("1234", mock);
             fail();
-        } catch (AppException e) {
-            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            assertEquals(AppException.class, e.getClass());
         }
     }
 
@@ -238,8 +236,8 @@ class PspServiceTest {
             paymentTypes.setPaymentTypeList(new ArrayList<>());
             pspService.updatePaymentServiceProvidersChannels("1234", "2", paymentTypes);
             fail();
-        } catch (AppException e) {
-            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            assertEquals(AppException.class, e.getClass());
         }
     }
 
