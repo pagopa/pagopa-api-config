@@ -210,8 +210,6 @@ class PspServiceTest {
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
         }
     }
 
@@ -242,8 +240,6 @@ class PspServiceTest {
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
         }
     }
 

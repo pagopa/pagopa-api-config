@@ -118,7 +118,7 @@ public class PspService {
         var psp = getPspIfExists(pspCode);
         var canale = getChannelIfExists(pspChannelCode.getChannelCode());
 
-        if (pspChannelCode.getPaymentTypeList().size() == 0) {
+        if (pspChannelCode.getPaymentTypeList().isEmpty()) {
             throw new AppException(AppError.RELATION_CHANNEL_BAD_REQUEST, pspCode, pspChannelCode.getChannelCode());
         }
 
@@ -135,7 +135,7 @@ public class PspService {
         var psp = getPspIfExists(pspCode);
         var canale = getChannelIfExists(channelCode);
 
-        if (pspChannelPaymentTypes.getPaymentTypeList().size() == 0) {
+        if (pspChannelPaymentTypes.getPaymentTypeList().isEmpty()) {
             throw new AppException(AppError.RELATION_CHANNEL_BAD_REQUEST, pspCode, channelCode);
         }
 
