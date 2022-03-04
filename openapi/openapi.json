@@ -1677,7 +1677,7 @@
         "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
         "termsOfService": "https://www.pagopa.gov.it/",
         "title": "PagoPA API configuration",
-        "version": "0.3.1"
+        "version": "0.4.0"
     },
     "openapi": "3.0.1",
     "paths": {
