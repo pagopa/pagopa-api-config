@@ -1432,6 +1432,9 @@
                     "password": {
                         "type": "string"
                     },
+                    "pof_service": {
+                        "type": "string"
+                    },
                     "port": {
                         "format": "int64",
                         "type": "integer"
@@ -12696,6 +12699,24 @@
                     },
                     "403": {
                         "description": "Forbidden",
+                        "headers": {
+                            "X-Request-Id": {
+                                "description": "This header identifies the call",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemJson"
+                                }
+                            }
+                        },
+                        "description": "Not Found",
                         "headers": {
                             "X-Request-Id": {
                                 "description": "This header identifies the call",

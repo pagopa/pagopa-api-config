@@ -8806,6 +8806,18 @@
               }
             }
           },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
           "409": {
             "description": "Conflict",
             "headers": {
@@ -11331,6 +11343,9 @@
           "type": "string"
         },
         "password": {
+          "type": "string"
+        },
+        "pof_service": {
           "type": "string"
         },
         "port": {
