@@ -67,6 +67,9 @@ public class StationDetails extends Station {
     @JsonProperty("service")
     private String service;
 
+    @JsonProperty("pof_service")
+    private String pofService;
+
     @JsonProperty("broker_code")
     @Schema(required = true)
     @NotBlank

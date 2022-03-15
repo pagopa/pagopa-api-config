@@ -9,6 +9,7 @@
   "redirect_path": "nodo-regionale-fesp/paaInviaRispostaPagamento.html",
   "redirect_port": 443,
   "service": "openspcoop/PD/RT6TPDREGVENETO",
+  "pof_service": "openspcoop/PD/CCP6TPDREGVENETO",
   "redirect_protocol": "HTTPS",
   "proxy_enabled": true,
   "proxy_host": "10.101.1.95",
