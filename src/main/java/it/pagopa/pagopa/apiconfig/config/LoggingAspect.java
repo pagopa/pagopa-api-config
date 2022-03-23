@@ -80,4 +80,9 @@ public class LoggingAspect {
         log.debug("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
         return result;
     }
+
+    @Before(value = "execution(* it.pagopa.pagopa.apiconfig.repository..*.*(..)) || execution(* it.pagopa.pagopa.apiconfig.service..*.*(..))")
+    public void logTrace(JoinPoint joinPoint) {
+        log.trace("Trace method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
+    }
 }
