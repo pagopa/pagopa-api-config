@@ -33,6 +33,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     public static final String INTERNAL_SERVER_ERROR = "INTERNAL SERVER ERROR";
     public static final String BAD_REQUEST = "BAD REQUEST";
     public static final String FOREIGN_KEY_VIOLATION = "23503";
+    public static final int CHILD_RECORD_VIOLATION = 2292;
 
 
     /**
@@ -50,7 +51,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         var errorResponse = ProblemJson.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .title(BAD_REQUEST)
-                .detail(ex.getMessage())
+                .detail("Invalid input format")
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -132,10 +133,19 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
         if (ex.getCause() instanceof ConstraintViolationException) {
             String sqlState = ((ConstraintViolationException) ex.getCause()).getSQLState();
+            var errorCode = ((ConstraintViolationException) ex.getCause()).getSQLException().getErrorCode();
             // check the reason of ConstraintViolationException: is true if the object is referenced by a foreign key
             // more info: https://docs.oracle.com/javadb/10.8.3.0/ref/rrefexcept71493.html
             if (sqlState.equals(FOREIGN_KEY_VIOLATION)) {
                 log.warn("Can't delete from Database", ex);
+                errorResponse = ProblemJson.builder()
+                        .status(HttpStatus.CONFLICT.value())
+                        .title("Conflict with the current state of the resource")
+                        .detail("There is a relation with other resource. Delete it first.")
+                        .build();
+            }
+            if (errorCode == CHILD_RECORD_VIOLATION) {
+                log.warn("Can't update the Database", ex);
                 errorResponse = ProblemJson.builder()
                         .status(HttpStatus.CONFLICT.value())
                         .title("Conflict with the current state of the resource")

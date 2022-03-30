@@ -195,7 +195,7 @@ public class ChannelsService {
 
         if (channelDetails.getServPlugin() != null) {
             var wfespPluginConf = wfespPluginConfRepository.findByIdServPlugin(channelDetails.getServPlugin())
-                    .orElseThrow(() -> new AppException(AppError.SERV_PLUGIN_NOT_FOUND, channelDetails.getBrokerPspCode()));
+                    .orElseThrow(() -> new AppException(AppError.SERV_PLUGIN_NOT_FOUND, channelDetails.getServPlugin()));
 
             channelDetails.setFkWfespPluginConf(wfespPluginConf);
         }
