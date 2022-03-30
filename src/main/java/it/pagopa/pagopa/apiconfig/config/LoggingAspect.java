@@ -72,6 +72,11 @@ public class LoggingAspect {
         log.info("Successful API operation {} - result: {}", joinPoint.getSignature().getName(), result);
     }
 
+    @AfterReturning(value = "execution(* it.pagopa.pagopa.apiconfig.exception.ErrorHandler.*(..))", returning = "result")
+    public void trowingApiInvocation(JoinPoint joinPoint, Object result) {
+        log.info("Failed API operation {} - error: {}", joinPoint.getSignature().getName(), result);
+    }
+
     @Around(value = "execution(* it.pagopa.pagopa.apiconfig.repository..*.*(..)) || execution(* it.pagopa.pagopa.apiconfig.service..*.*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
@@ -79,5 +84,10 @@ public class LoggingAspect {
         long endTime = System.currentTimeMillis();
         log.debug("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
         return result;
+    }
+
+    @Before(value = "execution(* it.pagopa.pagopa.apiconfig.repository..*.*(..)) || execution(* it.pagopa.pagopa.apiconfig.service..*.*(..))")
+    public void logTrace(JoinPoint joinPoint) {
+        log.trace("Trace method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
     }
 }
