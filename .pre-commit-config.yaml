@@ -1,0 +1,11 @@
+# 1. `pip install pre-commit`
+# 2. `pre-commit install`
+# 3. set GITGUARDIAN_API_KEY in your develop environment (get an api key here: https://dashboard.gitguardian.com/workspace/230910/settings/personal/personal-access-tokens)
+# more info https://docs.gitguardian.com/internal-repositories-monitoring/integrations/git_hooks/pre_commit
+repos:
+  - repo: https://github.com/gitguardian/ggshield
+    rev: v1.11.0
+    hooks:
+      - id: ggshield
+        language_version: python3
+        stages: [ commit ]

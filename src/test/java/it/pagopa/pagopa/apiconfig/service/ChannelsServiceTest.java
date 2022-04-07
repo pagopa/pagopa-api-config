@@ -48,7 +48,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ChannelsServiceTest {
@@ -174,6 +175,23 @@ class ChannelsServiceTest {
     }
 
     @Test
+    void updateChannel_noPlugin() {
+        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+        when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
+        when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
+        when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.empty());
+
+        try {
+            channelsService.updateChannel("1234", getMockChannelDetails());
+            fail();
+        } catch (AppException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
     void updateChannel_notFound() {
         when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
         try {
@@ -255,11 +273,9 @@ class ChannelsServiceTest {
         try {
             channelsService.createPaymentType("1234", paymentTypes);
             fail("no exception thrown");
-        }
-        catch (AppException e) {
+        } catch (AppException e) {
             assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             fail();
         }
     }
@@ -273,11 +289,9 @@ class ChannelsServiceTest {
             PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
             paymentTypes.setPaymentTypeList(new ArrayList<>());
             channelsService.createPaymentType("1234", paymentTypes);
-        }
-        catch (AppException e) {
+        } catch (AppException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             fail();
         }
     }

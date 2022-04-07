@@ -677,6 +677,7 @@ public class TestUtil {
                 .timeoutC(1L)
                 .threadNumber(2L)
                 .password("***")
+                .servPlugin("plugin")
                 .protocol("HTTP")
                 .port(80L)
                 .service("ABAB")

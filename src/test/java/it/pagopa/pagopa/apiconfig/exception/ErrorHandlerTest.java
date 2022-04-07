@@ -18,6 +18,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ErrorHandlerTest {
@@ -80,6 +81,17 @@ class ErrorHandlerTest {
     @Test
     void handleDataIntegrityViolationException2() {
         ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(new DataIntegrityViolationException("", new ConstraintViolationException("A REFERENCES B", new SQLException("foreign key", "23503"), "A REFERENCES B")), null);
+        assertEquals(HttpStatus.CONFLICT, actual.getStatusCode());
+        assertNotNull(actual.getBody());
+        assertEquals("Conflict with the current state of the resource", actual.getBody().getTitle());
+        assertEquals(HttpStatus.CONFLICT.value(), actual.getBody().getStatus());
+    }
+
+    @Test
+    void handleDataIntegrityViolationException3() {
+        var exception = Mockito.mock(DataIntegrityViolationException.class);
+        when(exception.getCause()).thenReturn(new ConstraintViolationException("A REFERENCES B", new SQLException("foreign key", "2292", 2292), "A REFERENCES B"));
+        ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(exception, null);
         assertEquals(HttpStatus.CONFLICT, actual.getStatusCode());
         assertNotNull(actual.getBody());
         assertEquals("Conflict with the current state of the resource", actual.getBody().getTitle());

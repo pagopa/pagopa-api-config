@@ -18,5 +18,6 @@
   "card_chart": true,
   "recovery": true,
   "digital_stamp_brand": false,
-  "agid": true
+  "agid": true,
+  "serv_plugin": "plugin"
 }
