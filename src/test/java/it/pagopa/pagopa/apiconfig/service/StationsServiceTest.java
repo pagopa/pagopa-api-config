@@ -2,13 +2,17 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
@@ -24,13 +28,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Optional;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
+import static it.pagopa.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -44,6 +45,9 @@ class StationsServiceTest {
 
     @MockBean
     private StazioniRepository stazioniRepository;
+
+    @MockBean
+    private PaStazionePaRepository paStazionePaRepository;
 
     @MockBean
     private IntermediariPaRepository intermediariPaRepository;
@@ -147,6 +151,18 @@ class StationsServiceTest {
         } catch (Exception e) {
             fail();
         }
+    }
+
+    @Test
+    void getStationCreditorInstitutions() throws IOException, JSONException {
+        when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
+        Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
+        when(paStazionePaRepository.findAllByFkStazione_ObjId(any(), any(Pageable.class))).thenReturn(page);
+
+        CreditorInstitutions result = stationsService.getStationCreditorInstitutions("1234", 50, 0);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
 }

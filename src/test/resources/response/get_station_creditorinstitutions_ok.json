@@ -1,0 +1,15 @@
+{
+  "creditor_institutions": [
+    {
+      "creditor_institution_code": "00168480242",
+      "enabled": true,
+      "business_name": "Comune di Bassano del Grappa"
+    }
+  ],
+  "page_info": {
+    "page": 0,
+    "limit": 50,
+    "items_found": 1,
+    "total_pages": 1
+  }
+}
