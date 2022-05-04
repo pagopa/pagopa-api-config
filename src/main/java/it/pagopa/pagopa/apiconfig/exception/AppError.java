@@ -70,6 +70,8 @@ public enum AppError {
     FTP_SERVER_NOT_FOUND(HttpStatus.NOT_FOUND, "Ftp server not found", "No ftp server found with host: %s port: %s service: %s"),
     FTP_SERVER_CONFLICT(HttpStatus.CONFLICT, "Ftp server conflict", "Ftp server with host %s, port %s and service %s already exists"),
 
+    MASSIVELOADING_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CSV file is not valid", "%s"),
+
     UNKNOWN(null, null, null);
 
     public final HttpStatus httpStatus;
