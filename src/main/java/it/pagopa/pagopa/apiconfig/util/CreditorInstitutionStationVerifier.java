@@ -5,6 +5,7 @@ import com.opencsv.exceptions.CsvConstraintViolationException;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.massiveloading.CreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -61,14 +62,6 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
             errors.add("Station not exists");
         }
 
-        // verify if relationship already exists
-        if (optEc.isPresent() && optStation.isPresent()) {
-            Optional<PaStazionePa> relation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(optEc.get().getObjId(), optStation.get().getObjId());
-            if (relation.isPresent()) {
-                errors.add("Creditor institution - Station relationship already exists");
-            }
-        }
-
         // check auxDigit
         if (!Arrays.asList(0L, 1L, 2L, 3L).contains(creditorInstitutionStation.getAuxDigit())) {
             errors.add("AugDigit code error: accepted values are 0, 1, 2, 3");
@@ -87,8 +80,16 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
             }
         }
 
-        // verify if exists the configuration in order to delete
-        if (creditorInstitutionStation.getOperation().equals(CreditorInstitutionStation.Operation.C) && optEc.isPresent() && optStation.isPresent()) {
+
+        if (optEc.isPresent() && optStation.isPresent() && creditorInstitutionStation.getOperation().equals(CreditorInstitutionStation.Operation.A)) {
+            // verify if relationship already exists
+            Optional<PaStazionePa> relation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(optEc.get().getObjId(), optStation.get().getObjId());
+            if (relation.isPresent()) {
+                errors.add("Creditor institution - Station relationship already exists");
+            }
+        }
+        else if (optEc.isPresent() && optStation.isPresent() && creditorInstitutionStation.getOperation().equals(CreditorInstitutionStation.Operation.C)) {
+            // verify if exists the configuration in order to delete
             Long segregationCode = creditorInstitutionStation.getSegregationCode() != null ? Long.parseLong(creditorInstitutionStation.getSegregationCode()) : null;
             Long applicationCode = creditorInstitutionStation.getApplicationCode() != null ? Long.parseLong(creditorInstitutionStation.getApplicationCode()) : null;
             Long auxDigit = creditorInstitutionStation.getAuxDigit() == 0 || creditorInstitutionStation.getAuxDigit() == 3 ? null : creditorInstitutionStation.getAuxDigit();
@@ -102,7 +103,7 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
         }
 
         if (!errors.isEmpty()) {
-            throw new CsvConstraintViolationException(String.format("[Line %s] %s",
+            throw new CsvConstraintViolationException(String.format("[Line %s] %s" + System.lineSeparator(),
                     ToStringBuilder.reflectionToString(creditorInstitutionStation, ToStringStyle.NO_CLASS_NAME_STYLE),
                     String.join(" # ", errors)));
         }
