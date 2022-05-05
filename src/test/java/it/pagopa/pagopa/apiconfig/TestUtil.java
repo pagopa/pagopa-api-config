@@ -168,6 +168,8 @@ public class TestUtil {
                 .timeoutB(30L)
                 .timeoutC(120L)
                 .flagOnline(true)
+                .protocollo("HTTPS")
+                .protocollo4Mod("HTTPS")
                 .build();
     }
 
@@ -188,12 +190,15 @@ public class TestUtil {
     public static PaStazionePa getMockPaStazionePa() {
         return PaStazionePa.builder()
                 .pa(getMockPa())
+                .fkPa(getMockPa().getObjId())
                 .fkStazione(getMockStazioni())
                 .broadcast(false)
                 .auxDigit(1L)
                 .progressivo(2L)
                 .quartoModello(true)
                 .segregazione(3L)
+                .stazioneAvv(false)
+                .stazioneNodo(false)
                 .build();
     }
 
