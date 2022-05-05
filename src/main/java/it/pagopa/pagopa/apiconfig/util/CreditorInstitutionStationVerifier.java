@@ -62,6 +62,14 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
             errors.add("Station not exists");
         }
 
+        // verify if relationship already exists
+        if (optEc.isPresent() && optStation.isPresent()) {
+            Optional<PaStazionePa> relation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(optEc.get().getObjId(), optStation.get().getObjId());
+            if (relation.isPresent()) {
+                errors.add("Creditor institution - Station relationship already exists");
+            }
+        }
+
         // check auxDigit
         if (!Arrays.asList(0L, 1L, 2L, 3L).contains(creditorInstitutionStation.getAuxDigit())) {
             errors.add("AugDigit code error: accepted values are 0, 1, 2, 3");

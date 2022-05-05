@@ -91,9 +91,10 @@ public class MassiveLoadingService {
                 if (item.getOperation().equals(CreditorInstitutionStation.Operation.A)) {
                     Long segregationCode = item.getSegregationCode() != null ? Long.parseLong(item.getSegregationCode()) : null;
                     Long applicationCode = item.getApplicationCode() != null ? Long.parseLong(item.getApplicationCode()) : null;
+                    Long auxDigit = item.getAuxDigit() == 0 || item.getAuxDigit() == 3 ? null : item.getAuxDigit();
                     CreditorInstitutionStationEdit data = CreditorInstitutionStationEdit.builder()
                             .stationCode(item.getStationId())
-                            .auxDigit(item.getAuxDigit())
+                            .auxDigit(auxDigit)
                             .applicationCode(applicationCode)
                             .segregationCode(segregationCode)
                             .broadcast(item.getBroadcast() == CreditorInstitutionStation.YesNo.S)
