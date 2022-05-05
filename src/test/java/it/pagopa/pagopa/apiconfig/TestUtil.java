@@ -80,6 +80,7 @@ import org.springframework.data.domain.Sort;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -870,6 +871,18 @@ public class TestUtil {
         return PaymentTypes.builder()
                 .paymentTypeList(List.of(getMockPaymentType()))
                 .build();
+    }
+
+    /**
+     * Modify private field
+     * @param targetObject
+     * @param fieldName
+     * @param valueToSetOnThisField
+     */
+    public static void setPrivateField(Object targetObject, String fieldName, Object valueToSetOnThisField) throws Exception {
+        Field f = targetObject.getClass().getDeclaredField(fieldName);
+        f.setAccessible(true);
+        f.set(targetObject, valueToSetOnThisField);
     }
 
 }

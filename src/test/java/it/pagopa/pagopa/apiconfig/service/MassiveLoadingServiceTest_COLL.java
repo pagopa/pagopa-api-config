@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.env.PropertySourcesPropertyResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -18,6 +19,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.*;
@@ -28,7 +30,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
-public class MassiveLoadingServiceTest {
+public class MassiveLoadingServiceTest_COLL {
 
     @MockBean
     private PaRepository paRepository;
@@ -42,6 +44,7 @@ public class MassiveLoadingServiceTest {
     @Autowired
     @InjectMocks
     private MassiveLoadingService massiveLoadingService;
+
 
     @Test
     void manageCIStationRelationship() throws IOException {
@@ -97,6 +100,24 @@ public class MassiveLoadingServiceTest {
 
     @Test
     void manageCIStationRelationship_ko_3() throws IOException {
+        File csv = TestUtil.readFile("file/ci_station_ok.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
+
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.empty());
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        try {
+            massiveLoadingService.manageCIStation(multipartFile);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    void manageCIStationRelationship_ko_4() throws IOException {
         File csv = TestUtil.readFile("file/ci_station_ko_1.csv");
         MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
 

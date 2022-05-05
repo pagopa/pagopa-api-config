@@ -91,8 +91,9 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
         if (creditorInstitutionStation.getOperation().equals(CreditorInstitutionStation.Operation.C) && optEc.isPresent() && optStation.isPresent()) {
             Long segregationCode = creditorInstitutionStation.getSegregationCode() != null ? Long.parseLong(creditorInstitutionStation.getSegregationCode()) : null;
             Long applicationCode = creditorInstitutionStation.getApplicationCode() != null ? Long.parseLong(creditorInstitutionStation.getApplicationCode()) : null;
+            Long auxDigit = creditorInstitutionStation.getAuxDigit() == 0 || creditorInstitutionStation.getAuxDigit() == 3 ? null : creditorInstitutionStation.getAuxDigit();
             Optional<PaStazionePa> optECStation = paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndAndBroadcastAndSegregazioneAndProgressivo(
-                    optEc.get().getObjId(), optStation.get().getObjId(), creditorInstitutionStation.getAuxDigit(),
+                    optEc.get().getObjId(), optStation.get().getObjId(), auxDigit,
                     creditorInstitutionStation.getBroadcast() == CreditorInstitutionStation.YesNo.S,
                     segregationCode, applicationCode);
             if (optECStation.isEmpty()) {
