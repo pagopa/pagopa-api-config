@@ -5,7 +5,6 @@ import com.opencsv.exceptions.CsvConstraintViolationException;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.massiveloading.CreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -92,9 +91,8 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
             // verify if exists the configuration in order to delete
             Long segregationCode = creditorInstitutionStation.getSegregationCode() != null ? Long.parseLong(creditorInstitutionStation.getSegregationCode()) : null;
             Long applicationCode = creditorInstitutionStation.getApplicationCode() != null ? Long.parseLong(creditorInstitutionStation.getApplicationCode()) : null;
-            Long auxDigit = creditorInstitutionStation.getAuxDigit() == 0 || creditorInstitutionStation.getAuxDigit() == 3 ? null : creditorInstitutionStation.getAuxDigit();
-            Optional<PaStazionePa> optECStation = paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndAndBroadcastAndSegregazioneAndProgressivo(
-                    optEc.get().getObjId(), optStation.get().getObjId(), auxDigit,
+            Optional<PaStazionePa> optECStation = paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
+                    optEc.get().getObjId(), optStation.get().getObjId(), creditorInstitutionStation.getAuxDigit(),
                     creditorInstitutionStation.getBroadcast() == CreditorInstitutionStation.YesNo.S,
                     segregationCode, applicationCode);
             if (optECStation.isEmpty()) {
