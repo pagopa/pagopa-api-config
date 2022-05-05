@@ -73,7 +73,7 @@ public class MassiveLoadingService {
             List<CreditorInstitutionStation> items = parsedCSV.parse();
             List<CsvException> errors = parsedCSV.getCapturedExceptions();
 
-            if (errors.size() > 0) {
+            if (!errors.isEmpty()) {
                 StringBuilder stringBuilder = new StringBuilder();
                 errors.forEach(error -> stringBuilder.append(String.format("|%s |", error.getMessage())));
                 throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, stringBuilder);

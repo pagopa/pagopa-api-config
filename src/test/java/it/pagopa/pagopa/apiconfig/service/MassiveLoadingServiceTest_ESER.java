@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class, properties = {"properties.environment=PROD"})
-public class MassiveLoadingServiceTest_ESER {
+class MassiveLoadingServiceTest_ESER {
 
     @MockBean
     private PaRepository paRepository;
