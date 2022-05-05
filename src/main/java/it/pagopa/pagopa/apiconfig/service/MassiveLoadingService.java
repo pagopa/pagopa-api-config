@@ -4,9 +4,7 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
-import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
@@ -16,8 +14,6 @@ import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CreditorInstitutionStationVerifier;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +31,6 @@ import java.util.List;
 
 @Service
 @Validated
-@Slf4j
 public class MassiveLoadingService {
 
     @Value("${properties.environment}")
@@ -55,15 +50,15 @@ public class MassiveLoadingService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void manageCIStation(MultipartFile file) {
-        // read CSV
-
         try {
+            // read CSV
             Reader reader = new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
 
             // create mapping strategy to arrange the column name
             HeaderColumnNameMappingStrategy<CreditorInstitutionStation> mappingStrategy = new HeaderColumnNameMappingStrategy<>();
             mappingStrategy.setType(CreditorInstitutionStation.class);
 
+            // execute validation
             CsvToBean<CreditorInstitutionStation> parsedCSV = new CsvToBeanBuilder<CreditorInstitutionStation>(reader)
                     .withSeparator(',')
                     .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
@@ -87,7 +82,6 @@ public class MassiveLoadingService {
             // validation executed successfully, items could be added or deleted according to the specified operation
 
             for (CreditorInstitutionStation item : items) {
-                log.warn("-> Item {} {}", item.getCreditorInstitutionId(), item.getStationId());
                 if (item.getOperation().equals(CreditorInstitutionStation.Operation.A)) {
                     Long segregationCode = item.getSegregationCode() != null ? Long.parseLong(item.getSegregationCode()) : null;
                     Long applicationCode = item.getApplicationCode() != null ? Long.parseLong(item.getApplicationCode()) : null;

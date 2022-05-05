@@ -1,6 +1,5 @@
 package it.pagopa.pagopa.apiconfig.util;
 
-
 import com.opencsv.bean.BeanVerifier;
 import com.opencsv.exceptions.CsvConstraintViolationException;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
