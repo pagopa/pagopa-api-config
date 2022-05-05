@@ -23,8 +23,7 @@ import java.util.Optional;
 import static it.pagopa.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class, properties = {"properties.environment=PROD"})
@@ -51,7 +50,9 @@ class MassiveLoadingServiceEserTest {
 
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
-        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
+                anyLong(), anyLong(), anyLong(), anyBoolean(), anyLong(), anyLong()))
+                .thenReturn(Optional.empty());
 
         try {
             massiveLoadingService.manageCIStation(multipartFile);
@@ -67,7 +68,9 @@ class MassiveLoadingServiceEserTest {
 
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.empty());
         when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.empty());
-        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
+                anyLong(), anyLong(), anyLong(), anyBoolean(), anyLong(), anyLong()))
+                .thenReturn(Optional.empty());
 
         try {
             massiveLoadingService.manageCIStation(multipartFile);
@@ -85,7 +88,9 @@ class MassiveLoadingServiceEserTest {
 
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
-        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
+                anyLong(), anyLong(), anyLong(), anyBoolean(), anyLong(), anyLong()))
+                .thenReturn(Optional.of(getMockPaStazionePa()));
 
         try {
             massiveLoadingService.manageCIStation(multipartFile);
@@ -103,7 +108,9 @@ class MassiveLoadingServiceEserTest {
 
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.empty());
-        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
+                anyLong(), anyLong(), anyLong(), anyBoolean(), anyLong(), anyLong()))
+                .thenReturn(Optional.empty());
 
         try {
             massiveLoadingService.manageCIStation(multipartFile);
@@ -121,7 +128,9 @@ class MassiveLoadingServiceEserTest {
 
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
-        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
+                anyLong(), anyLong(), anyLong(), anyBoolean(), anyLong(), anyLong()))
+                .thenReturn(Optional.empty());
 
         try {
             massiveLoadingService.manageCIStation(multipartFile);

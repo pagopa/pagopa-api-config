@@ -29,7 +29,8 @@ public interface PaStazionePaRepository extends PagingAndSortingRepository<PaSta
             Predicate ciPred = cb.equal(root.get("fkPa"), creditorInstitutionCode);
             Predicate stationPred = cb.equal(root.get("fkStazione"), stationCode);
             // predicate to find (0 or null), (1), (2), (3 or null)
-            Predicate auxDigitPred = auxDigit == 0 || auxDigit == 3 ? cb.or(cb.equal(root.get("auxDigit"), auxDigit), cb.isNull(root.get("auxDigit"))) : cb.equal(root.get("auxDigit"), auxDigit);
+            Predicate auxR = cb.equal(root.get("auxDigit"), auxDigit);
+            Predicate auxDigitPred = auxDigit == 0 || auxDigit == 3 ? cb.or(auxR, cb.isNull(root.get("auxDigit"))) : auxR;
             Predicate broadcastPred = cb.equal(root.get("broadcast"), broadcast);
             Predicate segregationCodePred = segregationCode == null ? cb.isNull(root.get("segregazione")) : cb.equal(root.get("segregazione"), segregationCode);
             Predicate applicationCodePred = applicationCode == null ? cb.isNull(root.get("progressivo")) : cb.equal(root.get("progressivo"), applicationCode);
