@@ -2,15 +2,15 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
@@ -38,6 +38,9 @@ public class StationsService {
 
     @Autowired
     StazioniRepository stazioniRepository;
+
+    @Autowired
+    PaStazionePaRepository paStazioniRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -96,6 +99,16 @@ public class StationsService {
         stazioniRepository.delete(stazioni);
     }
 
+    public CreditorInstitutions getStationCreditorInstitutions(@NotNull String stationCode, @NotNull Integer limit, @NotNull Integer pageNumber) {
+        Stazioni stazioni = getStationIfExists(stationCode);
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Page<PaStazionePa> page = paStazioniRepository.findAllByFkStazione_ObjId(stazioni.getObjId(), pageable);
+        List<CreditorInstitution> ecList = page.stream().map(paStazionePa -> modelMapper.map(paStazionePa.getPa(), CreditorInstitution.class)).collect(Collectors.toList());
+        return CreditorInstitutions.builder()
+                .pageInfo(CommonUtil.buildPageInfo(page))
+                .creditorInstitutionList(ecList)
+                .build();
+    }
 
     /**
      * Converts brokerCode in the stationDetails into objId and sets it in the stationDetails

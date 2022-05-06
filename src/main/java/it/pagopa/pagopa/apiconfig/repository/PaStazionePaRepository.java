@@ -1,6 +1,8 @@
 package it.pagopa.pagopa.apiconfig.repository;
 
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -17,6 +19,7 @@ public interface PaStazionePaRepository extends PagingAndSortingRepository<PaSta
 
     Optional<PaStazionePa> findAllByFkPaAndFkStazione_ObjId(Long creditorInstitutionCode, Long stationCode);
 
+    Page<PaStazionePa> findAllByFkStazione_ObjId(Long stationCode, Pageable pageable);
     Optional<PaStazionePa> findOne(Specification<PaStazionePa> paStazionePa);
 
     default Optional<PaStazionePa> findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(

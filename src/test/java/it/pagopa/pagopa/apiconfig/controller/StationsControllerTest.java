@@ -98,4 +98,11 @@ class StationsControllerTest {
         mvc.perform(delete("/stations/1234").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void getStationCreditorInstitution() throws Exception {
+        String url = "/stations/1234/creditorinstitutions?page=0";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
