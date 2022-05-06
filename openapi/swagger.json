@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "@project.description@",
+    "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
     "version": "0.4.3"
