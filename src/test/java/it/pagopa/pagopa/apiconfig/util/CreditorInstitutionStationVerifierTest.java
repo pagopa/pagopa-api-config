@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
-public class CreditorInstitutionStationVerifierTest {
+class CreditorInstitutionStationVerifierTest {
     @MockBean
     private PaRepository paRepository;
 
