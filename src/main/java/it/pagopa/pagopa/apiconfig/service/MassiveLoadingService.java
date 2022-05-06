@@ -5,7 +5,6 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
@@ -95,8 +94,7 @@ public class MassiveLoadingService {
                             .mod4(false)
                             .build();
                     creditorInstitutionsService.createCreditorInstitutionStation(item.getCreditorInstitutionId(), data);
-                }
-                else if (item.getOperation().equals(CreditorInstitutionStation.Operation.C)) {
+                } else if (item.getOperation().equals(CreditorInstitutionStation.Operation.C)) {
                     creditorInstitutionsService.deleteCreditorInstitutionStation(item.getCreditorInstitutionId(), item.getStationId());
                 }
             }

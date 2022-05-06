@@ -9,13 +9,13 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
+import org.springframework.data.jpa.domain.Specification;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ApiConfig.class)
-public class PaStazionePaRepositoryTest {
+class PaStazionePaRepositoryTest {
 
     @Autowired
     private PaStazionePaRepository paStazionePaRepository;
@@ -30,7 +30,7 @@ public class PaStazionePaRepositoryTest {
     private IntermediariPaRepository intermediariPaRepository;
 
     @Test
-    public void findByFields_1() {
+    void findByFields_1() {
         Pa pa = TestUtil.getMockPa();
         paRepository.save(pa);
 
@@ -52,7 +52,7 @@ public class PaStazionePaRepositoryTest {
     }
 
     @Test
-    public void findByFields_2() {
+    void findByFields_2() {
         Pa pa = TestUtil.getMockPa();
         paRepository.save(pa);
 
@@ -75,7 +75,7 @@ public class PaStazionePaRepositoryTest {
     }
 
     @Test
-    public void findByFields_3() {
+    void findByFields_3() {
         Pa pa = TestUtil.getMockPa();
         paRepository.save(pa);
 
@@ -98,7 +98,7 @@ public class PaStazionePaRepositoryTest {
     }
 
     @Test
-    public void findByFields_4() {
+    void findByFields_4() {
         Pa pa = TestUtil.getMockPa();
         paRepository.save(pa);
 
@@ -118,5 +118,11 @@ public class PaStazionePaRepositoryTest {
 
         assertTrue(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
                 1L, 1L, 3L, false, null, null).isPresent());
+    }
+
+    @Test
+    void search() {
+        Specification<PaStazionePa> specification = PaStazionePaRepository.search(1L, 1L, 1L, false, 1L, 1L);
+        assertNotNull(specification);
     }
 }

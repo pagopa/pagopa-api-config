@@ -20,9 +20,9 @@ import java.util.Optional;
 public class CreditorInstitutionStationVerifier implements BeanVerifier<CreditorInstitutionStation> {
 
     private final CreditorInstitutionStation.Env env;
-    private PaRepository paRepository;
-    private StazioniRepository stazioniRepository;
-    private PaStazionePaRepository paStazionePaRepository;
+    private final PaRepository paRepository;
+    private final StazioniRepository stazioniRepository;
+    private final PaStazionePaRepository paStazionePaRepository;
 
     public CreditorInstitutionStationVerifier(String environment,
                                               PaRepository paRepository, StazioniRepository stazioniRepository, PaStazionePaRepository paStazionePaRepository) {
@@ -101,7 +101,8 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
         }
 
         if (!errors.isEmpty()) {
-            throw new CsvConstraintViolationException(String.format("[Line %s] %s" + System.lineSeparator(),
+            String messageFormat = "[Line %s] %s" + System.lineSeparator();
+            throw new CsvConstraintViolationException(String.format(messageFormat,
                     ToStringBuilder.reflectionToString(creditorInstitutionStation, ToStringStyle.NO_CLASS_NAME_STYLE),
                     String.join(" # ", errors)));
         }
