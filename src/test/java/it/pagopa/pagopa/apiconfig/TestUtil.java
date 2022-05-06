@@ -80,6 +80,7 @@ import org.springframework.data.domain.Sort;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -167,6 +168,8 @@ public class TestUtil {
                 .timeoutB(30L)
                 .timeoutC(120L)
                 .flagOnline(true)
+                .protocollo("HTTPS")
+                .protocollo4Mod("HTTPS")
                 .build();
     }
 
@@ -187,12 +190,15 @@ public class TestUtil {
     public static PaStazionePa getMockPaStazionePa() {
         return PaStazionePa.builder()
                 .pa(getMockPa())
+                .fkPa(getMockPa().getObjId())
                 .fkStazione(getMockStazioni())
                 .broadcast(false)
                 .auxDigit(1L)
                 .progressivo(2L)
                 .quartoModello(true)
                 .segregazione(3L)
+                .stazioneAvv(false)
+                .stazioneNodo(false)
                 .build();
     }
 
@@ -870,6 +876,18 @@ public class TestUtil {
         return PaymentTypes.builder()
                 .paymentTypeList(List.of(getMockPaymentType()))
                 .build();
+    }
+
+    /**
+     * Modify private field
+     * @param targetObject
+     * @param fieldName
+     * @param valueToSetOnThisField
+     */
+    public static void setPrivateField(Object targetObject, String fieldName, Object valueToSetOnThisField) throws Exception {
+        Field f = targetObject.getClass().getDeclaredField(fieldName);
+        f.setAccessible(true);
+        f.set(targetObject, valueToSetOnThisField);
     }
 
 }
