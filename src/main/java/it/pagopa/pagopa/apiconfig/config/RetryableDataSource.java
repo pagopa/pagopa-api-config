@@ -19,14 +19,14 @@ public class RetryableDataSource extends AbstractDataSource {
     @Override
     @Retryable(maxAttempts = 1)
     public Connection getConnection() throws SQLException {
-        log.debug("Trying to connect to the database...");
+        log.trace("Trying to connect to the database...");
         return dataSource.getConnection();
     }
 
     @Override
     @Retryable(maxAttempts = 1)
     public Connection getConnection(String username, String password) throws SQLException {
-        log.debug("Trying to connect to the database by username and password ...");
+        log.trace("Trying to connect to the database by username and password ...");
         return dataSource.getConnection(username, password);
     }
 }

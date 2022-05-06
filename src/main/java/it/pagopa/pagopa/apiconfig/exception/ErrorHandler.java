@@ -181,8 +181,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
             log.warn("App Exception raised: " + ex.getMessage() + "\nCause of the App Exception: ", ex.getCause());
             log.trace("Trace error: ", ex);
         } else {
-            log.warn("App Exception raised: " + ex.getMessage());
-            log.trace("Trace error: ", ex);
+            log.warn("App Exception raised: ", ex);
         }
         var errorResponse = ProblemJson.builder()
                 .status(ex.getHttpStatus().value())

@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -34,6 +35,20 @@ public class LoggingAspect {
     @Value("${properties.environment}")
     private String environment;
 
+    @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
+    public void restController() {
+        // all rest controllers
+    }
+
+    @Pointcut("execution(* it.pagopa.pagopa.apiconfig.repository..*.*(..))")
+    public void repository() {
+        // all repository methods
+    }
+
+    @Pointcut("execution(* it.pagopa.pagopa.apiconfig.service..*.*(..))")
+    public void service() {
+        // all service methods
+    }
 
     /**
      * Log essential info of application during the startup.
@@ -62,12 +77,12 @@ public class LoggingAspect {
                 .forEach(prop -> log.debug("{}: {}", prop, env.getProperty(prop)));
     }
 
-    @Before(value = "@within(org.springframework.web.bind.annotation.RestController)")
+    @Before(value = "restController()")
     public void logApiInvocation(JoinPoint joinPoint) {
         log.info("Invoking API operation {} - args: {}", joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
-    @AfterReturning(value = "@within(org.springframework.web.bind.annotation.RestController)", returning = "result")
+    @AfterReturning(value = "restController()", returning = "result")
     public void returnApiInvocation(JoinPoint joinPoint, Object result) {
         log.info("Successful API operation {} - result: {}", joinPoint.getSignature().getName(), result);
     }
@@ -77,17 +92,20 @@ public class LoggingAspect {
         log.info("Failed API operation {} - error: {}", joinPoint.getSignature().getName(), result);
     }
 
-    @Around(value = "execution(* it.pagopa.pagopa.apiconfig.repository..*.*(..)) || execution(* it.pagopa.pagopa.apiconfig.service..*.*(..))")
+    @Around(value = "repository() || service()")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
-        log.debug("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
+        log.trace("Time taken for Execution of {} is: {}ms", joinPoint.getSignature().toShortString(), (endTime - startTime));
         return result;
     }
 
-    @Before(value = "execution(* it.pagopa.pagopa.apiconfig.repository..*.*(..)) || execution(* it.pagopa.pagopa.apiconfig.service..*.*(..))")
-    public void logTrace(JoinPoint joinPoint) {
-        log.trace("Trace method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
+    @Around(value = "repository() || service()")
+    public Object logTrace(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.debug("Call method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
+        Object result = joinPoint.proceed();
+        log.debug("Return method {} - result: {}", joinPoint.getSignature().toShortString(), result);
+        return result;
     }
 }
