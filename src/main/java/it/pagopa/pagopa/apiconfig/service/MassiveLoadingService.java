@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -29,7 +29,7 @@ import java.util.List;
 
 
 @Service
-@Validated
+@Valid
 public class MassiveLoadingService {
 
     @Value("${properties.environment}")

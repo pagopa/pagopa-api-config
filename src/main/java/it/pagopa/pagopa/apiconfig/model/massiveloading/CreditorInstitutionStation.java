@@ -40,14 +40,17 @@ public class CreditorInstitutionStation {
     private Operation operation;
 
 
+    // ESER: prod, COLL: dev|uat
     public enum Env {
         ESER, COLL;
     }
 
+    // S: yes, N: no
     public enum YesNo {
         S, N;
     }
 
+    // A: add relationship, C: remove relationship
     public enum Operation {
         A, C;
     }
