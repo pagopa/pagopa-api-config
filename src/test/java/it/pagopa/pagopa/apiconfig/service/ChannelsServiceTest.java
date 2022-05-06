@@ -124,11 +124,10 @@ class ChannelsServiceTest {
     }
 
     @Test
-    void createChannel_404() throws IOException, JSONException {
+    void createChannel_404() {
         when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
         when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
         when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
-//        when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
         AppException exception = new AppException(AppError.SERV_PLUGIN_NOT_FOUND, "SERV_PLUGIN_NOT_FOUND");
         doThrow(exception).when(wfespPluginConfRepository).findByIdServPlugin(anyString());
 
@@ -181,8 +180,9 @@ class ChannelsServiceTest {
         when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
         when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.empty());
 
+        ChannelDetails mockChannelDetails = getMockChannelDetails();
         try {
-            channelsService.updateChannel("1234", getMockChannelDetails());
+            channelsService.updateChannel("1234", mockChannelDetails);
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());

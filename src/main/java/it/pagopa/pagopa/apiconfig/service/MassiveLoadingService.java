@@ -50,56 +50,66 @@ public class MassiveLoadingService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void manageCIStation(MultipartFile file) {
         try {
-            // read CSV
-            Reader reader = new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
-
-            // create mapping strategy to arrange the column name
-            HeaderColumnNameMappingStrategy<CreditorInstitutionStation> mappingStrategy = new HeaderColumnNameMappingStrategy<>();
-            mappingStrategy.setType(CreditorInstitutionStation.class);
-
-            // execute validation
-            CsvToBean<CreditorInstitutionStation> parsedCSV = new CsvToBeanBuilder<CreditorInstitutionStation>(reader)
-                    .withSeparator(',')
-                    .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
-                    .withOrderedResults(true)
-                    .withMappingStrategy(mappingStrategy)
-                    .withVerifier(new CreditorInstitutionStationVerifier(environment, paRepository, stazioniRepository, paStazionePaRepository))
-                    .withType(CreditorInstitutionStation.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .withThrowExceptions(false)
-                    .build();
-
-            List<CreditorInstitutionStation> items = parsedCSV.parse();
-            List<CsvException> errors = parsedCSV.getCapturedExceptions();
-
-            if (!errors.isEmpty()) {
-                StringBuilder stringBuilder = new StringBuilder();
-                errors.forEach(error -> stringBuilder.append(String.format("|%s |", error.getMessage())));
-                throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, stringBuilder);
-            }
-
-            // validation executed successfully, items could be added or deleted according to the specified operation
-
-            for (CreditorInstitutionStation item : items) {
-                if (item.getOperation().equals(CreditorInstitutionStation.Operation.A)) {
-                    Long segregationCode = item.getSegregationCode() != null ? Long.parseLong(item.getSegregationCode()) : null;
-                    Long applicationCode = item.getApplicationCode() != null ? Long.parseLong(item.getApplicationCode()) : null;
-                    Long auxDigit = item.getAuxDigit() == 0 || item.getAuxDigit() == 3 ? null : item.getAuxDigit();
-                    CreditorInstitutionStationEdit data = CreditorInstitutionStationEdit.builder()
-                            .stationCode(item.getStationId())
-                            .auxDigit(auxDigit)
-                            .applicationCode(applicationCode)
-                            .segregationCode(segregationCode)
-                            .broadcast(item.getBroadcast() == CreditorInstitutionStation.YesNo.S)
-                            .mod4(false)
-                            .build();
-                    creditorInstitutionsService.createCreditorInstitutionStation(item.getCreditorInstitutionId(), data);
-                } else if (item.getOperation().equals(CreditorInstitutionStation.Operation.C)) {
-                    creditorInstitutionsService.deleteCreditorInstitutionStation(item.getCreditorInstitutionId(), item.getStationId());
-                }
-            }
+            addOrDelete(file);
         } catch (IOException | RuntimeException e) {
             throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, e, e.getMessage());
+        }
+    }
+
+    /**
+     * add or remove all elements in the file
+     *
+     * @param file csv file
+     * @throws IOException if file is not readable
+     */
+    private void addOrDelete(MultipartFile file) throws IOException {
+        // read CSV
+        Reader reader = new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+
+        // create mapping strategy to arrange the column name
+        HeaderColumnNameMappingStrategy<CreditorInstitutionStation> mappingStrategy = new HeaderColumnNameMappingStrategy<>();
+        mappingStrategy.setType(CreditorInstitutionStation.class);
+
+        // execute validation
+        CsvToBean<CreditorInstitutionStation> parsedCSV = new CsvToBeanBuilder<CreditorInstitutionStation>(reader)
+                .withSeparator(',')
+                .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                .withOrderedResults(true)
+                .withMappingStrategy(mappingStrategy)
+                .withVerifier(new CreditorInstitutionStationVerifier(environment, paRepository, stazioniRepository, paStazionePaRepository))
+                .withType(CreditorInstitutionStation.class)
+                .withIgnoreLeadingWhiteSpace(true)
+                .withThrowExceptions(false)
+                .build();
+
+        List<CreditorInstitutionStation> items = parsedCSV.parse();
+        List<CsvException> errors = parsedCSV.getCapturedExceptions();
+
+        if (!errors.isEmpty()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            errors.forEach(error -> stringBuilder.append(String.format("|%s |", error.getMessage())));
+            throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, stringBuilder);
+        }
+
+        // validation executed successfully, items could be added or deleted according to the specified operation
+
+        for (CreditorInstitutionStation item : items) {
+            if (item.getOperation().equals(CreditorInstitutionStation.Operation.A)) {
+                Long segregationCode = item.getSegregationCode() != null ? Long.parseLong(item.getSegregationCode()) : null;
+                Long applicationCode = item.getApplicationCode() != null ? Long.parseLong(item.getApplicationCode()) : null;
+                Long auxDigit = item.getAuxDigit() == 0 || item.getAuxDigit() == 3 ? null : item.getAuxDigit();
+                CreditorInstitutionStationEdit data = CreditorInstitutionStationEdit.builder()
+                        .stationCode(item.getStationId())
+                        .auxDigit(auxDigit)
+                        .applicationCode(applicationCode)
+                        .segregationCode(segregationCode)
+                        .broadcast(item.getBroadcast() == CreditorInstitutionStation.YesNo.S)
+                        .mod4(false)
+                        .build();
+                creditorInstitutionsService.createCreditorInstitutionStation(item.getCreditorInstitutionId(), data);
+            } else if (item.getOperation().equals(CreditorInstitutionStation.Operation.C)) {
+                creditorInstitutionsService.deleteCreditorInstitutionStation(item.getCreditorInstitutionId(), item.getStationId());
+            }
         }
     }
 }

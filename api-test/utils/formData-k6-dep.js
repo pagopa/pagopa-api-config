@@ -73,16 +73,15 @@ FormData.prototype.append = function(fieldName, data) {
 FormData.prototype.body = function() {
   var body = [];
   var barr = this.__toByteArray('--' + this.boundary + '\r\n');
-  for (var i=0; i < this.parts.length; i++) {
+  for (let p of this.parts) {
     Array.prototype.push.apply(body, barr);
-    var p = this.parts[i];
     var cd = 'Content-Disposition: form-data; name="' + p.field + '"';
     if (p.file.filename) {
-      cd += '; filename="' + p.file.filename.replace(/"/g,'%22') + '"';
+      cd += '; filename="' + p.file.filename.replace(/"/g, '%22') + '"';
     }
     cd += '\r\nContent-Type: '
-      + (p.file.content_type || 'application/octet-stream')
-      + '\r\n\r\n';
+        + (p.file.content_type || 'application/octet-stream')
+        + '\r\n\r\n';
     Array.prototype.push.apply(body, this.__toByteArray(cd));
     var data = Array.isArray(p.file.data) ? p.file.data : this.__toByteArray(p.file.data);
     Array.prototype.push.apply(body, data);

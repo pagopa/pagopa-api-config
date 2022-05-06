@@ -32,13 +32,17 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
 
         if (environment.equalsIgnoreCase("PROD")) {
             this.env = CreditorInstitutionStation.Env.ESER;
-        }
-        else {
+        } else {
             this.env = CreditorInstitutionStation.Env.COLL;
         }
 
     }
 
+    /**
+     * @param creditorInstitutionStation Station ID
+     * @return true if the bean is valid
+     * @throws CsvConstraintViolationException with the list of errors
+     */
     @Override
     public boolean verifyBean(CreditorInstitutionStation creditorInstitutionStation) throws CsvConstraintViolationException {
 
@@ -50,23 +54,76 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
         List<String> errors = new ArrayList<>();
 
         // verify creditor institution
-        Optional<Pa> optEc = paRepository.findByIdDominio(creditorInstitutionStation.getCreditorInstitutionId());
-        if (optEc.isEmpty()) {
-            errors.add("Creditor institution not exists");
-        }
+        Optional<Pa> optEc = checkCreditorInstitution(creditorInstitutionStation, errors);
 
         // verify station
-        Optional<Stazioni> optStation = stazioniRepository.findByIdStazione(creditorInstitutionStation.getStationId());
-        if (optStation.isEmpty()) {
-            errors.add("Station not exists");
-        }
+        Optional<Stazioni> optStation = checkStation(creditorInstitutionStation, errors);
 
         // check auxDigit
-        if (!Arrays.asList(0L, 1L, 2L, 3L).contains(creditorInstitutionStation.getAuxDigit())) {
-            errors.add("AugDigit code error: accepted values are 0, 1, 2, 3");
-        }
+        checkAuxDigit(creditorInstitutionStation, errors);
 
         // check segregationCode and applicationCode according to auxDigit
+        checkSegregationAndApplicationCode(creditorInstitutionStation, errors);
+
+        if (optEc.isPresent() && optStation.isPresent() && creditorInstitutionStation.getOperation().equals(CreditorInstitutionStation.Operation.A)) {
+            // verify if relationship already exists
+            checkIfExists(errors, optEc.get(), optStation.get());
+        } else if (optEc.isPresent() && optStation.isPresent() && creditorInstitutionStation.getOperation().equals(CreditorInstitutionStation.Operation.C)) {
+            // verify if exists the configuration in order to delete
+            checkIfFound(creditorInstitutionStation, errors, optEc.get(), optStation.get());
+        }
+
+        if (!errors.isEmpty()) {
+            String messageFormat = "[Line %s] %s" + System.lineSeparator();
+            throw new CsvConstraintViolationException(String.format(messageFormat,
+                    ToStringBuilder.reflectionToString(creditorInstitutionStation, ToStringStyle.NO_CLASS_NAME_STYLE),
+                    String.join(" # ", errors)));
+        }
+
+        return true;
+    }
+
+    /**
+     * add error in the list if relationship not found
+     *
+     * @param creditorInstitutionStation Station details to check
+     * @param errors                     list of errors
+     * @param optEc                      Creditor Institution
+     * @param optStation                 Station
+     */
+    private void checkIfFound(CreditorInstitutionStation creditorInstitutionStation, List<String> errors, Pa optEc, Stazioni optStation) {
+        Long segregationCode = creditorInstitutionStation.getSegregationCode() != null ? Long.parseLong(creditorInstitutionStation.getSegregationCode()) : null;
+        Long applicationCode = creditorInstitutionStation.getApplicationCode() != null ? Long.parseLong(creditorInstitutionStation.getApplicationCode()) : null;
+        Optional<PaStazionePa> optECStation = paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
+                optEc.getObjId(), optStation.getObjId(), creditorInstitutionStation.getAuxDigit(),
+                creditorInstitutionStation.getBroadcast() == CreditorInstitutionStation.YesNo.S,
+                segregationCode, applicationCode);
+        if (optECStation.isEmpty()) {
+            errors.add("Creditor Institution - Station relationship not found");
+        }
+    }
+
+    /**
+     * add error in the list if relationship already exists
+     *
+     * @param errors     list of errors
+     * @param optEc      optional creditor institution
+     * @param optStation optional station
+     */
+    private void checkIfExists(List<String> errors, Pa optEc, Stazioni optStation) {
+        Optional<PaStazionePa> relation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(optEc.getObjId(), optStation.getObjId());
+        if (relation.isPresent()) {
+            errors.add("Creditor institution - Station relationship already exists");
+        }
+    }
+
+    /**
+     * add error in the list if needed
+     *
+     * @param creditorInstitutionStation the creditor institution station to check
+     * @param errors                     list of errors
+     */
+    private void checkSegregationAndApplicationCode(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
         if (creditorInstitutionStation.getAuxDigit() == 3) {
             if (creditorInstitutionStation.getApplicationCode() != null &&
                     !creditorInstitutionStation.getApplicationCode().isBlank() && creditorInstitutionStation.getApplicationCode().length() != 2) {
@@ -78,35 +135,43 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
                 errors.add("Segregation code error: length must be 2 or blank");
             }
         }
+    }
 
-
-        if (optEc.isPresent() && optStation.isPresent() && creditorInstitutionStation.getOperation().equals(CreditorInstitutionStation.Operation.A)) {
-            // verify if relationship already exists
-            Optional<PaStazionePa> relation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(optEc.get().getObjId(), optStation.get().getObjId());
-            if (relation.isPresent()) {
-                errors.add("Creditor institution - Station relationship already exists");
-            }
+    /**
+     * add error in the list if aux digit is not 0,1,2 or 3
+     *
+     * @param creditorInstitutionStation the creditor institution station to check
+     * @param errors                     list of errors
+     */
+    private void checkAuxDigit(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
+        if (!Arrays.asList(0L, 1L, 2L, 3L).contains(creditorInstitutionStation.getAuxDigit())) {
+            errors.add("AugDigit code error: accepted values are 0, 1, 2, 3");
         }
-        else if (optEc.isPresent() && optStation.isPresent() && creditorInstitutionStation.getOperation().equals(CreditorInstitutionStation.Operation.C)) {
-            // verify if exists the configuration in order to delete
-            Long segregationCode = creditorInstitutionStation.getSegregationCode() != null ? Long.parseLong(creditorInstitutionStation.getSegregationCode()) : null;
-            Long applicationCode = creditorInstitutionStation.getApplicationCode() != null ? Long.parseLong(creditorInstitutionStation.getApplicationCode()) : null;
-            Optional<PaStazionePa> optECStation = paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
-                    optEc.get().getObjId(), optStation.get().getObjId(), creditorInstitutionStation.getAuxDigit(),
-                    creditorInstitutionStation.getBroadcast() == CreditorInstitutionStation.YesNo.S,
-                    segregationCode, applicationCode);
-            if (optECStation.isEmpty()) {
-                errors.add("Creditor Institution - Station relationship not found");
-            }
-        }
+    }
 
-        if (!errors.isEmpty()) {
-            String messageFormat = "[Line %s] %s" + System.lineSeparator();
-            throw new CsvConstraintViolationException(String.format(messageFormat,
-                    ToStringBuilder.reflectionToString(creditorInstitutionStation, ToStringStyle.NO_CLASS_NAME_STYLE),
-                    String.join(" # ", errors)));
+    /**
+     * @param creditorInstitutionStation the creditor institution station to check
+     * @param errors                     list of errors
+     * @return the optional station and add error in the list if needed
+     */
+    private Optional<Stazioni> checkStation(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
+        Optional<Stazioni> optStation = stazioniRepository.findByIdStazione(creditorInstitutionStation.getStationId());
+        if (optStation.isEmpty()) {
+            errors.add("Station not exists");
         }
+        return optStation;
+    }
 
-        return true;
+    /**
+     * @param creditorInstitutionStation the creditor institution station to check
+     * @param errors                     list of errors
+     * @return the optional creditor institution and add error in the list if needed
+     */
+    private Optional<Pa> checkCreditorInstitution(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
+        Optional<Pa> optEc = paRepository.findByIdDominio(creditorInstitutionStation.getCreditorInstitutionId());
+        if (optEc.isEmpty()) {
+            errors.add("Creditor institution not exists");
+        }
+        return optEc;
     }
 }
