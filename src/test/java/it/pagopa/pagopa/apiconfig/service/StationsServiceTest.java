@@ -6,6 +6,7 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
@@ -162,7 +163,7 @@ class StationsServiceTest {
         Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
         when(paStazionePaRepository.findAllByFkStazione_ObjId(any(), any(Pageable.class))).thenReturn(page);
 
-        CreditorInstitutions result = stationsService.getStationCreditorInstitutions("1234", 50, 0);
+        StationCreditorInstitutions result = stationsService.getStationCreditorInstitutions("1234", 50, 0);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

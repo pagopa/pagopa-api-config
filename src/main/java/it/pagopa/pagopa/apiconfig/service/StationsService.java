@@ -99,12 +99,12 @@ public class StationsService {
         stazioniRepository.delete(stazioni);
     }
 
-    public CreditorInstitutions getStationCreditorInstitutions(@NotNull String stationCode, @NotNull Integer limit, @NotNull Integer pageNumber) {
+    public StationCreditorInstitutions getStationCreditorInstitutions(@NotNull String stationCode, @NotNull Integer limit, @NotNull Integer pageNumber) {
         Stazioni stazioni = getStationIfExists(stationCode);
         Pageable pageable = PageRequest.of(pageNumber, limit);
         Page<PaStazionePa> page = paStazioniRepository.findAllByFkStazione_ObjId(stazioni.getObjId(), pageable);
-        List<CreditorInstitution> ecList = page.stream().map(paStazionePa -> modelMapper.map(paStazionePa.getPa(), CreditorInstitution.class)).collect(Collectors.toList());
-        return CreditorInstitutions.builder()
+        List<StationCreditorInstitution> ecList = page.stream().map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class)).collect(Collectors.toList());
+        return StationCreditorInstitutions.builder()
                 .pageInfo(CommonUtil.buildPageInfo(page))
                 .creditorInstitutionList(ecList)
                 .build();
