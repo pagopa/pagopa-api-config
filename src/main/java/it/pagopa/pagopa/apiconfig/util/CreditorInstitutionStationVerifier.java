@@ -124,7 +124,16 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
      * @param errors                     list of errors
      */
     private void checkSegregationAndApplicationCode(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
-        if (creditorInstitutionStation.getAuxDigit() == 3) {
+        if (creditorInstitutionStation.getAuxDigit() == 1 || creditorInstitutionStation.getAuxDigit() == 2) {
+            if (!creditorInstitutionStation.getApplicationCode().isBlank()) {
+                errors.add("Aggregation code error: length must be blank");
+            }
+
+            if (!creditorInstitutionStation.getSegregationCode().isBlank()) {
+                errors.add("Segregation code error: length must be blank");
+            }
+        }
+        else if (creditorInstitutionStation.getAuxDigit() == 3) {
             if (creditorInstitutionStation.getApplicationCode() != null &&
                     !creditorInstitutionStation.getApplicationCode().isBlank() && creditorInstitutionStation.getApplicationCode().length() != 2) {
                 errors.add("Aggregation code error: length must be 2 or blank");
