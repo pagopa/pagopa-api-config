@@ -5,6 +5,7 @@ import com.opencsv.exceptions.CsvConstraintViolationException;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.massiveloading.CreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -134,26 +135,34 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
             }
         }
         else if (creditorInstitutionStation.getAuxDigit() == 0) {
-            if (creditorInstitutionStation.getApplicationCode() == null || creditorInstitutionStation.getApplicationCode().isBlank() ||
-                    creditorInstitutionStation.getApplicationCode().length() != 2) {
-                errors.add("Application code error: length must be 2 ciphers");
-            }
-
-            if (creditorInstitutionStation.getSegregationCode() != null &&
-                    !creditorInstitutionStation.getSegregationCode().isBlank() && creditorInstitutionStation.getSegregationCode().length() != 2) {
-                errors.add("Segregation code error: length must be 2 ciphers or blank");
-            }
+            checkSegregationAndApplicationCode0(creditorInstitutionStation, errors);
         }
         else if (creditorInstitutionStation.getAuxDigit() == 3) {
-            if (creditorInstitutionStation.getApplicationCode() != null &&
-                    !creditorInstitutionStation.getApplicationCode().isBlank() && creditorInstitutionStation.getApplicationCode().length() != 2) {
-                errors.add("Application code error: length must be 2 ciphers or blank");
-            }
+            checkSegregationAndApplicationCode3(creditorInstitutionStation, errors);
+        }
+    }
 
-            if (creditorInstitutionStation.getSegregationCode() == null || creditorInstitutionStation.getSegregationCode().isBlank() ||
-                    creditorInstitutionStation.getSegregationCode().length() != 2) {
-                errors.add("Segregation code error: length must be 2 ciphers");
-            }
+    private void checkSegregationAndApplicationCode0(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
+        if (creditorInstitutionStation.getApplicationCode() == null || creditorInstitutionStation.getApplicationCode().isBlank() ||
+                creditorInstitutionStation.getApplicationCode().length() != 2) {
+            errors.add("Application code error: length must be 2 ciphers");
+        }
+
+        if (creditorInstitutionStation.getSegregationCode() != null &&
+                !creditorInstitutionStation.getSegregationCode().isBlank() && creditorInstitutionStation.getSegregationCode().length() != 2) {
+            errors.add("Segregation code error: length must be 2 ciphers or blank");
+        }
+    }
+
+    private void checkSegregationAndApplicationCode3(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
+        if (creditorInstitutionStation.getApplicationCode() != null &&
+                !creditorInstitutionStation.getApplicationCode().isBlank() && creditorInstitutionStation.getApplicationCode().length() != 2) {
+            errors.add("Application code error: length must be 2 ciphers or blank");
+        }
+
+        if (creditorInstitutionStation.getSegregationCode() == null || creditorInstitutionStation.getSegregationCode().isBlank() ||
+                creditorInstitutionStation.getSegregationCode().length() != 2) {
+            errors.add("Segregation code error: length must be 2 ciphers");
         }
     }
 

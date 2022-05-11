@@ -18,6 +18,7 @@ import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -288,8 +289,91 @@ class CreditorInstitutionsServiceTest {
     }
 
     @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = {123L})
+    void createStationsCI_0_badrequest(Long code) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(0L);
+        mock.setApplicationCode(code);
+        mock.setSegregationCode(code);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
     @ValueSource(longs = {1L, 2L})
-    void createStationsCI_1_2_badrequest(Long auxDigit) {
+    void createStationsCI_1_2_t1_badrequest(Long auxDigit) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(12L);
+        mock.setSegregationCode(null);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 2L})
+    void createStationsCI_1_2_t2_badrequest(Long auxDigit) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(null);
+        mock.setSegregationCode(12L);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = {123L})
+    void createStationsCI_3_badrequest(Long code) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(3L);
+        mock.setApplicationCode(code);
+        mock.setSegregationCode(code);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = {4L})
+    void createStationsCI_4_null_badrequest(Long auxDigit) {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
         when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());

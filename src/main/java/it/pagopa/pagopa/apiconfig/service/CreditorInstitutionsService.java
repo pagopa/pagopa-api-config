@@ -181,21 +181,7 @@ public class CreditorInstitutionsService {
         }
 
         if (creditorInstitutionStationEdit.getAuxDigit().equals(0L)) {
-            // if aux digit is equal to 0,
-            // application code must be 2 ciphers
-            // segregation code should be blank or 2 ciphers
-            // however they have Long type, so we can check if they have at most 2 cipher
-            if (creditorInstitutionStationEdit.getApplicationCode() == null ||
-                    (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1 || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
-                String message = "Application code error: length must be 2 ciphers";
-                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
-            }
-
-            if (creditorInstitutionStationEdit.getSegregationCode() != null &&
-                    (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1 || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
-                String message = "Segregation code error: length must be 2 ciphers or blank";
-                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
-            }
+            checkAuxDigit0(creditorInstitutionCode, creditorInstitutionStationEdit);
         }
         else if (creditorInstitutionStationEdit.getAuxDigit().equals(1L) || creditorInstitutionStationEdit.getAuxDigit().equals(2L)) {
             if (creditorInstitutionStationEdit.getApplicationCode() != null) {
@@ -209,26 +195,47 @@ public class CreditorInstitutionsService {
             }
         }
         else if (creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
-            // if aux digit is equal to 3,
-            // application code should be 2 ciphers or blank
-            // segregation code must be 2 ciphers
-            // however they have Long type, so we can check if they have at most 2 cipher
-            if (creditorInstitutionStationEdit.getApplicationCode() != null &&
-                    (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1 || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
-                String message = "Application code error: length must be 2 ciphers or blank";
-                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
-            }
-
-            if (creditorInstitutionStationEdit.getSegregationCode() == null ||
-                    (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1 || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
-                String message = "Segregation code error: length must be 2 ciphers";
-                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
-            }
+            checkAuxDigit3(creditorInstitutionCode, creditorInstitutionStationEdit);
         }
         if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
             creditorInstitutionStationEdit.setAuxDigit(null);
         }
+    }
 
+    private void checkAuxDigit0(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        // if aux digit is equal to 0,
+        // application code must be 2 ciphers
+        // segregation code should be blank or 2 ciphers
+        // however they have Long type, so we can check if they have at most 2 cipher
+        if (creditorInstitutionStationEdit.getApplicationCode() == null ||
+                (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1 || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
+            String message = "Application code error: length must be 2 ciphers";
+            throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+        }
+
+        if (creditorInstitutionStationEdit.getSegregationCode() != null &&
+                (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1 || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
+            String message = "Segregation code error: length must be 2 ciphers or blank";
+            throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+        }
+    }
+
+    private void checkAuxDigit3(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        // if aux digit is equal to 3,
+        // application code should be 2 ciphers or blank
+        // segregation code must be 2 ciphers
+        // however they have Long type, so we can check if they have at most 2 cipher
+        if (creditorInstitutionStationEdit.getApplicationCode() != null &&
+                (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1 || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
+            String message = "Application code error: length must be 2 ciphers or blank";
+            throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+        }
+
+        if (creditorInstitutionStationEdit.getSegregationCode() == null ||
+                (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1 || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
+            String message = "Segregation code error: length must be 2 ciphers";
+            throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+        }
     }
 
     /**
