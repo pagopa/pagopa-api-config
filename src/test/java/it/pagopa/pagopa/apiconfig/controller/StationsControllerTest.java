@@ -45,6 +45,7 @@ class StationsControllerTest {
         when(stationsService.getStation(anyString())).thenReturn(getMockStationDetails());
         when(stationsService.createStation(any(StationDetails.class))).thenReturn(getMockStationDetails());
         when(stationsService.updateStation(anyString(), any(StationDetails.class))).thenReturn(getMockStationDetails());
+        when(stationsService.getStationCreditorInstitutionsCSV(anyString())).thenReturn(new byte[0]);
     }
 
     @Test
@@ -103,6 +104,13 @@ class StationsControllerTest {
     void getStationCreditorInstitution() throws Exception {
         String url = "/stations/1234/creditorinstitutions?page=0";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getStationCreditorInstitutionCsv() throws Exception {
+        String url = "/stations/1234/creditorinstitutions/csv";
+        mvc.perform(get(url).contentType(MediaType.TEXT_PLAIN_VALUE))
                 .andExpect(status().isOk());
     }
 }
