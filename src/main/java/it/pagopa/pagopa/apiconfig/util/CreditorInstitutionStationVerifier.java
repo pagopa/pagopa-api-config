@@ -126,22 +126,33 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
     private void checkSegregationAndApplicationCode(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
         if (creditorInstitutionStation.getAuxDigit() == 1 || creditorInstitutionStation.getAuxDigit() == 2) {
             if (!creditorInstitutionStation.getApplicationCode().isBlank()) {
-                errors.add("Aggregation code error: length must be blank");
+                errors.add("Application code error: length must be blank");
             }
 
             if (!creditorInstitutionStation.getSegregationCode().isBlank()) {
                 errors.add("Segregation code error: length must be blank");
             }
         }
-        else if (creditorInstitutionStation.getAuxDigit() == 3) {
-            if (creditorInstitutionStation.getApplicationCode() != null &&
-                    !creditorInstitutionStation.getApplicationCode().isBlank() && creditorInstitutionStation.getApplicationCode().length() != 2) {
-                errors.add("Aggregation code error: length must be 2 or blank");
+        else if (creditorInstitutionStation.getAuxDigit() == 0) {
+            if (creditorInstitutionStation.getApplicationCode() == null || creditorInstitutionStation.getApplicationCode().isBlank() ||
+                    creditorInstitutionStation.getApplicationCode().length() != 2) {
+                errors.add("Application code error: length must be 2 ciphers");
             }
 
             if (creditorInstitutionStation.getSegregationCode() != null &&
                     !creditorInstitutionStation.getSegregationCode().isBlank() && creditorInstitutionStation.getSegregationCode().length() != 2) {
-                errors.add("Segregation code error: length must be 2 or blank");
+                errors.add("Segregation code error: length must be 2 ciphers or blank");
+            }
+        }
+        else if (creditorInstitutionStation.getAuxDigit() == 3) {
+            if (creditorInstitutionStation.getApplicationCode() != null &&
+                    !creditorInstitutionStation.getApplicationCode().isBlank() && creditorInstitutionStation.getApplicationCode().length() != 2) {
+                errors.add("Application code error: length must be 2 ciphers or blank");
+            }
+
+            if (creditorInstitutionStation.getSegregationCode() == null || creditorInstitutionStation.getSegregationCode().isBlank() ||
+                    creditorInstitutionStation.getSegregationCode().length() != 2) {
+                errors.add("Segregation code error: length must be 2 ciphers");
             }
         }
     }

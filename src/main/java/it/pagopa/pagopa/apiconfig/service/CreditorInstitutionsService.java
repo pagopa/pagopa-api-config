@@ -33,6 +33,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -109,6 +110,8 @@ public class CreditorInstitutionsService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public CreditorInstitutionStationEdit createCreditorInstitutionStation(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        // check aux-digit, application and segregation codes are configured properly
+        checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
         // check if the relation already exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(creditorInstitutionStationEdit.getStationCode());
@@ -132,6 +135,10 @@ public class CreditorInstitutionsService {
         Stazioni stazioni = getStazioniIfExists(stationCode);
         PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
                 .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
+
+        // check aux-digit, application and segregation codes are configured properly
+        checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
+
         // add info into object for model mapper
         creditorInstitutionStationEdit.setFkPa(pa);
         creditorInstitutionStationEdit.setFkStazioni(stazioni);
@@ -160,6 +167,68 @@ public class CreditorInstitutionsService {
         return Ibans.builder()
                 .ibanList(getIbanList(iban))
                 .build();
+    }
+
+    /**
+     * Check application and segregation code according to aux-digit
+     * @param creditorInstitutionCode
+     * @param creditorInstitutionStationEdit
+     */
+    private void checkAuxDigit(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        if (!Arrays.asList(0L, 1L, 2L, 3L).contains(creditorInstitutionStationEdit.getAuxDigit())) {
+            String message = "AugDigit code error: accepted values are 0, 1, 2, 3";
+            throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+        }
+
+        if (creditorInstitutionStationEdit.getAuxDigit().equals(0L)) {
+            // if aux digit is equal to 0,
+            // application code must be 2 ciphers
+            // segregation code should be blank or 2 ciphers
+            // however they have Long type, so we can check if they have at most 2 cipher
+            if (creditorInstitutionStationEdit.getApplicationCode() == null ||
+                    (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1 || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
+                String message = "Application code error: length must be 2 ciphers";
+                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+            }
+
+            if (creditorInstitutionStationEdit.getSegregationCode() != null &&
+                    (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1 || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
+                String message = "Segregation code error: length must be 2 ciphers or blank";
+                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+            }
+        }
+        else if (creditorInstitutionStationEdit.getAuxDigit().equals(1L) || creditorInstitutionStationEdit.getAuxDigit().equals(2L)) {
+            if (creditorInstitutionStationEdit.getApplicationCode() != null) {
+                String message = "Application code error: length must be blank";
+                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+            }
+
+            if (creditorInstitutionStationEdit.getSegregationCode() != null) {
+                String message = "Segregation code error: length must be blank";
+                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+            }
+        }
+        else if (creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
+            // if aux digit is equal to 3,
+            // application code should be 2 ciphers or blank
+            // segregation code must be 2 ciphers
+            // however they have Long type, so we can check if they have at most 2 cipher
+            if (creditorInstitutionStationEdit.getApplicationCode() != null &&
+                    (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1 || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
+                String message = "Application code error: length must be 2 ciphers or blank";
+                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+            }
+
+            if (creditorInstitutionStationEdit.getSegregationCode() == null ||
+                    (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1 || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
+                String message = "Segregation code error: length must be 2 ciphers";
+                throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
+            }
+        }
+        if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
+            creditorInstitutionStationEdit.setAuxDigit(null);
+        }
+
     }
 
     /**
