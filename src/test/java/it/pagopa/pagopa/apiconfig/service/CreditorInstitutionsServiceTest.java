@@ -35,13 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
+import static it.pagopa.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -155,9 +149,19 @@ class CreditorInstitutionsServiceTest {
     @Test
     void updateCreditorInstitution() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
-        when(paRepository.save(any(Pa.class))).thenReturn(getMockPa());
+        Pa mockPa = getMockPa();
+        mockPa.setComuneDomicilioFiscale("");
+        mockPa.setSiglaProvinciaDomicilioFiscale("");
+        mockPa.setCapDomicilioFiscale(null);
+        mockPa.setIndirizzoDomicilioFiscale("");
+        when(paRepository.save(any(Pa.class))).thenReturn(mockPa);
 
-        CreditorInstitutionDetails result = creditorInstitutionsService.updateCreditorInstitution("1234", getMockCreditorInstitutionDetails());
+        CreditorInstitutionDetails mockCI = getMockCreditorInstitutionDetails();
+        mockCI.getAddress().setCity("");
+        mockCI.getAddress().setCountryCode("");
+        mockCI.getAddress().setZipCode("");
+        mockCI.getAddress().setLocation("");
+        CreditorInstitutionDetails result = creditorInstitutionsService.updateCreditorInstitution("1234", mockCI);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/update_creditorinstitution_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
