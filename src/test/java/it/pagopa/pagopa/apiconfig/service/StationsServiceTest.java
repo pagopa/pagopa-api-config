@@ -5,7 +5,6 @@ import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
@@ -37,6 +36,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -167,6 +167,15 @@ class StationsServiceTest {
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getStationCreditorInstitutionsCsv() {
+        when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkStazione_ObjId(any())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+
+        var result = stationsService.getStationCreditorInstitutionsCSV("1234");
+        assertNotNull(result);
     }
 
 }

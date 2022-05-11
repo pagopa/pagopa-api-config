@@ -31,6 +31,7 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
 @UtilityClass
@@ -89,6 +90,14 @@ public class CommonUtil {
      */
     public static String deNull(String value) {
         return Optional.ofNullable(value).orElse("");
+    }
+
+    /**
+     * @param value value to deNullify.
+     * @return return empty string if value is null
+     */
+    public static String deNull(Object value) {
+        return Optional.ofNullable(value).orElse("").toString();
     }
 
     /**
@@ -204,4 +213,18 @@ public class CommonUtil {
         }
         return model;
     }
+
+
+    /**
+     * @param headers header of the CSV file
+     * @param rows    data of the CSV file
+     * @return byte array of the CSV using commas (,) as separator
+     */
+    public static byte[] createCsv(List<String> headers, List<List<String>> rows) {
+        var csv = new StringBuilder();
+        csv.append(String.join(",", headers));
+        rows.forEach(row -> csv.append(System.lineSeparator()).append(String.join(",", row)));
+        return csv.toString().getBytes();
+    }
+
 }
