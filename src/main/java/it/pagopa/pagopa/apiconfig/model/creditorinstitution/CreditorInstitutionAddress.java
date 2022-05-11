@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Pattern;
 
@@ -33,12 +34,12 @@ public class CreditorInstitutionAddress {
 
     @JsonProperty("zip_code")
     @Schema(example = "00187")
-    @Pattern(regexp = "^\\d{5}$")
+    @Pattern(regexp = "^\\d{5}$|^$")
     private String zipCode;
 
     @JsonProperty("country_code")
     @Schema(example = "RM")
-    @Pattern(regexp = "^\\w{2}$")
+    @Pattern(regexp = "^\\w{2}$|^$")
     private String countryCode;
 
     @JsonProperty("tax_domicile")

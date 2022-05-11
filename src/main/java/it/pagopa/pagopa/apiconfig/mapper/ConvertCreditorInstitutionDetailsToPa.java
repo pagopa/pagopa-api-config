@@ -30,6 +30,6 @@ public class ConvertCreditorInstitutionDetailsToPa implements Converter<Creditor
     }
 
     private Long getCapDomicilioFiscale(CreditorInstitutionDetails source) {
-        return source.getAddress().getZipCode() != null ? Long.valueOf(source.getAddress().getZipCode()) : null;
+        return source.getAddress().getZipCode() != null && !source.getAddress().getZipCode().isBlank() ? Long.valueOf(source.getAddress().getZipCode()) : null;
     }
 }

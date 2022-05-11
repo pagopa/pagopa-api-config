@@ -29,7 +29,6 @@ public class CreditorInstitutionDetails extends CreditorInstitution {
 
     @JsonProperty("address")
     @Schema(required = true)
-    @NotNull
     @Valid
     private CreditorInstitutionAddress address;
 
