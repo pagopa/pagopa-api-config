@@ -995,6 +995,51 @@
 					"response": []
 				},
 				{
+					"name": "getStationCreditorInstitutions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:code/creditorinstitutions?page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								":code",
+								"creditorinstitutions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								}
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getStationCreditorInstitutionsCSV",
 					"event": [
 						{

@@ -17,6 +17,9 @@ import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -208,16 +211,184 @@ class CreditorInstitutionsServiceTest {
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
-    @Test
-    void createStationsCI() throws IOException, JSONException {
+    @ParameterizedTest
+    @ValueSource(longs = {0L, 3L})
+    void createStationsCI_0_3(Long auxDigit) throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
         when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
-        CreditorInstitutionStationEdit result = creditorInstitutionsService.createCreditorInstitutionStation("1234", getCreditorInstitutionStationEdit());
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(1L);
+        mock.setSegregationCode(5L);
+        CreditorInstitutionStationEdit result = creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
         String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/create_creditorinstitution_stations_ok1.json");
+        String expected = TestUtil.readJsonFromFile(String.format("response/create_creditorinstitution_stations_ok_aux_digit_%s.json", auxDigit));
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {0L, 3L})
+    void createStationsCI_0_3_blank(Long auxDigit) throws IOException, JSONException {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        if (auxDigit == 0L) {
+            mock.setApplicationCode(1L);
+            mock.setSegregationCode(null);
+        }
+        else {
+            mock.setApplicationCode(null);
+            mock.setSegregationCode(5L);
+        }
+        CreditorInstitutionStationEdit result = creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile(String.format("response/create_creditorinstitution_stations_ok_aux_digit_%s_blank.json", auxDigit));
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 2L})
+    void createStationsCI_1_2(Long auxDigit) throws IOException, JSONException {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(null);
+        mock.setSegregationCode(null);
+        CreditorInstitutionStationEdit result = creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile(String.format("response/create_creditorinstitution_stations_ok_aux_digit_%s.json", auxDigit));
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {0L, 3L})
+    void createStationsCI_0_3_badrequest(Long auxDigit) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(123L);
+        mock.setSegregationCode(123L);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = {123L})
+    void createStationsCI_0_badrequest(Long code) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(0L);
+        mock.setApplicationCode(code);
+        mock.setSegregationCode(code);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 2L})
+    void createStationsCI_1_2_t1_badrequest(Long auxDigit) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(12L);
+        mock.setSegregationCode(null);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 2L})
+    void createStationsCI_1_2_t2_badrequest(Long auxDigit) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(null);
+        mock.setSegregationCode(12L);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = {123L})
+    void createStationsCI_3_badrequest(Long code) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(3L);
+        mock.setApplicationCode(code);
+        mock.setSegregationCode(code);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(longs = {4L})
+    void createStationsCI_4_null_badrequest(Long auxDigit) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(12L);
+        mock.setSegregationCode(12L);
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     @Test
@@ -235,16 +406,101 @@ class CreditorInstitutionsServiceTest {
         }
     }
 
-    @Test
-    void updateStationsCI() throws IOException, JSONException {
+    @ParameterizedTest
+    @ValueSource(longs = {0L, 3L})
+    void updateStationsCI_0_3(Long auxDigit) throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
         when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
 
-        CreditorInstitutionStationEdit result = creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", getCreditorInstitutionStationEdit());
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(1L);
+        mock.setSegregationCode(5L);
+        CreditorInstitutionStationEdit result = creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", mock);
         String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/update_creditorinstitution_stations_ok1.json");
+        String expected = TestUtil.readJsonFromFile(String.format("response/update_creditorinstitution_stations_ok_aux_digit_%s.json", auxDigit));
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {0L, 3L})
+    void updateStationsCI_0_3_blank(Long auxDigit) throws IOException, JSONException {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        if (auxDigit == 0L) {
+            mock.setApplicationCode(1L);
+            mock.setSegregationCode(null);
+        }
+        else {
+            mock.setApplicationCode(null);
+            mock.setSegregationCode(5L);
+        }
+        CreditorInstitutionStationEdit result = creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", mock);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile(String.format("response/update_creditorinstitution_stations_ok_aux_digit_%s_blank.json", auxDigit));
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 2L})
+    void updateStationsCI_1_2(Long auxDigit) throws IOException, JSONException {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(null);
+        mock.setSegregationCode(null);
+        CreditorInstitutionStationEdit result = creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", mock);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile(String.format("response/update_creditorinstitution_stations_ok_aux_digit_%s.json", auxDigit));
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {0L, 3L})
+    void updateStationsCI_0_3_badrequest(Long auxDigit) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(123L);
+        mock.setSegregationCode(123L);
+        try {
+            creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 2L})
+    void updateStationsCI_1_2_badrequest(Long auxDigit) {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(getMockPaStazionePa()));
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(12L);
+        mock.setSegregationCode(12L);
+        try {
+            creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     @Test

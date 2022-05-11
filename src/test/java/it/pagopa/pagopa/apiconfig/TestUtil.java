@@ -379,7 +379,7 @@ public class TestUtil {
     public static CreditorInstitutionStationEdit getCreditorInstitutionStationEdit() {
         return CreditorInstitutionStationEdit.builder()
                 .applicationCode(1L)
-                .auxDigit(23L)
+                .auxDigit(3L)
                 .stationCode("80007580279_01")
                 .broadcast(true)
                 .segregationCode(5L)
