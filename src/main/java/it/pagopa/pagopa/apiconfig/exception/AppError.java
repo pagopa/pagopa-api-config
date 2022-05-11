@@ -11,6 +11,7 @@ public enum AppError {
     CREDITOR_INSTITUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Creditor Institution not found", "No Creditor Institution found with code: %s"),
     CREDITOR_INSTITUTION_CONFLICT(HttpStatus.CONFLICT, "Creditor Institution conflict", "Creditor Institution code %s already exists"),
 
+    RELATION_STATION_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Relation Station-CI bad request", "Relation Station-CI between Creditor Institution with code %s and Station with code %s is not valid. %s"),
     RELATION_STATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Relation Station-CI not found", "No Relation Station-CI found between Creditor Institution with code %s and Station with code %s"),
     RELATION_STATION_CONFLICT(HttpStatus.CONFLICT, "Relation Station-CI conflict", "Relation Station-CI between Creditor Institution with code %s and Station with code %s already exists"),
 
