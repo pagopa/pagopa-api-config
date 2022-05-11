@@ -146,8 +146,10 @@ class CreditorInstitutionsServiceTest {
         }
     }
 
-    @Test
-    void updateCreditorInstitution() throws IOException, JSONException {
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {""})
+    void updateCreditorInstitution(String zipCode) throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         Pa mockPa = getMockPa();
         mockPa.setComuneDomicilioFiscale("");
@@ -159,13 +161,15 @@ class CreditorInstitutionsServiceTest {
         CreditorInstitutionDetails mockCI = getMockCreditorInstitutionDetails();
         mockCI.getAddress().setCity("");
         mockCI.getAddress().setCountryCode("");
-        mockCI.getAddress().setZipCode("");
+        mockCI.getAddress().setZipCode(zipCode);
         mockCI.getAddress().setLocation("");
         CreditorInstitutionDetails result = creditorInstitutionsService.updateCreditorInstitution("1234", mockCI);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/update_creditorinstitution_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
+
+
 
     @Test
     void updateCreditorInstitution_notFound() {
