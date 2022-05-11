@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
@@ -146,7 +146,7 @@ public class StationsController {
      */
     @Operation(summary = "Get station creditor institution list", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = CreditorInstitutions.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = StationCreditorInstitutions.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -154,7 +154,7 @@ public class StationsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/{stationcode}/creditorinstitutions", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<CreditorInstitutions> getStationCreditorInstitutions(
+    public ResponseEntity<StationCreditorInstitutions> getStationCreditorInstitutions(
             @Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode,
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
             @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
