@@ -6,7 +6,11 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitution;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -24,10 +28,14 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
 @Service
 @Validated
@@ -108,6 +116,32 @@ public class StationsService {
                 .pageInfo(CommonUtil.buildPageInfo(page))
                 .creditorInstitutionList(ecList)
                 .build();
+    }
+
+    public byte[] getStationCreditorInstitutionsCSV(String stationCode) {
+        Stazioni stazioni = getStationIfExists(stationCode);
+        List<PaStazionePa> queryResult = paStazioniRepository.findAllByFkStazione_ObjId(stazioni.getObjId());
+
+        var csvRows = queryResult.stream()
+                .map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class))
+                .map(this::getCsvValues)
+                .collect(Collectors.toList());
+        List<String> headers = Arrays.asList("Ente Creditore",
+                "Aux digit",
+                "ApplicationCode",
+                "Codice Segregazione",
+                "Broadcast");
+        return CommonUtil.createCsv(headers, csvRows);
+    }
+
+    private List<String> getCsvValues(StationCreditorInstitution elem) {
+        var list = new ArrayList<String>();
+        list.add(deNull(elem.getCreditorInstitutionCode()));
+        list.add(deNull(elem.getAuxDigit()));
+        list.add(deNull(elem.getApplicationCode()));
+        list.add(deNull(elem.getSegregationCode()));
+        list.add(deNull(elem.getBroadcast()).toString());
+        return list;
     }
 
     /**

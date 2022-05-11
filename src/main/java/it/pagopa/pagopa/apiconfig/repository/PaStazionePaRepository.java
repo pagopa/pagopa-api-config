@@ -21,6 +21,8 @@ public interface PaStazionePaRepository extends PagingAndSortingRepository<PaSta
 
     Page<PaStazionePa> findAllByFkStazione_ObjId(Long stationCode, Pageable pageable);
 
+    List<PaStazionePa> findAllByFkStazione_ObjId(Long stationCode);
+
     Optional<PaStazionePa> findOne(Specification<PaStazionePa> paStazionePa);
 
     default Optional<PaStazionePa> findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
