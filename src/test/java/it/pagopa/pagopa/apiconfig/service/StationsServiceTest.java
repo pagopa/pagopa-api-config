@@ -6,7 +6,6 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
@@ -173,8 +172,7 @@ class StationsServiceTest {
     @Test
     void getStationCreditorInstitutionsCsv() {
         when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
-        Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
-        when(paStazionePaRepository.findAllByFkStazione_ObjId(any(), any(Pageable.class))).thenReturn(page);
+        when(paStazionePaRepository.findAllByFkStazione_ObjId(any())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
 
         var result = stationsService.getStationCreditorInstitutionsCSV("1234");
         assertNotNull(result);
