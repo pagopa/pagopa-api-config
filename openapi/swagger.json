@@ -10831,7 +10831,7 @@
         },
         "country_code": {
           "example": "RM",
-          "pattern": "^\\w{2}$",
+          "pattern": "^\\w{2}$|^$",
           "type": "string"
         },
         "location": {
@@ -10843,7 +10843,7 @@
         },
         "zip_code": {
           "example": "00187",
-          "pattern": "^\\d{5}$",
+          "pattern": "^\\d{5}$|^$",
           "type": "string"
         }
       },
