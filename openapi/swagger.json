@@ -10090,7 +10090,7 @@
               }
             },
             "schema": {
-              "$ref": "#/definitions/CreditorInstitutions"
+              "$ref": "#/definitions/StationCreditorInstitutions"
             }
           },
           "400": {
@@ -11694,6 +11694,69 @@
         "enabled",
         "station_code",
         "version"
+      ],
+      "type": "object"
+    },
+    "StationCreditorInstitution": {
+      "properties": {
+        "application_code": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "aux_digit": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "broadcast": {
+          "type": "boolean"
+        },
+        "business_name": {
+          "example": "Comune di Lorem Ipsum",
+          "maxLength": 70,
+          "minLength": 0,
+          "type": "string"
+        },
+        "creditor_institution_code": {
+          "example": "1234567890100",
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "description": "creditor institution enabled",
+          "type": "boolean"
+        },
+        "mod4": {
+          "type": "boolean"
+        },
+        "segregation_code": {
+          "format": "int64",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "business_name",
+        "creditor_institution_code",
+        "enabled"
+      ],
+      "type": "object"
+    },
+    "StationCreditorInstitutions": {
+      "properties": {
+        "creditor_institutions": {
+          "items": {
+            "$ref": "#/definitions/StationCreditorInstitution"
+          },
+          "type": "array"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        }
+      },
+      "required": [
+        "creditor_institutions",
+        "page_info"
       ],
       "type": "object"
     },
