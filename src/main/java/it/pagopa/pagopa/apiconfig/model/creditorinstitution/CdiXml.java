@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.List;
 
-@XmlRootElement(name = "informativaPSP")
+@XmlRootElement(name = "listaInformativePSP")
 @XmlAccessorType(XmlAccessType.FIELD)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,13 +23,23 @@ import java.util.List;
 @Getter
 public class CdiXml {
 
-    private String identificativoFlusso;
-    private String identificativoPSP;
-    private String ragioneSociale;
-    private InformativaMaster informativaMaster;
-    private ListaInformativaDetail listaInformativaDetail;
+    private InformativaPSP informativaPSP;
 
-    private String mybankIDVS;
+    @XmlRootElement(name = "informativaPSP")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @Getter
+    public static class InformativaPSP {
+        private String identificativoFlusso;
+        private String identificativoPSP;
+        private String ragioneSociale;
+        private InformativaMaster informativaMaster;
+        private ListaInformativaDetail listaInformativaDetail;
+
+        private String mybankIDVS;
+    }
 
 
     @XmlRootElement(name = "informativaMaster")

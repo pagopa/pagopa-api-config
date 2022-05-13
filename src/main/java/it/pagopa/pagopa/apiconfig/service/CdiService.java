@@ -121,7 +121,7 @@ public class CdiService {
         CdiXml xml = mapXml(file, CdiXml.class);
 
         // semantics checks
-        var psp = getPspIfExists(xml.getIdentificativoPSP());
+        var psp = getPspIfExists(xml.getInformativaPSP().getIdentificativoPSP());
         checkFlusso(xml, psp);
         checkRagioneSociale(xml, psp);
         checkValidityDate(xml);
@@ -130,7 +130,7 @@ public class CdiService {
         var binaryFile = saveBinaryFile(file);
         var master = saveCdiMaster(xml, psp, binaryFile);
         // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCIE_COSTO, PREFERENCES
-        for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
+        for (var xmlDetail : xml.getInformativaPSP().getListaInformativaDetail().getInformativaDetail()) {
             var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
 
             var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
@@ -169,7 +169,7 @@ public class CdiService {
                         : 0;
                 cdiPreferenceRepository.save(CdiPreference.builder()
                         .cdiDetail(detail)
-                        .seller(xml.getMybankIDVS())
+                        .seller(xml.getInformativaPSP().getMybankIDVS())
                         .buyer(elem.getCodiceConvenzione())
                         .costoConvenzione(costoConvenzione)
                         .build());
@@ -291,13 +291,13 @@ public class CdiService {
      */
     private CdiMaster saveCdiMaster(CdiXml xml, Psp psp, BinaryFile binaryFile) {
         return cdiMasterRepository.save(CdiMaster.builder()
-                .dataPubblicazione(toTimestamp(xml.getInformativaMaster().getDataPubblicazione()))
-                .dataInizioValidita(toTimestamp(xml.getInformativaMaster().getDataInizioValidita()))
-                .idInformativaPsp(xml.getIdentificativoFlusso())
-                .logoPsp(xml.getInformativaMaster().getLogoPSP().strip().getBytes())
-                .urlInformazioniPsp(xml.getInformativaMaster().getUrlInformazioniPSP())
-                .marcaBolloDigitale(xml.getInformativaMaster().getMarcaBolloDigitale())
-                .stornoPagamento(xml.getInformativaMaster().getStornoPagamento())
+                .dataPubblicazione(toTimestamp(xml.getInformativaPSP().getInformativaMaster().getDataPubblicazione()))
+                .dataInizioValidita(toTimestamp(xml.getInformativaPSP().getInformativaMaster().getDataInizioValidita()))
+                .idInformativaPsp(xml.getInformativaPSP().getIdentificativoFlusso())
+                .logoPsp(xml.getInformativaPSP().getInformativaMaster().getLogoPSP().strip().getBytes())
+                .urlInformazioniPsp(xml.getInformativaPSP().getInformativaMaster().getUrlInformazioniPSP())
+                .marcaBolloDigitale(xml.getInformativaPSP().getInformativaMaster().getMarcaBolloDigitale())
+                .stornoPagamento(xml.getInformativaPSP().getInformativaMaster().getStornoPagamento())
                 .fkPsp(psp)
                 .fkBinaryFile(binaryFile)
                 .build());
@@ -331,8 +331,8 @@ public class CdiService {
      * @param psp the PSP from DB
      */
     private void checkFlusso(CdiXml xml, Psp psp) {
-        if (cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp()).isPresent()) {
-            throw new AppException(AppError.CDI_CONFLICT, xml.getIdentificativoFlusso());
+        if (cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getInformativaPSP().getIdentificativoFlusso(), psp.getIdPsp()).isPresent()) {
+            throw new AppException(AppError.CDI_CONFLICT, xml.getInformativaPSP().getIdentificativoFlusso());
         }
     }
 
@@ -343,8 +343,8 @@ public class CdiService {
      * @param psp the PSP from DB
      */
     private void checkRagioneSociale(CdiXml xml, Psp psp) {
-        if (!psp.getRagioneSociale().equals(xml.getRagioneSociale())) {
-            throw new AppException(AppError.CDI_BAD_REQUEST, "There is an error in ragioneSociale '" + xml.getRagioneSociale() + "'");
+        if (!psp.getRagioneSociale().equals(xml.getInformativaPSP().getRagioneSociale())) {
+            throw new AppException(AppError.CDI_BAD_REQUEST, "There is an error in ragioneSociale '" + xml.getInformativaPSP().getRagioneSociale() + "'");
         }
     }
 
@@ -354,7 +354,7 @@ public class CdiService {
     private void checkValidityDate(CdiXml xml) {
         var now = LocalDate.now();
         Timestamp tomorrow = Timestamp.valueOf(LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 23, 59, 59));
-        if (toTimestamp(xml.getInformativaMaster().getDataInizioValidita()).before(tomorrow)) {
+        if (toTimestamp(xml.getInformativaPSP().getInformativaMaster().getDataInizioValidita()).before(tomorrow)) {
             throw new AppException(AppError.ICA_BAD_REQUEST, "Validity start date must be greater than the today's date");
         }
     }
