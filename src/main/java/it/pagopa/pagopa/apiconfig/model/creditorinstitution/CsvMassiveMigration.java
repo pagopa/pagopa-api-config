@@ -12,13 +12,13 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class CsvMassiveMigration {
 
-    @CsvBindByName(required = true, column = "creditorInstitution")
+    @CsvBindByName(required = true, column = "cf")
     private String creditorInstitution;
 
-    @CsvBindByName(required = true, column = "oldStation")
+    @CsvBindByName(required = true, column = "idstazione_provenienza")
     private String oldStation;
 
-    @CsvBindByName(required = true, column = "newStation")
+    @CsvBindByName(required = true, column = "idstazione_destinazione")
     private String newStation;
 
     @CsvBindByName(column = "broadcast")
