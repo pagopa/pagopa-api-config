@@ -25,7 +25,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -42,6 +46,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -176,6 +182,22 @@ class StationsServiceTest {
 
         var result = stationsService.getStationCreditorInstitutionsCSV("1234");
         assertNotNull(result);
+    }
+
+    @Test
+    void massiveMigration() throws IOException {
+        when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
+
+        File csv = TestUtil.readFile("file/massive_migration.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
+        stationsService.massiveMigration(multipartFile);
+
+        verify(paStazionePaRepository, times(1))
+                .save(any(PaStazionePa.class));
+
     }
 
 }

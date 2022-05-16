@@ -1,0 +1,39 @@
+package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
+
+import com.opencsv.bean.CsvBindByName;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@SuperBuilder(toBuilder = true)
+@NoArgsConstructor
+public class CsvMassiveMigration {
+
+    @CsvBindByName(required = true, column = "creditorInstitution")
+    private String creditorInstitution;
+
+    @CsvBindByName(required = true, column = "oldStation")
+    private String oldStation;
+
+    @CsvBindByName(required = true, column = "newStation")
+    private String newStation;
+
+    @CsvBindByName(column = "broadcast")
+    private YesNo broadcast;
+
+
+    @Getter
+    public enum YesNo {
+        S(true), N(false);
+
+        private final boolean value;
+
+        YesNo(boolean value) {
+            this.value = value;
+        }
+    }
+
+}

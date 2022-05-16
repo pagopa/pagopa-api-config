@@ -1,11 +1,16 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CsvMassiveMigration;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
@@ -24,10 +29,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -116,6 +127,54 @@ public class StationsService {
                 .pageInfo(CommonUtil.buildPageInfo(page))
                 .creditorInstitutionList(ecList)
                 .build();
+    }
+
+    @Transactional
+    public void massiveMigration(MultipartFile file) {
+        // read CSV
+        Reader reader;
+        try {
+            reader = new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
+        }
+
+        // create mapping strategy to arrange the column name
+        HeaderColumnNameMappingStrategy<CsvMassiveMigration> mappingStrategy = new HeaderColumnNameMappingStrategy<>();
+        mappingStrategy.setType(CsvMassiveMigration.class);
+
+        // execute validation
+        CsvToBean<CsvMassiveMigration> parsedCSV = new CsvToBeanBuilder<CsvMassiveMigration>(reader)
+                .withSeparator(',')
+                .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                .withOrderedResults(true)
+                .withMappingStrategy(mappingStrategy)
+                .withType(CsvMassiveMigration.class)
+                .withIgnoreLeadingWhiteSpace(true)
+                .withThrowExceptions(false)
+                .build();
+
+        List<CsvMassiveMigration> items = parsedCSV.parse();
+
+        for (CsvMassiveMigration item : items) {
+            Stazioni oldStation = getStationIfExists(item.getOldStation());
+            Stazioni newStation = getStationIfExists(item.getNewStation());
+            Pa pa = getPaIfExists(item.getCreditorInstitution());
+
+            var relation = paStazioniRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), oldStation.getObjId())
+                    .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, item.getCreditorInstitution(), item.getOldStation()));
+
+
+            var builder = relation.toBuilder()
+                    .fkStazione(newStation);
+            if (item.getBroadcast() != null) {
+                builder.broadcast(item.getBroadcast().isValue())
+                        .build();
+            }
+            paStazioniRepository.save(builder.build());
+        }
+
+
     }
 
     public byte[] getStationCreditorInstitutionsCSV(String stationCode) {

@@ -5,7 +5,6 @@ import com.opencsv.exceptions.CsvConstraintViolationException;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.massiveloading.CreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -133,11 +132,9 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
             if (!creditorInstitutionStation.getSegregationCode().isBlank()) {
                 errors.add("Segregation code error: length must be blank");
             }
-        }
-        else if (creditorInstitutionStation.getAuxDigit() == 0) {
+        } else if (creditorInstitutionStation.getAuxDigit() == 0) {
             checkSegregationAndApplicationCode0(creditorInstitutionStation, errors);
-        }
-        else if (creditorInstitutionStation.getAuxDigit() == 3) {
+        } else if (creditorInstitutionStation.getAuxDigit() == 3) {
             checkSegregationAndApplicationCode3(creditorInstitutionStation, errors);
         }
     }
