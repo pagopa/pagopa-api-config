@@ -16,8 +16,24 @@ import {
 	getEncodings,
 	createEncodings,
 	deleteEncodings,
-	getIbans
+	getIbans,
+	getStationsRelationship,
+	createStationRelationship,
+	updateStationRelationship,
+	deleteStationRelationship
 } from "./helpers/creditor_institutions_helper.js";
+
+import {
+	getStationCode,
+	createStation,
+	deleteStation
+} from "./helpers/station_helper.js";
+
+import {
+	getBrokerCode,
+	createBroker,
+	deleteBroker
+} from "./helpers/ci_broker_helper.js";
 
 // read configuration
 const varsArray = new SharedArray('vars', function () {
@@ -32,17 +48,59 @@ export function setup() {
 	// 2. setup code (once)
 	// The setup code runs, setting up the test environment (optional) and generating data
 	// used to reuse code for the same VU
-	const token = vars.env === "local" ? "-" : getJWTToken(vars.tenantId, vars.clientId, vars.clientSecret, vars.resource);
+	// const token = vars.env === "local" ? "-" : getJWTToken(vars.tenantId, vars.clientId, vars.clientSecret, vars.resource);
 
-	const params = {
-		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${token}`
-		},
-	};
+	// precondition is moved to default fn because in this stage
+	// __VU is always 0 and cannot be used to create env properly
+}
 
-	let response = deleteCreditorInstitution(rootUrl, params, __VU);
-	const key = `initial step for ${getCiCode(__VU)}`;
+function precondition(params, id) {
+	const tempId = `CI${id}`;
+
+	// remove the creditor institution if it already exists
+	let response = deleteCreditorInstitution(rootUrl, params, id);
+	let key = `initial step for creditor institution ${getCiCode(id)}`;
+	check(response, {
+		[key]: (r) => r.status === 200 || r.status === 404,
+	});
+
+	// create a broker in order to create the following station
+	response = createBroker(rootUrl, params, tempId);
+	key = `initial step for station-broker ${getStationCode(id)} / ${getBrokerCode(tempId)}`;
+	check(response, {
+		[key]: (r) => r.status === 201 || r.status === 404,
+	});
+
+	sleep(0.5)
+
+	// create a station in order to create relationship with creditor institution
+	// id is created with CI to avoid collision with stations script
+	response = createStation(rootUrl, params, tempId);
+	key = `initial step for ci-station relationship 1/2 ${getCiCode(id)} / ${getStationCode(tempId)}`;
+	check(response, {
+		[key]: (r) => r.status === 201 || r.status === 404,
+	});
+
+	// remove ci-station relationship
+	response = deleteStationRelationship(rootUrl, params, id, tempId);
+	key = `initial step for ci-station relationship 2/2 ${getCiCode(id)} / ${getStationCode(tempId)}`;
+	check(response, {
+		[key]: (r) => r.status === 200 || r.status === 404,
+	});
+}
+
+function postcondition(params, id) {
+	const tempId = `CI${id}`;
+
+	// remove station and broker used for the test
+	let response = deleteStation(rootUrl, params, tempId);
+	let key = `final step for ci-station relationship ${getCiCode(id)} / ${getStationCode(tempId)}`;
+	check(response, {
+		[key]: (r) => r.status === 200 || r.status === 404,
+	});
+
+	response = deleteBroker(rootUrl, params, tempId);
+	key = `final step for ci-broker ${getCiCode(id)} / ${getBrokerCode(tempId)}`;
 	check(response, {
 		[key]: (r) => r.status === 200 || r.status === 404,
 	});
@@ -59,6 +117,8 @@ export default function (data) {
 			'Authorization': `Bearer ${token}`
 		},
 	};
+
+	precondition(params, __VU);
 
 	// Get creditor institutions
 	let response = getCreditorInstitutions(rootUrl, params);
@@ -110,14 +170,45 @@ export default function (data) {
 		'getIbans': (r) => r.status === 200,
 	});
 
+	// Create station relationship
+	response = createStationRelationship(rootUrl, params, __VU, `CI${__VU}`);
+	console.log("STATION", JSON.stringify(response.json()))
+	check(response, {
+		'createStationRelationship': (r) => r.status === 201,
+	});
+
+	// Get stations relationship
+	response = getStationsRelationship(rootUrl, params, __VU);
+	check(response, {
+		'getStationsRelationship': (r) => r.status === 200,
+	});
+
+	// Update station relationship
+	response = updateStationRelationship(rootUrl, params, __VU, `CI${__VU}`);
+	check(response, {
+		'updateStationRelationship': (r) => r.status === 200,
+	});
+
+	// Delete station relationship
+	response = deleteStationRelationship(rootUrl, params, __VU, `CI${__VU}`);
+	check(response, {
+		'deleteStationRelationship': (r) => r.status === 200,
+	});
+
 	// Delete creditor institution
 	response = deleteCreditorInstitution(rootUrl, params, __VU);
 	check(response, {
 		'deleteCreditorInstitution': (r) => r.status === 200,
 	});
+
+	postcondition(params, __VU);
 }
 
 export function teardown(data) {
 	// 4. teardown code (once per script)
 	// The teardown code runs, postprocessing data and closing the test environment.
+
+	// postcondition is moved to default fn because in this stage
+	// __VU is always 0 and cannot be used to create env properly
+
 }

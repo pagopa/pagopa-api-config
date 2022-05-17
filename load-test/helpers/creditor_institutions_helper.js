@@ -1,4 +1,5 @@
 import http from 'k6/http';
+import {getStationCode} from "./station_helper.js";
 
 const ciCode = "ABCDEFGHI";
 
@@ -87,4 +88,41 @@ export function deleteEncodings(rootUrl, params, id) {
 export function getIbans(rootUrl, params, id) {
 	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/ibans`
 	return http.get(url, params);
+}
+
+export function getStationsRelationship(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/stations`
+	return http.get(url, params);
+}
+
+export function createStationRelationship(rootUrl, params, id, stationId) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/stations`
+	const payload = {
+		"station_code": getStationCode(stationId),
+		"aux_digit": 3,
+		"application_code": 1,
+		"segregation_code": 1,
+		"mod4": false,
+		"broadcast": false
+	}
+	return http.post(url, JSON.stringify(payload), params);
+}
+
+export function updateStationRelationship(rootUrl, params, id, stationId) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/stations/${getStationCode(stationId)}`
+	const payload = {
+		"station_code": getStationCode(stationId),
+		"aux_digit": 3,
+		"application_code": 1,
+		"segregation_code": 1,
+		"mod4": false,
+		"broadcast": false
+	}
+	return http.put(url, JSON.stringify(payload), params);
+}
+
+export function deleteStationRelationship(rootUrl, params, id, stationId) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/stations/${getStationCode(stationId)}`
+
+	return http.del(url, params);
 }
