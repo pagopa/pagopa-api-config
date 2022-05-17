@@ -1,0 +1,90 @@
+import http from 'k6/http';
+
+const ciCode = "ABCDEFGHI";
+
+export function getCiCode(id) {
+	return ciCode + ('000'+id).slice(-3);
+}
+
+export function getCreditorInstitutions(rootUrl, params) {
+	const url = `${rootUrl}/creditorinstitutions?limit=50&page=0`
+	return http.get(url, params);
+}
+
+export function createCreditorInstitution(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions`
+	const payload = {
+		"creditor_institution_code": getCiCode(id),
+		"enabled": true,
+		"business_name": "Comune di Lorem Ipsum",
+		"address": {
+			"location": "Via delle vie 3",
+			"city": "Rome",
+			"zip_code": "00187",
+			"country_code": "RM",
+			"tax_domicile": "00111"
+		},
+		"psp_payment": true,
+		"reporting_ftp": false,
+		"reporting_zip": true
+	}
+
+	return http.post(url, JSON.stringify(payload), params);
+}
+
+export function getCreditorInstitution(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}`
+	return http.get(url, params);
+}
+
+export function updateCreditorInstitution(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}`
+	const payload = {
+		"creditor_institution_code": getCiCode(id),
+		"enabled": true,
+		"business_name": "Comune di Lorem Ipsum",
+		"address": {
+			"location": "Via delle vie 3",
+			"city": "Rome",
+			"zip_code": "00187",
+			"country_code": "RM",
+			"tax_domicile": "00111"
+		},
+		"psp_payment": true,
+		"reporting_ftp": false,
+		"reporting_zip": true
+	}
+
+	return http.put(url, JSON.stringify(payload), params);
+}
+
+export function deleteCreditorInstitution(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}`
+
+	return http.del(url, params);
+}
+
+export function getEncodings(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/encodings`
+	return http.get(url, params);
+}
+
+export function createEncodings(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/encodings`
+	const payload = {
+		"code_type": "QR_CODE",
+		"encoding_code": "1234567890"
+	}
+	return http.post(url, JSON.stringify(payload), params);
+}
+
+export function deleteEncodings(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/encodings/1234567890`
+
+	return http.del(url, params);
+}
+
+export function getIbans(rootUrl, params, id) {
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/ibans`
+	return http.get(url, params);
+}

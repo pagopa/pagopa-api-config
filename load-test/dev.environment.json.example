@@ -1,0 +1,13 @@
+{
+  "environment": [
+    {
+      "env": "dev",
+      "host": "<dev.url>",
+      "basePath": "<dev.basepath>",
+      "tenantId": "<tenant-id>",
+      "clientId": "<client-id>",
+      "clientSecret": "<client-secret>",
+      "resource": "<resource>"
+    }
+  ]
+}

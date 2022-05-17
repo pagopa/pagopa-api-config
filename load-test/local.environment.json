@@ -1,0 +1,13 @@
+{
+  "environment": [
+    {
+      "env": "local",
+      "host": "http://localhost:8080",
+      "basePath": "apiconfig/api/v1",
+      "tenantId": "-",
+      "clientId": "-",
+      "clientSecret": "-",
+      "resource": "-"
+    }
+  ]
+}
