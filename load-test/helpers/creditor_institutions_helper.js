@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import {getStationCode} from "./station_helper.js";
 
-const ciCode = "ABCDEFGHI";
+const ciCode = "12345678";
 
 export function getCiCode(id) {
 	return ciCode + ('000'+id).slice(-3);
@@ -74,13 +74,13 @@ export function createEncodings(rootUrl, params, id) {
 	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/encodings`
 	const payload = {
 		"code_type": "QR_CODE",
-		"encoding_code": "1234567890"
+		"encoding_code": getCiCode(id)
 	}
 	return http.post(url, JSON.stringify(payload), params);
 }
 
 export function deleteEncodings(rootUrl, params, id) {
-	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/encodings/1234567890`
+	const url = `${rootUrl}/creditorinstitutions/${getCiCode(id)}/encodings/${getCiCode(id)}`
 
 	return http.del(url, params);
 }
