@@ -15,8 +15,6 @@ _Note_: configure environment through `*.environment.json` file.
 - based on duration
 
  `k6 run --duration 1m --vus 2 --env VARS=local.environment.json creditor_institutions.js`
- 
-**Dev**
 
  
 ##### Dev
