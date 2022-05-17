@@ -48,7 +48,6 @@ export function setup() {
 	// 2. setup code (once)
 	// The setup code runs, setting up the test environment (optional) and generating data
 	// used to reuse code for the same VU
-	// const token = vars.env === "local" ? "-" : getJWTToken(vars.tenantId, vars.clientId, vars.clientSecret, vars.resource);
 
 	// precondition is moved to default fn because in this stage
 	// __VU is always 0 and cannot be used to create env properly
@@ -92,7 +91,7 @@ function precondition(params, id) {
 function postcondition(params, id) {
 	const tempId = `CI${id}`;
 
-	// remove station and broker used for the test
+	// remove station and broker used in the test
 	let response = deleteStation(rootUrl, params, tempId);
 	let key = `final step for ci-station relationship ${getCiCode(id)} / ${getStationCode(tempId)}`;
 	check(response, {
