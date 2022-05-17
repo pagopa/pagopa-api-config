@@ -12,6 +12,8 @@ _Note_: configure environment through `*.environment.json` file.
  
  `k6 run --iterations 2 --vus 2 --env VARS=local.environment.json station.js`
  
+ `k6 run --iterations 2 --vus 2 --env VARS=local.environment.json ci_broker.js`
+ 
 - based on duration
 
  `k6 run --duration 1m --vus 2 --env VARS=local.environment.json creditor_institutions.js`
