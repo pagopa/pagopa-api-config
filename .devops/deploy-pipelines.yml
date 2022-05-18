@@ -1,4 +1,12 @@
 parameters:
+  - name: ENV
+    displayName: Target Environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - uat
+      - prod
   - name: SEMVER
     displayName: "When packing a release, define the version bump to apply"
     type: string
@@ -8,16 +16,11 @@ parameters:
       - patch
       - buildNumber
       - skip
-    default: patch
-  - name: ENV
-    displayName: Target Environment
-    type: string
-    default: dev
-    values:
-      - dev
-      - uat
-      - prod
-      - test # test: deploy on develop with H2
+    default: skip
+  - name: TEST
+    displayName: Run tests
+    type: boolean
+    default: false
 
 variables:
   ${{ if eq(parameters['ENV'], 'dev') }}:
@@ -41,13 +44,20 @@ variables:
     STAGE: "p"
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
     dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
-  ${{ if eq(parameters['ENV'], 'test') }}:
-    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
-    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
-    APP_NAME: $(DEV_WEB_APP_NAME)
-    STAGE: "t"
-    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
-    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
+#  ${{ if eq(parameters['TEST'], 'true') }}:
+#    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
+#    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
+#    APP_NAME: $(DEV_WEB_APP_NAME)
+#    STAGE: "t"
+#    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
+#    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
+  # github action use 'merge' as value of SourceBranchName
+  ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
+    SOURCE_BRANCH: "main" # force to main branch
+  ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
+    SOURCE_BRANCH: ${{ variables['Build.SourceBranchName'] }}
+
+
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
@@ -55,7 +65,6 @@ variables:
   sha: ""
   tag: ""
 
-# Only manual triggers
 trigger: none
 pr: none
 
@@ -66,7 +75,7 @@ stages:
   # Create a release on GitHub
   - stage: release_service
     # bump version on main branch and if SEMVER is not 'skip'
-    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne('${{ parameters.SEMVER }}', 'skip'))
+    condition: and(eq(variables['SOURCE_BRANCH'], 'refs/heads/main'), ne('${{ parameters.SEMVER }}', 'skip'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -94,13 +103,13 @@ stages:
               failOnStderr: true
 
           - script: |
-              git checkout ${{variables['Build.SourceBranchName']}}
+              git checkout $(SOURCE_BRANCH)
 
           - script: |
               git add pom.xml
               git commit -m "Bump version [skip ci]"
-              git push origin ${{variables['Build.SourceBranchName']}}
-              
+              git push origin $(SOURCE_BRANCH)
+
 
           - script: |
               HEAD_SHA=$(git rev-parse HEAD)
@@ -136,13 +145,19 @@ stages:
     jobs:
       - job: deployJava
         steps:
+
+          - script: |
+              echo ${{variables['Build.SourceBranchName']}}        
+              echo $(SOURCE_BRANCH)
+              echo $(TEST)
+
           - checkout: self
             clean: true
             persistCredentials: true
             submodules: true
 
           - script: |
-              git checkout ${{variables['Build.SourceBranchName']}}
+              git checkout $(SOURCE_BRANCH)
 
           - task: Bash@3
             name: application_properties
@@ -204,10 +219,15 @@ stages:
               DockerRepository: '$(IMAGE_REPOSITORY)'
               DockerImageTag: '$(Build.BuildId)'
 
+          - script: |
+              echo "##vso[task.setvariable variable=version;isOutput=true]$(pomversion.next)"
+            name: dockerTag
+
+
   # Run test
   - stage: test
-    # run stage 'test' only if ENV is equal to 'test'
-    condition: and(not(failed('deployJava')), eq('${{ parameters.ENV }}', 'test'))
+    # run this stage only if 'test' is enabled
+    condition: and(not(failed('deployJava')), eq('${{ parameters.TEST }}', 'true'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -217,13 +237,13 @@ stages:
         steps:
           - task: Delay@1
             inputs:
-              delayForMinutes: '5'
+              delayForMinutes: '10'
 
       - job: integrationTests
         dependsOn: waitStartup
         steps:
           - script: |
-              git checkout ${{variables['Build.SourceBranchName']}}
+              git checkout $(SOURCE_BRANCH)
 
           - script: |
               yarn global add newman
@@ -236,37 +256,75 @@ stages:
           - script: |
               newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml
             displayName: 'Run api test'
-            continueOnError: true
+            continueOnError: false
 
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '**/*-TEST.xml'
-              searchFolder: '$(System.DefaultWorkingDirectory)'
+#          - task: PublishTestResults@2
+#            inputs:
+#              testResultsFormat: 'JUnit'
+#              testResultsFiles: '**/*-TEST.xml'
+#              searchFolder: '$(System.DefaultWorkingDirectory)'
 
-      - job: loadTests
-        dependsOn: waitStartup
+      #      - job: loadTests
+      #        dependsOn: waitStartup
+      #        steps:
+      #          - script: |
+      #              yarn add jquery
+      #              bash api-test/setup_env_api_test.sh $(STAGE)
+      #
+      #          - script: |
+      #              yarn global add @apideck/postman-to-k6
+      #            displayName: 'postman-to-k6 installation'
+      #          - script: |
+      #              sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+      #              echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+      #              sudo apt-get update
+      #              sudo apt-get install k6
+      #            displayName: 'k6 installation'
+      #
+      #          - script: |
+      #              bash api-test/postman-to-k6-converter.sh api-test/Azure.postman_environment.json
+      #            displayName: 'Generate load test'
+      #            continueOnError: true
+      #
+      #          - script: |
+      #              k6 run --vus 2 --duration 30s ./k6-script.js
+      #            displayName: 'Run load test'
+      #            continueOnError: true
+
+      - job: deployUAT
+        dependsOn: integrationTests
+        variables:
+          version: $[ stageDependencies.deploy.deployJava.outputs['dockerTag.version'] ]
         steps:
-          - script: |
-              yarn add jquery
-              bash api-test/setup_env_api_test.sh $(STAGE)
+          - task: Maven@3
+            inputs:
+              mavenPomFile: 'pom.xml'
+              publishJUnitResults: false
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.11'
+              mavenVersionOption: 'Default'
+              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
+              sonarQubeRunAnalysis: false
 
-          - script: |
-              yarn global add @apideck/postman-to-k6
-            displayName: 'postman-to-k6 installation'
-          - script: |
-              sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
-              echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-              sudo apt-get update
-              sudo apt-get install k6
-            displayName: 'k6 installation'
+          - task: Docker@2
+            displayName: Build and push an image to UAT container registry
+            inputs:
+              containerRegistry: '$(UAT_CONTAINER_REGISTRY)'
+              repository: '$(IMAGE_REPOSITORY)'
+              command: 'buildAndPush'
+              tags: |
+                $(Build.BuildId)
+                latest
+                $(version)
 
-          - script: |
-              bash api-test/postman-to-k6-converter.sh api-test/Azure.postman_environment.json
-            displayName: 'Generate load test'
-            continueOnError: true
-
-          - script: |
-              k6 run --vus 2 --duration 30s ./k6-script.js
-            displayName: 'Run load test'
-            continueOnError: true
+          - task: AzureRMWebAppDeployment@4
+            displayName: Azure App Service Deploy in UAT
+            inputs:
+              appType: webAppContainer
+              ConnectedServiceName: '$(UAT_AZURE_SUBSCRIPTION)'
+              WebAppName: '$(UAT_WEB_APP_NAME)'
+              DockerNamespace: '$(UAT_CONTAINER_NAMESPACE)'
+              DockerRepository: '$(UAT_AZURE_SUBSCRIPTION)'
+              DockerImageTag: '$(Build.BuildId)'
