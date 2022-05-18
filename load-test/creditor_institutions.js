@@ -36,6 +36,8 @@ import {
 } from "./helpers/ci_broker_helper.js";
 
 // read configuration
+// note: SharedArray can currently only be constructed inside init code
+// according to https://k6.io/docs/javascript-api/k6-data/sharedarray
 const varsArray = new SharedArray('vars', function () {
 	return JSON.parse(open(`./${__ENV.VARS}`)).environment;
 });
@@ -98,11 +100,11 @@ function postcondition(params, id) {
 		[key]: (r) => r.status === 200 || r.status === 404,
 	});
 
-	// response = deleteBroker(rootUrl, params, tempId);
-	// key = `final step for ci-broker ${getCiCode(id)} / ${getBrokerCode(tempId)}`;
-	// check(response, {
-	// 	[key]: (r) => r.status === 200 || r.status === 404,
-	// });
+	response = deleteBroker(rootUrl, params, tempId);
+	key = `final step for ci-broker ${getCiCode(id)} / ${getBrokerCode(tempId)}`;
+	check(response, {
+		[key]: (r) => r.status === 200 || r.status === 404,
+	});
 }
 
 export default function (data) {
