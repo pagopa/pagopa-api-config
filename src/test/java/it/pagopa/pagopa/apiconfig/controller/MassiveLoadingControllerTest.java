@@ -36,7 +36,7 @@ class MassiveLoadingControllerTest {
         File csv = TestUtil.readFile("file/ci_station_ok.csv");
         MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
 
-        String url = "/massiveloading/creditorinstitution-station";
+        String url = "/batchoperation/creditorinstitution-station/loading";
         mvc.perform(multipart(url)
                 .file(multipartFile)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -51,11 +51,24 @@ class MassiveLoadingControllerTest {
         AppException exception = new AppException(AppError.MASSIVELOADING_BAD_REQUEST, "MASSIVELOADING_BAD_REQUEST");
         doThrow(exception).when(massiveLoadingService).manageCIStation(multipartFile);
 
-        String url = "/massiveloading/creditorinstitution-station";
+        String url = "/batchoperation/creditorinstitution-station/loading";
         mvc.perform(multipart(url)
                 .file(multipartFile)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    void massiveMigration() throws Exception {
+        File csv = TestUtil.readFile("file/massive_migration.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
+
+        String url = "/batchoperation/creditorinstitution-station/migration";
+        mvc.perform(multipart(url)
+                        .file(multipartFile)
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isCreated());
     }
 
 }

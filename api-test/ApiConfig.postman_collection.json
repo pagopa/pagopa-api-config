@@ -15,12 +15,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"login JWT\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});",
-									"",
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jwt\", jsonData.access_token);"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -417,7 +412,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"mod4\": false,\n    \"broadcast\": false\n}",
+							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"mod4\": false,\n    \"broadcast\": false,\n    \"aux_digit\": 0\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -471,7 +466,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"aux_digit\": \"10\",\n    \"mod4\": true,\n    \"broadcast\": true\n}",
+							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"aux_digit\": \"1\",\n    \"mod4\": true,\n    \"broadcast\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -906,63 +901,6 @@
 							"path": [
 								"{{api-config-base-path}}",
 								"stations"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "massiveMigration",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"massiveMigration\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "src/test/resources/file/massive_migration.csv"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/migration",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"stations",
-								"migration"
 							]
 						}
 					},
@@ -2731,6 +2669,208 @@
 					"response": []
 				},
 				{
+					"name": "getCdis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCdis\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis?page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "pspcode",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "idcdi",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createCdi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCdi\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "105513",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "src/test/resources/file/cdi_valid.xml"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCdi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCdi\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis",
+								":id"
+							],
+							"query": [
+								{
+									"key": "pspcode",
+									"value": "BPPIITRRZZZ"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "WISP_1_2_20211229"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCdi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCdi\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis",
+								":id"
+							],
+							"query": [
+								{
+									"key": "pspcode",
+									"value": "BPPIITRRZZZ"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "BCITITMM_20-20-0817"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "getPaymentServiceProvidersChannels",
 					"event": [
 						{
@@ -2844,7 +2984,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_types\": [\n      \"BBT\"\n  ]\n}"
+							"raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_types\": [\n      \"BBT\",\n      \"BP\"\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
@@ -3617,208 +3757,6 @@
 								{
 									"key": "page",
 									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getCdis",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getCdis\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis?page=0",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"cdis"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "pspcode",
-									"value": "",
-									"disabled": true
-								},
-								{
-									"key": "idcdi",
-									"value": "1",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createCdi",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createCdi\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "Content-Length",
-								"value": "105513",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "src/test/resources/file/cdi_valid.xml"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"cdis"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCdi",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCdi\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"cdis",
-								":id"
-							],
-							"query": [
-								{
-									"key": "pspcode",
-									"value": "BPPIITRRZZZ"
-								}
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "BCITITMM_20-20-0817"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getCdi",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getCdi\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"cdis",
-								":id"
-							],
-							"query": [
-								{
-									"key": "pspcode",
-									"value": "BPPIITRRZZZ"
-								}
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "WISP_1_2_20211229"
 								}
 							]
 						}
@@ -5920,39 +5858,79 @@
 					},
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "Content-Length",
-								"value": "105513",
-								"type": "text",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/Users/francesco/Development/PagoPA/pagopa-api-config/src/test/resources/file/ci_station_ok.csv"
+									"src": "src/test/resources/file/ci_station_ok.csv"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/massiveloading/creditorinstitution-station",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/batchoperation/creditorinstitution-station/loading",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
-								"massiveloading",
-								"creditorinstitution-station"
+								"batchoperation",
+								"creditorinstitution-station",
+								"loading"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "massiveCIStationMigration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"massiveMigration\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "src/test/resources/file/massive_migration.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/batchoperation/creditorinstitution-station/migration",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"batchoperation",
+								"creditorinstitution-station",
+								"migration"
 							]
 						}
 					},

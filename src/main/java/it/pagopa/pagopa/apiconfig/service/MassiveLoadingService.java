@@ -5,9 +5,12 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CsvMassiveMigration;
 import it.pagopa.pagopa.apiconfig.model.massiveloading.CreditorInstitutionStation;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -26,6 +29,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -55,6 +59,55 @@ public class MassiveLoadingService {
             throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, e, e.getMessage());
         }
     }
+
+    @Transactional
+    public void massiveMigration(MultipartFile file) {
+        // read CSV
+        Reader reader;
+        try {
+            reader = new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
+        }
+
+        // create mapping strategy to arrange the column name
+        HeaderColumnNameMappingStrategy<CsvMassiveMigration> mappingStrategy = new HeaderColumnNameMappingStrategy<>();
+        mappingStrategy.setType(CsvMassiveMigration.class);
+
+        // execute validation
+        CsvToBean<CsvMassiveMigration> parsedCSV = new CsvToBeanBuilder<CsvMassiveMigration>(reader)
+                .withSeparator(',')
+                .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                .withOrderedResults(true)
+                .withMappingStrategy(mappingStrategy)
+                .withType(CsvMassiveMigration.class)
+                .withIgnoreLeadingWhiteSpace(true)
+                .withThrowExceptions(false)
+                .build();
+
+        List<CsvMassiveMigration> items = parsedCSV.parse();
+
+        for (CsvMassiveMigration item : items) {
+            Stazioni oldStation = getStationIfExists(item.getOldStation());
+            Stazioni newStation = getStationIfExists(item.getNewStation());
+            Pa pa = getPaIfExists(item.getCreditorInstitution());
+
+            var relation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), oldStation.getObjId())
+                    .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, item.getCreditorInstitution(), item.getOldStation()));
+
+
+            var builder = relation.toBuilder()
+                    .fkStazione(newStation);
+            if (item.getBroadcast() != null) {
+                builder.broadcast(item.getBroadcast().isValue())
+                        .build();
+            }
+            paStazionePaRepository.save(builder.build());
+        }
+
+
+    }
+
 
     /**
      * add or remove all elements in the file
@@ -110,5 +163,29 @@ public class MassiveLoadingService {
                 creditorInstitutionsService.deleteCreditorInstitutionStation(item.getCreditorInstitutionId(), item.getStationId());
             }
         }
+    }
+
+
+    /**
+     * @param stationCode code of the station
+     * @return search on DB using the {@code stationCode} and return the Stazioni if it is present
+     * @throws AppException if not found
+     */
+    private Stazioni getStationIfExists(String stationCode) {
+        Optional<Stazioni> result = stazioniRepository.findByIdStazione(stationCode);
+        if (result.isEmpty()) {
+            throw new AppException(AppError.STATION_NOT_FOUND, stationCode);
+        }
+        return result.get();
+    }
+
+    /**
+     * @param creditorInstitutionCode idDominio
+     * @return return the PA record from DB if Exists
+     * @throws AppException if not found
+     */
+    protected Pa getPaIfExists(String creditorInstitutionCode) throws AppException {
+        return paRepository.findByIdDominio(creditorInstitutionCode)
+                .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, creditorInstitutionCode));
     }
 }
