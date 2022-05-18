@@ -23,6 +23,8 @@ import {
 
 
 // read configuration
+// note: SharedArray can currently only be constructed inside init code
+// according to https://k6.io/docs/javascript-api/k6-data/sharedarray
 const varsArray = new SharedArray('vars', function () {
 	return JSON.parse(open(`./${__ENV.VARS}`)).environment;
 });
