@@ -67,7 +67,7 @@ function precondition(params, id) {
 	response = createBroker(rootUrl, params, tempId);
 	key = `initial step for station-broker ${getStationCode(id)} / ${getBrokerCode(tempId)}`;
 	check(response, {
-		[key]: (r) => r.status === 201 || r.status === 404,
+		[key]: (r) => r.status === 201 || r.status === 409,
 	});
 
 	sleep(0.5)
@@ -77,7 +77,7 @@ function precondition(params, id) {
 	response = createStation(rootUrl, params, tempId);
 	key = `initial step for ci-station relationship 1/2 ${getCiCode(id)} / ${getStationCode(tempId)}`;
 	check(response, {
-		[key]: (r) => r.status === 201 || r.status === 404,
+		[key]: (r) => r.status === 201 || r.status === 409,
 	});
 
 	// remove ci-station relationship
@@ -98,11 +98,11 @@ function postcondition(params, id) {
 		[key]: (r) => r.status === 200 || r.status === 404,
 	});
 
-	response = deleteBroker(rootUrl, params, tempId);
-	key = `final step for ci-broker ${getCiCode(id)} / ${getBrokerCode(tempId)}`;
-	check(response, {
-		[key]: (r) => r.status === 200 || r.status === 404,
-	});
+	// response = deleteBroker(rootUrl, params, tempId);
+	// key = `final step for ci-broker ${getCiCode(id)} / ${getBrokerCode(tempId)}`;
+	// check(response, {
+	// 	[key]: (r) => r.status === 200 || r.status === 404,
+	// });
 }
 
 export default function (data) {

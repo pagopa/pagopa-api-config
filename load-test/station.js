@@ -60,13 +60,13 @@ function precondition(params, id) {
 	response = createBroker(rootUrl, params, tempId);
 	key = `initial step for station-broker ${getStationCode(id)} / ${getBrokerCode(tempId)}`;
 	check(response, {
-		[key]: (r) => r.status === 201 || r.status === 404,
+		[key]: (r) => r.status === 201 || r.status === 409,
 	});
 
 	// Create creditor institution
 	response = createCreditorInstitution(rootUrl, params, tempId);
 	check(response, {
-		'createCreditorInstitution': (r) => r.status === 201 || r.status === 404,
+		'createCreditorInstitution': (r) => r.status === 201 || r.status === 409,
 	});
 
 }
