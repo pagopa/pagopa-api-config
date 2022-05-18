@@ -1,27 +1,22 @@
 // 1. init code (once per VU)
 // prepares the script: loading files, importing modules, and defining functions
 
-import { check, sleep } from 'k6';
+import { check } from 'k6';
 import { SharedArray } from 'k6/data';
 
 import {getJWTToken} from "./helpers/authentication.js";
 
 import {
-	getBrokerCode,
 	getBrokers,
 	getBroker,
 	createBroker,
 	updateBroker,
 	deleteBroker
 } from "./helpers/ci_broker_helper.js";
-import {
-	createCreditorInstitution,
-	deleteCreditorInstitution,
-	createStationRelationship,
-	deleteStationRelationship
-} from "./helpers/creditor_institutions_helper.js";
 
 // read configuration
+// note: SharedArray can currently only be constructed inside init code
+// according to https://k6.io/docs/javascript-api/k6-data/sharedarray
 const varsArray = new SharedArray('vars', function () {
 	return JSON.parse(open(`./${__ENV.VARS}`)).environment;
 });
@@ -68,7 +63,7 @@ export default function (data) {
 	// Create broker
 	response = createBroker(rootUrl, params, __VU);
 	check(response, {
-		'createStation': (r) => r.status === 201,
+		'createBroker': (r) => r.status === 201,
 	});
 
 	// Get broker
