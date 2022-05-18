@@ -36,6 +36,8 @@ import {
 } from "./helpers/ci_broker_helper.js";
 
 // read configuration
+// note: SharedArray can currently only be constructed inside init code
+// according to https://k6.io/docs/javascript-api/k6-data/sharedarray
 const varsArray = new SharedArray('vars', function () {
 	return JSON.parse(open(`./${__ENV.VARS}`)).environment;
 });
@@ -48,7 +50,6 @@ export function setup() {
 	// 2. setup code (once)
 	// The setup code runs, setting up the test environment (optional) and generating data
 	// used to reuse code for the same VU
-	// const token = vars.env === "local" ? "-" : getJWTToken(vars.tenantId, vars.clientId, vars.clientSecret, vars.resource);
 
 	// precondition is moved to default fn because in this stage
 	// __VU is always 0 and cannot be used to create env properly
@@ -68,7 +69,7 @@ function precondition(params, id) {
 	response = createBroker(rootUrl, params, tempId);
 	key = `initial step for station-broker ${getStationCode(id)} / ${getBrokerCode(tempId)}`;
 	check(response, {
-		[key]: (r) => r.status === 201 || r.status === 404,
+		[key]: (r) => r.status === 201 || r.status === 409,
 	});
 
 	sleep(0.5)
@@ -78,7 +79,7 @@ function precondition(params, id) {
 	response = createStation(rootUrl, params, tempId);
 	key = `initial step for ci-station relationship 1/2 ${getCiCode(id)} / ${getStationCode(tempId)}`;
 	check(response, {
-		[key]: (r) => r.status === 201 || r.status === 404,
+		[key]: (r) => r.status === 201 || r.status === 409,
 	});
 
 	// remove ci-station relationship
@@ -92,7 +93,7 @@ function precondition(params, id) {
 function postcondition(params, id) {
 	const tempId = `CI${id}`;
 
-	// remove station and broker used for the test
+	// remove station and broker used in the test
 	let response = deleteStation(rootUrl, params, tempId);
 	let key = `final step for ci-station relationship ${getCiCode(id)} / ${getStationCode(tempId)}`;
 	check(response, {
