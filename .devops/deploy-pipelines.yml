@@ -82,9 +82,6 @@ stages:
               echo ${{ parameters.TEST }}
               echo ${{ parameters.SEMVER }}
               echo ${{ parameters['TEST'] }}
-              echo $[ parameters.TEST ]
-              echo $[ parameters.SEMVER ]
-              echo $[ parameters['TEST'] ]
 
 
   # Create a release on GitHub
