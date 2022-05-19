@@ -23,9 +23,14 @@ parameters:
     default: false
 
 variables:
-  environment: $[variables['ENV']]
-  semver: $[variables['SEMVER']]
-  runtest: $[variables['TEST']]
+  ${{ if ne(variables['ENV'], '') }}:
+    environment: $[variables['ENV']]
+    version: $[variables['SEMVER']]
+    runtest: $[variables['TEST']]
+  ${{ if eq(variables['ENV'], '') }}:
+    environment: ${{ parameters['ENV'] }}
+    version: ${{ parameters['SEMVER'] }}
+    runtest: ${{ parameters['TEST'] }}
 
   ${{ if eq(variables['environment'], 'dev') }}:
     AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
@@ -86,13 +91,13 @@ stages:
               echo $[variables['TEST']]
               echo $[variables['SEMVER']]
               echo $[variables['environment']]
-              echo $[variables['semver']]
+              echo $[variables['version']]
               echo $(STAGE)
 
 
   # Create a release on GitHub
   - stage: release_service
-    condition: ne(variables.semver, 'skip')
+    condition: ne(variables.version, 'skip')
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -108,7 +113,7 @@ stages:
 
           - template: azure-templates/maven-versioning.yml
             parameters:
-              semver: "$[variables['semver']]"
+              semver: "$[variables['version']]"
 
           - task: Bash@3
             name: pomversion
