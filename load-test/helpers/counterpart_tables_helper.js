@@ -9,7 +9,6 @@ export function createCounterPartTable(rootUrl, params, id, binFile) {
 	const url = `${rootUrl}/counterparttables`
 
 	const payload = {
-		field: '',
 		file: http.file(binFile, `counterpart_tables_${id}.xml`),
 	};
 
