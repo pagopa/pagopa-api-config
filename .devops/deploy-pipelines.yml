@@ -53,7 +53,7 @@ variables:
 #    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
   # github action use 'merge' as value of SourceBranchName
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
-    SOURCE_BRANCH: "refs/heads/main" # force to main branch
+    SOURCE_BRANCH: "main" # force to main branch
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: ${{ variables['Build.SourceBranchName'] }}
 
