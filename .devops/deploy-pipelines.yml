@@ -16,7 +16,7 @@ parameters:
       - patch
       - buildNumber
       - skip
-    default: skip
+    default: buildNumber
   - name: TEST
     displayName: Run tests
     type: boolean
@@ -249,7 +249,7 @@ stages:
   # Run test
   - stage: test
     # run this stage only if 'test' is enabled
-    condition: and(not(failed('deployJava')), eq($[variables.runtest], 'true'))
+    condition: and(not(failed('deployJava')), eq(variables.runtest, 'true'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
