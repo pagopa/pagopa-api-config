@@ -82,6 +82,12 @@ stages:
               echo ${{ parameters.TEST }}
               echo ${{ parameters.SEMVER }}
               echo ${{ parameters['TEST'] }}
+              echo $[ parameters.TEST ]
+              echo $[ parameters.SEMVER ]
+              echo $[ parameters['TEST'] ]
+
+          - ${{ each value in parameters.branchOptions }}:
+            - script: echo ${{ value }}
 
   # Create a release on GitHub
   - stage: release_service
