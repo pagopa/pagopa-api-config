@@ -23,34 +23,38 @@ parameters:
     default: false
 
 variables:
-  ${{ if eq(parameters['ENV'], 'dev') }}:
+  environment: $[variables['ENV']]
+  semver: $[variables['SEMVER']]
+  runtest: $[variables['TEST']]
+
+  ${{ if eq(variables['environment'], 'dev') }}:
     AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
     RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(DEV_WEB_APP_NAME)
     STAGE: "d"
     dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
     dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
-  ${{ if eq(parameters['ENV'], 'uat') }}:
+  ${{ if eq(variables['environment'], 'uat') }}:
     AZURE_SUBSCRIPTION: $(UAT_AZURE_SUBSCRIPTION)
     RESOURCE_GROUP: $(UAT_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(UAT_WEB_APP_NAME)
     STAGE: "u"
     dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
     dockerNamespace: $(UAT_CONTAINER_NAMESPACE)
-  ${{ if eq(parameters['ENV'], 'prod') }}:
+  ${{ if eq(variables['environment'], 'prod') }}:
     AZURE_SUBSCRIPTION: $(PROD_AZURE_SUBSCRIPTION)
     RESOURCE_GROUP: $(PROD_WEB_APP_RESOURCE_GROUP_NAME)
     APP_NAME: $(PROD_WEB_APP_NAME)
     STAGE: "p"
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
     dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
-#  ${{ if eq(parameters['TEST'], 'true') }}:
-#    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
-#    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
-#    APP_NAME: $(DEV_WEB_APP_NAME)
-#    STAGE: "t"
-#    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
-#    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
+  #  ${{ if eq(parameters['TEST'], 'true') }}:
+  #    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
+  #    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
+  #    APP_NAME: $(DEV_WEB_APP_NAME)
+  #    STAGE: "t"
+  #    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
+  #    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
   # github action use 'merge' as value of SourceBranchName
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: "main" # force to main branch
@@ -79,14 +83,16 @@ stages:
       - job: printjob
         steps:
           - script: |
-              echo ${{ parameters.TEST }}
-              echo ${{ parameters.SEMVER }}
-              echo ${{ parameters['TEST'] }}
+              echo $[variables['TEST']]
+              echo $[variables['SEMVER']]
+              echo $[variables['environment']]
+              echo $[variables['semver']]
+              echo $(STAGE)
 
 
   # Create a release on GitHub
   - stage: release_service
-    condition: ne('${{ parameters.SEMVER }}', 'skip')
+    condition: ne(variables.semver, 'skip')
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -102,7 +108,7 @@ stages:
 
           - template: azure-templates/maven-versioning.yml
             parameters:
-              semver: "${{ parameters.SEMVER }}"
+              semver: "$[variables['semver']]"
 
           - task: Bash@3
             name: pomversion
@@ -238,7 +244,7 @@ stages:
   # Run test
   - stage: test
     # run this stage only if 'test' is enabled
-#    condition: and(not(failed('deployJava')), eq('${{ parameters.TEST }}', 'true'))
+    condition: and(not(failed('deployJava')), eq($[variables.runtest], 'true'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -269,11 +275,11 @@ stages:
             displayName: 'Run api test'
             continueOnError: false
 
-#          - task: PublishTestResults@2
-#            inputs:
-#              testResultsFormat: 'JUnit'
-#              testResultsFiles: '**/*-TEST.xml'
-#              searchFolder: '$(System.DefaultWorkingDirectory)'
+      #          - task: PublishTestResults@2
+      #            inputs:
+      #              testResultsFormat: 'JUnit'
+      #              testResultsFiles: '**/*-TEST.xml'
+      #              searchFolder: '$(System.DefaultWorkingDirectory)'
 
       #      - job: loadTests
       #        dependsOn: waitStartup
