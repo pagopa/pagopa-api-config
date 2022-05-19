@@ -113,7 +113,7 @@ stages:
 
           - template: azure-templates/maven-versioning.yml
             parameters:
-              semver: "$[variables['version']]"
+              semver: $[ variables.version ]
 
           - task: Bash@3
             name: pomversion
