@@ -35,7 +35,7 @@
             "in": "formData",
             "name": "file",
             "required": true,
-            "type": "string"
+            "type": "file"
           }
         ],
         "responses": {
@@ -150,7 +150,7 @@
             "in": "formData",
             "name": "file",
             "required": true,
-            "type": "string"
+            "type": "file"
           }
         ],
         "responses": {
@@ -10402,15 +10402,6 @@
         ],
         "operationId": "getStationCreditorInstitutionsCSV",
         "summary": "Download a CSV with station creditor institution list"
-      }
-    },
-    "/massiveloading/creditorinstitution-station": {
-      "post": {
-        "parameters": [
-          {
-            "type": "file"
-          }
-        ]
       }
     }
   },
