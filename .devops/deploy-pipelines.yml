@@ -72,6 +72,18 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
+  - stage: print
+    pool:
+      vmImage: ubuntu-latest
+    jobs:
+      - job: print-job
+        steps:
+          - script: |
+              echo ${{ parameters }}
+              echo ${{ parameters.TEST }}
+              echo ${{ parameters.SEMVER }}
+              echo ${{ parameters['TEST'] }}
+
   # Create a release on GitHub
   - stage: release_service
     condition: ne('${{ parameters.SEMVER }}', 'skip')
