@@ -53,7 +53,7 @@ variables:
 #    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
   # github action use 'merge' as value of SourceBranchName
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
-    SOURCE_BRANCH: "main" # force to main branch
+    SOURCE_BRANCH: "refs/heads/main" # force to main branch
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: ${{ variables['Build.SourceBranchName'] }}
 
@@ -97,6 +97,9 @@ stages:
             persistCredentials: true
 
           - script: |
+              git checkout $(SOURCE_BRANCH)
+
+          - script: |
               git config --global user.name "$(GIT_USERNAME)"
               git config --global user.email "$(GIT_EMAIL)"
 
@@ -112,9 +115,6 @@ stages:
                 version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
                 echo "##vso[task.setvariable variable=next;isOutput=true]$version"
               failOnStderr: true
-
-          - script: |
-              git checkout $(SOURCE_BRANCH)
 
           - script: |
               git add pom.xml
@@ -238,7 +238,7 @@ stages:
   # Run test
   - stage: test
     # run this stage only if 'test' is enabled
-#    condition: and(not(failed('deployJava')), eq('${{ parameters.TEST }}', 'true'))
+    condition: and(not(failed('deployJava')), eq('${{ parameters.TEST }}', 'true'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
