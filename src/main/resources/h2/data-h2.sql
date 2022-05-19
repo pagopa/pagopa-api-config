@@ -61,6 +61,17 @@ VALUES (2, '80007580279_01', 'Y', 'NodoDeiPagamentiDellaPATest.sia.eu', null, 'p
         'openspcoop/PD/RT6TPDREGVENETO', 'Y', 'openspcoop/PD/CCP6TPDREGVENETO', 2, 'HTTPS', 'HTTP', null, null, null,
         'Y', '10.101.1.95', 8080, null, null, 'HTTP', null, null, null, 120, 2, 15, 30, 120, 'Y', 1, null);
 
+INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO,
+                                REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING, SERVIZIO, RT_ENABLED,
+                                SERVIZIO_POF, FK_INTERMEDIARIO_PA, REDIRECT_PROTOCOLLO, PROTOCOLLO_4MOD, IP_4MOD,
+                                PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
+                                PROXY_PASSWORD, PROTOCOLLO_AVV, IP_AVV, PORTA_AVV, SERVIZIO_AVV, TIMEOUT, NUM_THREAD,
+                                TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP)
+VALUES (3, '1123', 'Y', 'site.eu', null, 'password', 80, 'HTTP',
+        'site.it', 'page.html', 443, null,
+        'service/', 'Y', 'service/', 2, 'HTTPS', 'HTTP', null, null, null,
+        'Y', '10.101.1.95', 8080, null, null, 'HTTP', null, null, null, 120, 2, 15, 30, 120, 'Y', 1, null);
+
 INSERT INTO NODO4_CFG.PA_STAZIONE_PA (OBJ_ID, PROGRESSIVO, FK_PA, FK_STAZIONE, AUX_DIGIT, SEGREGAZIONE, QUARTO_MODELLO,
                                       STAZIONE_NODO, STAZIONE_AVV, BROADCAST)
 VALUES (430, 1, 190, 2, null, 1, 'N', 'Y', 'N', 'N');

@@ -113,4 +113,5 @@ class StationsControllerTest {
         mvc.perform(get(url).contentType(MediaType.TEXT_PLAIN_VALUE))
                 .andExpect(status().isOk());
     }
+
 }
