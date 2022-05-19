@@ -8,7 +8,7 @@ parameters:
       - uat
       - prod
   - name: SEMVER
-    displayName: "When packing a release, define the version bump to apply"
+    displayName: "When packing a release, define the version bump to apply. Use only buildNumber or skip for manual deployment"
     type: string
     values:
       - major
@@ -74,8 +74,7 @@ pool:
 stages:
   # Create a release on GitHub
   - stage: release_service
-    # bump version on SOURCE_BRANCH and if SEMVER is not 'skip'
-    condition: and(eq(variables['SOURCE_BRANCH'], 'main'), ne('${{ parameters.SEMVER }}', 'skip'))
+    condition: ne('${{ parameters.SEMVER }}', 'skip')
     pool:
       vmImage: "ubuntu-latest"
     jobs:
@@ -227,7 +226,7 @@ stages:
   # Run test
   - stage: test
     # run this stage only if 'test' is enabled
-    condition: and(not(failed('deployJava')), eq('${{ parameters.TEST }}', 'true'))
+#    condition: and(not(failed('deployJava')), eq('${{ parameters.TEST }}', 'true'))
     pool:
       vmImage: "ubuntu-latest"
     jobs:
