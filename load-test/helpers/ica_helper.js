@@ -1,11 +1,5 @@
 import http from 'k6/http';
 
-// const brokerCode = "BROKER";
-
-// export function getBrokerCode(id) {
-// 	return brokerCode + ('000'+id).slice(-3);
-// }
-
 export function getIcas(rootUrl, params) {
 	const url = `${rootUrl}/icas?limit=50&page=0`
 	return http.get(url, params);

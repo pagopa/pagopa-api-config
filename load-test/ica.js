@@ -104,7 +104,6 @@ export default function (data) {
 
 	// Get icas
 	let response = getIcas(rootUrl, params);
-	console.error("ICAS", JSON.stringify(response.json()))
 	check(response, {
 		'getIcas': (r) => r.status === 200,
 	});
