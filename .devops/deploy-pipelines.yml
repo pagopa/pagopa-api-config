@@ -76,7 +76,7 @@ stages:
     pool:
       vmImage: ubuntu-latest
     jobs:
-      - job: print-job
+      - job: printjob
         steps:
           - script: |
               echo ${{ parameters.TEST }}
