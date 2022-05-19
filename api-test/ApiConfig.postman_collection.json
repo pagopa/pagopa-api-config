@@ -15,7 +15,8 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									""
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jwt\", jsonData.access_token);"
 								],
 								"type": "text/javascript"
 							}
@@ -24,7 +25,6 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"",
 									""
 								],
 								"type": "text/javascript"

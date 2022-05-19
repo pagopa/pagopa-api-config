@@ -269,11 +269,12 @@ stages:
             displayName: 'Run api test'
             continueOnError: false
 
-#          - task: PublishTestResults@2
-#            inputs:
-#              testResultsFormat: 'JUnit'
-#              testResultsFiles: '**/*-TEST.xml'
-#              searchFolder: '$(System.DefaultWorkingDirectory)'
+          - task: PublishTestResults@2
+            condition: always()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '**/*-TEST.xml'
+              searchFolder: '$(System.DefaultWorkingDirectory)'
 
       #      - job: loadTests
       #        dependsOn: waitStartup
