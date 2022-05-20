@@ -26,3 +26,5 @@ jobs:
           destination_folder: 'src/api/apiconfig_api/v1/'
           destination_base_branch: 'main'
           destination_head_branch: 'branch-name'
+          user_email: 'github-bot@pagopa.it'
+          user_name: 'pagopa-github-bot'
