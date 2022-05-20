@@ -36,3 +36,4 @@ jobs:
           destination_head_branch: 'ApiConfig-swagger-update'
           user_email: 'github-bot@pagopa.it'
           user_name: 'pagopa-github-bot'
+          allow_force_push: 'true'
