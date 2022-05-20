@@ -25,12 +25,12 @@ jobs:
       - name: Create pull request
         uses: paygoc6/action-pull-request-another-repo@v1.0.1
         env:
-          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_folder: 'infra'
           destination_repo: 'pagopa/pagopa-infra'
           destination_folder: 'src/api/apiconfig_api/v1/'
           destination_base_branch: 'main'
-          destination_head_branch: 'branch-name'
+          destination_head_branch: 'ApiConfig-swagger-update'
           user_email: 'github-bot@pagopa.it'
           user_name: 'pagopa-github-bot'
