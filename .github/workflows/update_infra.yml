@@ -20,12 +20,12 @@ jobs:
       # prepare openapi template for infra repo
       - run: |
           mkdir -p "${GITHUB_WORKSPACE}/infra"
-          jq  '."host" |= "${host}/apiconfig/api/v1""' ./openapi/openapi.json > ./openapi/openapi.json.temp && mv ./openapi/openapi.json.temp ./openapi/swagger.json
+          jq  '."host" |= "${host}/apiconfig/api/v1"' ./openapi/openapi.json > ./openapi/openapi.json.temp && mv ./openapi/openapi.json.temp ./openapi/swagger.json
           cp "${GITHUB_WORKSPACE}/openapi/openapi.json" "${GITHUB_WORKSPACE}/infra/_openapi.json.tpl"
 
       # open a PR on infra repo
       - name: Create pull request
-        uses: paygoc6/action-pull-request-another-repo@v1.0.1
+        uses: jacopocarlini/action-pull-request-another-repo@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
