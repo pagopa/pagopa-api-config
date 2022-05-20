@@ -17,11 +17,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      # prepare openapi template for infra repo
       - run: |
           mkdir -p "${GITHUB_WORKSPACE}/infra"
-          cp "${GITHUB_WORKSPACE}/openapi/swagger.json" "${GITHUB_WORKSPACE}/infra/_openapi.json.tpl"
+          jq  '."host" |= "${host}/apiconfig/api/v1""' ./openapi/openapi.json > ./openapi/openapi.json.temp && mv ./openapi/openapi.json.temp ./openapi/swagger.json
+          cp "${GITHUB_WORKSPACE}/openapi/openapi.json" "${GITHUB_WORKSPACE}/infra/_openapi.json.tpl"
 
-
+      # open a PR on infra repo
       - name: Create pull request
         uses: paygoc6/action-pull-request-another-repo@v1.0.1
         env:
