@@ -72,17 +72,6 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  - stage: print
-    pool:
-      vmImage: ubuntu-latest
-    jobs:
-      - job: printjob
-        steps:
-          - script: |
-              echo ${{ parameters.TEST }}
-              echo ${{ parameters.SEMVER }}
-              echo ${{ parameters['TEST'] }}
-
 
   # Create a release on GitHub
   - stage: release_service

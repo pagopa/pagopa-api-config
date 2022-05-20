@@ -1,0 +1,28 @@
+name: Open a PR in Infra repository
+
+on: push
+
+  workflow_dispatch:
+
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - run: |
+          mkdir -p "${GITHUB_WORKSPACE}/infra"
+          cp "${GITHUB_WORKSPACE}/openapi/swagger.json" "${GITHUB_WORKSPACE}/infra/_openapi.json.tpl"
+
+
+      - name: Create pull request
+        uses: paygoc6/action-pull-request-another-repo@v1.0.1
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          source_folder: 'infra'
+          destination_repo: 'pagopa/pagopa-infra'
+          destination_folder: 'src/api/apiconfig_api/v1/'
+          destination_base_branch: 'main'
+          destination_head_branch: 'branch-name'
