@@ -138,11 +138,19 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
             checkSegregationAndApplicationCode3(creditorInstitutionStation, errors);
         }
         var pa = paRepository.findByIdDominio(creditorInstitutionStation.getCreditorInstitutionId());
-        if (pa.isPresent() && !paStazionePaRepository.findAllByFkPaAndSegregazioneOrProgressivo(pa.get().getObjId(),
-                Long.parseLong(creditorInstitutionStation.getSegregationCode()),
-                Long.parseLong(creditorInstitutionStation.getApplicationCode())).isEmpty()) {
+        if (pa.isPresent()) {
+            if (creditorInstitutionStation.getSegregationCode() != null
+                    && !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.get().getObjId(),
+                    Long.parseLong(creditorInstitutionStation.getSegregationCode())).isEmpty()) {
+                errors.add("segregationCode already exists");
+            }
+            if (creditorInstitutionStation.getApplicationCode() != null
+                    && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.get().getObjId(),
 
-            errors.add("segregationCode or applicationCode already exists");
+
+                    Long.parseLong(creditorInstitutionStation.getApplicationCode())).isEmpty()) {
+                errors.add("applicationCode already exists");
+            }
         }
 
     }
