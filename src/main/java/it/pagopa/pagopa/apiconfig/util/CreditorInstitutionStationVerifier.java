@@ -137,6 +137,14 @@ public class CreditorInstitutionStationVerifier implements BeanVerifier<Creditor
         } else if (creditorInstitutionStation.getAuxDigit() == 3) {
             checkSegregationAndApplicationCode3(creditorInstitutionStation, errors);
         }
+        var pa = paRepository.findByIdDominio(creditorInstitutionStation.getCreditorInstitutionId());
+        if (pa.isPresent() && !paStazionePaRepository.findAllByFkPaAndSegregazioneOrProgressivo(pa.get().getObjId(),
+                Long.parseLong(creditorInstitutionStation.getSegregationCode()),
+                Long.parseLong(creditorInstitutionStation.getApplicationCode())).isEmpty()) {
+
+            errors.add("segregationCode or applicationCode already exists");
+        }
+
     }
 
     private void checkSegregationAndApplicationCode0(CreditorInstitutionStation creditorInstitutionStation, List<String> errors) {
