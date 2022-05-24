@@ -25,14 +25,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
@@ -113,7 +118,7 @@ public class PspService {
                 .build();
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public PspChannelCode createPaymentServiceProvidersChannels(String pspCode, PspChannelCode pspChannelCode) {
         var psp = getPspIfExists(pspCode);
         var canale = getChannelIfExists(pspChannelCode.getChannelCode());
@@ -130,7 +135,7 @@ public class PspService {
     }
 
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public PspChannelPaymentTypes updatePaymentServiceProvidersChannels(String pspCode, String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
         var psp = getPspIfExists(pspCode);
         var canale = getChannelIfExists(channelCode);
@@ -148,7 +153,7 @@ public class PspService {
         return pspChannelPaymentTypes;
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public void deletePaymentServiceProvidersChannels(String pspCode, String channelCode) {
         var psp = getPspIfExists(pspCode);
         var canale = getChannelIfExists(channelCode);
