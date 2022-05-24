@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - main
+    types: [ opened, labeled, unlabeled, synchronize, reopened, edited, ready_for_review ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
