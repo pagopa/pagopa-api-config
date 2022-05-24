@@ -3081,6 +3081,60 @@
 					"response": []
 				},
 				{
+					"name": "updatePaymentServiceProvidersChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePaymentServiceProvidersChannel\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"payment_types\": [\n        \"PO\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels",
+								":channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{psp_code}}"
+								},
+								{
+									"key": "channels",
+									"value": "{{channel_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "createCdi",
 					"event": [
 						{
@@ -3193,60 +3247,6 @@
 								{
 									"key": "code",
 									"value": "{{psp_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updatePaymentServiceProvidersChannel",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updatePaymentServiceProvidersChannel\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "default"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"payment_types\": [\n        \"PO\"\n    ]\n}"
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders",
-								":code",
-								"channels",
-								":channels"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{psp_code}}"
-								},
-								{
-									"key": "channels",
-									"value": "{{channel_code}}"
 								}
 							]
 						}
@@ -6611,7 +6611,45 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "{{station_code}}"
+									"value": "01234567890"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStation Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:id",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01234567891"
 								}
 							]
 						}

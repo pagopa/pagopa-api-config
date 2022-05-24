@@ -20,7 +20,7 @@
         <informativaDetail>
             <identificativoIntermediario>01234567890</identificativoIntermediario>
             <identificativoCanale>01234567890</identificativoCanale>
-            <tipoVersamento>BP</tipoVersamento>
+            <tipoVersamento>PO</tipoVersamento>
             <modelloPagamento>1</modelloPagamento>
             <priorita>1</priorita>
             <canaleApp>0</canaleApp>
