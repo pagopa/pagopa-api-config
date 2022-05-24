@@ -127,7 +127,7 @@ public class IcaService {
         return response;
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public void createIca(@NotNull MultipartFile file) {
         // syntactic checks
         checkSyntax(file);

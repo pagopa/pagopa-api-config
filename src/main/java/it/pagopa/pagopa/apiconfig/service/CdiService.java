@@ -108,7 +108,7 @@ public class CdiService {
         return cdiMaster.getFkBinaryFile().getFileContent();
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public void createCdi(MultipartFile file) {
         // syntactic checks
         try {
