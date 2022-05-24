@@ -19,10 +19,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
 
+      - name: Verify PR Labels
+        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'bug, enhancement, breaking-change, ignore-for-release'
+          pull-request-number: '${{ github.event.pull_request.number }}'
+
       - name: Label Check
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'breaking-change') && !contains(github.event.pull_request.labels.*.name, 'enhancement') && !contains(github.event.pull_request.labels.*.name, 'bug') && !contains(github.event.pull_request.labels.*.name, 'ignore-for-release') }}
         uses: actions/github-script@v3
         with:
           script: |
             core.setFailed('Missing required labels')
-
