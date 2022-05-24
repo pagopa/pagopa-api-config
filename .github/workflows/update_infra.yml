@@ -4,17 +4,21 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'openapi/openapi.json'
   pull_request:
     branches:
       - main
-    types: [ closed ]
+#    types: [ closed ]
+    paths:
+      - 'openapi/openapi.json'
 
 
   workflow_dispatch:
 
 jobs:
   pull-request:
-    if: ${{ github.event.pull_request.merged }}
+#    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
