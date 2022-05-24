@@ -1,0 +1,28 @@
+name: Sonar Analysis
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    name: Call Azure Build Pipeline
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Azure Pipelines Action - Jversion
+        uses: jacopocarlini/azure-pipelines@v1.3
+        with:
+          azure-devops-project-url: https://dev.azure.com/pagopaspa/pagoPA-projects
+          azure-pipeline-name: 'pagopa-api-config.code-review'
+          azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
+          azure-pipeline-variables: '{"system.debug": "true"}'
+
