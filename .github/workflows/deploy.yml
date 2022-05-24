@@ -8,7 +8,7 @@ on:
   pull_request:
     branches:
       - main
-      types: [ closed ]
+    types: [ closed ]
 
 
   # Allows you to run this workflow manually from the Actions tab
