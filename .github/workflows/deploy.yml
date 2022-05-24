@@ -2,9 +2,6 @@ name: Auto Deploy
 
 # Controls when the workflow will run
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -30,6 +27,7 @@ jobs:
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
           valid-labels: 'bug, enhancement, breaking-change, ignore-for-release'
+          pull-request-number: '${{ github.event.pull_request.number }}'
 
       # default skip bump versioning
       - name: Set as default skip bump versioning
