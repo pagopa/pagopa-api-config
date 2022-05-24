@@ -51,7 +51,7 @@ public class MassiveLoadingService {
     @Autowired
     CreditorInstitutionsService creditorInstitutionsService;
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public void manageCIStation(MultipartFile file) {
         try {
             addOrDelete(file);

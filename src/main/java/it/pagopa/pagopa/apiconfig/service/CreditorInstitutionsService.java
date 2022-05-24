@@ -77,7 +77,7 @@ public class CreditorInstitutionsService {
         return modelMapper.map(pa, CreditorInstitutionDetails.class);
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public CreditorInstitutionDetails createCreditorInstitution(@NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
         if (paRepository.findByIdDominio(creditorInstitutionDetails.getCreditorInstitutionCode()).isPresent()) {
             throw new AppException(AppError.CREDITOR_INSTITUTION_CONFLICT, creditorInstitutionDetails.getCreditorInstitutionCode());
@@ -108,7 +108,7 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public CreditorInstitutionStationEdit createCreditorInstitutionStation(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
         // check aux-digit, application and segregation codes are configured properly
         checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
@@ -128,7 +128,7 @@ public class CreditorInstitutionsService {
         return creditorInstitutionStationEdit;
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public CreditorInstitutionStationEdit updateCreditorInstitutionStation(String creditorInstitutionCode, String stationCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
         // check if the relation exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
@@ -152,7 +152,7 @@ public class CreditorInstitutionsService {
         return creditorInstitutionStationEdit;
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public void deleteCreditorInstitutionStation(String creditorInstitutionCode, String stationCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(stationCode);

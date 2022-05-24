@@ -1,0 +1,45 @@
+name: Open a PR in Infra repository
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'openapi/openapi.json'
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
+    paths:
+      - 'openapi/openapi.json'
+
+
+  workflow_dispatch:
+
+jobs:
+  pull-request:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # prepare openapi template for infra repo
+      - run: |
+          mkdir -p "${GITHUB_WORKSPACE}/infra"
+          jq  '."servers"[0]."url" |= "${host}/apiconfig/api/v1"' "${GITHUB_WORKSPACE}/openapi/openapi.json" > "${GITHUB_WORKSPACE}/infra/_openapi.json.tpl"
+
+      # open a PR on infra repo
+      - name: Create pull request
+        uses: jacopocarlini/action-pull-request-another-repo@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_folder: 'infra'
+          destination_repo: 'pagopa/pagopa-infra'
+          destination_folder: 'src/api/apiconfig_api/v1'
+          destination_base_branch: 'main'
+          destination_head_branch: 'ApiConfig-swagger-update'
+          user_email: 'github-bot@pagopa.it'
+          user_name: 'pagopa-github-bot'
+          allow_force_push: 'true'

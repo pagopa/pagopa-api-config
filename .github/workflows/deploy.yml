@@ -1,0 +1,67 @@
+name: Auto Deploy
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    if: ${{ github.event.pull_request.merged }}
+    name: Call Azure Build Pipeline
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      - name: Verify PR Labels
+        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'bug, enhancement, breaking-change, ignore-for-release'
+
+      # default skip bump versioning
+      - name: Set as default skip bump versioning
+        run: |
+          echo "SEMVER=skip" >> $GITHUB_ENV
+
+      - name: Set major
+        run: |
+          echo "SEMVER=major" >> $GITHUB_ENV
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'breaking-change') }}
+
+      - name: Set minor
+        run: |
+          echo "SEMVER=minor" >> $GITHUB_ENV
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'enhancement') }}
+
+      - name: Set patch
+        run: |
+          echo "SEMVER=patch" >> $GITHUB_ENV
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'bug') }}
+
+      - name: Set skip
+        run: |
+          echo "SEMVER=skip" >> $GITHUB_ENV
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'ignore-for-release') }}
+
+      - name: Azure Pipelines Action - Jversion
+        uses: jacopocarlini/azure-pipelines@v1.3
+        with:
+          azure-devops-project-url: https://dev.azure.com/pagopaspa/pagoPA-projects
+          azure-pipeline-name: 'pagopa-api-config.deploy'
+          azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
+          azure-template-parameters: '{"ENV": "dev", "SEMVER": "${{env.SEMVER}}", "TEST": "true"}'
+          azure-pipeline-variables: '{"system.debug": "true"}'
+
