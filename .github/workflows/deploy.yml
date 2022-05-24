@@ -2,9 +2,6 @@ name: Auto Deploy
 
 # Controls when the workflow will run
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -24,12 +21,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-
-      - name: Verify PR Labels
-        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
-        with:
-          github-token: '${{ secrets.GITHUB_TOKEN }}'
-          valid-labels: 'bug, enhancement, breaking-change, ignore-for-release'
 
       # default skip bump versioning
       - name: Set as default skip bump versioning
