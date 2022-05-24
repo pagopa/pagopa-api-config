@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "a8c77700-bdb9-4b14-91de-15bda886fd25",
+		"_postman_id": "95627ddd-d5fa-4432-b4bd-84f3a9bb8f61",
 		"name": "ApiConfig",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "205220"
 	},
 	"item": [
 		{
@@ -148,50 +149,6 @@
 					"response": []
 				},
 				{
-					"name": "getCreditorInstitutions",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getCreditorInstitutions\", function () {",
-									"  pm.response.to.have.status(200);",
-									"  const responseJson = pm.response.json();",
-									"  pm.expect(responseJson.page_info).to.be.exist",
-									"  pm.expect(responseJson.creditor_institutions).to.be.exist",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions?limit=50&page=0",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "50"
-								},
-								{
-									"key": "page",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "createCreditorInstitution",
 					"event": [
 						{
@@ -209,17 +166,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function makeid(length) {",
-									"    var result           = '';",
-									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    var charactersLength = characters.length;",
-									"    for ( var i = 0; i < length; i++ ) {",
-									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
-									"pm.globals.set(\"creditor_institution_code\", makeid(35));"
+									"pm.globals.set(\"creditor_institution_code\", '01234567890');"
 								],
 								"type": "text/javascript"
 							}
@@ -257,60 +204,41 @@
 					"response": []
 				},
 				{
-					"name": "getCreditorInstitution",
+					"name": "createBroker",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getCreditorInstitution\", function () {",
-									"  pm.response.to.have.status(200);",
+									"pm.test(\"createBroker\", function () {",
+									"  pm.response.to.have.status(201);",
 									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"broker_code\", makeid(35));"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{creditor_institution_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updateCreditorInstitution",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updateCreditorInstitution\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -320,7 +248,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
+							"raw": "{\n    \"broker_code\": \"{{broker_code}}\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio\",\n    \"extended_fault_bean\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -328,59 +256,78 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{creditor_institution_code}}"
-								}
+								"brokers"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "getCreditorInstitutionStations",
+					"name": "createStation",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getCreditorInstitutionStations\", function () {",
-									"  pm.response.to.have.status(200);",
+									"pm.test(\"createStation\", function () {",
+									"  pm.response.to.have.status(201);",
 									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"station_code\", makeid(35));"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "GET",
-						"header": [],
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
 								"stations"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
-								}
 							]
 						}
 					},
@@ -412,7 +359,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"mod4\": false,\n    \"broadcast\": false,\n    \"aux_digit\": 0\n}",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"application_code\": 1,\n    \"segregation_code\": 1,\n    \"mod4\": false,\n    \"broadcast\": false,\n    \"aux_digit\": 0\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -434,186 +381,6 @@
 								{
 									"key": "code",
 									"value": "{{creditor_institution_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updateCreditorInstitutionStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updateCreditorInstitutionStation\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"aux_digit\": \"1\",\n    \"mod4\": true,\n    \"broadcast\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"stations",
-								":stationcode"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{creditor_institution_code}}"
-								},
-								{
-									"key": "stationcode",
-									"value": "80007580279_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitutionStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitutionStation\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"stations",
-								":stationcode"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{creditor_institution_code}}"
-								},
-								{
-									"key": "stationcode",
-									"value": "80007580279_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitution",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitution\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{creditor_institution_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getCreditorInstitutionEncodings",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"getCreditorInstitutionEncodings\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"encodings"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
 								}
 							]
 						}
@@ -686,7 +453,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "00168480242"
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -694,34 +461,265 @@
 					"response": []
 				},
 				{
-					"name": "deleteCreditorInstitutionEncoding",
+					"name": "createIca",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"deleteCreditorInstitutionEncoding\", function () {",
+									"pm.test(\"createIca\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "105513",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "src/test/resources/file/ica_valid_postman.xml"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"icas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkXSD",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"checkXSD\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
 								"type": "text/javascript"
 							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "105513",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "src/test/resources/file/ica_valid_postman.xml"
+								}
+							]
 						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/xsd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"icas",
+								"xsd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createCounterpartTable",
+					"event": [
 						{
-							"listen": "prerequest",
+							"listen": "test",
 							"script": {
 								"exec": [
-									""
+									"pm.test(\"createCounterpartTable\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "105513",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "src/test/resources/file/counterpart_valid_postman.xml"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/counterparttables",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"counterparttables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateCreditorInstitution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "DELETE",
-						"header": [],
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateCreditorInstitutionStation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateCreditorInstitutionStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"aux_digit\": \"1\",\n    \"mod4\": true,\n    \"broadcast\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -729,17 +727,283 @@
 								"{{api-config-base-path}}",
 								"creditorinstitutions",
 								":code",
-								"encodings",
-								":encoding_code"
+								"stations",
+								":stationcode"
 							],
 							"variable": [
 								{
 									"key": "code",
-									"value": "00168480242"
+									"value": "{{creditor_institution_code}}"
 								},
 								{
-									"key": "encoding_code",
-									"value": "{{encoding_code}}"
+									"key": "stationcode",
+									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateStation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 2,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:id",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBroker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateBroker\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_code\": \"{{broker_code}}\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio 2\",\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{broker_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCreditorInstitutions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCreditorInstitutions\", function () {",
+									"  pm.response.to.have.status(200);",
+									"  const responseJson = pm.response.json();",
+									"  pm.expect(responseJson.page_info).to.be.exist",
+									"  pm.expect(responseJson.creditor_institutions).to.be.exist",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions?limit=50&page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCreditorInstitution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCreditorInstitutionStations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCreditorInstitutionStations\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"stations"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCreditorInstitutionEncodings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCreditorInstitutionEncodings\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -778,7 +1042,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "00168480242"
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -836,71 +1100,6 @@
 									"value": "8776",
 									"disabled": true
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createStation\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"function makeid(length) {",
-									"    var result           = '';",
-									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    var charactersLength = characters.length;",
-									"    for ( var i = 0; i < length; i++ ) {",
-									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
-									"pm.globals.set(\"station_code\", makeid(35));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"stations"
 							]
 						}
 					},
@@ -1022,97 +1221,6 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "80007580279_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updateStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updateStation\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 2,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:id",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"stations",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{station_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteStation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteStation\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:id",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"stations",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
 									"value": "{{station_code}}"
 								}
 							]
@@ -1182,71 +1290,6 @@
 					"response": []
 				},
 				{
-					"name": "createBroker",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createBroker\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"function makeid(length) {",
-									"    var result           = '';",
-									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    var charactersLength = characters.length;",
-									"    for ( var i = 0; i < length; i++ ) {",
-									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
-									"pm.globals.set(\"broker_code\", makeid(35));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"broker_code\": \"{{broker_code}}\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio\",\n    \"extended_fault_bean\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "getBroker",
 					"event": [
 						{
@@ -1263,97 +1306,6 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokers",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{broker_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updateBroker",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updateBroker\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"broker_code\": \"{{broker_code}}\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio 2\",\n    \"extended_fault_bean\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokers",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{broker_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteBroker",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteBroker\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
 						"header": [],
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
@@ -1446,7 +1398,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id?creditorinstitutioncode=00168480242",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id?creditorinstitutioncode={{creditor_institution_code}}",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -1458,173 +1410,14 @@
 							"query": [
 								{
 									"key": "creditorinstitutioncode",
-									"value": "00168480242"
+									"value": "{{creditor_institution_code}}"
 								}
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "C_A703-IBAN-20170308000000"
+									"value": "{{creditor_institution_code}}_ica"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createIca",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createIca\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "Content-Length",
-								"value": "105513",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "src/test/resources/file/ica_valid_h2.xml"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"icas"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteIca",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteIca\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id?creditorinstitutioncode=00168480242",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"icas",
-								":id"
-							],
-							"query": [
-								{
-									"key": "creditorinstitutioncode",
-									"value": "00168480242"
-								}
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "02391510266_prova_prod_3"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "checkXSD",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"checkXSD\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "Content-Length",
-								"value": "105513",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "src/test/resources/file/ica_valid.xml"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/xsd",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"icas",
-								"xsd"
 							]
 						}
 					},
@@ -1649,7 +1442,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/counterparttables?limit=50&page=0",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/counterparttables?limit=50&page=0&creditorinstitutioncode={{creditor_institution_code}}",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -1668,71 +1461,13 @@
 								},
 								{
 									"key": "idcounterparttable",
-									"value": "01",
+									"value": "1",
 									"disabled": true
 								},
 								{
 									"key": "creditorinstitutioncode",
-									"value": "gra",
-									"disabled": true
+									"value": "{{creditor_institution_code}}"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createCounterpartTable",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createCounterpartTable\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "Content-Length",
-								"value": "105513",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "src/test/resources/file/counterpart_valid.xml"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/counterparttables",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"counterparttables"
 							]
 						}
 					},
@@ -1757,7 +1492,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/counterparttables/:id?creditorinstitutioncode=00168480242",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/counterparttables/:id?creditorinstitutioncode={{creditor_institution_code}}",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -1769,13 +1504,154 @@
 							"query": [
 								{
 									"key": "creditorinstitutioncode",
-									"value": "00168480242"
+									"value": "{{creditor_institution_code}}"
 								}
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "001"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitutionStation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitutionStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"stations",
+								":stationcode"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								},
+								{
+									"key": "stationcode",
+									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitutionEncoding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitutionEncoding\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings",
+								":encoding_code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								},
+								{
+									"key": "encoding_code",
+									"value": "{{encoding_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteIca",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteIca\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/:id?creditorinstitutioncode={{creditor_institution_code}}",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"icas",
+								":id"
+							],
+							"query": [
+								{
+									"key": "creditorinstitutioncode",
+									"value": "{{creditor_institution_code}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{creditor_institution_code}}_ica"
 								}
 							]
 						}
@@ -1801,7 +1677,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/counterparttables/:id?creditorinstitutioncode=00168480242",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/counterparttables/:id?creditorinstitutioncode={{creditor_institution_code}}",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -1813,13 +1689,127 @@
 							"query": [
 								{
 									"key": "creditorinstitutioncode",
-									"value": "00168480242"
+									"value": "{{creditor_institution_code}}"
 								}
 							],
 							"variable": [
 								{
 									"key": "id",
 									"value": "001"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:id",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBroker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteBroker\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{broker_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -1851,6 +1841,61 @@
 		{
 			"name": "api test error - creditor institutions",
 			"item": [
+				{
+					"name": "createCreditorInstitution Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"creditor_institution_code\", '01234567890');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "createCreditorInstitution Conflict",
 					"event": [
@@ -1886,7 +1931,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"creditor_institution_code\": \"00168480242\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
+							"raw": "{\n  \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1907,105 +1952,14 @@
 					"response": []
 				},
 				{
-					"name": "updateCreditorInstitution BadRequest",
+					"name": "createBroker Copy",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"updateCreditorInstitution_badRequest\", function () {",
-									"  pm.response.to.have.status(400);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "0010101010"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitution NotFound",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitution_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "axz"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createCreditorInstitutionEncoding Conflict",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createCreditorInstitutionEncoding_conflict\", function () {",
-									"  pm.response.to.have.status(409);",
+									"pm.test(\"createBroker\", function () {",
+									"  pm.response.to.have.status(201);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2015,7 +1969,17 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									""
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"broker_code\", makeid(35));"
 								],
 								"type": "text/javascript"
 							}
@@ -2032,7 +1996,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"code_type\": \"QR_CODE\",\n    \"encoding_code\": \"00168480242\"\n}",
+							"raw": "{\n    \"broker_code\": \"{{broker_code}}\",\n    \"enabled\": true,\n    \"description\": \"Regione Lazio\",\n    \"extended_fault_bean\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2040,65 +2004,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"encodings"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCreditorInstitutionEncoding NotFound",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCreditorInstitutionEncoding_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"creditorinstitutions",
-								":code",
-								"encodings",
-								":encoding_code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00168480242"
-								},
-								{
-									"key": "encoding_code",
-									"value": "asdz"
-								}
+								"brokers"
 							]
 						}
 					},
@@ -2145,6 +2057,253 @@
 							"path": [
 								"{{api-config-base-path}}",
 								"brokers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createCreditorInstitutionEncoding Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitutionEncoding\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"encoding_code\", makeid(35));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code_type\": \"QR_CODE\",\n    \"encoding_code\": \"{{encoding_code}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createCreditorInstitutionEncoding Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitutionEncoding_conflict\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code_type\": \"QR_CODE\",\n    \"encoding_code\": \"{{encoding_code}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createStation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createStation\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"    }",
+									"    return result;",
+									"}",
+									"",
+									"pm.globals.set(\"station_code\", makeid(35));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createStation Conflict",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createStation_conflict\", function () {",
+									"  pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"{{broker_code}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations"
 							]
 						}
 					},
@@ -2204,14 +2363,14 @@
 					"response": []
 				},
 				{
-					"name": "deleteBroker NotFound",
+					"name": "updateCreditorInstitution BadRequest",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"deleteBroker_notFound\", function () {",
-									"  pm.response.to.have.status(404);",
+									"pm.test(\"updateCreditorInstitution_badRequest\", function () {",
+									"  pm.response.to.have.status(400);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2219,45 +2378,7 @@
 						}
 					],
 					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokers",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "zxx"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createStation Conflict",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createStation_conflict\", function () {",
-									"  pm.response.to.have.status(409);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -2267,7 +2388,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"80007580279_01\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"123\"\n}",
+							"raw": "{\n    \"enabled\": true,\n    \"business_name\": \"Comune di Lorem Ipsum\",\n    \"address\": {\n        \"location\": \"Via delle vie 4\",\n        \"city\": \"Rome\",\n        \"zip_code\": \"00187\",\n        \"country_code\": \"RM\",\n        \"tax_domicile\": \"00111\"\n    },\n    \"fk_int_quadrature\": null,\n    \"psp_payment\": true,\n    \"reporting_ftp\": false,\n    \"reporting_zip\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2275,13 +2396,20 @@
 							}
 						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
-								"stations"
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "0010101010"
+								}
 							]
 						}
 					},
@@ -2341,6 +2469,126 @@
 					"response": []
 				},
 				{
+					"name": "deleteCreditorInstitution NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitution_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "axz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitutionEncoding NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitutionEncoding_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings",
+								":encoding_code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "00168480242"
+								},
+								{
+									"key": "encoding_code",
+									"value": "asdz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBroker NotFound",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteBroker_notFound\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "zxx"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "deleteStation NotFound",
 					"event": [
 						{
@@ -2377,6 +2625,173 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitutionEncoding Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitutionEncoding\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/encodings/:encoding_code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"encodings",
+								":encoding_code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								},
+								{
+									"key": "encoding_code",
+									"value": "{{encoding_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:id",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBroker Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteBroker\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokers/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokers",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{broker_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitution Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"event": [
@@ -2403,6 +2818,564 @@
 		{
 			"name": "api test suite - psp",
 			"item": [
+				{
+					"name": "createPaymentServiceProvider",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPaymentServiceProvider\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"psp_code\", \"01234567890\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": true,\n    \"business_name\": \"Poste Italiane\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": false,\n    \"stamp\": false,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createBrokerPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createBrokerPsp\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"broker_psp_code\", \"01234567890\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "string"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"description\": \"Postecom\",\n    \"enabled\": true,\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createChannel\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"channel_code\", \"01234567890\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"enabled\": true,\n    \"description\": \"\",\n    \"password\": \"FakePay\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": false,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"serv_plugin\": \"idPsp1\",\n    \"agid\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPaymentType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPaymentType\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_types\": [\n        \"PO\",\n        \"BP\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code",
+								"paymenttypes"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{channel_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPaymentServiceProvidersChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createPaymentServiceProvidersChannel\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"channel_code\": \"{{channel_code}}\",\n  \"payment_types\": [\n    \"BP\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{psp_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createCdi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCdi\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "105513",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "src/test/resources/file/cdi_valid_postman.xml"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePaymentServiceProvider",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePaymentServiceProvider\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": false,\n    \"business_name\": \"Nuovo nome\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": true,\n    \"stamp\": true,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{psp_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePaymentServiceProvidersChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updatePaymentServiceProvidersChannel\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"payment_types\": [\n        \"PO\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels",
+								":channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{psp_code}}"
+								},
+								{
+									"key": "channels",
+									"value": "{{channel_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBrokerPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateBrokerPsp\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "string"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"description\": \"Nome\",\n    \"enabled\": false,\n    \"extended_fault_bean\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{broker_psp_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"updateChannel\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"enabled\": false,\n    \"description\": \"descrizione\",\n    \"password\": \"***\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": true,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"agid\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{channel_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "getPaymentServiceProviders",
 					"event": [
@@ -2478,189 +3451,6 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "BPPIITRRZZZ"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createPaymentServiceProvider",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createPaymentServiceProvider\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"function makeid(length) {",
-									"    var result           = '';",
-									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    var charactersLength = characters.length;",
-									"    for ( var i = 0; i < length; i++ ) {",
-									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
-									"pm.globals.set(\"psp_code\", makeid(35));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "default"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": true,\n    \"business_name\": \"Poste Italiane\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": false,\n    \"stamp\": false,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880000\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updatePaymentServiceProvider",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updatePaymentServiceProvider\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "default"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": false,\n    \"business_name\": \"Nuovo nome\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": true,\n    \"stamp\": true,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880001\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{psp_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deletePaymentServiceProvider",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deletePaymentServiceProvider\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": false,\n    \"business_name\": \"Nuovo nome\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": true,\n    \"stamp\": true,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880001\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
 									"value": "{{psp_code}}"
 								}
 							]
@@ -2721,63 +3511,6 @@
 					"response": []
 				},
 				{
-					"name": "createCdi",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createCdi\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "Content-Length",
-								"value": "105513",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "src/test/resources/file/cdi_valid.xml"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"cdis"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "getCdi",
 					"event": [
 						{
@@ -2801,7 +3534,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode={{psp_code}}",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -2813,57 +3546,13 @@
 							"query": [
 								{
 									"key": "pspcode",
-									"value": "BPPIITRRZZZ"
+									"value": "{{psp_code}}"
 								}
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "WISP_1_2_20211229"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteCdi",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteCdi\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode=BPPIITRRZZZ",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"cdis",
-								":id"
-							],
-							"query": [
-								{
-									"key": "pspcode",
-									"value": "BPPIITRRZZZ"
-								}
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "BCITITMM_20-20-0817"
+									"value": "{{psp_code}}_20-20-0817"
 								}
 							]
 						}
@@ -2902,160 +3591,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "BPPIITRRZZZ"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createPaymentServiceProvidersChannel",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createPaymentServiceProvidersChannel\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "default"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_types\": [\n    \"BBT\"\n  ]\n}"
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders",
-								":code",
-								"channels"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "BPPIITRRZZZ"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updatePaymentServiceProvidersChannel",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updatePaymentServiceProvidersChannel\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "default"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"channel_code\": \"00001060966_01\",\n  \"payment_types\": [\n      \"BBT\",\n      \"BP\"\n  ]\n}"
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders",
-								":code",
-								"channels",
-								":channels"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "BPPIITRRZZZ"
-								},
-								{
-									"key": "channels",
-									"value": "00001060966_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deletePaymentServiceProvidersChannel",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deletePaymentServiceProvidersChannel\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "default"
-							}
-						],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"paymentserviceproviders",
-								":code",
-								"channels",
-								":channels"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "BPPIITRRZZZ"
-								},
-								{
-									"key": "channels",
-									"value": "00001060966_01"
+									"value": "{{psp_code}}"
 								}
 							]
 						}
@@ -3100,186 +3636,6 @@
 					"response": []
 				},
 				{
-					"name": "createBrokerPsp",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createBrokerPsp\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"function makeid(length) {",
-									"    var result           = '';",
-									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    var charactersLength = characters.length;",
-									"    for ( var i = 0; i < length; i++ ) {",
-									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
-									"pm.globals.set(\"broker_psp_code\", makeid(35));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "string"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"description\": \"Postecom\",\n    \"enabled\": true,\n    \"extended_fault_bean\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokerspsp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updateBrokerPsp",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updateBrokerPsp\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "string"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"description\": \"Nome\",\n    \"enabled\": false,\n    \"extended_fault_bean\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokerspsp",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{broker_psp_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deleteBrokerPsp",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"deleteBrokerPsp\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "string"
-							}
-						],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"brokerspsp",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "{{broker_psp_code}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "getBrokerPsp",
 					"event": [
 						{
@@ -3310,7 +3666,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "17103880000"
+									"value": "{{broker_psp_code}}"
 								}
 							]
 						}
@@ -3399,7 +3755,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "00001060966_01"
+									"value": "{{channel_code}}"
 								}
 							]
 						}
@@ -3407,124 +3763,279 @@
 					"response": []
 				},
 				{
-					"name": "createChannel",
+					"name": "getPaymentTypes",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"createChannel\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"function makeid(length) {",
-									"    var result           = '';",
-									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    var charactersLength = characters.length;",
-									"    for ( var i = 0; i < length; i++ ) {",
-									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"    }",
-									"    return result;",
-									"}",
-									"",
-									"pm.globals.set(\"channel_code\", makeid(35));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"enabled\": true,\n    \"description\": \"\",\n    \"password\": \"FakePay\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"17103880000\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": false,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"serv_plugin\": \"idPsp1\",\n    \"agid\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"channels"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "updateChannel",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"updateChannel\", function () {",
+									"pm.test(\"getPaymentTypes\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
 								"type": "text/javascript"
 							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "GET",
 						"header": [
 							{
-								"key": "Content-Type",
+								"key": "accept",
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"enabled\": false,\n    \"description\": \"descrizione\",\n    \"password\": \"***\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"17103880000\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": true,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"agid\": false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
 								"channels",
-								":code"
+								":code",
+								"paymenttypes"
 							],
 							"variable": [
 								{
 									"key": "code",
 									"value": "{{channel_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getServices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getServices\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/services?page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"services"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCdi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCdi\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/cdis/:id?pspcode={{psp_code}}",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"cdis",
+								":id"
+							],
+							"query": [
+								{
+									"key": "pspcode",
+									"value": "{{psp_code}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{psp_code}}_20-20-0817"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePaymentServiceProvidersChannel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deletePaymentServiceProvidersChannel\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code/channels/:channels",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"paymentserviceproviders",
+								":code",
+								"channels",
+								":channels"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{psp_code}}"
+								},
+								{
+									"key": "channels",
+									"value": "{{channel_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePaymentType",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deletePaymentType\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes/:type",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code",
+								"paymenttypes",
+								":type"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{channel_code}}"
+								},
+								{
+									"key": "type",
+									"value": "BP"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePaymentType Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deletePaymentType\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes/:type",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								":code",
+								"paymenttypes",
+								":type"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{channel_code}}"
+								},
+								{
+									"key": "type",
+									"value": "PO"
 								}
 							]
 						}
@@ -3579,108 +4090,24 @@
 					"response": []
 				},
 				{
-					"name": "getPaymentTypes",
+					"name": "deleteBrokerPsp",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getPaymentTypes\", function () {",
+									"pm.test(\"deleteBrokerPsp\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
 								"type": "text/javascript"
 							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"channels",
-								":code",
-								"paymenttypes"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00001060966_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "createPaymentType",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"createPaymentType\", function () {",
-									"  pm.response.to.have.status(201);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"payment_types\": [\n        \"PO\"\n    ]\n}"
 						},
-						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes",
-							"host": [
-								"{{api-config-host}}"
-							],
-							"path": [
-								"{{api-config-base-path}}",
-								"channels",
-								":code",
-								"paymenttypes"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "00001060966_01"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "deletePaymentType",
-					"event": [
 						{
-							"listen": "test",
+							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"deletePaymentType\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -3692,29 +4119,23 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json",
-								"type": "text"
+								"type": "string"
 							}
 						],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymenttypes/:type",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:code",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
-								"channels",
-								":code",
-								"paymenttypes",
-								":type"
+								"brokerspsp",
+								":code"
 							],
 							"variable": [
 								{
 									"key": "code",
-									"value": "00001060966_01"
-								},
-								{
-									"key": "type",
-									"value": "PO"
+									"value": "{{broker_psp_code}}"
 								}
 							]
 						}
@@ -3722,41 +4143,55 @@
 					"response": []
 				},
 				{
-					"name": "getServices",
+					"name": "deletePaymentServiceProvider",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getServices\", function () {",
+									"pm.test(\"deletePaymentServiceProvider\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "accept",
-								"value": "application/json"
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": false,\n    \"business_name\": \"Nuovo nome\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": true,\n    \"stamp\": true,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
 							}
-						],
+						},
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/services?page=0",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/paymentserviceproviders/:code",
 							"host": [
 								"{{api-config-host}}"
 							],
 							"path": [
 								"{{api-config-base-path}}",
-								"services"
+								"paymentserviceproviders",
+								":code"
 							],
-							"query": [
+							"variable": [
 								{
-									"key": "page",
-									"value": "0"
+									"key": "code",
+									"value": "{{psp_code}}"
 								}
 							]
 						}
@@ -5839,6 +6274,171 @@
 			"name": "api test suite - massive loading",
 			"item": [
 				{
+					"name": "createCreditorInstitution Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"creditor_institution_code\", '01234567890');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"creditor_institution_code\": \"{{creditor_institution_code}}\",\n  \"enabled\": true,\n  \"business_name\": \"Comune di Lorem Ipsum\",\n  \"address\": {\n    \"location\": \"Via delle vie 3\",\n    \"city\": \"Rome\",\n    \"zip_code\": \"00187\",\n    \"country_code\": \"RM\",\n    \"tax_domicile\": \"00111\"\n  },\n  \"psp_payment\": true,\n  \"reporting_ftp\": false,\n  \"reporting_zip\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createStation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createStation\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"station_code\", \"01234567890\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createStation Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"createStation\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"station_code\", \"01234567891\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "manageCIStationRelationship",
 					"event": [
 						{
@@ -5865,7 +6465,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "src/test/resources/file/ci_station_ok.csv"
+									"src": "src/test/resources/file/ci_station_ok_postman.csv"
 								}
 							]
 						},
@@ -5917,7 +6517,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "src/test/resources/file/massive_migration.csv"
+									"src": "src/test/resources/file/massive_migration_postman.csv"
 								}
 							]
 						},
@@ -5931,6 +6531,126 @@
 								"batchoperation",
 								"creditorinstitution-station",
 								"migration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitutionStation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitutionStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/stations/:stationcode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"stations",
+								":stationcode"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								},
+								{
+									"key": "stationcode",
+									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteStation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:id",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCreditorInstitution Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"deleteCreditorInstitution\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								}
 							]
 						}
 					},
