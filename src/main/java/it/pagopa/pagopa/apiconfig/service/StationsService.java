@@ -1,5 +1,26 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
@@ -17,25 +38,6 @@ import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
 @Service
 @Validated
@@ -133,6 +135,17 @@ public class StationsService {
                 "Broadcast");
         return CommonUtil.createCsv(headers, csvRows);
     }
+    
+    public StationCreditorInstitution getStationCreditorInstitutionRelation(@NotNull String stationCode, @NotNull String creditorInstitutionCode) {
+    	// verify creditor institution
+        Pa pa = getCreditorInstitutionIfExist(creditorInstitutionCode);
+        // verify station
+        Stazioni stazioni = getStationIfExists(stationCode);
+        // verify relation
+        PaStazionePa relation = getRelationCreditorInstitutionStationIfExist(stazioni, pa);
+        
+        return modelMapper.map(relation, StationCreditorInstitution.class);
+    }
 
     private List<String> getCsvValues(StationCreditorInstitution elem) {
         var list = new ArrayList<String>();
@@ -172,6 +185,31 @@ public class StationsService {
         Optional<Stazioni> result = stazioniRepository.findByIdStazione(stationCode);
         if (result.isEmpty()) {
             throw new AppException(AppError.STATION_NOT_FOUND, stationCode);
+        }
+        return result.get();
+    }
+    
+    /**
+     * @param creditorInstitutionCode the code of creditor institution to check
+     * @return search on DB using the {@code stationCode} and return the creditor institution if it is present
+     */
+    private Pa getCreditorInstitutionIfExist(String creditorInstitutionCode) {
+        Optional<Pa> result = paRepository.findByIdDominio(creditorInstitutionCode);
+        if (result.isEmpty()) {
+            throw new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, creditorInstitutionCode);
+        }
+        return result.get();
+    }
+    
+    /**
+     * @param stazioni the station object
+     * @param pa the creditor institution object
+     * @return search on DB and return the relation if it is present
+     */
+    private PaStazionePa getRelationCreditorInstitutionStationIfExist(Stazioni stazioni, Pa pa) {
+        Optional<PaStazionePa> result = paStazioniRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId());
+        if (result.isEmpty()) {
+            throw new AppException(AppError.RELATION_STATION_NOT_FOUND, pa.getIdDominio() , stazioni.getIdStazione());
         }
         return result.get();
     }
