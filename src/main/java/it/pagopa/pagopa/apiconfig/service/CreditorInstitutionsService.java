@@ -121,10 +121,10 @@ public class CreditorInstitutionsService {
         }
 
         if (!paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Bad Relation", "segregationCode already exists");
+            throw new AppException(HttpStatus.CONFLICT, "Bad Relation info", "SegregationCode already exists");
         }
         if (!paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "Bad Relation", "applicationCode already exists");
+            throw new AppException(HttpStatus.CONFLICT, "Bad Relation info", "ApplicationCode already exists");
         }
 
         // add info into object for model mapper
