@@ -33,6 +33,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationCreditorInstitutionDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -176,6 +177,17 @@ class StationsServiceTest {
 
         var result = stationsService.getStationCreditorInstitutionsCSV("1234");
         assertNotNull(result);
+    }
+    
+    @Test
+    void getStationCreditorInstitutionRelation() {
+    	when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
+    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
+    	when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(any(), any())).thenReturn(Optional.ofNullable(getMockPaStazionePa()));
+    	
+    	var result = stationsService.getStationCreditorInstitutionRelation("1234", "1234");
+        assertNotNull(result);
+        assertEquals("00168480242", result.getCreditorInstitutionCode());
     }
 
 

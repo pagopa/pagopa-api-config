@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStations;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStationCreditorInstitutionDetails;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -46,6 +47,7 @@ class StationsControllerTest {
         when(stationsService.createStation(any(StationDetails.class))).thenReturn(getMockStationDetails());
         when(stationsService.updateStation(anyString(), any(StationDetails.class))).thenReturn(getMockStationDetails());
         when(stationsService.getStationCreditorInstitutionsCSV(anyString())).thenReturn(new byte[0]);
+        when(stationsService.getStationCreditorInstitutionRelation(anyString(), anyString())).thenReturn(getMockStationCreditorInstitutionDetails());
     }
 
     @Test
@@ -112,6 +114,13 @@ class StationsControllerTest {
         String url = "/stations/1234/creditorinstitutions/csv";
         mvc.perform(get(url).contentType(MediaType.TEXT_PLAIN_VALUE))
                 .andExpect(status().isOk());
+    }
+    
+    @Test
+    void getStationCreditorInstitutionRelation() throws Exception {
+    	String url = "/stations/1234/creditorinstitutions/1234";
+    	mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
     }
 
 }
