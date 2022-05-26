@@ -3,7 +3,7 @@ name: Auto Assign
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  pull_request:
+  pull_request_target:
     branches:
       - main
     types: [ opened ]
