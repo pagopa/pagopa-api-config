@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "95627ddd-d5fa-4432-b4bd-84f3a9bb8f61",
+		"_postman_id": "70b394da-b686-48db-a3fa-28de0cdab15b",
 		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "205220"
+		"_exporter_id": "17873898"
 	},
 	"item": [
 		{
@@ -1222,6 +1222,50 @@
 								{
 									"key": "code",
 									"value": "{{station_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStationCreditorInstitutionRelation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getStationCreditorInstitutionRelation\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:stationCode/creditorinstitutions/:creditorInstitutionCode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								":stationCode",
+								"creditorinstitutions",
+								":creditorInstitutionCode"
+							],
+							"variable": [
+								{
+									"key": "stationCode",
+									"value": "{{station_code}}"
+								},
+								{
+									"key": "creditorInstitutionCode",
+									"value": "{{creditor_institution_code}}"
 								}
 							]
 						}
@@ -2787,6 +2831,50 @@
 								{
 									"key": "code",
 									"value": "{{creditor_institution_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStationCreditorInstitutionRelation_404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getStationCreditorInstitutionRelation\", function () {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/:stationCode/creditorinstitutions/:creditorInstitutionCode",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								":stationCode",
+								"creditorinstitutions",
+								":creditorInstitutionCode"
+							],
+							"variable": [
+								{
+									"key": "stationCode",
+									"value": "{{station_code}}"
+								},
+								{
+									"key": "creditorInstitutionCode",
+									"value": "fake"
 								}
 							]
 						}

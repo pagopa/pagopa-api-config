@@ -51,6 +51,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
@@ -325,6 +326,19 @@ public class TestUtil {
                 .ip4Mod("2.2.2.2")
                 .service("/api")
                 .threadNumber(2L)
+                .build();
+    }
+    
+    public static StationCreditorInstitution getMockStationCreditorInstitutionDetails() {
+        return StationCreditorInstitution.builder()
+                .applicationCode(1L)
+                .auxDigit(1L)
+                .segregationCode(80L)
+                .mod4(false)
+                .broadcast(false)
+                .creditorInstitutionCode("1234")
+                .enabled(true)
+                .businessName("Comune di Roma")
                 .build();
     }
 
