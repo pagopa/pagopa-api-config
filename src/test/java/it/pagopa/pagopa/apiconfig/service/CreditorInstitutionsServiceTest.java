@@ -414,6 +414,36 @@ class CreditorInstitutionsServiceTest {
         }
     }
 
+    @Test
+    void createStationsCI_uniqueViolation() {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndSegregazione(anyLong(), anyLong())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", getCreditorInstitutionStationEdit());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void createStationsCI_uniqueViolation2() {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        when(paStazionePaRepository.findAllByFkPaAndProgressivo(anyLong(), anyLong())).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+
+        try {
+            creditorInstitutionsService.createCreditorInstitutionStation("1234", getCreditorInstitutionStationEdit());
+        } catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(longs = {0L, 3L})
     void updateStationsCI_0_3(Long auxDigit) throws IOException, JSONException {

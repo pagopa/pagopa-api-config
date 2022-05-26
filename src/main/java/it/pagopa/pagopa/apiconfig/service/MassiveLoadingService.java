@@ -95,7 +95,6 @@ public class MassiveLoadingService {
             var relation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), oldStation.getObjId())
                     .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, item.getCreditorInstitution(), item.getOldStation()));
 
-
             var builder = relation.toBuilder()
                     .fkStazione(newStation);
             if (item.getBroadcast() != null) {
@@ -150,6 +149,7 @@ public class MassiveLoadingService {
             if (item.getOperation().equals(CreditorInstitutionStation.Operation.A)) {
                 Long segregationCode = item.getSegregationCode() != null ? Long.parseLong(item.getSegregationCode()) : null;
                 Long applicationCode = item.getApplicationCode() != null ? Long.parseLong(item.getApplicationCode()) : null;
+
                 CreditorInstitutionStationEdit data = CreditorInstitutionStationEdit.builder()
                         .stationCode(item.getStationId())
                         .auxDigit(item.getAuxDigit())

@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,6 +119,14 @@ public class CreditorInstitutionsService {
         if (paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId()).isPresent()) {
             throw new AppException(AppError.RELATION_STATION_CONFLICT, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode());
         }
+
+        if (!paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
+            throw new AppException(HttpStatus.CONFLICT, "Bad Relation info", "SegregationCode already exists");
+        }
+        if (!paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
+            throw new AppException(HttpStatus.CONFLICT, "Bad Relation info", "ApplicationCode already exists");
+        }
+
         // add info into object for model mapper
         creditorInstitutionStationEdit.setFkPa(pa);
         creditorInstitutionStationEdit.setFkStazioni(stazioni);
@@ -171,8 +180,9 @@ public class CreditorInstitutionsService {
 
     /**
      * Check application and segregation code according to aux-digit
-     * @param creditorInstitutionCode
-     * @param creditorInstitutionStationEdit
+     *
+     * @param creditorInstitutionCode        creditor institution code
+     * @param creditorInstitutionStationEdit relation info
      */
     private void checkAuxDigit(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
         if (!Arrays.asList(0L, 1L, 2L, 3L).contains(creditorInstitutionStationEdit.getAuxDigit())) {
@@ -182,8 +192,7 @@ public class CreditorInstitutionsService {
 
         if (creditorInstitutionStationEdit.getAuxDigit().equals(0L)) {
             checkAuxDigit0(creditorInstitutionCode, creditorInstitutionStationEdit);
-        }
-        else if (creditorInstitutionStationEdit.getAuxDigit().equals(1L) || creditorInstitutionStationEdit.getAuxDigit().equals(2L)) {
+        } else if (creditorInstitutionStationEdit.getAuxDigit().equals(1L) || creditorInstitutionStationEdit.getAuxDigit().equals(2L)) {
             if (creditorInstitutionStationEdit.getApplicationCode() != null) {
                 String message = "Application code error: length must be blank";
                 throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
@@ -193,8 +202,7 @@ public class CreditorInstitutionsService {
                 String message = "Segregation code error: length must be blank";
                 throw new AppException(AppError.RELATION_STATION_BAD_REQUEST, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode(), message);
             }
-        }
-        else if (creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
+        } else if (creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
             checkAuxDigit3(creditorInstitutionCode, creditorInstitutionStationEdit);
         }
         if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
