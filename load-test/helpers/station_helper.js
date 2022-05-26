@@ -87,3 +87,8 @@ export function getStationCreditorInstitutions(rootUrl, params, id) {
 	const url = `${rootUrl}/stations/${getStationCode(id)}/creditorinstitutions?page=0`
 	return http.get(url, params);
 }
+
+export function getStationCreditorInstitution(rootUrl, params, id, ciId) {
+	const url = `${rootUrl}/stations/${getStationCode(id)}/creditorinstitutions/${ciId}`
+	return http.get(url, params);
+}
