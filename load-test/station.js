@@ -13,7 +13,8 @@ import {
 	getStation,
 	updateStation,
 	deleteStation,
-	getStationCreditorInstitutions
+	getStationCreditorInstitutions,
+	getStationCreditorInstitution
 } from "./helpers/station_helper.js";
 
 import {
@@ -22,6 +23,7 @@ import {
 	deleteBroker
 } from "./helpers/ci_broker_helper.js";
 import {
+	getCiCode,
 	createCreditorInstitution,
 	deleteCreditorInstitution,
 	createStationRelationship,
@@ -68,8 +70,9 @@ function precondition(params, id) {
 
 	// Create creditor institution
 	response = createCreditorInstitution(rootUrl, params, tempId);
+	key = `initial step for station-ec ${getStationCode(id)} / ${getCiCode(tempId)}`;
 	check(response, {
-		'createCreditorInstitution': (r) => r.status === 201 || r.status === 409,
+		[key]: (r) => r.status === 201 || r.status === 409,
 	});
 
 }
@@ -79,7 +82,7 @@ function postcondition(params, id) {
 
 	// remove creditor institution and broker used in the test
 	let response = deleteCreditorInstitution(rootUrl, params, tempId);
-	let key = `final step for station ${getStationCode(tempId)}`;
+	let key = `final step for station-ec ${getStationCode(tempId)} / ${getCiCode(tempId)}`;
 	check(response, {
 		[key]: (r) => r.status === 200 || r.status === 404,
 	});
@@ -145,6 +148,12 @@ export default function (data) {
 	response = getStationCreditorInstitutions(rootUrl, params, __VU);
 	check(response, {
 		'getStationCreditorInstitutions': (r) => r.status === 200,
+	});
+
+	// Get creditor institution
+	response = getStationCreditorInstitution(rootUrl, params, __VU, getCiCode(tempId));
+	check(response, {
+		'getStationCreditorInstitution': (r) => r.status === 200,
 	});
 
 	// Delete station relationship
