@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
@@ -180,6 +181,31 @@ public class StationsController {
                 .contentType(MediaType.TEXT_PLAIN)
                 .contentLength(file.length)
                 .body(new ByteArrayResource(file));
+    }
+    
+    /**
+     * GET /stations/{stationcode}/creditorinstitutions/{creditorinstitutioncode} : Get station-ec relation
+     *
+     * @param stationCode station code. (required)
+     * @param creditorinstitutioncode organization fiscal code. (required)
+     * @return OK. (status code 200)
+     * or Not Found (status code 404)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Get station creditor institution relation", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions",})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = StationCreditorInstitutions.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/{stationcode}/creditorinstitutions/{creditorinstitutioncode}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<StationCreditorInstitution> getStationCreditorInstitutionRelation(
+            @Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode,
+            @Size(min = 1, max = 50) @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true) @PathVariable("creditorinstitutioncode") String creditorInstitutionCode) {
+        return ResponseEntity.ok(stationsService.getStationCreditorInstitutionRelation(stationCode, creditorInstitutionCode));
     }
 
 }
