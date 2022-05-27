@@ -9,13 +9,33 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
-import it.pagopa.pagopa.apiconfig.model.configuration.*;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeyBase;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypeBase;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
+import it.pagopa.pagopa.apiconfig.model.configuration.PddBase;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfBase;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.service.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -73,7 +93,7 @@ public class ConfigurationController {
      * GET /configuration/keys/category/{category}/key/{key} : Get details of a configuration key
      *
      * @param category Configuration category (required)
-     * @param key Configuration key (required)
+     * @param key      Configuration key (required)
      * @return OK. (status code 200)
      * or Service unavailable (status code 500)
      */
@@ -96,7 +116,7 @@ public class ConfigurationController {
      * PUT /configuration/keys/category/{category}/key/{key} : Update a configuration key
      *
      * @param category Configuration category (required)
-     * @param key Configuration key (required)
+     * @param key      Configuration key (required)
      * @return OK. (status code 200)
      * or Service unavailable (status code 500)
      */
@@ -121,8 +141,8 @@ public class ConfigurationController {
      * DELETE /configuration/keys/category/{category}/key/{key} : Delete a configuration key
      *
      * @param category Configuration category (required)
-     * @param key Configuration key (required)
-     * @return
+     * @param key      Configuration key (required)
+     * @return OK. (status code 200)
      */
     @Operation(summary = "Delete configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
@@ -135,7 +155,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/keys/category/{category}/key/{key}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> deleteConfigurationKey(@Parameter(description = "Configuration category") @PathVariable("category") String category,
-                                                        @Parameter(description = "Configuration key") @PathVariable("key") String key) {
+                                                       @Parameter(description = "Configuration key") @PathVariable("key") String key) {
         configurationService.deleteConfigurationKey(category, key);
         return ResponseEntity.ok().build();
     }
@@ -227,7 +247,7 @@ public class ConfigurationController {
      * DELETE /configuration/wfespplugins/idServPlugin : Delete a Wfesp plugin configuration
      *
      * @param idServPlugin idServPlugin (required)
-     * @return
+     * @return OK. (status code 200)
      */
     @Operation(summary = "Delete configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
@@ -345,7 +365,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/pdds/{id_pdd}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> deletePdd(@Parameter(description = "Configuration identifier") @PathVariable("id_pdd") String idPdd){
+    public ResponseEntity<Void> deletePdd(@Parameter(description = "Configuration identifier") @PathVariable("id_pdd") String idPdd) {
         configurationService.deletePdd(idPdd);
         return ResponseEntity.ok().build();
     }
@@ -393,8 +413,8 @@ public class ConfigurationController {
     /**
      * GET /configuration/ftpservers/host/{host}/port/{port}/service/{service} : Get details of a ftp server
      *
-     * @param host ftp server host (required)
-     * @param port ftp server port (required)
+     * @param host    ftp server host (required)
+     * @param port    ftp server port (required)
      * @param service ftp server service (required)
      * @return OK. (status code 200)
      * or Service unavailable (status code 500)
@@ -418,15 +438,15 @@ public class ConfigurationController {
     /**
      * PUT /configuration/ftpservers/host/{host}/port/{port}/service/{service} : Update details of a ftp server
      *
-     * @param host ftp server host (required)
-     * @param port ftp server port (required)
+     * @param host    ftp server host (required)
+     * @param port    ftp server port (required)
      * @param service ftp server service (required)
      * @return OK. (status code 200)
      * or Service unavailable (status code 500)
      */
     @Operation(summary = "Update configuration key", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = FtpServer.class))),
+            @ApiResponse(responseCode = "200", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = FtpServer.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -435,9 +455,9 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/ftpservers/host/{host}/port/{port}/service/{service}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<FtpServer> updateFtpServer(@Parameter(description = "Host") @PathVariable("host") String host,
-                                                            @Parameter(description = "Port") @PathVariable("port") Integer port,
-                                                            @Parameter(description = "Service") @PathVariable("service") String service,
-                                                            @RequestBody @Valid @NotNull FtpServer ftpServer) {
+                                                     @Parameter(description = "Port") @PathVariable("port") Integer port,
+                                                     @Parameter(description = "Service") @PathVariable("service") String service,
+                                                     @RequestBody @Valid @NotNull FtpServer ftpServer) {
         FtpServer savedFtpServer = configurationService.updateFtpServer(host, port, service, ftpServer);
         return ResponseEntity.ok(savedFtpServer);
     }
@@ -445,8 +465,8 @@ public class ConfigurationController {
     /**
      * DELETE /configuration/ftpservers/host/{host}/port/{port}/service/{service} : Delete details of a ftp server
      *
-     * @param host ftp server host (required)
-     * @param port ftp server port (required)
+     * @param host    ftp server host (required)
+     * @param port    ftp server port (required)
      * @param service ftp server service (required)
      * @return OK. (status code 200)
      * or Service unavailable (status code 500)
@@ -538,7 +558,7 @@ public class ConfigurationController {
      */
     @Operation(summary = "Update payment type", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Configuration"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentTypeBase.class))),
+            @ApiResponse(responseCode = "200", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PaymentType.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -547,7 +567,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/paymenttypes/{paymentTypeCode}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<PaymentType> updatePaymentType(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode,
-                                                            @RequestBody @Valid @NotNull PaymentTypeBase paymentType) {
+                                                         @RequestBody @Valid @NotNull PaymentTypeBase paymentType) {
         PaymentType savedPaymentType = configurationService.updatePaymentType(paymentTypeCode, paymentType);
         return ResponseEntity.ok(savedPaymentType);
     }
