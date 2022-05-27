@@ -9,6 +9,7 @@ import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.Channel;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelPspList;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
@@ -224,4 +225,6 @@ public class ChannelsService {
     }
 
 
+    public ChannelPspList getChannelsPaymentServiceProviders(String channelCode) {
+    }
 }
