@@ -18,4 +18,6 @@ public interface PspCanaleTipoVersamentoRepository extends JpaRepository<PspCana
     Optional<PspCanaleTipoVersamento> findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(Long idPsp, String channel, String paymentType);
 
     List<PspCanaleTipoVersamento> findByFkPspAndCanaleTipoVersamento_FkCanale(Long idPsp, Long idChannel);
+
+    List<PspCanaleTipoVersamento> findByCanaleTipoVersamento_Canale_IdCanale(String idChannel);
 }

@@ -23,6 +23,6 @@ public class ChannelPspList {
         @JsonProperty("payment_service_providers")
         @Schema(required = true)
         @NotNull
-        private List<ChannelPsp> pspList;
+        private List<ChannelPsp> psp;
 
 }
