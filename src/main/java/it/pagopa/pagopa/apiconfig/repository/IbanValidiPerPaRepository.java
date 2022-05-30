@@ -10,4 +10,5 @@ import java.util.List;
 public interface IbanValidiPerPaRepository extends JpaRepository<IbanValidiPerPa, String> {
 
     List<IbanValidiPerPa> findAllByFkPa(Long fkPa);
+    List<IbanValidiPerPa> findAllByIbanAccredito(String iban);
 }

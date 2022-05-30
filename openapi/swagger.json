@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.14.2"
+    "version": "0.15.0"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -6185,7 +6185,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCreditorInstitutions",
+        "operationId": "getCreditorInstitutions_1",
         "summary": "Get paginated list of creditor institutions"
       },
       "post": {
@@ -7582,6 +7582,108 @@
         ],
         "operationId": "updateCreditorInstitutionStation",
         "summary": "Update a relation between creditor institution and station"
+      }
+    },
+    "/ibans/{iban}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Iban to find",
+            "in": "path",
+            "name": "iban",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreditorInstitutionList"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Utilities"
+        ],
+        "operationId": "getCreditorInstitutions",
+        "summary": "Get list of creditor institutions having IBAN"
       }
     },
     "/icas": {
@@ -10403,6 +10505,131 @@
         "operationId": "getStationCreditorInstitutionsCSV",
         "summary": "Download a CSV with station creditor institution list"
       }
+    },
+    "/stations/{stationcode}/creditorinstitutions/{creditorinstitutioncode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "station code.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "stationcode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Organization fiscal code, the fiscal code of the Organization.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
+            "name": "creditorinstitutioncode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/StationCreditorInstitutions"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "getStationCreditorInstitutionRelation",
+        "summary": "Get station creditor institution relation"
+      }
     }
   },
   "definitions": {
@@ -11021,6 +11248,20 @@
       },
       "required": [
         "encodings"
+      ],
+      "type": "object"
+    },
+    "CreditorInstitutionList": {
+      "properties": {
+        "creditor_institutions": {
+          "items": {
+            "$ref": "#/definitions/CreditorInstitution"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "creditor_institutions"
       ],
       "type": "object"
     },
@@ -12159,6 +12400,10 @@
     {
       "description": "Everything about Configuration",
       "name": "Configuration"
+    },
+    {
+      "description": "Everything about Utilities",
+      "name": "Utilities"
     }
   ],
   "x-components": {}
