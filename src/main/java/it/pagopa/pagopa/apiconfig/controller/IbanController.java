@@ -40,7 +40,7 @@ public class IbanController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/ibans/{iban}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<CreditorInstitutionList> getCreditorInstitutions(@Parameter(description = "Iban to find", required = true) @PathVariable("iban") String iban) {
+    public ResponseEntity<CreditorInstitutionList> getCreditorInstitutionsByIban(@Parameter(description = "Iban to find", required = true) @PathVariable("iban") String iban) {
         return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionsByIban(iban));
     }
 

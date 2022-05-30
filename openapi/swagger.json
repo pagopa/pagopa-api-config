@@ -6185,7 +6185,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getCreditorInstitutions_1",
+        "operationId": "getCreditorInstitutions",
         "summary": "Get paginated list of creditor institutions"
       },
       "post": {
@@ -7682,7 +7682,7 @@
         "tags": [
           "Utilities"
         ],
-        "operationId": "getCreditorInstitutions",
+        "operationId": "getCreditorInstitutionsByIban",
         "summary": "Get list of creditor institutions having IBAN"
       }
     },
