@@ -6,14 +6,8 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.PageInfo;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -34,10 +28,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -175,6 +166,19 @@ public class CreditorInstitutionsService {
         List<IbanValidiPerPa> iban = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
         return Ibans.builder()
                 .ibanList(getIbanList(iban))
+                .build();
+    }
+
+    public CreditorInstitutionList getCreditorInstitutionsByIban(@NotNull String iban) {
+        List<IbanValidiPerPa> items = ibanValidiPerPaRepository.findAllByIbanAccredito(iban);
+
+        List<CreditorInstitution> ciList = items.isEmpty() ? new ArrayList<>() : items.stream().map(i -> paRepository.findById(i.getFkPa()))
+                .filter(Optional::isPresent)
+                .map(pa -> modelMapper.map(pa.get(), CreditorInstitution.class))
+                .collect(Collectors.toList());
+
+        return CreditorInstitutionList.builder()
+                .creditorInstitutions(ciList)
                 .build();
     }
 

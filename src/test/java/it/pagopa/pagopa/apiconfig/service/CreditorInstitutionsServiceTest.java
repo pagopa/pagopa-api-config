@@ -4,11 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -38,8 +34,7 @@ import java.util.Optional;
 import static it.pagopa.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -577,6 +572,27 @@ class CreditorInstitutionsServiceTest {
         Ibans result = creditorInstitutionsService.getCreditorInstitutionsIbans("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getCreditorInstitutionsByIban_1() throws IOException, JSONException {
+        when(ibanValidiPerPaRepository.findAllByIbanAccredito(anyString())).thenReturn(Lists.newArrayList(getMockIbanValidiPerPa()));
+        when(paRepository.findById(any())).thenReturn(Optional.of(getMockPa()));
+
+        CreditorInstitutionList result = creditorInstitutionsService.getCreditorInstitutionsByIban("1234");
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_by_iban_1.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getCreditorInstitutionsByIban_2() throws IOException, JSONException {
+        when(ibanValidiPerPaRepository.findAllByIbanAccredito(anyString())).thenReturn(Lists.newArrayList());
+
+        CreditorInstitutionList result = creditorInstitutionsService.getCreditorInstitutionsByIban("1234");
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_by_iban_2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 }
