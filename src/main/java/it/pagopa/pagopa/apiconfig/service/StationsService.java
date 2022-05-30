@@ -128,7 +128,9 @@ public class StationsService {
                 .map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class))
                 .map(this::getCsvValues)
                 .collect(Collectors.toList());
-        List<String> headers = Arrays.asList("Ente Creditore",
+        List<String> headers = Arrays.asList("Nome",
+                "Codice",
+                "Abilitato",
                 "Aux digit",
                 "ApplicationCode",
                 "Codice Segregazione",
@@ -149,7 +151,9 @@ public class StationsService {
 
     private List<String> getCsvValues(StationCreditorInstitution elem) {
         var list = new ArrayList<String>();
+        list.add(deNull(elem.getBusinessName()));
         list.add(deNull(elem.getCreditorInstitutionCode()));
+        list.add(deNull(elem.getEnabled()).toString());
         list.add(deNull(elem.getAuxDigit()));
         list.add(deNull(elem.getApplicationCode()));
         list.add(deNull(elem.getSegregationCode()));
