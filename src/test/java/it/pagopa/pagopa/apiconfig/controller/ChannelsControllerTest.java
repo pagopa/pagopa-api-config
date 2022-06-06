@@ -18,8 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-
+import static it.pagopa.pagopa.apiconfig.TestUtil.getChannelPspList;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannels;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
@@ -53,13 +52,15 @@ class ChannelsControllerTest {
 
         when(channelsService.getPaymentTypes(anyString())).thenReturn(getMockPspChannelPaymentTypes());
         when(channelsService.createPaymentType(anyString(), any(PspChannelPaymentTypes.class))).thenReturn(getMockPspChannelPaymentTypes());
+        when(channelsService.getChannelsPaymentServiceProviders(anyString())).thenReturn(getChannelPspList());
     }
 
     @ParameterizedTest
     @CsvSource({
             "/channels?page=0",
             "/channels/1234",
-            "/channels/1234/paymenttypes"
+            "/channels/1234/paymenttypes",
+            "/channels/1234/paymentserviceproviders"
     })
     void getChannels(String url) throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
