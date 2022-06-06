@@ -2,6 +2,8 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
@@ -9,11 +11,14 @@ import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.Channel;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelPspList;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -29,7 +34,9 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
@@ -52,6 +59,9 @@ public class ChannelsService {
 
     @Autowired
     TipiVersamentoRepository tipiVersamentoRepository;
+
+    @Autowired
+    PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -105,8 +115,7 @@ public class ChannelsService {
         Canali canale = getCanaliIfExists(channelCode);
         try {
             canaliRepository.delete(canale);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new AppException(AppError.CHANNEL_PAYMENT_TYPE_FOUND, channelCode);
         }
     }
@@ -150,6 +159,58 @@ public class ChannelsService {
         var paymentType = getPaymentTypeIfExists(paymentTypeCode);
         var result = getCanaleTipoVersamentoIfExists(channel, paymentType);
         canaleTipoVersamentoRepository.delete(result);
+    }
+
+    public ChannelPspList getChannelPaymentServiceProviders(String channelCode) {
+        // get all the PSPs of the channel with relative payment types
+        Map<Psp, List<PspCanaleTipoVersamento>> pspList = pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(channelCode)
+                .stream()
+                .collect(Collectors.groupingBy(PspCanaleTipoVersamento::getPsp));
+
+        List<ChannelPsp> result = new ArrayList<>();
+        // map the PSPs to the response
+        pspList.forEach((key, value) -> {
+            // map relation entity to list of strings
+            var tipiVersamento = mapPaymentType(value);
+
+            // map PSP to ChannelPsp and add to result
+            var channelPsp = mapChannelPsp(key, tipiVersamento);
+            result.add(channelPsp);
+        });
+
+        return ChannelPspList.builder()
+                .psp(result)
+                .build();
+    }
+
+    /**
+     * Map PSP and list of payment types to ChannelPsp
+     *
+     * @param psp            Psp entity
+     * @param tipiVersamento list of payment types
+     * @return ChannelPsp model
+     */
+    private ChannelPsp mapChannelPsp(Psp psp, List<String> tipiVersamento) {
+        return ChannelPsp.builder()
+                .pspCode(psp.getIdPsp())
+                .businessName(psp.getRagioneSociale())
+                .enabled(psp.getEnabled())
+                .paymentTypeList(tipiVersamento)
+                .build();
+    }
+
+    /**
+     * Get the list of payment types as string from the etity
+     *
+     * @param list of entities
+     * @return list of string
+     */
+    private List<String> mapPaymentType(List<PspCanaleTipoVersamento> list) {
+        return list.stream()
+                .map(PspCanaleTipoVersamento::getCanaleTipoVersamento)
+                .map(elem -> elem.getTipoVersamento().getTipoVersamento())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     /**
@@ -222,6 +283,5 @@ public class ChannelsService {
                 .map(elem -> modelMapper.map(elem, String.class))
                 .collect(Collectors.toList());
     }
-
 
 }

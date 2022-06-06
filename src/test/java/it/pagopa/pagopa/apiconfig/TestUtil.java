@@ -64,6 +64,8 @@ import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelPspList;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
@@ -81,7 +83,6 @@ import org.springframework.data.domain.Sort;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -662,6 +663,20 @@ public class TestUtil {
                 .build();
     }
 
+    public static ChannelPspList getChannelPspList() {
+        return ChannelPspList.builder()
+                .psp(List.of(getChannelPsp()))
+                .build();
+    }
+
+    private static ChannelPsp getChannelPsp() {
+        return ChannelPsp.builder()
+                .enabled(true)
+                .pspCode("1234")
+                .businessName("Name")
+                .paymentTypeList(List.of("AD"))
+                .build();
+    }
 
     public static Cdis getMockCdis() {
         return Cdis.builder()
@@ -891,17 +906,6 @@ public class TestUtil {
                 .paymentTypeList(List.of(getMockPaymentType()))
                 .build();
     }
-
-    /**
-     * Modify private field
-     * @param targetObject
-     * @param fieldName
-     * @param valueToSetOnThisField
-     */
-    public static void setPrivateField(Object targetObject, String fieldName, Object valueToSetOnThisField) throws Exception {
-        Field f = targetObject.getClass().getDeclaredField(fieldName);
-        f.setAccessible(true);
-        f.set(targetObject, valueToSetOnThisField);
-    }
+    
 
 }

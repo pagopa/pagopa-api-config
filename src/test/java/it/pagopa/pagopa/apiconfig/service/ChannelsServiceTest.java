@@ -12,6 +12,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.assertj.core.util.Lists;
@@ -39,6 +40,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePsp;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockTipoVersamento;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockWfespPluginConf;
@@ -68,6 +70,9 @@ class ChannelsServiceTest {
 
     @MockBean
     TipiVersamentoRepository tipiVersamentoRepository;
+
+    @MockBean
+    PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
 
     @Autowired
     @InjectMocks
@@ -308,5 +313,14 @@ class ChannelsServiceTest {
         }
     }
 
+    @Test
+    void getChannelsPaymentServiceProviders() throws JSONException, IOException {
+        when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString())).thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
+
+        var result = channelsService.getChannelPaymentServiceProviders("1234");
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_channelsPSP_ok.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
 
 }
