@@ -187,8 +187,8 @@ public class ChannelsController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/{channelcode}/paymentserviceproviders", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ChannelPspList> getChannelsPaymentServiceProviders(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode) {
-        return ResponseEntity.ok().body(channelsService.getChannelsPaymentServiceProviders(channelCode));
+    public ResponseEntity<ChannelPspList> getChannelPaymentServiceProviders(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode) {
+        return ResponseEntity.ok().body(channelsService.getChannelPaymentServiceProviders(channelCode));
     }
 
 }

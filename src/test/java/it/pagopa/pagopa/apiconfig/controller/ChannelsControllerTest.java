@@ -52,7 +52,7 @@ class ChannelsControllerTest {
 
         when(channelsService.getPaymentTypes(anyString())).thenReturn(getMockPspChannelPaymentTypes());
         when(channelsService.createPaymentType(anyString(), any(PspChannelPaymentTypes.class))).thenReturn(getMockPspChannelPaymentTypes());
-        when(channelsService.getChannelsPaymentServiceProviders(anyString())).thenReturn(getChannelPspList());
+        when(channelsService.getChannelPaymentServiceProviders(anyString())).thenReturn(getChannelPspList());
     }
 
     @ParameterizedTest

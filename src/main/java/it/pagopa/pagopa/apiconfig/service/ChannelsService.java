@@ -161,7 +161,7 @@ public class ChannelsService {
         canaleTipoVersamentoRepository.delete(result);
     }
 
-    public ChannelPspList getChannelsPaymentServiceProviders(String channelCode) {
+    public ChannelPspList getChannelPaymentServiceProviders(String channelCode) {
         // get all the PSPs of the channel with relative payment types
         Map<Psp, List<PspCanaleTipoVersamento>> pspList = pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(channelCode)
                 .stream()

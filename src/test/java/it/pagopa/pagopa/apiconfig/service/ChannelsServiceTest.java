@@ -317,7 +317,7 @@ class ChannelsServiceTest {
     void getChannelsPaymentServiceProviders() throws JSONException, IOException {
         when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString())).thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
 
-        var result = channelsService.getChannelsPaymentServiceProviders("1234");
+        var result = channelsService.getChannelPaymentServiceProviders("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_channelsPSP_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

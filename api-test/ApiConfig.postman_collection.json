@@ -17,7 +17,9 @@
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jwt\", jsonData.access_token);"
+									"// use this set when add one app for every environment",
+									"// postman.setEnvironmentVariable(\"jwt\", jsonData.access_token);",
+									"pm.globals.set(\"jwt\", jsonData.access_token);"
 								],
 								"type": "text/javascript"
 							}
@@ -3851,13 +3853,13 @@
 					"response": []
 				},
 				{
-					"name": "getChannelsPaymentServiceProviders",
+					"name": "getChannelPaymentServiceProviders",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"getChannelsPaymentServiceProviders\", function () {",
+									"pm.test(\"getChannelPaymentServiceProviders\", function () {",
 									"  pm.response.to.have.status(200);",
 									"});"
 								],
