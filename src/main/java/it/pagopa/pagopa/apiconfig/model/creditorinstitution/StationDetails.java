@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -108,17 +109,17 @@ public class StationDetails extends Station {
     @JsonProperty("timeout_a")
     @Schema(required = true)
     @NotNull
-    private Long timeoutA;
+    private Long timeoutA = 15L;
 
     @JsonProperty("timeout_b")
     @Schema(required = true)
     @NotNull
-    private Long timeoutB;
+    private Long timeoutB = 30L;
 
     @JsonProperty("timeout_c")
     @Schema(required = true)
     @NotNull
-    private Long timeoutC;
+    private Long timeoutC = 120L;
 
     @JsonProperty("flag_online")
     private Boolean flagOnline;
