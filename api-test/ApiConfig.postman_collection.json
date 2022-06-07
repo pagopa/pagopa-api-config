@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "2d8398a6-45b2-4371-a34e-adbfa47cf0b2",
+		"_postman_id": "1b9d268f-d403-4e88-8226-a765464aeba0",
 		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "205220"
+		"_exporter_id": "3634782"
 	},
 	"item": [
 		{
@@ -315,7 +315,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"{{broker_code}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
