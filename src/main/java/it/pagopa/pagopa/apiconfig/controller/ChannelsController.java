@@ -179,7 +179,7 @@ public class ChannelsController {
 
     @Operation(summary = "Get the list of PSPs associated with the channel", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PspChannelPaymentTypes.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ChannelPspList.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),

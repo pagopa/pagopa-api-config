@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.16.2-1"
+    "version": "0.17.0"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -2519,7 +2519,7 @@
               }
             },
             "schema": {
-              "$ref": "#/definitions/PspChannelPaymentTypes"
+              "$ref": "#/definitions/ChannelPspList"
             }
           },
           "400": {
@@ -11127,6 +11127,46 @@
         "timeout_a",
         "timeout_b",
         "timeout_c"
+      ],
+      "type": "object"
+    },
+    "ChannelPsp": {
+      "properties": {
+        "business_name": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "payment_types": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "psp_code": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "business_name",
+        "enabled",
+        "payment_types",
+        "psp_code"
+      ],
+      "type": "object"
+    },
+    "ChannelPspList": {
+      "properties": {
+        "payment_service_providers": {
+          "items": {
+            "$ref": "#/definitions/ChannelPsp"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "payment_service_providers"
       ],
       "type": "object"
     },
