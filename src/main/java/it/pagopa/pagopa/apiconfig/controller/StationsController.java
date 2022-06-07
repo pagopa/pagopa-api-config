@@ -166,7 +166,7 @@ public class StationsController {
 
     @Operation(summary = "Download a CSV with station creditor institution list", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions",})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = StationCreditorInstitutions.class))),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Resource.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
@@ -182,12 +182,12 @@ public class StationsController {
                 .contentLength(file.length)
                 .body(new ByteArrayResource(file));
     }
-    
+
     /**
      * GET /stations/{stationcode}/creditorinstitutions/{creditorinstitutioncode} : Get station-ec relation
      *
-     * @param stationCode station code. (required)
-     * @param creditorinstitutioncode organization fiscal code. (required)
+     * @param stationCode             station code. (required)
+     * @param creditorInstitutionCode organization fiscal code. (required)
      * @return OK. (status code 200)
      * or Not Found (status code 404)
      * or Service unavailable (status code 500)

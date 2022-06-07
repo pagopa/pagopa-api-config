@@ -53,6 +53,7 @@ class ChannelsControllerTest {
         when(channelsService.getPaymentTypes(anyString())).thenReturn(getMockPspChannelPaymentTypes());
         when(channelsService.createPaymentType(anyString(), any(PspChannelPaymentTypes.class))).thenReturn(getMockPspChannelPaymentTypes());
         when(channelsService.getChannelPaymentServiceProviders(anyString())).thenReturn(getChannelPspList());
+        when(channelsService.getChannelPaymentServiceProvidersCSV(anyString())).thenReturn(new byte[0]);
     }
 
     @ParameterizedTest
@@ -120,8 +121,8 @@ class ChannelsControllerTest {
     @Test
     void createPaymentType() throws Exception {
         mvc.perform(post("/channels/1234/paymenttypes")
-                .content(TestUtil.toJson(getMockPspChannelPaymentTypes()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(TestUtil.toJson(getMockPspChannelPaymentTypes()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -131,4 +132,12 @@ class ChannelsControllerTest {
         mvc.perform(delete("/channels/1234/paymenttypes/PO").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void getPspCsv() throws Exception {
+        String url = "/channels/1234/paymentserviceproviders/csv";
+        mvc.perform(get(url).contentType(MediaType.TEXT_PLAIN_VALUE))
+                .andExpect(status().isOk());
+    }
+
 }
