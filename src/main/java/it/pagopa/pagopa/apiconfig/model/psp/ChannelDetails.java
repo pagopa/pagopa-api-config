@@ -77,15 +77,15 @@ public class ChannelDetails extends Channel {
 
     @JsonProperty("timeout_a")
     @NotNull
-    private Long timeoutA;
+    private Long timeoutA = 15L;
 
     @JsonProperty("timeout_b")
     @NotNull
-    private Long timeoutB;
+    private Long timeoutB = 30L;
 
     @JsonProperty("timeout_c")
     @NotNull
-    private Long timeoutC;
+    private Long timeoutC = 120L;
 
     @JsonProperty("npm_service")
     private String npmService;
