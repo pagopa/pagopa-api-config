@@ -91,10 +91,10 @@ VALUES (219, '00168480242', 2, 190);
 INSERT INTO NODO4_CFG.CODIFICHE_PA (OBJ_ID, CODICE_PA, FK_CODIFICA, FK_PA)
 VALUES (220, '8088888169189', 1, 190);
 
-INSERT INTO NODO4_CFG.BINARY_FILE (OBJ_ID, FILE_CONTENT, FILE_HASH, FILE_SIZE, SIGNATURE_TYPE, XML_FILE_CONTENT)
+INSERT INTO NODO4_CFG.BINARY_FILE (OBJ_ID, FILE_CONTENT, FILE_SIZE, SIGNATURE_TYPE, XML_FILE_CONTENT)
 VALUES (201,
         '3C3F786D6C2076657273696F6E3D22312E302220656E636F64696E673D225554462D38223F3E0D0A3C696E666F726D6174697661436F6E746F41636372656469746F20786D6C6E733A7873693D22687474703A2F2F7777772E77332E6F72672F323030312F584D4C536368656D612D696E7374616E636522207873693A6E6F4E616D657370616365536368656D614C6F636174696F6E3D22496E666F726D6174697661436F6E746F41636372656469746F5F315F325F302E787364223E0D0A093C6964656E7469666963617469766F466C7573736F3E435F413730332D4942414E2D32303137303330383030303030303C2F6964656E7469666963617469766F466C7573736F3E0D0A093C6964656E7469666963617469766F446F6D696E696F3E30303136383438303234323C2F6964656E7469666963617469766F446F6D696E696F3E0D0A093C726167696F6E65536F6369616C653E436F6D756E652064692042617373616E6F2064656C204772617070613C2F726167696F6E65536F6369616C653E0D0A093C64617461507562626C6963617A696F6E653E323031372D30332D30385430303A30303A30303C2F64617461507562626C6963617A696F6E653E0D0A093C64617461496E697A696F56616C69646974613E323031372D30332D30395430303A30303A30303C2F64617461496E697A696F56616C69646974613E0D0A093C636F6E7469446941636372656469746F3E0D0A09093C212D2D20636F6F7264696E6174652062616E63617269652064656C20636F6E746F20636F7272656E7465207072696E636970616C65206469207465736F7265726961202D2D3E0D0A09093C6962616E41636372656469746F3E495435304D303230303836303136353030303030333439373438313C2F6962616E41636372656469746F3E0D0A093C2F636F6E7469446941636372656469746F3E0D0A3C2F696E666F726D6174697661436F6E746F41636372656469746F3E0D0A',
-        '4B57E35E75CEDADAEF5CF4CCA0D6CF8BE9965725', 724, null, null);
+        724, null, null);
 INSERT INTO NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER (OBJ_ID, DATA_INIZIO_VALIDITA, DATA_PUBBLICAZIONE,
                                                           ID_INFORMATIVA_CONTO_ACCREDITO_PA, RAGIONE_SOCIALE, FK_PA,
                                                           FK_BINARY_FILE, VERSIONE)
@@ -180,153 +180,131 @@ values (3, 'WISP_1_2_20211229', to_timestamp('2017-05-16 00:02:00.000000', 'YYYY
         to_timestamp('2017-05-16 00:01:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'), '16', 'http://host/service', 0, 0, 1,
         201, null);
 
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (11636, 'PayPal', 'PPAL');
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (1, 'Bollettino postale', 'BP');
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (2, 'Bonifico bancario tesoreria', 'BBT');
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (3, 'Addebito diretto', 'AD');
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (4, 'Carta di pagamento', 'CP');
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (5, 'Pagamento attivato presso PSP', 'PO');
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (6, 'Online Banking Electronic Payment', 'OBEP');
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (7, 'Jiffy', 'JIF');
-INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO) VALUES (8, 'MyBank', 'MYBK');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (11636, 'PayPal', 'PPAL');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (1, 'Bollettino postale', 'BP');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (2, 'Bonifico bancario tesoreria', 'BBT');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (3, 'Addebito diretto', 'AD');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (4, 'Carta di pagamento', 'CP');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (5, 'Pagamento attivato presso PSP', 'PO');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (6, 'Online Banking Electronic Payment', 'OBEP');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (7, 'Jiffy', 'JIF');
+INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)
+VALUES (8, 'MyBank', 'MYBK');
 
-insert into NODO4_CFG.CANALE_TIPO_VERSAMENTO (OBJ_ID, FK_CANALE, FK_TIPO_VERSAMENTO) values (1,1,1);
-insert into NODO4_CFG.CANALE_TIPO_VERSAMENTO (OBJ_ID, FK_CANALE, FK_TIPO_VERSAMENTO) values (2,1,2);
+insert into NODO4_CFG.CANALE_TIPO_VERSAMENTO (OBJ_ID, FK_CANALE, FK_TIPO_VERSAMENTO)
+values (1, 1, 1);
+insert into NODO4_CFG.CANALE_TIPO_VERSAMENTO (OBJ_ID, FK_CANALE, FK_TIPO_VERSAMENTO)
+values (2, 1, 2);
 
 insert into NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO (OBJ_ID, FK_CANALE_TIPO_VERSAMENTO, FK_PSP)
-values (1,1,1);
+values (1, 1, 1);
 
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'scheduler.jobName_mod3UpdateNotifiedPositionPayment.jobDescription',
-           'Description',
-           'Mod3 update notified Position Payment'
-       );
+values ('GLOBAL',
+        'scheduler.jobName_mod3UpdateNotifiedPositionPayment.jobDescription',
+        'Description',
+        'Mod3 update notified Position Payment');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'scheduler.jobName_mod3UpdateNotifiedPositionPayment.enabled',
-           'true',
-           'Job enabled (true/false)'
-       );
+values ('GLOBAL',
+        'scheduler.jobName_mod3UpdateNotifiedPositionPayment.enabled',
+        'true',
+        'Job enabled (true/false)');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'scheduler.paSendRtMaxRetry',
-           '5',
-           'pa Send Rt max retry'
-       );
+values ('GLOBAL',
+        'scheduler.paSendRtMaxRetry',
+        '5',
+        'pa Send Rt max retry');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'scheduler.mod3Cancel.minutesWaitPaOld',
-           '0',
-           'indica i minuti di attesa per arrivo RPT in caso di Pa Old prima di annullare posizione debitoria'
-       );
+values ('GLOBAL',
+        'scheduler.mod3Cancel.minutesWaitPaOld',
+        '0',
+        'indica i minuti di attesa per arrivo RPT in caso di Pa Old prima di annullare posizione debitoria');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'inviaCarrelloRpt.maxNumRptInCartMultibeneficiario',
-           '2',
-           null
-       );
+values ('GLOBAL',
+        'inviaCarrelloRpt.maxNumRptInCartMultibeneficiario',
+        '2',
+        null);
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'inviaCarrelloRpt.maxVersamentiInSecondRptMultibeneficiario',
-           '1',
-           null
-       );
+values ('GLOBAL',
+        'inviaCarrelloRpt.maxVersamentiInSecondRptMultibeneficiario',
+        '1',
+        null);
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'default_token_duration_validity_millis',
-           '180000',
-           ' default millisecondi validità token'
-       );
+values ('GLOBAL',
+        'default_token_duration_validity_millis',
+        '180000',
+        ' default millisecondi validità token');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'timeout.paSendRT.pull',
-           'TIMEOUT_C',
-           'Tipo timeout'
-       );
+values ('GLOBAL',
+        'timeout.paSendRT.pull',
+        'TIMEOUT_C',
+        'Tipo timeout');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'scheduler.paAttivaRptMaxRetry',
-           '5',
-           'pa attiva Rpt max retry'
-       );
+values ('GLOBAL',
+        'scheduler.paAttivaRptMaxRetry',
+        '5',
+        'pa attiva Rpt max retry');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'scheduler.jobName_paRetryAttivaRpt.jobDescription',
-           'Description',
-           'retry attiva rpt '
-       );
+values ('GLOBAL',
+        'scheduler.jobName_paRetryAttivaRpt.jobDescription',
+        'Description',
+        'retry attiva rpt ');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'scheduler.jobName_paRetryAttivaRpt.enabled',
-           'true',
-           'Job enabled (true/false)'
-       );
+values ('GLOBAL',
+        'scheduler.jobName_paRetryAttivaRpt.enabled',
+        'true',
+        'Job enabled (true/false)');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'timeout.paaAttivaRPT.pull',
-           'TIMEOUT_C',
-           'timeout'
-       );
+values ('GLOBAL',
+        'timeout.paaAttivaRPT.pull',
+        'TIMEOUT_C',
+        'timeout');
 insert into NODO4_CFG.CONFIGURATION_KEYS (CONFIG_CATEGORY, CONFIG_KEY, CONFIG_VALUE, CONFIG_DESCRIPTION)
-values (
-           'GLOBAL',
-           'scheduler.jobName_idempotencyCacheClean.enabled',
-           'false',
-           'jobName_idempotencyCacheClean enabled/disabled'
-       );
-insert into NODO4_CFG.PDD (
-    OBJ_ID,
-    ID_PDD,
-    ENABLED,
-    DESCRIZIONE,
-    IP,
-    PORTA
-)
+values ('GLOBAL',
+        'scheduler.jobName_idempotencyCacheClean.enabled',
+        'false',
+        'jobName_idempotencyCacheClean enabled/disabled');
+insert into NODO4_CFG.PDD (OBJ_ID,
+                           ID_PDD,
+                           ENABLED,
+                           DESCRIZIONE,
+                           IP,
+                           PORTA)
 values (1,
         'localhost',
         'Y',
         'localhost',
         '127.0.0.1',
-        null
-        );
-insert into NODO4_CFG.FTP_SERVERS (
-    OBJ_ID,
-    HOST,
-    PORT,
-    USERNAME,
-    PASSWORD,
-    ROOT_PATH,
-    SERVICE,
-    "TYPE",
-    IN_PATH,
-    OUT_PATH,
-    HISTORY_PATH,
-    ENABLED
-)
-values (
-           1,
-           'test.domain',
-           22,
-           'username',
-           'pwdpwdpwd',
-           '/',
-           'service',
-           'out',
-           '/in/service',
-           '/out/service',
-           '/out/history/service',
-           'Y'
-       );
+        null);
+insert into NODO4_CFG.FTP_SERVERS (OBJ_ID,
+                                   HOST,
+                                   PORT,
+                                   USERNAME,
+                                   PASSWORD,
+                                   ROOT_PATH,
+                                   SERVICE,
+                                   "TYPE",
+                                   IN_PATH,
+                                   OUT_PATH,
+                                   HISTORY_PATH,
+                                   ENABLED)
+values (1,
+        'test.domain',
+        22,
+        'username',
+        'pwdpwdpwd',
+        '/',
+        'service',
+        'out',
+        '/in/service',
+        '/out/service',
+        '/out/history/service',
+        'Y');
