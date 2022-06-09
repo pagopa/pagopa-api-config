@@ -45,6 +45,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockTipoVersamento;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockWfespPluginConf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -321,6 +322,14 @@ class ChannelsServiceTest {
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_channelsPSP_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getStationCreditorInstitutionsCsv() {
+        when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString())).thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
+
+        var result = channelsService.getChannelPaymentServiceProvidersCSV("1234");
+        assertNotNull(result);
     }
 
 }

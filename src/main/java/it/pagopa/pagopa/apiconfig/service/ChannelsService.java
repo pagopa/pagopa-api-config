@@ -35,10 +35,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 @Service
@@ -181,6 +183,30 @@ public class ChannelsService {
         return ChannelPspList.builder()
                 .psp(result)
                 .build();
+    }
+
+    public byte[] getChannelPaymentServiceProvidersCSV(String channelCode) {
+        var pspList = getChannelPaymentServiceProviders(channelCode);
+
+        List<String> headers = Arrays.asList("PSP",
+                "Codice",
+                "Abilitato",
+                "Tipo Versamento");
+        List<List<String>> rows = mapPspToCsv(pspList.getPsp());
+        return CommonUtil.createCsv(headers, rows);
+    }
+
+    /**
+     * @param pspList list of PSPs of a channel
+     * @return list of list of strings representing the CSV file
+     */
+    private List<List<String>> mapPspToCsv(List<ChannelPsp> pspList) {
+        return pspList.stream()
+                .map(elem -> Arrays.asList(deNull(elem.getBusinessName()),
+                        deNull(elem.getPspCode()),
+                        deNull(elem.getEnabled()).toString(),
+                        deNull(String.join(" ", elem.getPaymentTypeList()))))
+                .collect(Collectors.toList());
     }
 
     /**
