@@ -169,7 +169,7 @@ stages:
               failOnStderr: true
 
           - task: Bash@3
-            name: install maven
+            name: install_maven
             inputs:
               targetType: "inline"
               script: |
