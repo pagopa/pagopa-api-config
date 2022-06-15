@@ -191,7 +191,7 @@ stages:
             inputs:
               targetType: "inline"
               script: |
-                version=$(docker run -it --rm --name my-maven-project -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
+                version=$(docker run -it --rm --name my-maven-project -v $(pwd):/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
                 echo "##vso[task.setvariable variable=next;isOutput=true]$version"
               failOnStderr: true
 
