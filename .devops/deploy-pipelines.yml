@@ -141,7 +141,7 @@ stages:
   - stage: deploy
     condition: not(failed('releaseService'))
     pool:
-      vmImage: "ubuntu-latest"
+      name: pagopa-uat-linux
     jobs:
       - job: deployJava
         steps:
