@@ -168,6 +168,15 @@ stages:
                 cat src/main/resources/application.properties
               failOnStderr: true
 
+          - task: Bash@3
+            name: install maven
+            inputs:
+              targetType: "inline"
+              script: |
+                sudo apt-get update
+                sudo apt-get install maven
+              failOnStderr: true
+
           - task: Cache@2
             inputs:
               key: 'maven | "$(Agent.OS)" | pom.xml'
