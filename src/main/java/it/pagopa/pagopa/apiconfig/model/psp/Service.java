@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
+import io.swagger.v3.oas.annotations.media.Schema;
 import it.pagopa.pagopa.apiconfig.util.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -96,6 +97,7 @@ public class Service {
     private OffsetDateTime validityDate;
 
     @JsonProperty("logo_psp")
+    @Schema(type = "string", format = "byte")
     private byte[] logoPsp;
 
     @JsonProperty("tags")
@@ -103,6 +105,7 @@ public class Service {
     private String tags;
 
     @JsonProperty("logo_service")
+    @Schema(type = "string", format = "byte")
     private byte[] logoService;
 
     @JsonProperty("channel_app")
