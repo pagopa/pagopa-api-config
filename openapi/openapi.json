@@ -14732,11 +14732,8 @@
                         "format": "date-time"
                     },
                     "logo_psp": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "format": "byte"
-                        }
+                        "format": "byte",
+                        "type": "string"
                     },
                     "tags": {
                         "maxLength": 135,
@@ -14744,11 +14741,8 @@
                         "type": "string"
                     },
                     "logo_service": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "format": "byte"
-                        }
+                        "format": "byte",
+                        "type": "string"
                     },
                     "channel_app": {
                         "type": "boolean"

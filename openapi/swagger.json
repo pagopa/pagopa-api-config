@@ -12211,18 +12211,12 @@
           "type": "string"
         },
         "logo_psp": {
-          "items": {
-            "format": "byte",
-            "type": "string"
-          },
-          "type": "array"
+          "format": "byte",
+          "type": "string"
         },
         "logo_service": {
-          "items": {
-            "format": "byte",
-            "type": "string"
-          },
-          "type": "array"
+          "format": "byte",
+          "type": "string"
         },
         "maximum_amount": {
           "format": "double",
