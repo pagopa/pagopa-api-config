@@ -51,6 +51,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Protocol;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitution;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
@@ -315,7 +316,7 @@ public class TestUtil {
                 .stationCode("1234")
                 .ip("1.1.1.1")
                 .port(80L)
-                .protocol("http")
+                .protocol(Protocol.HTTP)
                 .password("pass")
                 .timeoutA(1L)
                 .timeoutB(1L)
@@ -713,7 +714,7 @@ public class TestUtil {
                 .threadNumber(2L)
                 .password("***")
                 .servPlugin("plugin")
-                .protocol("HTTP")
+                .protocol(Protocol.HTTP)
                 .port(80L)
                 .service("ABAB")
                 .ip("1.1.1.1")

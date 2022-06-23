@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.18.1"
+    "version": "0.18.1-6"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -11165,6 +11165,10 @@
           "type": "integer"
         },
         "protocol": {
+          "enum": [
+            "HTTPS",
+            "HTTP"
+          ],
           "type": "string"
         },
         "proxy_enabled": {
@@ -11197,6 +11201,10 @@
           "type": "integer"
         },
         "redirect_protocol": {
+          "enum": [
+            "HTTPS",
+            "HTTP"
+          ],
           "type": "string"
         },
         "redirect_query_string": {
@@ -12422,9 +12430,17 @@
           "type": "integer"
         },
         "protocol": {
+          "enum": [
+            "HTTPS",
+            "HTTP"
+          ],
           "type": "string"
         },
         "protocol_4mod": {
+          "enum": [
+            "HTTPS",
+            "HTTP"
+          ],
           "type": "string"
         },
         "proxy_enabled": {
@@ -12454,6 +12470,10 @@
           "type": "integer"
         },
         "redirect_protocol": {
+          "enum": [
+            "HTTPS",
+            "HTTP"
+          ],
           "type": "string"
         },
         "redirect_query_string": {
