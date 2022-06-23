@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +55,12 @@ public class SwaggerConfig {
                     .sorted(Map.Entry.comparingByKey())
                     .collect(Paths::new, (map, item) -> map.addPathItem(item.getKey(), item.getValue()), Paths::putAll);
 
+            paths.forEach((key, value) -> value.readOperations().forEach(operation -> {
+                var responses = operation.getResponses().entrySet().stream()
+                        .sorted(Map.Entry.comparingByKey())
+                        .collect(ApiResponses::new, (map, item) -> map.addApiResponse(item.getKey(), item.getValue()), ApiResponses::putAll);
+                operation.setResponses(responses);
+            }));
             openApi.setPaths(paths);
         };
     }
