@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Protocol;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -21,7 +22,7 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
                 .newPassword(source.getNewPassword())
                 .password(source.getPassword())
                 .porta(source.getPort())
-                .protocollo(source.getProtocol() != null ? source.getProtocol().name() : null)
+                .protocollo(getProtocol(source.getProtocol()))
                 .servizio(source.getService())
                 .descrizione(source.getDescription())
                 .fkIntermediarioPsp(source.getFkIntermediarioPsp())
@@ -49,7 +50,7 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
                 .redirectPath(source.getRedirectPath())
                 .redirectPorta(source.getRedirectPort())
                 .redirectQueryString(source.getRedirectQueryString())
-                .redirectProtocollo(source.getRedirectProtocol() != null ? source.getRedirectProtocol().name() : null)
+                .redirectProtocollo(getProtocol(source.getRedirectProtocol()))
                 .modelloPagamento(source.getPaymentModel().getDatabaseValue())
                 .idServPlugin(source.getFkWfespPluginConf())
                 .rtPush(source.getRtPush())
@@ -65,5 +66,8 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
                 .build();
     }
 
+    private String getProtocol(Protocol source) {
+        return source != null ? source.name() : null;
+    }
 
 }

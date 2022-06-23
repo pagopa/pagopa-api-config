@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Protocol;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -19,7 +20,7 @@ public class ConvertStationDetailsToStazioni implements Converter<StationDetails
                 .versione(source.getVersion())
                 .newPassword(source.getNewPassword())
                 .password(source.getPassword())
-                .protocollo(source.getProtocol() != null ? source.getProtocol().name() : null)
+                .protocollo(getProtocol(source.getProtocol()))
                 .ip(source.getIp())
                 .porta(source.getPort())
                 .servizio(source.getService())
@@ -27,11 +28,11 @@ public class ConvertStationDetailsToStazioni implements Converter<StationDetails
                 .intermediarioPa(IntermediariPa.builder()
                         .objId(source.getBrokerObjId())
                         .build())
-                .protocollo4Mod(source.getProtocol4Mod() != null ? source.getProtocol4Mod().name() : null)
+                .protocollo4Mod(getProtocol(source.getProtocol4Mod()))
                 .ip4Mod(source.getIp4Mod())
                 .porta4Mod(source.getPort4Mod())
                 .servizio4Mod(source.getService4Mod())
-                .redirectProtocollo(source.getRedirectProtocol() != null ? source.getRedirectProtocol().name() : null)
+                .redirectProtocollo(getProtocol(source.getRedirectProtocol()))
                 .redirectIp(source.getRedirectIp())
                 .redirectPorta(source.getRedirectPort())
                 .redirectPath(source.getRedirectPath())
@@ -48,5 +49,9 @@ public class ConvertStationDetailsToStazioni implements Converter<StationDetails
                 .timeoutC(source.getTimeoutC())
                 .rtEnabled(true)
                 .build();
+    }
+
+    private String getProtocol(Protocol source) {
+        return source != null ? source.name() : null;
     }
 }
