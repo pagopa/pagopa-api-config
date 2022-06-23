@@ -24,6 +24,7 @@ public class ConvertPaymentServiceProviderDetailsToPsp implements Converter<Paym
                 .vatNumber(source.getVatNumber())
                 .pspNodo(true)
                 .pspAvv(false)
+                .flagRepoCommissioneCaricoPa(false)
                 .build();
     }
 }
