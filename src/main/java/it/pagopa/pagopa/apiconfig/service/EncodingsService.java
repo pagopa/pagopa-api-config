@@ -55,10 +55,9 @@ public class EncodingsService {
         // check encoding code length
         // QR-CODE must be 11 digits
         // BARCODE-128-AIM must be 12 digits
-        if (encoding.getCodeType().equals(Encoding.CodeTypeEnum.QR_CODE) && encoding.getEncodingCode().length() != 11) {
-            throw new AppException(AppError.ENCODING_CREDITOR_INSTITUTION_BAD_REQUEST, encoding.getCodeType(), encoding.getEncodingCode());
-        }
-        else if (encoding.getCodeType().equals(Encoding.CodeTypeEnum.BARCODE_128_AIM) && encoding.getEncodingCode().length() != 12) {
+        if ((encoding.getCodeType().equals(Encoding.CodeTypeEnum.QR_CODE) && encoding.getEncodingCode().length() != 11) ||
+                (encoding.getCodeType().equals(Encoding.CodeTypeEnum.BARCODE_128_AIM) && encoding.getEncodingCode().length() != 12)
+        ) {
             throw new AppException(AppError.ENCODING_CREDITOR_INSTITUTION_BAD_REQUEST, encoding.getCodeType(), encoding.getEncodingCode());
         }
 
