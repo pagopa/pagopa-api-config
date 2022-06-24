@@ -44,8 +44,8 @@ public class StationDetails extends Station {
 
     @JsonProperty("protocol")
     @Schema(required = true)
-    @NotBlank
-    private String protocol;
+    @NotNull
+    private Protocol protocol;
 
     @JsonProperty("redirect_ip")
     private String redirectIp;
@@ -60,7 +60,7 @@ public class StationDetails extends Station {
     private String redirectQueryString;
 
     @JsonProperty("redirect_protocol")
-    private String redirectProtocol;
+    private Protocol redirectProtocol;
 
     @JsonProperty("service")
     private String service;
@@ -74,7 +74,7 @@ public class StationDetails extends Station {
     private String brokerCode;
 
     @JsonProperty("protocol_4mod")
-    private String protocol4Mod;
+    private Protocol protocol4Mod;
 
     @JsonProperty("ip_4mod")
     private String ip4Mod;

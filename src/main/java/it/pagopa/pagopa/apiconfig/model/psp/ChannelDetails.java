@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Protocol;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,8 +39,8 @@ public class ChannelDetails extends Channel {
     private String newPassword;
 
     @JsonProperty("protocol")
-    @NotBlank
-    private String protocol;
+    @NotNull
+    private Protocol protocol;
 
     @JsonProperty("ip")
     private String ip;
@@ -108,7 +109,7 @@ public class ChannelDetails extends Channel {
     private String redirectQueryString;
 
     @JsonProperty("redirect_protocol")
-    private String redirectProtocol;
+    private Protocol redirectProtocol;
 
     @JsonProperty("payment_model")
     @Schema(required = true)

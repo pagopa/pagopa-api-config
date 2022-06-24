@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
 import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Protocol;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.Converter;
@@ -22,7 +23,7 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
                 .newPassword(source.getNewPassword())
                 .password(source.getPassword())
                 .port(source.getPorta())
-                .protocol(source.getProtocollo())
+                .protocol(Protocol.fromValue(source.getProtocollo()))
                 .service(source.getServizio())
                 .brokerPspCode(source.getFkIntermediarioPsp().getIdIntermediarioPsp())
                 .proxyEnabled(source.getProxyEnabled())
@@ -41,7 +42,7 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
                     .redirectPath(source.getFkCanaliNodo().getRedirectPath())
                     .redirectPort(source.getFkCanaliNodo().getRedirectPorta())
                     .redirectQueryString(source.getFkCanaliNodo().getRedirectQueryString())
-                    .redirectProtocol(source.getFkCanaliNodo().getRedirectProtocollo())
+                    .redirectProtocol(source.getFkCanaliNodo().getRedirectProtocollo() != null ? Protocol.fromValue(source.getFkCanaliNodo().getRedirectProtocollo()) : null)
                     .paymentModel(getPaymentModel(source.getFkCanaliNodo().getModelloPagamento()))
                     .rtPush(source.getFkCanaliNodo().getRtPush())
                     .onUs(source.getFkCanaliNodo().getOnUs())

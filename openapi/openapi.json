@@ -4,7 +4,7 @@
         "title": "PagoPA API configuration",
         "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
         "termsOfService": "https://www.pagopa.gov.it/",
-        "version": "0.18.1"
+        "version": "0.18.1-6"
     },
     "servers": [
         {
@@ -13716,7 +13716,11 @@
                         "format": "int64"
                     },
                     "protocol": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "HTTPS",
+                            "HTTP"
+                        ]
                     },
                     "redirect_ip": {
                         "type": "string"
@@ -13732,7 +13736,11 @@
                         "type": "string"
                     },
                     "redirect_protocol": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "HTTPS",
+                            "HTTP"
+                        ]
                     },
                     "service": {
                         "type": "string"
@@ -13744,7 +13752,11 @@
                         "type": "string"
                     },
                     "protocol_4mod": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "HTTPS",
+                            "HTTP"
+                        ]
                     },
                     "ip_4mod": {
                         "type": "string"
@@ -14189,7 +14201,11 @@
                         "type": "string"
                     },
                     "protocol": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "HTTPS",
+                            "HTTP"
+                        ]
                     },
                     "ip": {
                         "type": "string"
@@ -14256,7 +14272,11 @@
                         "type": "string"
                     },
                     "redirect_protocol": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "HTTPS",
+                            "HTTP"
+                        ]
                     },
                     "payment_model": {
                         "type": "string",
