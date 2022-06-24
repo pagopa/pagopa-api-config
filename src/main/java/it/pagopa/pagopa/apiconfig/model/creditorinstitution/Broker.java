@@ -39,7 +39,7 @@ public class Broker {
 
     @JsonProperty("description")
     @Schema(example = "Lorem ipsum dolor sit amet", required = true)
-    @NotBlank
+    @NotNull
     @Size(max = 255)
     private String description;
 
