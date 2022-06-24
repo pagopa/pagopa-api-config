@@ -348,7 +348,7 @@ public class TestUtil {
         return Encoding.builder()
                 .paObjId(1L)
                 .codeType(Encoding.CodeTypeEnum.QR_CODE)
-                .encodingCode("000111")
+                .encodingCode("12345678901")
                 .codificheObjId(1L)
                 .paObjId(2L)
                 .build();
