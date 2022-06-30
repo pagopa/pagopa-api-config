@@ -33,6 +33,9 @@ public class BinaryFile {
     @Column(name = "FILE_CONTENT", nullable = false)
     private byte[] fileContent;
 
+    @Column(name = "FILE_HASH", nullable = false)
+    private byte[] fileHash;
+
     @Column(name = "FILE_SIZE", nullable = false)
     private Long fileSize;
 
