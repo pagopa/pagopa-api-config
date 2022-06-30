@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
 import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -319,9 +320,12 @@ public class IcaService {
     private BinaryFile saveBinaryFile(MultipartFile file) {
         BinaryFile binaryFile;
         try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(file.getBytes());
             binaryFile = BinaryFile.builder()
                     .fileContent(file.getBytes())
                     .fileSize(file.getSize())
+                    .fileHash(md.digest())
                     .build();
         } catch (Exception e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);

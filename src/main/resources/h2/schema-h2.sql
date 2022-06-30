@@ -160,6 +160,7 @@ create table NODO4_CFG.BINARY_FILE
     OBJ_ID           numeric not null IDENTITY,
     FILE_CONTENT     blob    not null,
     FILE_SIZE        numeric not null,
+    FILE_HASH        blob    not null,
     SIGNATURE_TYPE   varchar(30),
     XML_FILE_CONTENT clob,
     constraint PK_BINARY_FILE
