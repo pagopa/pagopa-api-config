@@ -48,7 +48,7 @@ public class EncodingsService {
     public Encoding createCreditorInstitutionEncoding(@NotNull String creditorInstitutionCode, @NotNull Encoding encoding) {
         // check input
         Pa pa = getPaIfExists(creditorInstitutionCode);
-        if (codifichePaRepository.findByCodicePaAndFkPa_ObjId(encoding.getEncodingCode(), pa.getObjId()).isPresent()) {
+        if (codifichePaRepository.findByCodicePa(encoding.getEncodingCode()).isPresent()) {
             throw new AppException(AppError.ENCODING_CREDITOR_INSTITUTION_CONFLICT, encoding.getEncodingCode(), creditorInstitutionCode);
         }
 

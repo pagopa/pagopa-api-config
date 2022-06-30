@@ -63,7 +63,7 @@ public class EncodingsController {
         return ResponseEntity.ok(encodingsService.getCreditorInstitutionEncodings(creditorInstitutionCode));
     }
 
-    @Operation(summary = "Delete a creditor institution encoding", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
+    @Operation(summary = "Create a creditor institution encoding", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Encoding.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),

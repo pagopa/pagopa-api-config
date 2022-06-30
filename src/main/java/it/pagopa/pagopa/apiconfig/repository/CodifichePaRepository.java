@@ -13,5 +13,6 @@ public interface CodifichePaRepository extends JpaRepository<CodifichePa, Long> 
 
     List<CodifichePa> findAllByFkPa_ObjId(Long fkPa);
 
+    Optional<CodifichePa> findByCodicePa(String codicePa);
     Optional<CodifichePa> findByCodicePaAndFkPa_ObjId(String codicePa, Long fkPa);
 }

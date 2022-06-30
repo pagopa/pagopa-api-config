@@ -65,7 +65,7 @@ class EncodingsServiceTest {
     @Test
     void createCreditorInstitutionEncoding() throws JSONException, IOException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
-        when(codifichePaRepository.findByCodicePaAndFkPa_ObjId(anyString(), anyLong())).thenReturn(Optional.empty());
+        when(codifichePaRepository.findByCodicePa(anyString())).thenReturn(Optional.empty());
         when(codificheRepository.findByIdCodifica(anyString())).thenReturn(getMockCodifiche());
         when(codifichePaRepository.save(any(CodifichePa.class))).thenReturn(getMockCodifichePa());
 
@@ -78,7 +78,7 @@ class EncodingsServiceTest {
     @Test
     void createCreditorInstitutionEncoding_conflict() {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
-        when(codifichePaRepository.findByCodicePaAndFkPa_ObjId(anyString(), anyLong())).thenReturn(Optional.of(getMockCodifichePa()));
+        when(codifichePaRepository.findByCodicePa(anyString())).thenReturn(Optional.of(getMockCodifichePa()));
 
         try {
             encodingsService.createCreditorInstitutionEncoding("1234", getMockEncoding());
