@@ -31,6 +31,7 @@ create table NODO4_CFG.BINARY_FILE
             primary key,
     FILE_CONTENT     BLOB   not null,
     FILE_SIZE        NUMBER not null,
+    FILE_HASH        BLOB   not null,
     SIGNATURE_TYPE   VARCHAR2(30 char),
     XML_FILE_CONTENT CLOB
 );
