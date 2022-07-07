@@ -31,7 +31,7 @@ import java.util.Arrays;
 public class Encoding {
 
     @JsonProperty("code_type")
-    @Schema(required = true)
+    @Schema(required = true, description = "BARCODE_GS1_128 is deprecated and not allowed")
     @NotNull
     private CodeTypeEnum codeType;
 
@@ -53,16 +53,18 @@ public class Encoding {
      */
     @Getter
     public enum CodeTypeEnum {
-        BARCODE_GS1_128("BARCODE-GS1-128"),
 
-        QR_CODE("QR-CODE"),
+        QR_CODE("QR-CODE", false),
+        BARCODE_128_AIM("BARCODE-128-AIM", false),
 
-        BARCODE_128_AIM("BARCODE-128-AIM");
+        BARCODE_GS1_128("BARCODE-GS1-128", true);
 
         private final String value;
+        private final boolean deprecated;
 
-        CodeTypeEnum(String value) {
+        CodeTypeEnum(String value, boolean deprecated) {
             this.value = value;
+            this.deprecated = deprecated;
         }
 
         public static CodeTypeEnum fromValue(String value) {
