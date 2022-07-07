@@ -16,6 +16,7 @@ public enum AppError {
     RELATION_STATION_CONFLICT(HttpStatus.CONFLICT, "Relation Station-CI conflict", "Relation Station-CI between Creditor Institution with code %s and Station with code %s already exists"),
 
     ENCODING_CREDITOR_INSTITUTION_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Creditor Institution Encoding bad request", "Encoding %s=%s is not compliant to requirements."),
+    ENCODING_CREDITOR_INSTITUTION_DEPRECATED(HttpStatus.BAD_REQUEST, "Creditor Institution Encoding bad request", "Encoding %s=%s is deprecated."),
     ENCODING_CREDITOR_INSTITUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Creditor Institution Encoding not found", "No Encoding found with code %s associated with Creditor Institution code %s"),
     ENCODING_CREDITOR_INSTITUTION_CONFLICT(HttpStatus.CONFLICT, "Creditor Institution Encoding conflict", "Encoding code %s associated with Creditor Institution code %s already exists"),
 

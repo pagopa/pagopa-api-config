@@ -52,6 +52,11 @@ public class EncodingsService {
             throw new AppException(AppError.ENCODING_CREDITOR_INSTITUTION_CONFLICT, encoding.getEncodingCode(), creditorInstitutionCode);
         }
 
+        // check if encoding is deprecated
+        if (encoding.getCodeType().isDeprecated()) {
+            throw new AppException(AppError.ENCODING_CREDITOR_INSTITUTION_DEPRECATED, encoding.getCodeType(), encoding.getEncodingCode());
+        }
+
         // check encoding code length
         // QR-CODE must be 11 digits
         // BARCODE-128-AIM must be 12 digits
