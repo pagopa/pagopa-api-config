@@ -171,7 +171,7 @@ public class ChannelsController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
-    @DeleteMapping(value = "/{channelcode}/paymenttypes/{paymenttypecode}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @DeleteMapping(value = "/{channelcode}/paymenttypes/{paymenttypecode}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<PspChannelPaymentTypes> deleteChannelPaymentType(@Size(max = 50) @Parameter(description = "Channel code", required = true) @PathVariable("channelcode") String channelCode,
                                                                     @PathVariable("paymenttypecode") String paymentTypeCode) {
         channelsService.deletePaymentType(channelCode, paymentTypeCode);
