@@ -1,7 +1,7 @@
 {
   "channel_code": "1",
   "enabled": true,
-  "description": "channel",
+  "broker_description": "channel",
   "password": "***",
   "protocol": "HTTP",
   "ip": "1.1.1.1",
@@ -13,11 +13,11 @@
   "timeout_b": 1,
   "timeout_c": 1,
   "payment_model": "DEFERRED",
+  "serv_plugin": "plugin",
   "rt_push": true,
   "on_us": true,
   "card_chart": true,
   "recovery": true,
   "digital_stamp_brand": false,
-  "agid": true,
-  "serv_plugin": "plugin"
+  "agid": true
 }
