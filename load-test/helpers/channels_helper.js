@@ -92,11 +92,6 @@ export function deleteChannel(rootUrl, params, id) {
 	return http.del(url, params);
 }
 
-// export function getPaymentServiceProvidersChannels(rootUrl, params, id) {
-// 	const url = `${rootUrl}/paymentserviceproviders/${getPspCode(id)}/channels`
-// 	return http.get(url, params);
-// }
-
 export function getPaymentTypes(rootUrl, params, id) {
 	const url = `${rootUrl}/channels/${getChannelCode(id)}/paymenttypes`
 	return http.get(url, params);
