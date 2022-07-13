@@ -36,6 +36,10 @@ public class Station {
     @NotNull
     private Boolean enabled;
 
+    @JsonProperty("broker_description")
+    @Schema(description = "Broker description. Read only field", example = "Lorem ipsum dolor sit amet")
+    private String brokerDescription;
+
     @JsonProperty("version")
     @Schema(required = true, description = "number version")
     @NotNull

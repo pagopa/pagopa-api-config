@@ -4,7 +4,7 @@
         "title": "PagoPA API configuration",
         "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
         "termsOfService": "https://www.pagopa.gov.it/",
-        "version": "0.18.1-6"
+        "version": "0.18.6"
     },
     "servers": [
         {
@@ -8784,7 +8784,7 @@
                 "tags": [
                     "Creditor Institutions"
                 ],
-                "summary": "Delete a creditor institution encoding",
+                "summary": "Create a creditor institution encoding",
                 "operationId": "createCreditorInstitutionEncoding",
                 "parameters": [
                     {
@@ -13697,6 +13697,11 @@
                         "description": "station enabled",
                         "default": true
                     },
+                    "broker_description": {
+                        "type": "string",
+                        "description": "Broker description. Read only field",
+                        "example": "Lorem ipsum dolor sit amet"
+                    },
                     "version": {
                         "type": "integer",
                         "description": "number version",
@@ -14165,7 +14170,6 @@
                     "broker_psp_code",
                     "card_chart",
                     "channel_code",
-                    "description",
                     "digital_stamp_brand",
                     "enabled",
                     "on_us",
@@ -14188,10 +14192,9 @@
                     "enabled": {
                         "type": "boolean"
                     },
-                    "description": {
-                        "maxLength": 255,
-                        "minLength": 0,
+                    "broker_description": {
                         "type": "string",
+                        "description": "Broker description. Read only field",
                         "example": "Lorem ipsum dolor sit amet"
                     },
                     "password": {
@@ -14417,10 +14420,11 @@
                 "properties": {
                     "code_type": {
                         "type": "string",
+                        "description": "BARCODE_GS1_128 is deprecated and not allowed",
                         "enum": [
-                            "BARCODE_GS1_128",
                             "QR_CODE",
-                            "BARCODE_128_AIM"
+                            "BARCODE_128_AIM",
+                            "BARCODE_GS1_128"
                         ]
                     },
                     "encoding_code": {
@@ -14578,6 +14582,11 @@
                         "type": "boolean",
                         "description": "station enabled",
                         "default": true
+                    },
+                    "broker_description": {
+                        "type": "string",
+                        "description": "Broker description. Read only field",
+                        "example": "Lorem ipsum dolor sit amet"
                     },
                     "version": {
                         "type": "integer",
@@ -15034,6 +15043,11 @@
                         "description": "station enabled",
                         "default": true
                     },
+                    "broker_description": {
+                        "type": "string",
+                        "description": "Broker description. Read only field",
+                        "example": "Lorem ipsum dolor sit amet"
+                    },
                     "version": {
                         "type": "integer",
                         "description": "number version",
@@ -15248,7 +15262,6 @@
             "Channel": {
                 "required": [
                     "channel_code",
-                    "description",
                     "enabled"
                 ],
                 "type": "object",
@@ -15260,10 +15273,9 @@
                     "enabled": {
                         "type": "boolean"
                     },
-                    "description": {
-                        "maxLength": 255,
-                        "minLength": 0,
+                    "broker_description": {
                         "type": "string",
+                        "description": "Broker description. Read only field",
                         "example": "Lorem ipsum dolor sit amet"
                     }
                 }

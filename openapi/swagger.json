@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.18.1-6"
+    "version": "0.18.6"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -7098,7 +7098,7 @@
           "Creditor Institutions"
         ],
         "operationId": "createCreditorInstitutionEncoding",
-        "summary": "Delete a creditor institution encoding"
+        "summary": "Create a creditor institution encoding"
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/encodings/{encodingcode}": {
@@ -11082,14 +11082,13 @@
     },
     "Channel": {
       "properties": {
-        "channel_code": {
-          "example": "223344556677889900",
+        "broker_description": {
+          "description": "Broker description. Read only field",
+          "example": "Lorem ipsum dolor sit amet",
           "type": "string"
         },
-        "description": {
-          "example": "Lorem ipsum dolor sit amet",
-          "maxLength": 255,
-          "minLength": 0,
+        "channel_code": {
+          "example": "223344556677889900",
           "type": "string"
         },
         "enabled": {
@@ -11098,7 +11097,6 @@
       },
       "required": [
         "channel_code",
-        "description",
         "enabled"
       ],
       "type": "object"
@@ -11108,6 +11106,11 @@
         "agid": {
           "type": "boolean"
         },
+        "broker_description": {
+          "description": "Broker description. Read only field",
+          "example": "Lorem ipsum dolor sit amet",
+          "type": "string"
+        },
         "broker_psp_code": {
           "type": "string"
         },
@@ -11116,12 +11119,6 @@
         },
         "channel_code": {
           "example": "223344556677889900",
-          "type": "string"
-        },
-        "description": {
-          "example": "Lorem ipsum dolor sit amet",
-          "maxLength": 255,
-          "minLength": 0,
           "type": "string"
         },
         "digital_stamp_brand": {
@@ -11241,7 +11238,6 @@
         "broker_psp_code",
         "card_chart",
         "channel_code",
-        "description",
         "digital_stamp_brand",
         "enabled",
         "on_us",
@@ -11561,6 +11557,11 @@
         "broadcast": {
           "type": "boolean"
         },
+        "broker_description": {
+          "description": "Broker description. Read only field",
+          "example": "Lorem ipsum dolor sit amet",
+          "type": "string"
+        },
         "enabled": {
           "default": true,
           "description": "station enabled",
@@ -11659,10 +11660,11 @@
     "Encoding": {
       "properties": {
         "code_type": {
+          "description": "BARCODE_GS1_128 is deprecated and not allowed",
           "enum": [
-            "BARCODE_GS1_128",
             "QR_CODE",
-            "BARCODE_128_AIM"
+            "BARCODE_128_AIM",
+            "BARCODE_GS1_128"
           ],
           "type": "string"
         },
@@ -12306,6 +12308,11 @@
     },
     "Station": {
       "properties": {
+        "broker_description": {
+          "description": "Broker description. Read only field",
+          "example": "Lorem ipsum dolor sit amet",
+          "type": "string"
+        },
         "enabled": {
           "default": true,
           "description": "station enabled",
@@ -12396,6 +12403,11 @@
     "StationDetails": {
       "properties": {
         "broker_code": {
+          "type": "string"
+        },
+        "broker_description": {
+          "description": "Broker description. Read only field",
+          "example": "Lorem ipsum dolor sit amet",
           "type": "string"
         },
         "enabled": {
