@@ -5,7 +5,7 @@ import {getChannelCode} from "./channels_helper.js";
 const pspCode = "12345678901";
 
 export function getPspCode(id) {
-	return (pspCode + id).toString().padStart(11, '0');
+	return pspCode + ('000' + id).slice(-3);
 }
 
 export function getPaymentServiceProviders(rootUrl, params) {
