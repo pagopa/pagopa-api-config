@@ -1,7 +1,7 @@
 {
   "channel_code": "1234",
   "enabled": true,
-  "description": "Canale",
+  "broker_description": "Regione Lazio",
   "password": "pass",
   "new_password": "new-pass",
   "protocol": "HTTP",

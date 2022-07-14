@@ -16,6 +16,7 @@ public class ConvertStazioniToStation implements Converter<Stazioni, Station> {
         return Station.builder()
                 .enabled(source.getEnabled())
                 .stationCode(source.getIdStazione())
+                .brokerDescription(source.getIntermediarioPa().getCodiceIntermediario())
                 .version(source.getVersione())
                 .build();
     }

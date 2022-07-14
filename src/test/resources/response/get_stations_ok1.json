@@ -3,6 +3,7 @@
     {
       "station_code": "80007580279_01",
       "enabled": true,
+      "broker_description": "Regione Lazio",
       "version": 1
     }
   ],

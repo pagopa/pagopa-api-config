@@ -17,7 +17,7 @@ public class ConvertCanaliToChannel implements Converter<Canali, Channel> {
         return Channel.builder()
                 .channelCode(source.getIdCanale())
                 .enabled(source.getEnabled())
-                .description(CommonUtil.deNull(source.getDescrizione()))
+                .brokerDescription(CommonUtil.deNull(source.getFkIntermediarioPsp().getCodiceIntermediario()))
                 .build();
     }
 

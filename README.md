@@ -169,7 +169,7 @@ bash api-test/setup_env_api_test.sh l load
 ---
 
 ## Contributors 👥
-Made with ❤️ from PagoPa S.p.A.
+Made with ❤️ by PagoPa S.p.A.
 
 ### Mainteiners
 See `CODEOWNERS` file

@@ -707,7 +707,7 @@ public class TestUtil {
                 .brokerPspCode("1233")
                 .channelCode("1")
                 .enabled(true)
-                .description("channel")
+                .brokerDescription("channel")
                 .timeoutA(1L)
                 .timeoutB(1L)
                 .timeoutC(1L)

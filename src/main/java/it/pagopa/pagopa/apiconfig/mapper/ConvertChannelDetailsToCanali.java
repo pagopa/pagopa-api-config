@@ -24,7 +24,6 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
                 .porta(source.getPort())
                 .protocollo(getProtocol(source.getProtocol()))
                 .servizio(source.getService())
-                .descrizione(source.getDescription())
                 .fkIntermediarioPsp(source.getFkIntermediarioPsp())
                 .proxyEnabled(source.getProxyEnabled())
                 .proxyHost(source.getProxyHost())
