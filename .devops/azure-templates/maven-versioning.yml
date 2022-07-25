@@ -28,6 +28,15 @@ parameters:
   - name: 'gitHubConnection'
     type: string
 
+variables:
+  ${{ if eq(parameters.semver, 'patch') }}:
+    options: '-DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}'
+  ${{ if eq(parameters.semver, 'minor') }}:
+    options: '-DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0'
+  ${{ if eq(parameters.semver, 'major') }}:
+    options: '-DnewVersion=${parsedVersion.nextMajorVersion}.0.0'
+  ${{ if eq(parameters.semver, 'buildNumber') }}:
+    options: '-DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}'
 
 steps:
   # setup git author
@@ -46,14 +55,8 @@ steps:
     inputs:
       mavenPomFile: "pom.xml"
       goals: 'build-helper:parse-version versions:set'
-      - ${{ if eq(parameters.semver, 'patch') }}:
-        options: '-DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}'
-      - ${{ if eq(parameters.semver, 'minor') }}:
-        options: '-DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0'
-      - ${{ if eq(parameters.semver, 'major') }}:
-        options: '-DnewVersion=${parsedVersion.nextMajorVersion}.0.0'
-      - ${{ if eq(parameters.semver, 'buildNumber') }}:
-        options: '-DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}'
+      options: '$(options)'
+
 
   - task: Bash@3
     name: pomversion
