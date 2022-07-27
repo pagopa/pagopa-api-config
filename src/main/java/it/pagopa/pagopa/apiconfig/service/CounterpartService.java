@@ -119,6 +119,11 @@ public class CounterpartService {
                 .fkPa(pa)
                 .build());
         saveDetail(counterpartXml, infoMaster);
+
+        // update PAGAMENTO_PRESSO_PSP of EC according to pagamentiPressoPSP
+        // ref. https://pagopa.atlassian.net/browse/PCFG-198
+        pa.setPagamentoPressoPsp(counterpartXml.getPagamentiPressoPSP());
+        paRepository.save(pa);
     }
 
     public void deleteCounterpartTable(@NotBlank String idCounterpartTable, @NotBlank String creditorInstitutionCode) {
@@ -147,7 +152,7 @@ public class CounterpartService {
      * @param counterpartXml file xml
      * @param infoMaster     info {@link InformativePaMaster}
      */
-    private void    saveDetail(CounterpartXml counterpartXml, InformativePaMaster infoMaster) {
+    private void saveDetail(CounterpartXml counterpartXml, InformativePaMaster infoMaster) {
         boolean existsDisponibilita = false;
         boolean existsIndisponibilita = false;
 
