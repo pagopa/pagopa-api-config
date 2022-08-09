@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -35,6 +37,8 @@ public class PddBase {
     @NotNull
     private String ip;
 
+    @Min(1)
+    @Max(65535)
     @JsonProperty("port")
     @Schema(example = "1234", required = false)
     private Integer port;

@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 /**
  * Stations
  */
@@ -22,13 +25,14 @@ import lombok.experimental.SuperBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutionStation extends Station {
-
+    @Min(0)
     @JsonProperty("application_code")
     private Long applicationCode;
 
     @JsonProperty("aux_digit")
     private Long auxDigit;
 
+    @Min(0)
     @JsonProperty("segregation_code")
     private Long segregationCode;
 
