@@ -126,4 +126,7 @@ public class StationDetails extends Station {
     @JsonIgnore
     private Long brokerObjId;
 
+    @JsonProperty("invio_rt_istantaneo")
+    private Boolean rtInstantaneousDispatch;
+
 }

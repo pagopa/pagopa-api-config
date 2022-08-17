@@ -141,4 +141,8 @@ public class Stazioni {
     @Column(name = "SERVIZIO_NMP")
     private String servizioNmp;
 
+    @Column(name = "INVIO_RT_ISTANTANEO")
+    @Type(type = "yes_no")
+    private Boolean invioRtIstantaneo;
+
 }

@@ -27,5 +27,6 @@
   "timeout_a": 15,
   "timeout_b": 30,
   "timeout_c": 120,
-  "flag_online": true
+  "flag_online": true,
+  "invio_rt_istantaneo": false
 }
