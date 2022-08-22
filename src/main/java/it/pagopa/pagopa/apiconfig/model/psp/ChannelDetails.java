@@ -18,6 +18,8 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -45,6 +47,8 @@ public class ChannelDetails extends Channel {
     @JsonProperty("ip")
     private String ip;
 
+    @Min(1)
+    @Max(65535)
     @JsonProperty("port")
     @NotNull
     private Long port;
@@ -62,6 +66,8 @@ public class ChannelDetails extends Channel {
     @JsonProperty("proxy_host")
     private String proxyHost;
 
+    @Min(1)
+    @Max(65535)
     @JsonProperty("proxy_port")
     private Long proxyPort;
 
@@ -72,18 +78,22 @@ public class ChannelDetails extends Channel {
     @JsonProperty("proxy_password")
     private String proxyPassword;
 
+    @Min(1)
     @JsonProperty("thread_number")
     @NotNull
     private Long threadNumber;
 
+    @Min(0)
     @JsonProperty("timeout_a")
     @NotNull
     private Long timeoutA = 15L;
 
+    @Min(0)
     @JsonProperty("timeout_b")
     @NotNull
     private Long timeoutB = 30L;
 
+    @Min(0)
     @JsonProperty("timeout_c")
     @NotNull
     private Long timeoutC = 120L;
@@ -102,6 +112,8 @@ public class ChannelDetails extends Channel {
     @JsonProperty("redirect_path")
     private String redirectPath;
 
+    @Min(1)
+    @Max(65535)
     @JsonProperty("redirect_port")
     private Long redirectPort;
 

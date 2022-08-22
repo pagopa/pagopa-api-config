@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -35,9 +36,11 @@ public class CreditorInstitutionStationEdit {
     @JsonProperty("aux_digit")
     private Long auxDigit;
 
+    @Min(0)
     @JsonProperty("application_code")
     private Long applicationCode;
 
+    @Min(0)
     @JsonProperty("segregation_code")
     private Long segregationCode;
 

@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -37,6 +39,8 @@ public class StationDetails extends Station {
     @JsonProperty("password")
     private String password;
 
+    @Min(1)
+    @Max(65535)
     @JsonProperty("port")
     @Schema(required = true)
     @NotNull
@@ -53,6 +57,8 @@ public class StationDetails extends Station {
     @JsonProperty("redirect_path")
     private String redirectPath;
 
+    @Min(1)
+    @Max(65535)
     @JsonProperty("redirect_port")
     private Long redirectPort;
 
@@ -79,6 +85,8 @@ public class StationDetails extends Station {
     @JsonProperty("ip_4mod")
     private String ip4Mod;
 
+    @Min(1)
+    @Max(65535)
     @JsonProperty("port_4mod")
     private Long port4Mod;
 
@@ -91,6 +99,8 @@ public class StationDetails extends Station {
     @JsonProperty("proxy_host")
     private String proxyHost;
 
+    @Min(1)
+    @Max(65535)
     @JsonProperty("proxy_port")
     private Long proxyPort;
 
@@ -101,20 +111,24 @@ public class StationDetails extends Station {
     @JsonProperty("proxy_password")
     private String proxyPassword;
 
+    @Min(1)
     @JsonProperty("thread_number")
     @NotNull
     private Long threadNumber;
 
+    @Min(0)
     @JsonProperty("timeout_a")
     @Schema(required = true)
     @NotNull
     private Long timeoutA = 15L;
 
+    @Min(0)
     @JsonProperty("timeout_b")
     @Schema(required = true)
     @NotNull
     private Long timeoutB = 30L;
 
+    @Min(0)
     @JsonProperty("timeout_c")
     @Schema(required = true)
     @NotNull
