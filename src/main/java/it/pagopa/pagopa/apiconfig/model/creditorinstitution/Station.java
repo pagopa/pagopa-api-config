@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * Station
@@ -40,6 +38,8 @@ public class Station {
     @Schema(description = "Broker description. Read only field", example = "Lorem ipsum dolor sit amet")
     private String brokerDescription;
 
+    @Min(1)
+    @Max(2)
     @JsonProperty("version")
     @Schema(required = true, description = "number version")
     @NotNull
