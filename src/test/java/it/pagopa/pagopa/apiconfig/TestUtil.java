@@ -173,6 +173,7 @@ public class TestUtil {
                 .flagOnline(true)
                 .protocollo("HTTPS")
                 .protocollo4Mod("HTTPS")
+                .invioRtIstantaneo(false)
                 .build();
     }
 
@@ -328,6 +329,7 @@ public class TestUtil {
                 .ip4Mod("2.2.2.2")
                 .service("/api")
                 .threadNumber(2L)
+                .rtInstantaneousDispatch(false)
                 .build();
     }
     

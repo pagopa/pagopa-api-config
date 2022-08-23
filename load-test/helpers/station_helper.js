@@ -36,7 +36,8 @@ export function createStation(rootUrl, params, id, brokerId) {
 		"timeout_b": 30,
 		"timeout_c": 120,
 		"flag_online": true,
-		"broker_code": `${getBrokerCode(brokerId)}`
+		"broker_code": `${getBrokerCode(brokerId)}`,
+		"invio_rt_istantaneo": false
 	}
 
 	return http.post(url, JSON.stringify(payload), params);
@@ -71,7 +72,8 @@ export function updateStation(rootUrl, params, id, brokerId) {
 		"timeout_b": 30,
 		"timeout_c": 120,
 		"flag_online": true,
-		"broker_code": `${getBrokerCode(brokerId)}`
+		"broker_code": `${getBrokerCode(brokerId)}`,
+		"invio_rt_istantaneo": false
 	}
 
 	return http.put(url, JSON.stringify(payload), params);

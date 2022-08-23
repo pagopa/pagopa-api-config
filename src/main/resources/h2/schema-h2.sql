@@ -100,6 +100,7 @@ create table NODO4_CFG.STAZIONI
     FLAG_ONLINE           char         not null default 'Y',
     VERSIONE              numeric      not null default 1.0,
     SERVIZIO_NMP          varchar(255),
+    INVIO_RT_ISTANTANEO   char         not null default 'N',
     constraint PK_STAZIONI
         primary key (OBJ_ID),
     constraint UQ_ID_STAZIONE
