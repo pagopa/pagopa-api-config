@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import com.opencsv.bean.CsvBindByName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,14 +27,12 @@ public class CsvMassiveMigration {
 
 
     @Getter
+    @AllArgsConstructor
     public enum YesNo {
         S(true), N(false);
 
         private final boolean value;
 
-        YesNo(boolean value) {
-            this.value = value;
-        }
     }
 
 }
