@@ -102,13 +102,13 @@ public class MassiveLoadingService {
             var builder = relation.toBuilder()
                     .fkStazione(newStation);
             if (item.getBroadcast() != null) {
-                if (CsvMassiveMigration.YesNo.S.equals(item.getBroadcast()) && !newStation.getVersione().equals(2L)) {
-                    throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, "station version must be equals to 2 if broadcast is YES");
-                }
-                builder.broadcast(item.getBroadcast().isValue())
-                        .build();
+                builder.broadcast(item.getBroadcast().isValue());
             }
-            paStazionePaRepository.save(builder.build());
+            var entity = builder.build();
+            if (Boolean.TRUE.equals(entity.getBroadcast()) && !newStation.getVersione().equals(2L)) {
+                throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, "station version must be equals to 2 if broadcast is YES");
+            }
+            paStazionePaRepository.save(entity);
         }
 
 
