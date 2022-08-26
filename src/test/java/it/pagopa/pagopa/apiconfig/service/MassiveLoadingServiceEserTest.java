@@ -186,4 +186,24 @@ class MassiveLoadingServiceEserTest {
                 .save(any(PaStazionePa.class));
 
     }
+
+    @Test
+    void massiveMigrationBadRequest2() throws IOException {
+        when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
+
+        File csv = TestUtil.readFile("file/massive_migration_2.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
+        AppException thrown = assertThrows(AppException.class,
+                () -> {
+                    massiveLoadingService.massiveMigration(multipartFile);
+                });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getHttpStatus());
+
+        verify(paStazionePaRepository, times(0))
+                .save(any(PaStazionePa.class));
+
+    }
 }
