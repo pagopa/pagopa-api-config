@@ -44,22 +44,16 @@ variables:
     STAGE: "p"
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
     dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
-#  ${{ if eq(parameters['TEST'], 'true') }}:
-#    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
-#    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
-#    APP_NAME: $(DEV_WEB_APP_NAME)
-  #    STAGE: "t"
-  #    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
-  #    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
   # github action use 'merge' as value of SourceBranchName
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: "main" # force to main branch
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: ${{ variables['Build.SourceBranchName'] }}
 
-  SEM_VER: ${{ parameters['SEMVER'] }}
   ${{ if eq(parameters['SEMVER'], 'skip') }}:
     SEM_VER: "patch" # skip is not valid for the template
+  ${{ if ne(parameters['SEMVER'], 'skip') }}:
+    SEM_VER: ${{ parameters['SEMVER'] }}
 
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
