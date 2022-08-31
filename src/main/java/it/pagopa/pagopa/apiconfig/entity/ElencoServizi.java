@@ -95,12 +95,14 @@ public class ElencoServizi {
     private Timestamp dataValidita;
 
     @Column(name = "LOGO_PSP")
+    @ToString.Exclude
     private byte[] logoPsp;
 
     @Column(name = "TAGS", length = 135)
     private String tags;
 
     @Column(name = "LOGO_SERVIZIO")
+    @ToString.Exclude
     private byte[] logoServizio;
 
     @Convert(converter = YesNoConverter.class)
