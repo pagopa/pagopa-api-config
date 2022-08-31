@@ -48,15 +48,18 @@ variables:
 #    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
 #    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
 #    APP_NAME: $(DEV_WEB_APP_NAME)
-#    STAGE: "t"
-#    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
-#    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
+  #    STAGE: "t"
+  #    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
+  #    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
   # github action use 'merge' as value of SourceBranchName
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: "main" # force to main branch
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: ${{ variables['Build.SourceBranchName'] }}
 
+  SEM_VER: ${{ parameters['SEMVER'] }}
+  ${{ if eq(parameters['SEMVER'], 'skip') }}:
+    SEM_VER: "patch" # skip is not valid for the template
 
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
@@ -95,7 +98,7 @@ stages:
 
           - template: templates/maven-github-release/template.yaml@pagopaCommons
             parameters:
-              semver: '${{ parameters.SEMVER }}'
+              semver: $(SEM_VER)
               release_branch: $(SOURCE_BRANCH)
               gitEmail: $(GIT_EMAIL)
               gitUsername: $(GIT_USERNAME)
@@ -218,7 +221,7 @@ stages:
               bash api-test/setup_env_api_test.sh $(STAGE)
 
           - script: |
-              newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml --verbose
+              newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml --delay-request 500 --verbose
             displayName: 'Run api test'
             continueOnError: false
 
