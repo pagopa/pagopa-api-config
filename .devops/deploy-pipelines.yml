@@ -53,7 +53,7 @@ variables:
   ${{ if eq(parameters['SEMVER'], 'skip') }}:
     SEM_VER: "patch" # skip is not valid for the template
   ${{ if ne(parameters['SEMVER'], 'skip') }}:
-    SEM_VER: ${{ parameters['SEMVER'] }}
+    SEM_VER: $( parameters['SEMVER'] )
 
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
