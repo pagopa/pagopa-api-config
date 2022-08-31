@@ -50,12 +50,6 @@ variables:
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: ${{ variables['Build.SourceBranchName'] }}
 
-  ${{ if eq(parameters['SEMVER'], 'skip') }}:
-    SEM_VER: "patch" # skip is not valid for the template
-  ${{ if ne(parameters['SEMVER'], 'skip') }}:
-    SEM_VER: $( parameters['SEMVER'] )
-
-
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
   title: ""
@@ -92,11 +86,15 @@ stages:
 
           - template: templates/maven-github-release/template.yaml@pagopaCommons
             parameters:
-              semver: $(SEM_VER)
               release_branch: $(SOURCE_BRANCH)
               gitEmail: $(GIT_EMAIL)
               gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
+              ${{ if eq(parameters.SEMVER, 'skip') }}:
+                semver: 'patch'
+              ${{ if ne(parameters.SEMVER, 'skip') }}:
+                semver: '${{ parameters.SEMVER }}'
+
 
   # Deploy on Azure
   - stage: deploy
