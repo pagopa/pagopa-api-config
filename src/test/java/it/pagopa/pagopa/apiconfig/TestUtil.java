@@ -162,6 +162,7 @@ public class TestUtil {
                 .rtEnabled(true)
                 .servizioPof("openspcoop/PD/CCP6TPDREGVENETO")
                 .intermediarioPa(getMockIntermediariePa())
+                .fkIntermediarioPa(1L)
                 .redirectProtocollo("HTTPS")
                 .proxyEnabled(true)
                 .proxyHost("10.101.1.95")

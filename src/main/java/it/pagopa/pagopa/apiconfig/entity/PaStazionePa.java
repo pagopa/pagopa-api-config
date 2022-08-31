@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;

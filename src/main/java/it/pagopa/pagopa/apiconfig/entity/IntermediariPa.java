@@ -28,7 +28,6 @@ import javax.persistence.Table;
 public class IntermediariPa {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
-
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
 

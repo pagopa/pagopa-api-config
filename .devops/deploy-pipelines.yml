@@ -71,6 +71,14 @@ pr: none
 pool:
   vmImage: ubuntu-latest
 
+resources:
+  repositories:
+    - repository: pagopaCommons
+      type: github
+      name: pagopa/azure-pipeline-templates
+      ref: refs/tags/v2.1.0
+      endpoint: 'io-azure-devops-github-ro'
+
 stages:
 
   # Create a release on GitHub
@@ -85,57 +93,13 @@ stages:
             clean: true
             persistCredentials: true
 
-          - script: |
-              git checkout $(SOURCE_BRANCH)
-
-          - script: |
-              git config --global user.name "$(GIT_USERNAME)"
-              git config --global user.email "$(GIT_EMAIL)"
-
-          - template: azure-templates/maven-versioning.yml
+          - template: templates/maven-github-release/template.yaml@pagopaCommons
             parameters:
-              semver: "${{ parameters.SEMVER }}"
-
-          - task: Bash@3
-            name: pomversion
-            inputs:
-              targetType: "inline"
-              script: |
-                version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
-                echo "##vso[task.setvariable variable=next;isOutput=true]$version"
-              failOnStderr: true
-
-          - script: |
-              git add pom.xml
-              git commit -m "Bump version [skip ci]"
-              git push origin $(SOURCE_BRANCH)
-
-
-          - script: |
-              HEAD_SHA=$(git rev-parse HEAD)
-              TAG="$(pomversion.next)"
-              TITLE="Release $(pomversion.next)"
-              echo "##vso[task.setvariable variable=title]$TITLE"
-              echo "##vso[task.setvariable variable=sha]$HEAD_SHA"
-              echo "##vso[task.setvariable variable=tag]$TAG"
-
-          - script: |
-              echo $(tag)
-              echo $(title)
-              echo $(sha)
-
-
-          # create new release
-          - task: GitHubRelease@0
-            inputs:
+              semver: '${{ parameters.SEMVER }}'
+              release_branch: $(SOURCE_BRANCH)
+              gitEmail: $(GIT_EMAIL)
+              gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
-              repositoryName: $(Build.Repository.Name)
-              action: create
-              target: $(sha)
-              tagSource: manual
-              tag: $(tag)
-              title: $(title)
-              addChangelog: true
 
   # Deploy on Azure
   - stage: deploy
