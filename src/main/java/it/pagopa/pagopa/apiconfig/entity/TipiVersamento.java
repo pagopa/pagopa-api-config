@@ -24,9 +24,10 @@ import java.io.Serializable;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TipiVersamento  implements Serializable {
+public class TipiVersamento implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 

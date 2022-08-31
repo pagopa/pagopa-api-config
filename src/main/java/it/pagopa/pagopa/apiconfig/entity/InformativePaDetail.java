@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.NumericBooleanConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,10 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,12 +33,13 @@ import java.util.List;
 @Table(name = "INFORMATIVE_PA_DETAIL", schema = "NODO4_CFG")
 public class InformativePaDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 
     @Column(name = "FLAG_DISPONIBILITA", nullable = false)
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = NumericBooleanConverter.class)
     private Boolean flagDisponibilita = false;
 
     @Column(name = "GIORNO", length = 35)

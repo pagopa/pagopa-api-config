@@ -1,3 +1,5 @@
+create sequence NODO4_CFG.HIBERNATE_SEQUENCE INCREMENT BY 1;
+
 -- create tables
 
 create table NODO4_CFG.INTERMEDIARI_PA

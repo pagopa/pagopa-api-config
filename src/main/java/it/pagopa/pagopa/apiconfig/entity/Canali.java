@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,10 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,14 +33,14 @@ import java.io.Serializable;
 @Builder(toBuilder = true)
 public class Canali implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 
     @Column(name = "ID_CANALE", nullable = false, length = 35)
     private String idCanale;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "ENABLED", nullable = false)
     private Boolean enabled = false;
 
@@ -72,7 +73,7 @@ public class Canali implements Serializable {
     @NotNull
     private IntermediariPsp fkIntermediarioPsp;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "PROXY_ENABLED", nullable = false)
     private Boolean proxyEnabled = false;
 
@@ -89,11 +90,11 @@ public class Canali implements Serializable {
     @Column(name = "PROXY_USERNAME", length = 15)
     private String proxyUsername;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "CANALE_NODO", nullable = false)
     private Boolean canaleNodo = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "CANALE_AVV", nullable = false)
     private Boolean canaleAvv = false;
 
@@ -108,7 +109,7 @@ public class Canali implements Serializable {
     @Column(name = "NUM_THREAD", nullable = false)
     private Long numThread;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "USE_NEW_FAULT_CODE", nullable = false)
     private Boolean useNewFaultCode = false;
 

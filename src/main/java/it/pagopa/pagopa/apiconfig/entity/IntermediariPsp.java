@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,29 +28,30 @@ import java.io.Serializable;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class IntermediariPsp implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
 
     @Column(name = "ID_INTERMEDIARIO_PSP", nullable = false, length = 35)
     private String idIntermediarioPsp;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "ENABLED", nullable = false)
     private Boolean enabled;
 
     @Column(name = "CODICE_INTERMEDIARIO")
     private String codiceIntermediario;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "INTERMEDIARIO_AVV", nullable = false)
     private Boolean intermediarioAvv;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "INTERMEDIARIO_NODO", nullable = false)
     private Boolean intermediarioNodo;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "FAULT_BEAN_ESTESO", nullable = false)
     private Boolean faultBeanEsteso;
 

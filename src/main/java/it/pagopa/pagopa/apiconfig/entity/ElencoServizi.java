@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +28,7 @@ import java.sql.Timestamp;
 @Table(name = "ELENCO_SERVIZI", schema = "NODO4_CFG")
 public class ElencoServizi {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 
@@ -40,11 +41,11 @@ public class ElencoServizi {
     @Column(name = "PSP_RAG_SOC")
     private String pspRagSoc;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "PSP_FLAG_STORNO")
     private Boolean pspFlagStorno;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "PSP_FLAG_BOLLO")
     private Boolean pspFlagBollo;
 
@@ -102,15 +103,15 @@ public class ElencoServizi {
     @Column(name = "LOGO_SERVIZIO")
     private byte[] logoServizio;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "CANALE_APP")
     private Boolean canaleApp;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "ON_US")
     private Boolean onUs;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "CARRELLO_CARTE")
     private Boolean carrelloCarte;
 
@@ -123,7 +124,7 @@ public class ElencoServizi {
     @Column(name = "CODICE_CONVENZIONE", length = 35)
     private String codiceConvenzione;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "FLAG_IO")
     private Boolean flagIo;
 

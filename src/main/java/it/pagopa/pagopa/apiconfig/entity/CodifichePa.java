@@ -28,7 +28,7 @@ import javax.persistence.Table;
 @ToString
 public class CodifichePa {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 

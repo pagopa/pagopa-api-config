@@ -27,7 +27,8 @@ import java.io.Serializable;
 public class WfespPluginConf implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 

@@ -28,7 +28,7 @@ import javax.persistence.Table;
 @Table(name = "CDI_INFORMAZIONI_SERVIZIO", schema = "NODO4_CFG")
 public class CdiInformazioniServizio {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 

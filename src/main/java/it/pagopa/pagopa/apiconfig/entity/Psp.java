@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,14 +31,15 @@ import java.io.Serializable;
 @ToString
 public class Psp implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
 
     @Column(name = "ID_PSP", nullable = false, length = 35)
     private String idPsp;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "ENABLED", nullable = false)
     private Boolean enabled;
 
@@ -61,7 +63,7 @@ public class Psp implements Serializable {
     @Column(name = "STORNO_PAGAMENTO", nullable = false)
     private Boolean stornoPagamento;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
     private Boolean flagRepoCommissioneCaricoPa;
 
@@ -74,15 +76,15 @@ public class Psp implements Serializable {
     @Column(name = "MARCA_BOLLO_DIGITALE", nullable = false)
     private Boolean marcaBolloDigitale;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "AGID_PSP", nullable = false)
     private Boolean agidPsp;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "PSP_NODO", nullable = false)
     private Boolean pspNodo;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "PSP_AVV", nullable = false)
     private Boolean pspAvv;
 

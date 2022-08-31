@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,8 @@ import javax.persistence.Table;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Stazioni {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
 
@@ -37,7 +39,7 @@ public class Stazioni {
     private String idStazione;
 
     @Column(name = "ENABLED")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     private Boolean enabled;
 
     @Column(name = "IP")
@@ -73,7 +75,7 @@ public class Stazioni {
     private String servizio;
 
     @Column(name = "RT_ENABLED")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     private Boolean rtEnabled = true;
 
     @Column(name = "SERVIZIO_POF")
@@ -103,7 +105,7 @@ public class Stazioni {
     private String servizio4Mod;
 
     @Column(name = "PROXY_ENABLED")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     private Boolean proxyEnabled;
 
     @Column(name = "PROXY_HOST")
@@ -132,7 +134,7 @@ public class Stazioni {
     private Long timeoutC;
 
     @Column(name = "FLAG_ONLINE")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     private Boolean flagOnline;
 
     @Column(name = "VERSIONE")
@@ -142,7 +144,7 @@ public class Stazioni {
     private String servizioNmp;
 
     @Column(name = "INVIO_RT_ISTANTANEO")
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     private Boolean invioRtIstantaneo;
 
 }

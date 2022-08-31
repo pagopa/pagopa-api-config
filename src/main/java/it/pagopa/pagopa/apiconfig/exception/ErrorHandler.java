@@ -2,7 +2,6 @@ package it.pagopa.pagopa.apiconfig.exception;
 
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -131,28 +130,28 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ProblemJson> handleDataIntegrityViolationException(final DataIntegrityViolationException ex, final WebRequest request) {
         ProblemJson errorResponse = null;
 
-        if (ex.getCause() instanceof ConstraintViolationException) {
-            String sqlState = ((ConstraintViolationException) ex.getCause()).getSQLState();
-            var errorCode = ((ConstraintViolationException) ex.getCause()).getSQLException().getErrorCode();
-            // check the reason of ConstraintViolationException: is true if the object is referenced by a foreign key
-            // more info: https://docs.oracle.com/javadb/10.8.3.0/ref/rrefexcept71493.html
-            if (sqlState.equals(FOREIGN_KEY_VIOLATION)) {
-                log.warn("Can't delete from Database", ex);
-                errorResponse = ProblemJson.builder()
-                        .status(HttpStatus.CONFLICT.value())
-                        .title("Conflict with the current state of the resource")
-                        .detail("There is a relation with other resource. Delete it first.")
-                        .build();
-            }
-            if (errorCode == CHILD_RECORD_VIOLATION) {
-                log.warn("Can't update the Database", ex);
-                errorResponse = ProblemJson.builder()
-                        .status(HttpStatus.CONFLICT.value())
-                        .title("Conflict with the current state of the resource")
-                        .detail("There is a relation with other resource. Delete it first.")
-                        .build();
-            }
-        }
+//        if (ex.getCause() instanceof ConstraintViolationException) {
+//            String sqlState = ((ConstraintViolationException) ex.getCause()).getSQLState();
+//            var errorCode = ((ConstraintViolationException) ex.getCause()).getSQLException().getErrorCode();
+//            // check the reason of ConstraintViolationException: is true if the object is referenced by a foreign key
+//            // more info: https://docs.oracle.com/javadb/10.8.3.0/ref/rrefexcept71493.html
+//            if (sqlState.equals(FOREIGN_KEY_VIOLATION)) {
+//                log.warn("Can't delete from Database", ex);
+//                errorResponse = ProblemJson.builder()
+//                        .status(HttpStatus.CONFLICT.value())
+//                        .title("Conflict with the current state of the resource")
+//                        .detail("There is a relation with other resource. Delete it first.")
+//                        .build();
+//            }
+//            if (errorCode == CHILD_RECORD_VIOLATION) {
+//                log.warn("Can't update the Database", ex);
+//                errorResponse = ProblemJson.builder()
+//                        .status(HttpStatus.CONFLICT.value())
+//                        .title("Conflict with the current state of the resource")
+//                        .detail("There is a relation with other resource. Delete it first.")
+//                        .build();
+//            }
+//        }
 
         // default response
         if (errorResponse == null) {
