@@ -25,6 +25,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -162,6 +163,46 @@ class MassiveLoadingServiceEserTest {
         massiveLoadingService.massiveMigration(multipartFile);
 
         verify(paStazionePaRepository, times(1))
+                .save(any(PaStazionePa.class));
+
+    }
+
+    @Test
+    void massiveMigrationBadRequest() throws IOException {
+        when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
+
+        File csv = TestUtil.readFile("file/massive_migration_bad.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
+        AppException thrown = assertThrows(AppException.class,
+                () -> {
+                    massiveLoadingService.massiveMigration(multipartFile);
+                });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getHttpStatus());
+
+        verify(paStazionePaRepository, times(0))
+                .save(any(PaStazionePa.class));
+
+    }
+
+    @Test
+    void massiveMigrationBadRequest2() throws IOException {
+        when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
+
+        File csv = TestUtil.readFile("file/massive_migration_2.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
+        AppException thrown = assertThrows(AppException.class,
+                () -> {
+                    massiveLoadingService.massiveMigration(multipartFile);
+                });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getHttpStatus());
+
+        verify(paStazionePaRepository, times(0))
                 .save(any(PaStazionePa.class));
 
     }
