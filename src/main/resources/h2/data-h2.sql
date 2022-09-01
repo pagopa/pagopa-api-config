@@ -3,36 +3,6 @@
 INSERT INTO NODO4_CFG.INTERMEDIARI_PA (OBJ_ID, ID_INTERMEDIARIO_PA, ENABLED, CODICE_INTERMEDIARIO, FAULT_BEAN_ESTESO)
 VALUES (2, '80007580279', 'Y', 'Regione Veneto', 'N');
 
-insert into NODO4_CFG.QUADRATURE_SCHED (OBJ_ID,
-                                        ID_SOGGETTO,
-                                        MODALITA,
-                                        TIPO_QUAD,
-                                        DAYS_OF_THE_WEEK_CODE,
-                                        JOB_START_DATE,
-                                        ENABLED,
-                                        ON_CLICK,
-                                        JOB_END_HOUR,
-                                        JOB_START_HOUR,
-                                        TIMESTAMP_LAST_ACTION,
-                                        TIMESTAMP_END,
-                                        TIMESTAMP_BEGIN,
-                                        QUAD_LAST_DATE,
-                                        TYPE_INIZIO_GIORNATA)
-values (1,
-        'INTERMEDIARIOPAP',
-        'GIORNALIERA',
-        'INT_PA',
-        'FTTTTTF',
-        parsedatetime('2013-10-17 00:00:00', 'YYYY-MM-DD HH:mm:SS'),
-        'N',
-        'N',
-        parsedatetime('2013-10-24 08:00:35', 'YYYY-MM-DD HH:mm:SS'),
-        parsedatetime('2013-10-24 07:00:35', 'YYYY-MM-DD HH:mm:SS'),
-        parsedatetime('2013-12-11 07:00:56', 'YYYY-MM-DD HH:mm:SS'),
-        parsedatetime('2013-12-11 07:00:56', 'YYYY-MM-DD HH:mm:SS'),
-        parsedatetime('2013-12-11 07:00:56', 'YYYY-MM-DD HH:mm:SS'),
-        parsedatetime('2013-12-11 00:00:00', 'YYYY-MM-DD HH:mm:SS'),
-        'Y');
 
 INSERT INTO NODO4_CFG.PA (OBJ_ID, ID_DOMINIO, ENABLED, DESCRIZIONE, RAGIONE_SOCIALE, FK_INT_QUADRATURE,
                           FLAG_REPO_COMMISSIONE_CARICO_PA, EMAIL_REPO_COMMISSIONE_CARICO_PA,
@@ -98,8 +68,8 @@ VALUES (201,
 INSERT INTO NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER (OBJ_ID, DATA_INIZIO_VALIDITA, DATA_PUBBLICAZIONE,
                                                           ID_INFORMATIVA_CONTO_ACCREDITO_PA, RAGIONE_SOCIALE, FK_PA,
                                                           FK_BINARY_FILE, VERSIONE)
-VALUES (228, parsedatetime('2017-03-09 00:00:00', 'YYYY-MM-DD HH:mm:SS'),
-        parsedatetime('2017-03-08 00:00:00', 'YYYY-MM-DD HH:mm:SS'), 'C_A703-IBAN-20170308000000',
+VALUES (228, parsedatetime('2017-03-09 00:00:00', 'yyyy-MM-dd hh:mm:ss'),
+        parsedatetime('2017-03-08 00:00:00', 'yyyy-MM-dd hh:mm:ss'), 'C_A703-IBAN-20170308000000',
         'Comune di Bassano del Grappa', 190, 201, null);
 INSERT INTO NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_DETAIL (OBJ_ID, IBAN_ACCREDITO, FK_INFORMATIVA_CONTO_ACCREDITO_MASTER,
                                                           ID_MERCHANT, CHIAVE_AVVIO, CHIAVE_ESITO, ID_BANCA_SELLER)
@@ -109,8 +79,8 @@ VALUES (521, 'IT50M0200860165000003497481', 228, null, null, null, null);
 
 INSERT INTO NODO4_CFG.INFORMATIVE_PA_MASTER (OBJ_ID, ID_INFORMATIVA_PA, DATA_INIZIO_VALIDITA, DATA_PUBBLICAZIONE, FK_PA,
                                              FK_BINARY_FILE, VERSIONE, PAGAMENTI_PRESSO_PSP)
-VALUES (1, '1', parsedatetime('2014-08-07 12:00:00', 'YYYY-MM-DD HH:mm:SS'),
-        parsedatetime('2014-08-06 12:00:00', 'YYYY-MM-DD HH:mm:SS'), 190, 201, null, 0);
+VALUES (1, '1', parsedatetime('2014-08-07 12:00:00', 'yyyy-MM-dd hh:mm:ss'),
+        parsedatetime('2014-08-06 12:00:00', 'yyyy-MM-dd hh:mm:ss'), 190, 201, null, 0);
 
 
 INSERT INTO NODO4_CFG.INTERMEDIARI_PSP (OBJ_ID, ID_INTERMEDIARIO_PSP, ENABLED, CODICE_INTERMEDIARIO, INTERMEDIARIO_AVV,
@@ -155,8 +125,8 @@ insert into NODO4_CFG.ELENCO_SERVIZI (OBJ_ID, PSP_ID, FLUSSO_ID, PSP_RAG_SOC, PS
 values (1, 'BPPIITRRZZZ', 'WISP_1_1_20210101', 'Cassa di Risparmio di Parma e Piacenza S.p.A.', 'N', 'N', '02113530345',
         '00001060966_01', 'non comunicato', 0, 'CP', 'IT', null,
         'Il servizio consente ai clienti di effettuare pagamenti elettronici online verso la Pubblica Amministrazione e i gestori di serviz',
-        '24/7', null, 0, 99999999.99, 1.99, to_timestamp('2021-12-10 00:05:09.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'),
-        to_timestamp('2017-07-12 00:02:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'), '16', 'Diners;V-Pay', '16',
+        '24/7', null, 0, 99999999.99, 1.99, parsedatetime('2017-03-09 00:00:00', 'yyyy-MM-dd hh:mm:ss'),
+        parsedatetime('2017-03-09 00:00:00', 'yyyy-MM-dd hh:mm:ss'), '16', 'Diners;V-Pay', '16',
         'N', 'N', 'N', 'TBD', null, null, 'N');
 
 insert into NODO4_CFG.ELENCO_SERVIZI (OBJ_ID, PSP_ID, FLUSSO_ID, PSP_RAG_SOC, PSP_FLAG_STORNO, PSP_FLAG_BOLLO, INTM_ID,
@@ -168,16 +138,16 @@ insert into NODO4_CFG.ELENCO_SERVIZI (OBJ_ID, PSP_ID, FLUSSO_ID, PSP_RAG_SOC, PS
 values (2, 'BPPIITRRZZZ', 'WISP_1_1_20210101', 'Cassa di Risparmio di Parma e Piacenza S.p.A.', 'N', 'N', '02113530345',
         '00001060966_01', 'non comunicato', 0, 'CP', 'EN', null,
         'Il servizio consente ai clienti di effettuare pagamenti elettronici online verso la Pubblica Amministrazione e i gestori di serviz',
-        '24/7', null, 0, 99999999.99, 1.99, to_timestamp('2021-12-10 00:05:09.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'),
-        to_timestamp('2017-07-12 00:02:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'), '16', 'Diners;V-Pay', '16',
+        '24/7', null, 0, 99999999.99, 1.99, parsedatetime('2017-03-09 00:00:00', 'yyyy-MM-dd hh:mm:ss'),
+        parsedatetime('2017-03-09 00:00:00', 'yyyy-MM-dd hh:mm:ss'), '16', 'Diners;V-Pay', '16',
         'Y', 'Y', 'Y', 'TBD', '1', null, 'Y');
 
 
 insert into NODO4_CFG.CDI_MASTER (OBJ_ID, ID_INFORMATIVA_PSP, DATA_INIZIO_VALIDITA, DATA_PUBBLICAZIONE, LOGO_PSP,
                                   URL_INFORMAZIONI_PSP, MARCA_BOLLO_DIGITALE, STORNO_PAGAMENTO, FK_PSP, FK_BINARY_FILE,
                                   VERSIONE)
-values (3, 'WISP_1_2_20211229', to_timestamp('2017-05-16 00:02:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'),
-        to_timestamp('2017-05-16 00:01:00.000000', 'YYYY-MM-DD HH24:MI:SS.FF6'), '16', 'http://host/service', 0, 0, 1,
+values (3, 'WISP_1_2_20211229', parsedatetime('2017-03-09 00:00:00', 'yyyy-MM-dd hh:mm:ss'),
+        parsedatetime('2017-03-09 00:00:00', 'yyyy-MM-dd hh:mm:ss'), '16', 'http://host/service', 0, 0, 1,
         201, null);
 
 INSERT INTO NODO4_CFG.TIPI_VERSAMENTO (OBJ_ID, DESCRIZIONE, TIPO_VERSAMENTO)

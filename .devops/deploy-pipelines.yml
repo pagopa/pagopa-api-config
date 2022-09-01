@@ -44,7 +44,7 @@ variables:
     STAGE: "p"
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
     dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
-  # github action use 'merge' as value of SourceBranchName
+  # GitHub action use 'merge' as value of SourceBranchName
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: "main" # force to main branch
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
@@ -91,7 +91,7 @@ stages:
               gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
               ${{ if eq(parameters.SEMVER, 'skip') }}:
-                semver: 'patch'
+                semver: 'buildNumber'
               ${{ if ne(parameters.SEMVER, 'skip') }}:
                 semver: '${{ parameters.SEMVER }}'
 
