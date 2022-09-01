@@ -19,7 +19,6 @@ import it.pagopa.pagopa.apiconfig.util.CreditorInstitutionStationVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,17 +74,22 @@ public class MassiveLoadingService {
         mappingStrategy.setType(CsvMassiveMigration.class);
 
         // execute validation
-        CsvToBean<CsvMassiveMigration> parsedCSV = new CsvToBeanBuilder<CsvMassiveMigration>(reader)
-                .withSeparator(',')
-                .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
-                .withOrderedResults(true)
-                .withMappingStrategy(mappingStrategy)
-                .withType(CsvMassiveMigration.class)
-                .withIgnoreLeadingWhiteSpace(true)
-                .withThrowExceptions(false)
-                .build();
+        List<CsvMassiveMigration> items;
+        try {
+            CsvToBean<CsvMassiveMigration> parsedCSV = new CsvToBeanBuilder<CsvMassiveMigration>(reader)
+                    .withSeparator(',')
+                    .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                    .withOrderedResults(true)
+                    .withMappingStrategy(mappingStrategy)
+                    .withType(CsvMassiveMigration.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .withThrowExceptions(true)
+                    .build();
 
-        List<CsvMassiveMigration> items = parsedCSV.parse();
+            items = parsedCSV.parse();
+        } catch (Exception e) {
+            throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, e, e.getMessage());
+        }
 
         for (CsvMassiveMigration item : items) {
             Stazioni oldStation = getStationIfExists(item.getOldStation());
@@ -98,10 +102,13 @@ public class MassiveLoadingService {
             var builder = relation.toBuilder()
                     .fkStazione(newStation);
             if (item.getBroadcast() != null) {
-                builder.broadcast(item.getBroadcast().isValue())
-                        .build();
+                builder.broadcast(item.getBroadcast().isValue());
             }
-            paStazionePaRepository.save(builder.build());
+            var entity = builder.build();
+            if (Boolean.TRUE.equals(entity.getBroadcast()) && !newStation.getVersione().equals(2L)) {
+                throw new AppException(AppError.MASSIVELOADING_BAD_REQUEST, "station version must be equals to 2 if broadcast is YES");
+            }
+            paStazionePaRepository.save(entity);
         }
 
 
