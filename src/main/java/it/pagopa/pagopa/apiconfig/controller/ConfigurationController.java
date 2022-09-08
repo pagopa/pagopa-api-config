@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 
 @RestController()
@@ -566,7 +567,7 @@ public class ConfigurationController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/paymenttypes/{paymentTypeCode}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PaymentType> updatePaymentType(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") String paymentTypeCode,
+    public ResponseEntity<PaymentType> updatePaymentType(@Parameter(description = "Payment type code") @PathVariable("paymentTypeCode") @Pattern(regexp = "[A-Z]*") String paymentTypeCode,
                                                          @RequestBody @Valid @NotNull PaymentTypeBase paymentType) {
         PaymentType savedPaymentType = configurationService.updatePaymentType(paymentTypeCode, paymentType);
         return ResponseEntity.ok(savedPaymentType);
