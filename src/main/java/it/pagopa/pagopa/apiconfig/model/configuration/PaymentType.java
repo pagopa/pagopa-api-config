@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -21,6 +22,7 @@ public class PaymentType extends PaymentTypeBase {
     @JsonProperty("payment_type")
     @Schema(example = "AD", required = true)
     @Size(max = 15)
+    @Pattern(regexp = "[A-Z]*")
     private String paymentTypeCode;
 
 }
