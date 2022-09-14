@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -233,6 +234,10 @@ public class IcaService {
     private void checkValidityDate(IcaXml icaXml) {
         var now = LocalDate.now();
         Timestamp tomorrow = Timestamp.valueOf(LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 23, 59, 59));
+        XMLGregorianCalendar validityDate = icaXml.getDataInizioValidita();
+        if (!validityDate.toString().matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")) {
+            throw new AppException(AppError.ICA_BAD_REQUEST, "Validity start date must be formatted as yyyy-MM-ddTHH:mm:ss");
+        }
         if (toTimestamp(icaXml.getDataInizioValidita()).before(tomorrow)) {
             throw new AppException(AppError.ICA_BAD_REQUEST, "Validity start date must be greater than the today's date");
         }
