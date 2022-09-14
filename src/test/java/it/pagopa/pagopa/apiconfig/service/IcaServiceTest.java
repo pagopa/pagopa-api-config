@@ -133,7 +133,7 @@ class IcaServiceTest {
 
     @Test
     void createIca_ko() throws IOException {
-        File xml = TestUtil.readFile("file/ica_not_valid.xml");
+        File xml = TestUtil.readFile("file/ica_date_not_valid_h2.xml");
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
