@@ -33,6 +33,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @UtilityClass
 public class CommonUtil {
@@ -195,6 +197,22 @@ public class CommonUtil {
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
         StAXSource source = new StAXSource(xmlStreamReader);
         validator.validate(source);
+    }
+
+    public static String getExceptionErrors(String stringException) {
+        Matcher matcher = Pattern.compile("lineNumber: [0-9]*").matcher(stringException);
+        String lineNumber = "";
+        if (matcher.find()) {
+            lineNumber = matcher.group(0);
+        }
+        String detail = stringException.substring(stringException.lastIndexOf(":") + 1).trim();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(detail);
+        if (lineNumber.length() > 0) {
+            stringBuilder.append(" Error at ").append(lineNumber);
+        }
+        return stringBuilder.toString();
     }
 
     /**

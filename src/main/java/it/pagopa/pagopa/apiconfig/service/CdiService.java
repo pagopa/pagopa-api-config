@@ -1,26 +1,13 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +24,18 @@ import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntacticValidationXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
 
 @Service
 @Validated
@@ -63,6 +49,12 @@ public class CdiService {
 
     @Autowired
     PspRepository pspRepository;
+
+    @Autowired
+    CanaliRepository canaliRepository;
+
+    @Autowired
+    IntermediariPspRepository intermediariPspRepository;
 
     @Autowired
     BinaryFileRepository binaryFileRepository;
@@ -113,7 +105,7 @@ public class CdiService {
         try {
             syntacticValidationXml(file, xsdCdi);
         } catch (SAXException | IOException | XMLStreamException e) {
-            throw new AppException(AppError.COUNTERPART_BAD_REQUEST, e, e.getMessage());
+            throw new AppException(AppError.CDI_BAD_REQUEST, e, e.getMessage());
         }
 
         // map file into model class
@@ -137,8 +129,6 @@ public class CdiService {
             saveCdiFasciaCostiServizio(xmlDetail, detail);
             saveCdiPreferences(xml, xmlDetail, detail);
         }
-
-
     }
 
     public void deleteCdi(String idCdi, String pspCode) {
@@ -150,6 +140,111 @@ public class CdiService {
             throw new AppException(HttpStatus.CONFLICT, "CDI conflict", "This CDI is used.");
         }
         cdiMasterRepository.delete(cdiMaster);
+    }
+
+    public void verifyCdi(MultipartFile file) {
+        List<CheckItem> checkItemList = new ArrayList<>();
+        // syntactic checks
+        String detail = "";
+        try {
+            syntacticValidationXml(file, xsdCdi);
+            detail = "XML is valid against the XSD schema.";
+            checkItemList.add(CheckItem.builder()
+                    .value(xsdCdi)
+                    .valid(CheckItem.Validity.VALID)
+                    .action(detail)
+                    .build()
+            );
+        } catch (SAXException | IOException | XMLStreamException e) {
+            detail = getExceptionErrors(e.getMessage());
+            checkItemList.add(CheckItem.builder()
+                    .value(xsdCdi)
+                    .valid(CheckItem.Validity.NOT_VALID)
+                    .action(detail)
+                    .build()
+            );
+        }
+
+        // map file into model class
+        CdiXml xml = mapXml(file, CdiXml.class);
+
+        // check psp
+        Psp psp = getPspIfExists(xml.getIdentificativoPSP());
+        checkItemList.add(checkData(psp.getCodiceFiscale(), xml.getIdentificativoPSP(), "IdentificativoPsp non censito"));
+        checkItemList.add(checkData(psp.getRagioneSociale(), xml.getRagioneSociale(), "Ragione sociale non coerente con quanto censito"));
+        checkItemList.add(checkData(psp.getAbi(), xml.getCodiceABI(), "Codice ABI non coerente con quanto censito"));
+        checkItemList.add(checkData(psp.getBic(), xml.getCodiceBIC(), "Codice BIC non coerente con quanto censito"));
+        // check marca da bollo
+        checkItemList.add(checkData(psp.getMarcaBolloDigitale(), true, "Marca da bollo non abilitata"));
+
+        // check date
+        checkItemList.add(checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
+
+        for (CdiXml.InformativaDetail informativaDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
+            // check channel and paymentMethod
+            String channelId = informativaDetail.getIdentificativoCanale();
+            Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
+            if (channel.isEmpty()) {
+                checkItemList.add(CheckItem.builder()
+                        .value(channelId + " - " + informativaDetail.getTipoVersamento())
+                        .valid(CheckItem.Validity.NOT_VALID)
+                        .action("Canale non censito")
+                        .build());
+            }
+            else {
+                List<PspCanaleTipoVersamento> paymentMethods = pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(psp.getObjId(), channel.get().getId());
+                String paymentType = informativaDetail.getTipoVersamento() != null ? informativaDetail.getTipoVersamento() : "PO";
+
+                CheckItem.Validity validity = paymentMethods.stream().anyMatch(pm -> pm.getCanaleTipoVersamento().equals(paymentType)) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+                checkItemList.add(CheckItem.builder()
+                        .value(channelId + " - " + informativaDetail.getTipoVersamento())
+                        .valid(validity)
+                        .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Canale e/o tipo versamento non coerenti con quanto censito")
+                        .build());
+
+                // check broker psp
+                String brokerPsp = informativaDetail.getIdentificativoIntermediario();
+                validity = channel.get().getFkIntermediarioPsp().getCodiceIntermediario().equals(brokerPsp) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+                checkItemList.add(CheckItem.builder()
+                        .value(brokerPsp)
+                        .valid(validity)
+                        .action("Intermediario PSP non collegato al canale")
+                        .build());
+            }
+
+        }
+
+
+        // check fasce
+        // check codice lingua
+
+
+
+        checkFlusso(xml, psp);
+        checkRagioneSociale(xml, psp);
+
+
+        // save BINARY_FILE and CDI_MASTER
+        var binaryFile = saveBinaryFile(file);
+        var master = saveCdiMaster(xml, psp, binaryFile);
+        // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCIE_COSTO, PREFERENCES
+        for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
+            var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
+
+//            var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
+//            saveCdiInformazioniServizio(xmlDetail, detail);
+//            saveCdiFasciaCostiServizio(xmlDetail, detail);
+//            saveCdiPreferences(xml, xmlDetail, detail);
+        }
+    }
+
+    private CheckItem checkData(Object data, Object target, String action) {
+        CheckItem.Validity validity = target.equals(data) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+        return CheckItem.builder()
+                .value(data.toString())
+                .valid(validity)
+                .action(validity.equals(CheckItem.Validity.VALID) ? "" : action)
+                .build();
     }
 
     /**
@@ -348,14 +443,18 @@ public class CdiService {
     }
 
     /**
-     * @param xml check if the validity is after today
+     * @param startValidityDate check if the validity is after today
+     * @return item with validity info
      */
-    private void checkValidityDate(CdiXml xml) {
-        var now = LocalDate.now();
-        Timestamp tomorrow = Timestamp.valueOf(LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 23, 59, 59));
-        if (toTimestamp(xml.getInformativaMaster().getDataInizioValidita()).before(tomorrow)) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, "Validity start date must be greater than the today's date");
-        }
+    private CheckItem checkValidityDate(XMLGregorianCalendar startValidityDate) {
+        LocalDate now = LocalDate.now();
+        LocalDate tomorrow = now.plusDays(1);
+        CheckItem.Validity validity = toTimestamp(startValidityDate).before(Timestamp.valueOf(tomorrow.atStartOfDay())) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
+        return CheckItem.builder()
+                .value(startValidityDate.toString())
+                .valid(validity)
+                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")
+                .build();
     }
 
     /**

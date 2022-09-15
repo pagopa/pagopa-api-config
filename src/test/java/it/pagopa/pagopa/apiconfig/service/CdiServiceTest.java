@@ -138,4 +138,33 @@ class CdiServiceTest {
             fail(e);
         }
     }
+
+    @Test
+    void checkCdi() throws IOException {
+        File xml = TestUtil.readFile("file/cdi_valid.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
+        when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(anyLong(), anyString(), anyString()))
+                .thenReturn(Optional.of(getMockPspCanaleTipoVersamento()));
+
+        cdiService.verifyCdi(file);
+
+//        ArgumentCaptor<CdiDetail> cdiDetail = ArgumentCaptor.forClass(CdiDetail.class);
+//        verify(cdiDetailRepository, times(1)).save(cdiDetail.capture());
+//        assertEquals("Pagamento con Carte", cdiDetail.getValue().getNomeServizio());
+//        assertEquals(1L, cdiDetail.getValue().getPriorita());
+//        assertEquals(1L, cdiDetail.getValue().getModelloPagamento());
+//        assertEquals(0L, cdiDetail.getValue().getCanaleApp());
+//        assertEquals("Visa;Mastercard", cdiDetail.getValue().getTags());
+//        assertEquals(Arrays.toString("YQ==".getBytes()), Arrays.toString(cdiDetail.getValue().getLogoServizio()));
+//        verify(cdiInformazioniServizioRepository, times(5)).save(any());
+//        verify(cdiFasciaCostoServizioRepository, times(8)).save(any());
+//
+//        ArgumentCaptor<CdiPreference> cdiPreference = ArgumentCaptor.forClass(CdiPreference.class);
+//        verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
+//        assertEquals("MYBANK11", cdiPreference.getValue().getSeller());
+//        assertEquals(1.00, cdiPreference.getValue().getCostoConvenzione());
+    }
 }

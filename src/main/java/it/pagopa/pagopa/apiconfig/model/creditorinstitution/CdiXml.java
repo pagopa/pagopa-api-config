@@ -26,6 +26,8 @@ public class CdiXml {
     private String identificativoFlusso;
     private String identificativoPSP;
     private String ragioneSociale;
+    private String codiceABI;
+    private String codiceBIC;
     private InformativaMaster informativaMaster;
     private ListaInformativaDetail listaInformativaDetail;
 
