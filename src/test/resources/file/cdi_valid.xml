@@ -81,7 +81,7 @@
                         <valoreCommissione>0.50</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
-                        <importoMassimoFascia>50.00</importoMassimoFascia>
+                        <importoMassimoFascia>100.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>0.00</valoreCommissione>
                         <listaConvenzioniCosti>
@@ -94,7 +94,7 @@
                         <valoreCommissione>1.00</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
-                        <importoMassimoFascia>150.00</importoMassimoFascia>
+                        <importoMassimoFascia>250.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>0.00</valoreCommissione>
                         <listaConvenzioniCosti>
@@ -107,7 +107,7 @@
                         <valoreCommissione>1.50</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
-                        <importoMassimoFascia>500.00</importoMassimoFascia>
+                        <importoMassimoFascia>600.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>0.00</valoreCommissione>
                         <listaConvenzioniCosti>
@@ -120,7 +120,7 @@
                         <valoreCommissione>2.50</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
-                        <importoMassimoFascia>1500.00</importoMassimoFascia>
+                        <importoMassimoFascia>2500.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>0.00</valoreCommissione>
                         <listaConvenzioniCosti>

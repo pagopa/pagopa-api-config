@@ -2,18 +2,10 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
+import it.pagopa.pagopa.apiconfig.entity.*;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -33,15 +25,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMaster;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,6 +48,9 @@ class CdiServiceTest {
 
     @MockBean
     PspRepository pspRepository;
+
+    @MockBean
+    CanaliRepository canaliRepository;
 
     @MockBean
     BinaryFileRepository binaryFileRepository;
@@ -143,28 +134,29 @@ class CdiServiceTest {
     void checkCdi() throws IOException {
         File xml = TestUtil.readFile("file/cdi_valid.xml");
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
-        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+
+        Psp psp = getMockPsp();
+        psp.setCodiceFiscale("01234567890");
+        psp.setAbi("03069");
+        psp.setBic("BCITITMM");
+
+        Canali channel = getMockCanali();
+        channel.setIdCanale("01234567890");
+        channel.getFkIntermediarioPsp().setIdIntermediarioPsp("01234567890");
+
+        PspCanaleTipoVersamento paymentMethod = getMockPspCanaleTipoVersamento();
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setDescrizione("BP");
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setTipoVersamento("BP");
+
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(psp));
         when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
         when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
-        when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(anyLong(), anyString(), anyString()))
-                .thenReturn(Optional.of(getMockPspCanaleTipoVersamento()));
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(channel));
+        when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
+                .thenReturn(List.of(paymentMethod));
 
-        cdiService.verifyCdi(file);
+        List<CheckItem> checkItemList = cdiService.verifyCdi(file);
 
-//        ArgumentCaptor<CdiDetail> cdiDetail = ArgumentCaptor.forClass(CdiDetail.class);
-//        verify(cdiDetailRepository, times(1)).save(cdiDetail.capture());
-//        assertEquals("Pagamento con Carte", cdiDetail.getValue().getNomeServizio());
-//        assertEquals(1L, cdiDetail.getValue().getPriorita());
-//        assertEquals(1L, cdiDetail.getValue().getModelloPagamento());
-//        assertEquals(0L, cdiDetail.getValue().getCanaleApp());
-//        assertEquals("Visa;Mastercard", cdiDetail.getValue().getTags());
-//        assertEquals(Arrays.toString("YQ==".getBytes()), Arrays.toString(cdiDetail.getValue().getLogoServizio()));
-//        verify(cdiInformazioniServizioRepository, times(5)).save(any());
-//        verify(cdiFasciaCostoServizioRepository, times(8)).save(any());
-//
-//        ArgumentCaptor<CdiPreference> cdiPreference = ArgumentCaptor.forClass(CdiPreference.class);
-//        verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
-//        assertEquals("MYBANK11", cdiPreference.getValue().getSeller());
-//        assertEquals(1.00, cdiPreference.getValue().getCostoConvenzione());
+        assertFalse(checkItemList.stream().anyMatch(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)));
     }
 }
