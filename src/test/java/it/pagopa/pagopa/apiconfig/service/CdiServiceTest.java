@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.*;
 import org.assertj.core.util.Lists;
@@ -24,11 +25,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -149,7 +152,6 @@ class CdiServiceTest {
         paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setTipoVersamento("BP");
 
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(psp));
-        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
         when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
         when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(channel));
         when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
@@ -158,5 +160,63 @@ class CdiServiceTest {
         List<CheckItem> checkItemList = cdiService.verifyCdi(file);
 
         assertFalse(checkItemList.stream().anyMatch(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)));
+    }
+
+    @Test
+    void checkCdi_ko_1() throws IOException {
+        File xml = TestUtil.readFile("file/cdi_not_valid_1.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+
+        Psp psp = getMockPsp();
+        psp.setCodiceFiscale("01234567890");
+        psp.setAbi("03069");
+        psp.setBic("BCITITMM");
+
+        Canali channel = getMockCanali();
+        channel.setIdCanale("01234567890");
+        channel.getFkIntermediarioPsp().setIdIntermediarioPsp("01234567890");
+
+        PspCanaleTipoVersamento paymentMethod = getMockPspCanaleTipoVersamento();
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setDescrizione("BP");
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setTipoVersamento("BP");
+
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.empty());
+        when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.empty());
+        when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
+                .thenReturn(List.of(paymentMethod));
+
+        List<CheckItem> checkItemList = cdiService.verifyCdi(file);
+
+        assertTrue(checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count() == 1);
+    }
+
+    @Test
+    void checkCdi_ko_2() throws IOException {
+        File xml = TestUtil.readFile("file/cdi_not_valid_2.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+
+        Psp psp = getMockPsp();
+        psp.setCodiceFiscale("01234567890");
+        psp.setAbi("03069");
+        psp.setBic("BCITITMM");
+
+        Canali channel = getMockCanali();
+        channel.setIdCanale("01234567890");
+        channel.getFkIntermediarioPsp().setIdIntermediarioPsp("01234567890");
+
+        PspCanaleTipoVersamento paymentMethod = getMockPspCanaleTipoVersamento();
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setDescrizione("BP");
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setTipoVersamento("BP");
+
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(psp));
+        when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(channel));
+        when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
+                .thenReturn(new ArrayList<>());
+
+        List<CheckItem> checkItemList = cdiService.verifyCdi(file);
+
+        assertTrue(checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count() == 2);
     }
 }

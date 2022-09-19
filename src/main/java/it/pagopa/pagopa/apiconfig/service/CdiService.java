@@ -35,6 +35,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
 
@@ -174,15 +175,25 @@ public class CdiService {
         CdiXml xml = mapXml(file, CdiXml.class);
 
         // check psp
-        Psp psp = getPspIfExists(xml.getIdentificativoPSP());
-        checkItemList.add(checkData(psp.getCodiceFiscale(), xml.getIdentificativoPSP(), "IdentificativoPsp non censito"));
-        checkItemList.add(checkData(psp.getRagioneSociale(), xml.getRagioneSociale(), "Ragione sociale non coerente con quanto censito"));
-        checkItemList.add(checkData(psp.getAbi(), xml.getCodiceABI(), "Codice ABI non coerente con quanto censito"));
-        checkItemList.add(checkData(psp.getBic(), xml.getCodiceBIC(), "Codice BIC non coerente con quanto censito"));
-        // check marca da bollo
-        CheckItem checkItem = checkData(psp.getMarcaBolloDigitale(), true, "Marca da bollo non abilitata");
-        checkItem.setValue("Marca da bollo");
-        checkItemList.add(checkItem);
+        String pspId = xml.getIdentificativoPSP();
+        Psp psp = null;
+        try {
+            psp = getPspIfExists(pspId);
+            checkItemList.add(checkData(psp.getCodiceFiscale(), xml.getIdentificativoPSP(), "IdentificativoPsp non censito"));
+            checkItemList.add(checkData(psp.getRagioneSociale(), xml.getRagioneSociale(), "Ragione sociale non coerente con quanto censito"));
+            checkItemList.add(checkData(psp.getAbi(), xml.getCodiceABI(), "Codice ABI non coerente con quanto censito"));
+            checkItemList.add(checkData(psp.getBic(), xml.getCodiceBIC(), "Codice BIC non coerente con quanto censito"));
+            // check marca da bollo
+            CheckItem checkItem = checkData(xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Marca da bollo non coerente con quanto censito");
+            checkItem.setValue("Marca da bollo");
+            checkItemList.add(checkItem);
+        } catch (AppException e) {
+            checkItemList.add(CheckItem.builder()
+                    .value(pspId)
+                    .valid(CheckItem.Validity.NOT_VALID)
+                    .action("PSP non censito")
+                    .build());
+        }
 
         // check date
         checkItemList.add(checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
@@ -198,7 +209,7 @@ public class CdiService {
                         .action("Canale non censito")
                         .build());
             }
-            else {
+            else if (psp != null) {
                 List<PspCanaleTipoVersamento> paymentMethods = pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(psp.getObjId(), channel.get().getId());
                 String paymentType = informativaDetail.getTipoVersamento() != null ? informativaDetail.getTipoVersamento() : "PO";
 
@@ -246,7 +257,7 @@ public class CdiService {
                         .build());
             }
             else if (languages.size() < 5) {
-                List<String> languagesTarget = Arrays.asList("IN", "EN", "DE", "FR", "SL");
+                List<String> languagesTarget = Stream.of("IT", "EN", "DE", "FR", "SL").collect(Collectors.toList());
                 languagesTarget.removeAll(languages);
                 checkItemList.add(CheckItem.builder()
                         .value("Codice lingua")
@@ -261,7 +272,7 @@ public class CdiService {
                         .forEach(item -> checkItemList.add(CheckItem.builder()
                                 .value(String.format("Codice lingua %s", item.getKey()))
                                 .valid(CheckItem.Validity.NOT_VALID)
-                                .action(String.format("Lingua %s duplicata: %s occorrenze", item.getValue()))
+                                .action(String.format("Lingua %s duplicata: %s occorrenze", item.getKey(), item.getValue()))
                                 .build()));
             }
         }
