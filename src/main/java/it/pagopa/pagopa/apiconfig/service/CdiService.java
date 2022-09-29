@@ -198,6 +198,14 @@ public class CdiService {
         // check date
         checkItemList.add(checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
 
+        // check flow id
+        Optional<CdiMaster> optFlow = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp());
+        checkItemList.add(CheckItem.builder()
+                .value(xml.getIdentificativoFlusso())
+                .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
+                .action(optFlow.isPresent() ? "Flusso presente": "")
+                .build());
+
         for (CdiXml.InformativaDetail informativaDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
             // check channel and paymentMethod
             String channelId = informativaDetail.getIdentificativoCanale();
@@ -219,6 +227,9 @@ public class CdiService {
                         .valid(validity)
                         .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Canale e/o tipo versamento non coerenti con quanto censito")
                         .build());
+
+                // TODO check payment model
+//                if (informativaDetail.getModelloPagamento() == 4L)
 
                 // check broker psp
                 String brokerPsp = informativaDetail.getIdentificativoIntermediario();
