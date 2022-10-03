@@ -228,8 +228,14 @@ public class CdiService {
                         .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Canale e/o tipo versamento non coerenti con quanto censito")
                         .build());
 
-                // TODO check payment model
-//                if (informativaDetail.getModelloPagamento() == 4L)
+                if (informativaDetail.getModelloPagamento() == 4L) {
+                    validity = informativaDetail.getTipoVersamento().equals("PO") ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+                    checkItemList.add(CheckItem.builder()
+                            .value("Modello Pagamento: " + informativaDetail.getModelloPagamento())
+                            .valid(validity)
+                            .action(validity.equals(CheckItem.Validity.VALID) ? "Modello Pagamento coerente con Tipo Versamento" : "Modello Pagamento non coerente con Tipo Versamento")
+                            .build());
+                }
 
                 // check broker psp
                 String brokerPsp = informativaDetail.getIdentificativoIntermediario();
@@ -288,7 +294,6 @@ public class CdiService {
             }
         }
 
-//        checkFlusso(xml, psp);
         return checkItemList;
     }
 
