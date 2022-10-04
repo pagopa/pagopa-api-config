@@ -1697,6 +1697,12 @@
                 "description": "This header identifies the call",
                 "type": "string"
               }
+            },
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/CheckItem"
+              },
+              "type": "array"
             }
           },
           "400": {
@@ -11435,6 +11441,27 @@
         "channels",
         "page_info"
       ],
+      "type": "object"
+    },
+    "CheckItem": {
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "valid": {
+          "enum": [
+            "VALID",
+            "NOT_VALID"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
       "type": "object"
     },
     "ConfigurationKey": {

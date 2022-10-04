@@ -2145,7 +2145,14 @@
                             }
                         },
                         "content": {
-                            "application/json": {}
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CheckItem"
+                                    }
+                                }
+                            }
                         }
                     },
                     "400": {
@@ -14715,6 +14722,27 @@
                     "config_key": {
                         "type": "string",
                         "example": "default_token_duration_validity_millis"
+                    }
+                }
+            },
+            "CheckItem": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    },
+                    "valid": {
+                        "type": "string",
+                        "enum": [
+                            "VALID",
+                            "NOT_VALID"
+                        ]
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
                     }
                 }
             },
