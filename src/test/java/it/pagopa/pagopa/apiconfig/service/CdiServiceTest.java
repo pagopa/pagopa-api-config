@@ -207,7 +207,7 @@ class CdiServiceTest {
 
         List<CheckItem> checkItemList = cdiService.verifyCdi(file);
 
-        assertTrue(checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count() == 1);
+        assertEquals(1,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count());
     }
 
     @Test
@@ -237,7 +237,7 @@ class CdiServiceTest {
 
         List<CheckItem> checkItemList = cdiService.verifyCdi(file);
 
-        assertTrue(checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count() == 3);
+        assertEquals(3, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count());
     }
 
     @Test
@@ -267,6 +267,6 @@ class CdiServiceTest {
 
         List<CheckItem> checkItemList = cdiService.verifyCdi(file);
 
-        assertTrue(checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count() == 2);
+        assertEquals(2, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count());
     }
 }

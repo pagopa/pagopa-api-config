@@ -508,30 +508,6 @@ public class CdiService {
     }
 
     /**
-     * check if flusso in the xml already exists
-     *
-     * @param xml XML file
-     * @param psp the PSP from DB
-     */
-    private void checkFlusso(CdiXml xml, Psp psp) {
-        if (cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp()).isPresent()) {
-            throw new AppException(AppError.CDI_CONFLICT, xml.getIdentificativoFlusso());
-        }
-    }
-
-    /**
-     * check if ragioneSociale in the xml is right
-     *
-     * @param xml XML file
-     * @param psp the PSP from DB
-     */
-    private void checkRagioneSociale(CdiXml xml, Psp psp) {
-        if (!psp.getRagioneSociale().equals(xml.getRagioneSociale())) {
-            throw new AppException(AppError.CDI_BAD_REQUEST, "There is an error in ragioneSociale '" + xml.getRagioneSociale() + "'");
-        }
-    }
-
-    /**
      * @param startValidityDate check if the validity is after today
      * @return item with validity info
      */
