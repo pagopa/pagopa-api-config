@@ -253,6 +253,7 @@ public class CdiService {
     private List<CheckItem> checkLanguages(CdiXml.InformativaDetail informativaDetail) {
         List<String> languages = new ArrayList<>();
         List<CheckItem> checkItemList = new ArrayList<>();
+        String title = "Codice lingua";
 
         for(CdiXml.InformazioniServizio informazioniServizio: informativaDetail.getListaInformazioniServizio().getInformazioniServizio()) {
             languages.add(informazioniServizio.getCodiceLingua());
@@ -260,7 +261,7 @@ public class CdiService {
 
         if (languages.size() == 5) {
             checkItemList.add(CheckItem.builder()
-                    .title("Codice lingua")
+                    .title(title)
                     .value("")
                     .valid(CheckItem.Validity.VALID)
                     .build());
@@ -269,7 +270,7 @@ public class CdiService {
             List<String> languagesTarget = Stream.of("IT", "EN", "DE", "FR", "SL").collect(Collectors.toList());
             languagesTarget.removeAll(languages);
             checkItemList.add(CheckItem.builder()
-                    .title("Codice lingua")
+                    .title(title)
                     .value("")
                     .valid(CheckItem.Validity.NOT_VALID)
                     .action(String.format("Lingua mancante: %s", languagesTarget.toString()))
@@ -280,7 +281,7 @@ public class CdiService {
             frequencyMap.entrySet().stream()
                     .filter(item -> item.getValue() > 1)
                     .forEach(item -> checkItemList.add(CheckItem.builder()
-                            .title("Codice lingua")
+                            .title(title)
                             .value(item.getKey())
                             .valid(CheckItem.Validity.NOT_VALID)
                             .action(String.format("Lingua %s duplicata: %s occorrenze", item.getKey(), item.getValue()))
