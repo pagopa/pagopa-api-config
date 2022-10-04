@@ -195,12 +195,7 @@ public class CdiService {
 
         // check flow id
         if (psp != null) {
-            Optional<CdiMaster> optFlow = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp());
-            checkItemList.add(CheckItem.builder()
-                    .value(xml.getIdentificativoFlusso())
-                    .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
-                    .action(optFlow.isPresent() ? "Flusso presente" : "")
-                    .build());
+            checkItemList.add(checkFlow(xml, psp));
         }
 
         for (CdiXml.InformativaDetail informativaDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
@@ -215,83 +210,121 @@ public class CdiService {
                         .build());
             }
             else if (psp != null) {
-                List<PspCanaleTipoVersamento> paymentMethods = pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(psp.getObjId(), channel.get().getId());
-                String paymentType = informativaDetail.getTipoVersamento() != null ? informativaDetail.getTipoVersamento() : "PO";
-
-                CheckItem.Validity validity = paymentMethods.stream().anyMatch(pm -> pm.getCanaleTipoVersamento().getTipoVersamento().getTipoVersamento().equals(paymentType)) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
-                checkItemList.add(CheckItem.builder()
-                        .value(channelId + " - " + informativaDetail.getTipoVersamento())
-                        .valid(validity)
-                        .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Canale e/o tipo versamento non coerenti con quanto censito")
-                        .build());
+                // check payment methods
+                checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
 
                 if (informativaDetail.getModelloPagamento() == 4L) {
-                    validity = informativaDetail.getTipoVersamento().equals("PO") ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
-                    checkItemList.add(CheckItem.builder()
-                            .value("Modello Pagamento: " + informativaDetail.getModelloPagamento())
-                            .valid(validity)
-                            .action(validity.equals(CheckItem.Validity.VALID) ? "Modello Pagamento coerente con Tipo Versamento" : "Modello Pagamento non coerente con Tipo Versamento")
-                            .build());
+                    // check payment model
+                    checkItemList.add(checkPaymentModel(informativaDetail));
                 }
 
                 // check broker psp
-                String brokerPsp = informativaDetail.getIdentificativoIntermediario();
-                validity = channel.get().getFkIntermediarioPsp().getIdIntermediarioPsp().equals(brokerPsp) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
-                checkItemList.add(CheckItem.builder()
-                        .value(brokerPsp)
-                        .valid(validity)
-                        .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Intermediario PSP non collegato al canale")
-                        .build());
+                checkItemList.add(checkBrokerPsp(channel.get(), informativaDetail));
             }
 
             // check amount ranges
-            List<Double> maxServiceAmountList = new ArrayList<>();
-            for(CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
-                if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
-                    checkItemList.add(CheckItem.builder()
-                            .value(String.format("Importo massimo fascia %s", maxServiceAmount.getImportoMassimoFascia()))
-                            .valid(CheckItem.Validity.NOT_VALID)
-                            .action("Importo duplicato")
-                            .build());
-                }
-                else {
-                    maxServiceAmountList.add(maxServiceAmount.getImportoMassimoFascia());
-                }
-            }
+            checkItemList.addAll(checkAmountRanges(informativaDetail));
+
 
             // check languages
-            List<String> languages = new ArrayList<>();
-            for(CdiXml.InformazioniServizio informazioniServizio: informativaDetail.getListaInformazioniServizio().getInformazioniServizio()) {
-                languages.add(informazioniServizio.getCodiceLingua());
-            }
-            if (languages.size() == 5) {
-                checkItemList.add(CheckItem.builder()
-                        .value("Codice lingua")
-                        .valid(CheckItem.Validity.VALID)
-                        .build());
-            }
-            else if (languages.size() < 5) {
-                List<String> languagesTarget = Stream.of("IT", "EN", "DE", "FR", "SL").collect(Collectors.toList());
-                languagesTarget.removeAll(languages);
-                checkItemList.add(CheckItem.builder()
-                        .value("Codice lingua")
-                        .valid(CheckItem.Validity.NOT_VALID)
-                        .action(String.format("Lingua mancante: %s", languagesTarget.toString()))
-                        .build());
-            }
-            else {
-                Map<String, Long> frequencyMap = languages.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-                frequencyMap.entrySet().stream()
-                        .filter(item -> item.getValue() > 1)
-                        .forEach(item -> checkItemList.add(CheckItem.builder()
-                                .value(String.format("Codice lingua %s", item.getKey()))
-                                .valid(CheckItem.Validity.NOT_VALID)
-                                .action(String.format("Lingua %s duplicata: %s occorrenze", item.getKey(), item.getValue()))
-                                .build()));
-            }
+            checkItemList.addAll(checkLanguages(informativaDetail));
         }
 
         return checkItemList;
+    }
+
+    private CheckItem checkPaymentMethods(Canali channel, Psp psp, CdiXml.InformativaDetail informativaDetail) {
+        List<PspCanaleTipoVersamento> paymentMethods = pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(psp.getObjId(), channel.getId());
+        String paymentType = informativaDetail.getTipoVersamento() != null ? informativaDetail.getTipoVersamento() : "PO";
+
+        CheckItem.Validity validity = paymentMethods.stream().anyMatch(pm -> pm.getCanaleTipoVersamento().getTipoVersamento().getTipoVersamento().equals(paymentType)) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+        return CheckItem.builder()
+                .value(channel.getId() + " - " + informativaDetail.getTipoVersamento())
+                .valid(validity)
+                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Canale e/o tipo versamento non coerenti con quanto censito")
+                .build();
+    }
+
+    private List<CheckItem> checkLanguages(CdiXml.InformativaDetail informativaDetail) {
+        List<String> languages = new ArrayList<>();
+        List<CheckItem> checkItemList = new ArrayList<>();
+
+        for(CdiXml.InformazioniServizio informazioniServizio: informativaDetail.getListaInformazioniServizio().getInformazioniServizio()) {
+            languages.add(informazioniServizio.getCodiceLingua());
+        }
+
+        if (languages.size() == 5) {
+            checkItemList.add(CheckItem.builder()
+                    .value("Codice lingua")
+                    .valid(CheckItem.Validity.VALID)
+                    .build());
+        }
+        else if (languages.size() < 5) {
+            List<String> languagesTarget = Stream.of("IT", "EN", "DE", "FR", "SL").collect(Collectors.toList());
+            languagesTarget.removeAll(languages);
+            checkItemList.add(CheckItem.builder()
+                    .value("Codice lingua")
+                    .valid(CheckItem.Validity.NOT_VALID)
+                    .action(String.format("Lingua mancante: %s", languagesTarget.toString()))
+                    .build());
+        }
+        else {
+            Map<String, Long> frequencyMap = languages.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            frequencyMap.entrySet().stream()
+                    .filter(item -> item.getValue() > 1)
+                    .forEach(item -> checkItemList.add(CheckItem.builder()
+                            .value(String.format("Codice lingua %s", item.getKey()))
+                            .valid(CheckItem.Validity.NOT_VALID)
+                            .action(String.format("Lingua %s duplicata: %s occorrenze", item.getKey(), item.getValue()))
+                            .build()));
+        }
+        return checkItemList;
+    }
+
+    private List<CheckItem> checkAmountRanges(CdiXml.InformativaDetail informativaDetail) {
+        List<Double> maxServiceAmountList = new ArrayList<>();
+        List<CheckItem> checkItemList = new ArrayList<>();
+        for(CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
+            if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
+                checkItemList.add(CheckItem.builder()
+                        .value(String.format("Importo massimo fascia %s", maxServiceAmount.getImportoMassimoFascia()))
+                        .valid(CheckItem.Validity.NOT_VALID)
+                        .action("Importo duplicato")
+                        .build());
+            }
+            else {
+                maxServiceAmountList.add(maxServiceAmount.getImportoMassimoFascia());
+            }
+        }
+        return checkItemList;
+    }
+
+    private CheckItem checkBrokerPsp(Canali channel, CdiXml.InformativaDetail informativaDetail) {
+        String brokerPsp = informativaDetail.getIdentificativoIntermediario();
+        CheckItem.Validity validity = channel.getFkIntermediarioPsp().getIdIntermediarioPsp().equals(brokerPsp) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+        return CheckItem.builder()
+                .value(brokerPsp)
+                .valid(validity)
+                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Intermediario PSP non collegato al canale")
+                .build();
+    }
+
+    private CheckItem checkPaymentModel(CdiXml.InformativaDetail informativaDetail) {
+        CheckItem.Validity validity = informativaDetail.getTipoVersamento().equals("PO") ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+        return CheckItem.builder()
+                .value("Modello Pagamento: " + informativaDetail.getModelloPagamento())
+                .valid(validity)
+                .action(validity.equals(CheckItem.Validity.VALID) ? "Modello Pagamento coerente con Tipo Versamento" : "Modello Pagamento non coerente con Tipo Versamento")
+                .build();
+    }
+
+    private CheckItem checkFlow(CdiXml xml, Psp psp) {
+        Optional<CdiMaster> optFlow = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp());
+        return CheckItem.builder()
+                .value(xml.getIdentificativoFlusso())
+                .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
+                .action(optFlow.isPresent() ? "Flusso presente" : "")
+                .build();
     }
 
     private CheckItem checkData(Object data, Object target, String action) {
