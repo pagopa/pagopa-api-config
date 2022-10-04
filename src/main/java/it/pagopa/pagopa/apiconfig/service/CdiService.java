@@ -151,6 +151,7 @@ public class CdiService {
             syntacticValidationXml(file, xsdCdi);
             detail = "XML is valid against the XSD schema.";
             checkItemList.add(CheckItem.builder()
+                    .title("XSD Schema")
                     .value(xsdCdi)
                     .valid(CheckItem.Validity.VALID)
                     .action(detail)
@@ -159,6 +160,7 @@ public class CdiService {
         } catch (SAXException | IOException | XMLStreamException e) {
             detail = getExceptionErrors(e.getMessage());
             checkItemList.add(CheckItem.builder()
+                    .title("XSD Schema")
                     .value(xsdCdi)
                     .valid(CheckItem.Validity.NOT_VALID)
                     .action(detail)
@@ -175,16 +177,16 @@ public class CdiService {
         Psp psp = null;
         try {
             psp = getPspIfExists(pspId);
-            checkItemList.add(checkData(psp.getCodiceFiscale(), xml.getIdentificativoPSP(), "IdentificativoPsp non censito"));
-            checkItemList.add(checkData(psp.getRagioneSociale(), xml.getRagioneSociale(), "Ragione sociale non coerente con quanto censito"));
-            checkItemList.add(checkData(psp.getAbi(), xml.getCodiceABI(), "Codice ABI non coerente con quanto censito"));
-            checkItemList.add(checkData(psp.getBic(), xml.getCodiceBIC(), "Codice BIC non coerente con quanto censito"));
+            checkItemList.add(checkData("PSP", psp.getIdPsp(), xml.getIdentificativoPSP(), "IdentificativoPsp non censito"));
+            checkItemList.add(checkData("Ragione Sociale", psp.getRagioneSociale(), xml.getRagioneSociale(), "Ragione sociale non coerente con quanto censito"));
+            checkItemList.add(checkData("Codice ABI", psp.getAbi(), xml.getCodiceABI(), "Codice ABI non coerente con quanto censito"));
+            checkItemList.add(checkData("Codice BIC", psp.getBic(), xml.getCodiceBIC(), "Codice BIC non coerente con quanto censito"));
             // check marca da bollo
-            CheckItem checkItem = checkData(xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Marca da bollo non coerente con quanto censito");
-            checkItem.setValue("Marca da bollo");
+            CheckItem checkItem = checkData("Marca da bollo", xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Marca da bollo non coerente con quanto censito");
             checkItemList.add(checkItem);
         } catch (AppException e) {
             checkItemList.add(CheckItem.builder()
+                    .title("Identificativo PSP")
                     .value(pspId)
                     .valid(CheckItem.Validity.NOT_VALID)
                     .action("PSP non censito")
@@ -205,6 +207,7 @@ public class CdiService {
             Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
             if (channel.isEmpty()) {
                 checkItemList.add(CheckItem.builder()
+                        .title("Canale - Tipo Versamento")
                         .value(channelId + " - " + informativaDetail.getTipoVersamento())
                         .valid(CheckItem.Validity.NOT_VALID)
                         .action("Canale non censito")
@@ -240,7 +243,8 @@ public class CdiService {
 
         CheckItem.Validity validity = paymentMethods.stream().anyMatch(pm -> pm.getCanaleTipoVersamento().getTipoVersamento().getTipoVersamento().equals(paymentType)) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
         return CheckItem.builder()
-                .value(channel.getId() + " - " + informativaDetail.getTipoVersamento())
+                .title("Canale - Tipo Versamento")
+                .value(channel.getIdCanale() + " - " + informativaDetail.getTipoVersamento())
                 .valid(validity)
                 .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Canale e/o tipo versamento non coerenti con quanto censito")
                 .build();
@@ -256,7 +260,8 @@ public class CdiService {
 
         if (languages.size() == 5) {
             checkItemList.add(CheckItem.builder()
-                    .value("Codice lingua")
+                    .title("Codice lingua")
+                    .value("")
                     .valid(CheckItem.Validity.VALID)
                     .build());
         }
@@ -264,7 +269,8 @@ public class CdiService {
             List<String> languagesTarget = Stream.of("IT", "EN", "DE", "FR", "SL").collect(Collectors.toList());
             languagesTarget.removeAll(languages);
             checkItemList.add(CheckItem.builder()
-                    .value("Codice lingua")
+                    .title("Codice lingua")
+                    .value("")
                     .valid(CheckItem.Validity.NOT_VALID)
                     .action(String.format("Lingua mancante: %s", languagesTarget.toString()))
                     .build());
@@ -274,7 +280,8 @@ public class CdiService {
             frequencyMap.entrySet().stream()
                     .filter(item -> item.getValue() > 1)
                     .forEach(item -> checkItemList.add(CheckItem.builder()
-                            .value(String.format("Codice lingua %s", item.getKey()))
+                            .title("Codice lingua")
+                            .value(item.getKey())
                             .valid(CheckItem.Validity.NOT_VALID)
                             .action(String.format("Lingua %s duplicata: %s occorrenze", item.getKey(), item.getValue()))
                             .build()));
@@ -288,7 +295,8 @@ public class CdiService {
         for(CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
             if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
                 checkItemList.add(CheckItem.builder()
-                        .value(String.format("Importo massimo fascia %s", maxServiceAmount.getImportoMassimoFascia()))
+                        .title("Importo massimo fascia")
+                        .value(maxServiceAmount.getImportoMassimoFascia().toString())
                         .valid(CheckItem.Validity.NOT_VALID)
                         .action("Importo duplicato")
                         .build());
@@ -304,6 +312,7 @@ public class CdiService {
         String brokerPsp = informativaDetail.getIdentificativoIntermediario();
         CheckItem.Validity validity = channel.getFkIntermediarioPsp().getIdIntermediarioPsp().equals(brokerPsp) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
         return CheckItem.builder()
+                .title("Intermediario PSP")
                 .value(brokerPsp)
                 .valid(validity)
                 .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Intermediario PSP non collegato al canale")
@@ -313,7 +322,8 @@ public class CdiService {
     private CheckItem checkPaymentModel(CdiXml.InformativaDetail informativaDetail) {
         CheckItem.Validity validity = informativaDetail.getTipoVersamento().equals("PO") ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
         return CheckItem.builder()
-                .value("Modello Pagamento: " + informativaDetail.getModelloPagamento())
+                .title("Modello Pagamento")
+                .value(informativaDetail.getModelloPagamento().toString())
                 .valid(validity)
                 .action(validity.equals(CheckItem.Validity.VALID) ? "Modello Pagamento coerente con Tipo Versamento" : "Modello Pagamento non coerente con Tipo Versamento")
                 .build();
@@ -322,15 +332,17 @@ public class CdiService {
     private CheckItem checkFlow(CdiXml xml, Psp psp) {
         Optional<CdiMaster> optFlow = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp());
         return CheckItem.builder()
+                .title("Identificativo flusso")
                 .value(xml.getIdentificativoFlusso())
                 .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
                 .action(optFlow.isPresent() ? "Flusso presente" : "")
                 .build();
     }
 
-    private CheckItem checkData(Object data, Object target, String action) {
+    private CheckItem checkData(String title, Object data, Object target, String action) {
         CheckItem.Validity validity = target.equals(data) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
         return CheckItem.builder()
+                .title(title)
                 .value(data.toString())
                 .valid(validity)
                 .action(validity.equals(CheckItem.Validity.VALID) ? "" : action)
@@ -517,6 +529,7 @@ public class CdiService {
         LocalDate tomorrow = now.plusDays(1);
         CheckItem.Validity validity = toTimestamp(startValidityDate).before(Timestamp.valueOf(tomorrow.atStartOfDay())) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
         return CheckItem.builder()
+                .title("Data validità")
                 .value(startValidityDate.toString())
                 .valid(validity)
                 .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")

@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class CheckItem {
 
+    String title;
     String value;
     Validity valid;
     String note;

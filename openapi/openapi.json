@@ -14728,6 +14728,9 @@
             "CheckItem": {
                 "type": "object",
                 "properties": {
+                    "title": {
+                        "type": "string"
+                    },
                     "value": {
                         "type": "string"
                     },

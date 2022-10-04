@@ -11451,6 +11451,9 @@
         "note": {
           "type": "string"
         },
+        "title": {
+          "type": "string"
+        },
         "valid": {
           "enum": [
             "VALID",
