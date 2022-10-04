@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.*;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
@@ -139,6 +140,14 @@ class CdiServiceTest {
         verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
         assertEquals("MYBANK11", cdiPreference.getValue().getSeller());
         assertEquals(1.00, cdiPreference.getValue().getCostoConvenzione());
+    }
+
+    @Test
+    void createCdi_ko_1() throws IOException {
+        File xml = TestUtil.readFile("file/cdi_not_valid_3.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+
+        assertThrows(AppException.class, () -> cdiService.createCdi(file));
     }
 
     @Test

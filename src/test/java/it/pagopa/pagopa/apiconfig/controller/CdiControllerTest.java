@@ -77,4 +77,17 @@ class CdiControllerTest {
         mvc.perform(delete("/cdis/1234?pspcode=1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void checkCdi() throws Exception {
+        File xml = TestUtil.readFile("file/cdi_valid.xml");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        String url = "/cdis/check";
+
+        mvc.perform(multipart(url)
+                .file(multipartFile)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+
+    }
 }
