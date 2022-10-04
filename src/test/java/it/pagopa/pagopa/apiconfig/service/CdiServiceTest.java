@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -268,5 +269,15 @@ class CdiServiceTest {
         List<CheckItem> checkItemList = cdiService.verifyCdi(file);
 
         assertEquals(2, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count());
+    }
+
+    @Test
+    void checkCdi_ko_4() throws IOException {
+        File xml = TestUtil.readFile("file/cdi_not_valid_3.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+
+        List<CheckItem> checkItemList = cdiService.verifyCdi(file);
+        assertEquals(0, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count());
+        assertEquals(1, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 }

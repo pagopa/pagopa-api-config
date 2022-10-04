@@ -200,7 +200,7 @@ public class CommonUtil {
     }
 
     public static String getExceptionErrors(String stringException) {
-        Matcher matcher = Pattern.compile("lineNumber: [0-9]*").matcher(stringException);
+        Matcher matcher = Pattern.compile("lineNumber: \\d*").matcher(stringException);
         String lineNumber = "";
         if (matcher.find()) {
             lineNumber = matcher.group(0);

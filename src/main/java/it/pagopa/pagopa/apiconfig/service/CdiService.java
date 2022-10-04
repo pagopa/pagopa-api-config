@@ -164,6 +164,7 @@ public class CdiService {
                     .action(detail)
                     .build()
             );
+            return checkItemList;
         }
 
         // map file into model class
