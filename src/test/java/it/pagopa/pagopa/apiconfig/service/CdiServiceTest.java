@@ -96,7 +96,26 @@ class CdiServiceTest {
     void createCdi() throws IOException {
         File xml = TestUtil.readFile("file/cdi_valid.xml");
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
-        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
+
+        Psp psp = getMockPsp();
+        psp.setCodiceFiscale("01234567890");
+        psp.setAbi("03069");
+        psp.setBic("BCITITMM");
+
+        Canali channel = getMockCanali();
+        channel.setIdCanale("01234567890");
+        channel.getFkIntermediarioPsp().setIdIntermediarioPsp("01234567890");
+
+        PspCanaleTipoVersamento paymentMethod = getMockPspCanaleTipoVersamento();
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setDescrizione("BP");
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setTipoVersamento("BP");
+
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(psp));
+        when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(channel));
+        when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
+                .thenReturn(List.of(paymentMethod));
+
         when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
         when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
         when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(anyLong(), anyString(), anyString()))
@@ -120,7 +139,6 @@ class CdiServiceTest {
         assertEquals("MYBANK11", cdiPreference.getValue().getSeller());
         assertEquals(1.00, cdiPreference.getValue().getCostoConvenzione());
     }
-
 
     @Test
     void deleteCdi() {
@@ -183,6 +201,7 @@ class CdiServiceTest {
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.empty());
         when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
         when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.empty());
+        when(cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(anyString(), any())).thenReturn(Optional.empty());
         when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
                 .thenReturn(List.of(paymentMethod));
 
@@ -212,6 +231,37 @@ class CdiServiceTest {
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(psp));
         when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
         when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(channel));
+        when(cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(anyString(), anyString())).thenReturn(Optional.empty());
+        when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
+                .thenReturn(new ArrayList<>());
+
+        List<CheckItem> checkItemList = cdiService.verifyCdi(file);
+
+        assertTrue(checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count() == 3);
+    }
+
+    @Test
+    void checkCdi_ko_3() throws IOException {
+        File xml = TestUtil.readFile("file/cdi_not_valid_2.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+
+        Psp psp = getMockPsp();
+        psp.setCodiceFiscale("01234567890");
+        psp.setAbi("03069");
+        psp.setBic("BCITITMM");
+
+        Canali channel = getMockCanali();
+        channel.setIdCanale("01234567890");
+        channel.getFkIntermediarioPsp().setIdIntermediarioPsp("01234567890");
+
+        PspCanaleTipoVersamento paymentMethod = getMockPspCanaleTipoVersamento();
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setDescrizione("BP");
+        paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setTipoVersamento("BP");
+
+        when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(psp));
+        when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
+        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(channel));
+        when(cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(anyString(), anyString())).thenReturn(Optional.of(TestUtil.getMockCdiMaster()));
         when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
                 .thenReturn(new ArrayList<>());
 

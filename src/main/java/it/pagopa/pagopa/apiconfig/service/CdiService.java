@@ -103,12 +103,11 @@ public class CdiService {
 
     @Transactional
     public void createCdi(MultipartFile file) {
-        /** TODO
-        // syntactic checks
-        try {
-            syntacticValidationXml(file, xsdCdi);
-        } catch (SAXException | IOException | XMLStreamException e) {
-            throw new AppException(AppError.CDI_BAD_REQUEST, e, e.getMessage());
+        List<CheckItem> checks = verifyCdi(file);
+
+        Optional<CheckItem> check = checks.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).findFirst();
+        if (check.isPresent()) {
+            throw new AppException(AppError.CDI_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getAction()));
         }
 
         // map file into model class
@@ -116,9 +115,6 @@ public class CdiService {
 
         // semantics checks
         var psp = getPspIfExists(xml.getIdentificativoPSP());
-        checkFlusso(xml, psp);
-        checkRagioneSociale(xml, psp);
-        checkValidityDate(xml);
 
         // save BINARY_FILE and CDI_MASTER
         var binaryFile = saveBinaryFile(file);
@@ -132,7 +128,6 @@ public class CdiService {
             saveCdiFasciaCostiServizio(xmlDetail, detail);
             saveCdiPreferences(xml, xmlDetail, detail);
         }
-         */
     }
 
     public void deleteCdi(String idCdi, String pspCode) {
@@ -199,12 +194,14 @@ public class CdiService {
         checkItemList.add(checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
 
         // check flow id
-        Optional<CdiMaster> optFlow = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp());
-        checkItemList.add(CheckItem.builder()
-                .value(xml.getIdentificativoFlusso())
-                .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
-                .action(optFlow.isPresent() ? "Flusso presente": "")
-                .build());
+        if (psp != null) {
+            Optional<CdiMaster> optFlow = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp());
+            checkItemList.add(CheckItem.builder()
+                    .value(xml.getIdentificativoFlusso())
+                    .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
+                    .action(optFlow.isPresent() ? "Flusso presente" : "")
+                    .build());
+        }
 
         for (CdiXml.InformativaDetail informativaDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
             // check channel and paymentMethod
