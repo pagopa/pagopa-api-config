@@ -100,7 +100,7 @@ class CdiServiceTest {
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
 
         Psp psp = getMockPsp();
-        psp.setCodiceFiscale("01234567890");
+        psp.setIdPsp("01234567890");
         psp.setAbi("03069");
         psp.setBic("BCITITMM");
 
@@ -167,7 +167,7 @@ class CdiServiceTest {
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
 
         Psp psp = getMockPsp();
-        psp.setCodiceFiscale("01234567890");
+        psp.setIdPsp("01234567890");
         psp.setAbi("03069");
         psp.setBic("BCITITMM");
 
@@ -196,7 +196,7 @@ class CdiServiceTest {
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
 
         Psp psp = getMockPsp();
-        psp.setCodiceFiscale("01234567890");
+        psp.setIdPsp("01234567890");
         psp.setAbi("03069");
         psp.setBic("BCITITMM");
 
@@ -226,7 +226,7 @@ class CdiServiceTest {
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
 
         Psp psp = getMockPsp();
-        psp.setCodiceFiscale("01234567890");
+        psp.setIdPsp("01234567890");
         psp.setAbi("03069");
         psp.setBic("BCITITMM");
 
@@ -256,7 +256,7 @@ class CdiServiceTest {
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
 
         Psp psp = getMockPsp();
-        psp.setCodiceFiscale("01234567890");
+        psp.setIdPsp("01234567890");
         psp.setAbi("03069");
         psp.setBic("BCITITMM");
 

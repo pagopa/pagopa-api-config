@@ -292,6 +292,7 @@ public class CdiService {
     private List<CheckItem> checkAmountRanges(CdiXml.InformativaDetail informativaDetail) {
         List<Double> maxServiceAmountList = new ArrayList<>();
         List<CheckItem> checkItemList = new ArrayList<>();
+        boolean valid = true;
         for(CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
             if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
                 checkItemList.add(CheckItem.builder()
@@ -300,10 +301,18 @@ public class CdiService {
                         .valid(CheckItem.Validity.NOT_VALID)
                         .action("Importo duplicato")
                         .build());
+                valid = false;
             }
             else {
                 maxServiceAmountList.add(maxServiceAmount.getImportoMassimoFascia());
             }
+        }
+        if (valid) {
+            checkItemList.add(CheckItem.builder()
+                    .title("Importo massimo fasce")
+                    .value("")
+                    .valid(CheckItem.Validity.VALID)
+                    .build());
         }
         return checkItemList;
     }
