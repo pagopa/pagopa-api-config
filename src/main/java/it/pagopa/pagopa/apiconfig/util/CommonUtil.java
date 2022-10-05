@@ -33,6 +33,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @UtilityClass
 public class CommonUtil {
@@ -178,7 +180,7 @@ public class CommonUtil {
      * @throws IOException        if XSD schema not found
      * @throws XMLStreamException error during read XML
      */
-    public static void syntacticValidationXml(MultipartFile xml, String xsdUrl) throws SAXException, IOException, XMLStreamException {
+    public static void syntaxValidation(MultipartFile xml, String xsdUrl) throws SAXException, IOException, XMLStreamException {
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         // to be compliant, prohibit the use of all protocols by external entities:
         factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -195,6 +197,22 @@ public class CommonUtil {
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
         StAXSource source = new StAXSource(xmlStreamReader);
         validator.validate(source);
+    }
+
+    public static String getExceptionErrors(String stringException) {
+        Matcher matcher = Pattern.compile("lineNumber: \\d*").matcher(stringException);
+        String lineNumber = "";
+        if (matcher.find()) {
+            lineNumber = matcher.group(0);
+        }
+        String detail = stringException.substring(stringException.lastIndexOf(":") + 1).trim();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(detail);
+        if (lineNumber.length() > 0) {
+            stringBuilder.append(" Error at ").append(lineNumber);
+        }
+        return stringBuilder.toString();
     }
 
     /**

@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntacticValidationXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
 
 @Service
@@ -94,7 +94,7 @@ public class CounterpartService {
     public void createCounterpartTable(MultipartFile file) {
         // syntactic checks
         try {
-            syntacticValidationXml(file, xsdCounterpart);
+            syntaxValidation(file, xsdCounterpart);
         } catch (SAXException | IOException | XMLStreamException e) {
             throw new AppException(AppError.COUNTERPART_BAD_REQUEST, e, e.getMessage());
         }

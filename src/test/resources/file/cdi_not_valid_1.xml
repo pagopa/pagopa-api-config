@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <informativaPSP>
     <identificativoFlusso>01234567890_20-20-0817</identificativoFlusso>
-    <identificativoPSP>01234567890</identificativoPSP>
-    <ragioneSociale>Poste Italiane</ragioneSociale>
-    <codiceABI>03069</codiceABI>
-    <codiceBIC>BCITITMM</codiceBIC>
+    <identificativoPSP>WRONG678901</identificativoPSP>
+    <ragioneSociale>WRONG</ragioneSociale>
+    <codiceABI>00000</codiceABI>
+    <codiceBIC>WRONG678</codiceBIC>
     <mybankIDVS>MYBANK11</mybankIDVS>
     <informativaMaster>
         <dataPubblicazione>2020-08-31T08:00:00</dataPubblicazione>
-        <dataInizioValidita>2120-09-02T00:01:00</dataInizioValidita>
+        <dataInizioValidita>2020-09-02T00:01:00</dataInizioValidita>
         <urlInformazioniPSP>http://demo-ig.eng-dhub.it/AgID/ProcTele/InfoPSP.do</urlInformazioniPSP>
         <stornoPagamento>0</stornoPagamento>
         <marcaBolloDigitale>1</marcaBolloDigitale>
@@ -18,9 +18,9 @@
     </informativaMaster>
     <listaInformativaDetail>
         <informativaDetail>
-            <identificativoIntermediario>01234567890</identificativoIntermediario>
-            <identificativoCanale>01234567890</identificativoCanale>
-            <tipoVersamento>BP</tipoVersamento>
+            <identificativoIntermediario>WRONG</identificativoIntermediario>
+            <identificativoCanale>WRONG</identificativoCanale>
+            <tipoVersamento>PO</tipoVersamento>
             <modelloPagamento>1</modelloPagamento>
             <priorita>1</priorita>
             <canaleApp>0</canaleApp>
@@ -59,13 +59,6 @@
                     </descrizioneServizio>
                     <disponibilitaServizio>7/7-24H</disponibilitaServizio>
                 </informazioniServizio>
-                <informazioniServizio>
-                    <codiceLingua>SL</codiceLingua>
-                    <descrizioneServizio>Clienti e non delle Banche possono disporre
-                        pagamenti con carte di pagamento VISA-MASTERCARD
-                    </descrizioneServizio>
-                    <disponibilitaServizio>7/7-24H</disponibilitaServizio>
-                </informazioniServizio>
             </listaInformazioniServizio>
             <listaParoleChiave>
                 <paroleChiave>Visa</paroleChiave>
@@ -81,7 +74,7 @@
                         <valoreCommissione>0.50</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
-                        <importoMassimoFascia>100.00</importoMassimoFascia>
+                        <importoMassimoFascia>50.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>0.00</valoreCommissione>
                         <listaConvenzioniCosti>
