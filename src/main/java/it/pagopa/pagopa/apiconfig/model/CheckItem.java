@@ -6,6 +6,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder(toBuilder = true)
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class CheckItem {

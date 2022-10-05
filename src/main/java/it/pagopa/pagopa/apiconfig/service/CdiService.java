@@ -28,7 +28,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.security.MessageDigest;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -145,10 +144,10 @@ public class CdiService {
         // checks are described here https://pagopa.atlassian.net/wiki/spaces/ACN/pages/467435579/Verifica+CDI
 
         List<CheckItem> checkItemList = new ArrayList<>();
-        // syntactic checks
+        // syntax checks
         String detail = "";
         try {
-            syntacticValidationXml(file, xsdCdi);
+            syntaxValidation(file, xsdCdi);
             detail = "XML is valid against the XSD schema.";
             checkItemList.add(CheckItem.builder()
                     .title("XSD Schema")
@@ -177,19 +176,17 @@ public class CdiService {
         Psp psp = null;
         try {
             psp = getPspIfExists(pspId);
-            checkItemList.add(checkData("PSP", psp.getIdPsp(), xml.getIdentificativoPSP(), "IdentificativoPsp non censito"));
-            checkItemList.add(checkData("Ragione Sociale", psp.getRagioneSociale(), xml.getRagioneSociale(), "Ragione sociale non coerente con quanto censito"));
-            checkItemList.add(checkData("Codice ABI", psp.getAbi(), xml.getCodiceABI(), "Codice ABI non coerente con quanto censito"));
-            checkItemList.add(checkData("Codice BIC", psp.getBic(), xml.getCodiceBIC(), "Codice BIC non coerente con quanto censito"));
-            // check marca da bollo
-            CheckItem checkItem = checkData("Marca da bollo", xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Marca da bollo non coerente con quanto censito");
+            checkItemList.addAll(checkPsp(psp, pspId, xml));
+
+            // check marca da bollo (stamp)
+            CheckItem checkItem = checkData("Stamp", xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Stamp not consistent");
             checkItemList.add(checkItem);
         } catch (AppException e) {
             checkItemList.add(CheckItem.builder()
-                    .title("Identificativo PSP")
+                    .title("PSP Identifier")
                     .value(pspId)
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action("PSP non censito")
+                    .action("PSP identifier not consistent")
                     .build());
         }
 
@@ -207,10 +204,10 @@ public class CdiService {
             Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
             if (channel.isEmpty()) {
                 checkItemList.add(CheckItem.builder()
-                        .title("Canale - Tipo Versamento")
+                        .title("Channel - Payment Method")
                         .value(channelId + " - " + informativaDetail.getTipoVersamento())
                         .valid(CheckItem.Validity.NOT_VALID)
-                        .action("Canale non censito")
+                        .action("Channel not consistent")
                         .build());
             }
             else if (psp != null) {
@@ -229,11 +226,19 @@ public class CdiService {
             // check amount ranges
             checkItemList.addAll(checkAmountRanges(informativaDetail));
 
-
             // check languages
             checkItemList.addAll(checkLanguages(informativaDetail));
         }
 
+        return checkItemList;
+    }
+
+    private List<CheckItem> checkPsp(Psp psp, String pspId, CdiXml xml) {
+        List<CheckItem> checkItemList = new ArrayList<>();
+        checkItemList.add(checkData("PSP", psp.getIdPsp(), pspId, "PSP identifier not consistent"));
+        checkItemList.add(checkData("Business Name", psp.getRagioneSociale(), xml.getRagioneSociale(), "Business name not consistent"));
+        checkItemList.add(checkData("ABI Code", psp.getAbi(), xml.getCodiceABI(), "ABI code not consistent"));
+        checkItemList.add(checkData("BIC Code", psp.getBic(), xml.getCodiceBIC(), "BIC code not consistent"));
         return checkItemList;
     }
 
@@ -243,50 +248,57 @@ public class CdiService {
 
         CheckItem.Validity validity = paymentMethods.stream().anyMatch(pm -> pm.getCanaleTipoVersamento().getTipoVersamento().getTipoVersamento().equals(paymentType)) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
         return CheckItem.builder()
-                .title("Canale - Tipo Versamento")
+                .title("Channel - Payment Method")
                 .value(channel.getIdCanale() + " - " + informativaDetail.getTipoVersamento())
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Canale e/o tipo versamento non coerenti con quanto censito")
+                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Channel and/or payment method not consistent")
                 .build();
     }
 
     private List<CheckItem> checkLanguages(CdiXml.InformativaDetail informativaDetail) {
         List<String> languages = new ArrayList<>();
         List<CheckItem> checkItemList = new ArrayList<>();
-        String title = "Codice lingua";
+        String title = "Language code";
 
         for(CdiXml.InformazioniServizio informazioniServizio: informativaDetail.getListaInformazioniServizio().getInformazioniServizio()) {
             languages.add(informazioniServizio.getCodiceLingua());
         }
 
-        if (languages.size() == 5) {
+        List<String> languagesTarget = Stream.of("IT", "EN", "DE", "FR", "SL").collect(Collectors.toList());
+        languagesTarget.removeAll(languages);
+
+        final boolean[] duplicate = {false};
+
+        Map<String, Long> frequencyMap = languages.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        frequencyMap.entrySet().stream()
+                .filter(item -> item.getValue() > 1)
+                .forEach(item -> {
+                    checkItemList.add(CheckItem.builder()
+                                    .title(title)
+                                    .value(item.getKey())
+                                    .valid(CheckItem.Validity.NOT_VALID)
+                                    .action(String.format("%s occurrences", item.getValue()))
+                                    .build());
+                    duplicate[0] = true;
+                }
+                );
+
+        if (languagesTarget.size() == 0 && !duplicate[0]) {
             checkItemList.add(CheckItem.builder()
                     .title(title)
                     .value("")
                     .valid(CheckItem.Validity.VALID)
                     .build());
         }
-        else if (languages.size() < 5) {
-            List<String> languagesTarget = Stream.of("IT", "EN", "DE", "FR", "SL").collect(Collectors.toList());
-            languagesTarget.removeAll(languages);
+        else if (languagesTarget.size() > 0) {
             checkItemList.add(CheckItem.builder()
                     .title(title)
                     .value("")
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action(String.format("Lingua mancante: %s", languagesTarget.toString()))
+                    .action(String.format("Missing languages: %s", languagesTarget.toString()))
                     .build());
         }
-        else {
-            Map<String, Long> frequencyMap = languages.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-            frequencyMap.entrySet().stream()
-                    .filter(item -> item.getValue() > 1)
-                    .forEach(item -> checkItemList.add(CheckItem.builder()
-                            .title(title)
-                            .value(item.getKey())
-                            .valid(CheckItem.Validity.NOT_VALID)
-                            .action(String.format("Lingua %s duplicata: %s occorrenze", item.getKey(), item.getValue()))
-                            .build()));
-        }
+
         return checkItemList;
     }
 
@@ -297,10 +309,10 @@ public class CdiService {
         for(CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
             if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
                 checkItemList.add(CheckItem.builder()
-                        .title("Importo massimo fascia")
+                        .title("Maximum amount range")
                         .value(maxServiceAmount.getImportoMassimoFascia().toString())
                         .valid(CheckItem.Validity.NOT_VALID)
-                        .action("Importo duplicato")
+                        .action("Duplicate amount")
                         .build());
                 valid = false;
             }
@@ -310,7 +322,7 @@ public class CdiService {
         }
         if (valid) {
             checkItemList.add(CheckItem.builder()
-                    .title("Importo massimo fasce")
+                    .title("Maximum amount ranges")
                     .value("")
                     .valid(CheckItem.Validity.VALID)
                     .build());
@@ -322,30 +334,30 @@ public class CdiService {
         String brokerPsp = informativaDetail.getIdentificativoIntermediario();
         CheckItem.Validity validity = channel.getFkIntermediarioPsp().getIdIntermediarioPsp().equals(brokerPsp) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
         return CheckItem.builder()
-                .title("Intermediario PSP")
+                .title("Broker PSP")
                 .value(brokerPsp)
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Intermediario PSP non collegato al canale")
+                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Broker Psp not related to the channel")
                 .build();
     }
 
     private CheckItem checkPaymentModel(CdiXml.InformativaDetail informativaDetail) {
         CheckItem.Validity validity = informativaDetail.getTipoVersamento().equals("PO") ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
         return CheckItem.builder()
-                .title("Modello Pagamento")
+                .title("Payment model")
                 .value(informativaDetail.getModelloPagamento().toString())
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "Modello Pagamento coerente con Tipo Versamento" : "Modello Pagamento non coerente con Tipo Versamento")
+                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Payment model not related to payment method")
                 .build();
     }
 
     private CheckItem checkFlow(CdiXml xml, Psp psp) {
         Optional<CdiMaster> optFlow = cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(xml.getIdentificativoFlusso(), psp.getIdPsp());
         return CheckItem.builder()
-                .title("Identificativo flusso")
+                .title("Flow identifier")
                 .value(xml.getIdentificativoFlusso())
                 .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
-                .action(optFlow.isPresent() ? "Flusso presente" : "")
+                .action(optFlow.isPresent() ? "Flow identifier already exists" : "")
                 .build();
     }
 

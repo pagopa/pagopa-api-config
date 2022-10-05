@@ -180,7 +180,7 @@ public class CommonUtil {
      * @throws IOException        if XSD schema not found
      * @throws XMLStreamException error during read XML
      */
-    public static void syntacticValidationXml(MultipartFile xml, String xsdUrl) throws SAXException, IOException, XMLStreamException {
+    public static void syntaxValidation(MultipartFile xml, String xsdUrl) throws SAXException, IOException, XMLStreamException {
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         // to be compliant, prohibit the use of all protocols by external entities:
         factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");

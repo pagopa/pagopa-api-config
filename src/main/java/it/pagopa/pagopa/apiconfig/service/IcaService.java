@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getAbiFromIban;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getCcFromIban;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntacticValidationXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
 
 @Service
@@ -100,7 +100,7 @@ public class IcaService {
         String detail;
 
         try {
-            syntacticValidationXml(xml, xsdIca);
+            syntaxValidation(xml, xsdIca);
             xsdEvaluated = true;
             detail = "XML is valid against the XSD schema.";
         } catch (SAXException | IOException | XMLStreamException e) {
@@ -353,7 +353,7 @@ public class IcaService {
      */
     private void checkSyntax(MultipartFile file) {
         try {
-            syntacticValidationXml(file, xsdIca);
+            syntaxValidation(file, xsdIca);
         } catch (SAXException | IOException | XMLStreamException e) {
             throw new AppException(AppError.ICA_BAD_REQUEST, e, e.getMessage());
         }
