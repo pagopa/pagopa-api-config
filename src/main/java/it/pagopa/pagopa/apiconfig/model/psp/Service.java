@@ -98,6 +98,7 @@ public class Service {
 
     @JsonProperty("logo_psp")
     @Schema(type = "string", format = "byte")
+    @ToString.Exclude
     private byte[] logoPsp;
 
     @JsonProperty("tags")
@@ -106,6 +107,7 @@ public class Service {
 
     @JsonProperty("logo_service")
     @Schema(type = "string", format = "byte")
+    @ToString.Exclude
     private byte[] logoService;
 
     @JsonProperty("channel_app")
