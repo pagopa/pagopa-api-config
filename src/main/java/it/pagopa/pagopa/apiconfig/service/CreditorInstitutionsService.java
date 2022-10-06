@@ -6,8 +6,15 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.PageInfo;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionList;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -21,20 +28,24 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Validated
 public class CreditorInstitutionsService {
 
+    public static final String BAD_RELATION_INFO = "Bad Relation info";
     @Autowired
     private PaRepository paRepository;
 
@@ -111,14 +122,14 @@ public class CreditorInstitutionsService {
             throw new AppException(AppError.RELATION_STATION_CONFLICT, creditorInstitutionCode, creditorInstitutionStationEdit.getStationCode());
         }
 
-        if (!paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
-            throw new AppException(HttpStatus.CONFLICT, "Bad Relation info", "SegregationCode already exists");
-        }
-        if (!paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
-            throw new AppException(HttpStatus.CONFLICT, "Bad Relation info", "ApplicationCode already exists");
-        }
+        // check uniqueness rules
+        checkSegregationPresent(creditorInstitutionStationEdit, pa);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa);
 
         // add info into object for model mapper
+        if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
+            creditorInstitutionStationEdit.setAuxDigit(null);
+        }
         creditorInstitutionStationEdit.setFkPa(pa);
         creditorInstitutionStationEdit.setFkStazioni(stazioni);
 
@@ -139,7 +150,14 @@ public class CreditorInstitutionsService {
         // check aux-digit, application and segregation codes are configured properly
         checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
 
+        // check uniqueness rules
+        checkSegregationPresent(creditorInstitutionStationEdit, pa);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa);
+
         // add info into object for model mapper
+        if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
+            creditorInstitutionStationEdit.setAuxDigit(null);
+        }
         creditorInstitutionStationEdit.setFkPa(pa);
         creditorInstitutionStationEdit.setFkStazioni(stazioni);
 
@@ -208,9 +226,6 @@ public class CreditorInstitutionsService {
             }
         } else if (creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
             checkAuxDigit3(creditorInstitutionCode, creditorInstitutionStationEdit);
-        }
-        if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
-            creditorInstitutionStationEdit.setAuxDigit(null);
         }
     }
 
@@ -309,6 +324,26 @@ public class CreditorInstitutionsService {
                 .filter(Objects::nonNull)
                 .map(elem -> modelMapper.map(elem, Iban.class))
                 .collect(Collectors.toList());
+    }
+
+    private void checkApplicationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
+        if (creditorInstitutionStationEdit.getAuxDigit() == 3L) {
+            if (creditorInstitutionStationEdit.getApplicationCode() != null && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
+                throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
+            }
+        } else if (!paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
+            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
+        }
+    }
+
+    private void checkSegregationPresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
+        if (creditorInstitutionStationEdit.getAuxDigit() == 0L) {
+            if (creditorInstitutionStationEdit.getSegregationCode() != null && !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
+                throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
+            }
+        } else if (!paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
+            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
+        }
     }
 
 
