@@ -47,6 +47,7 @@ public class CdiMaster {
     private Timestamp dataPubblicazione;
 
     @Column(name = "LOGO_PSP")
+    @ToString.Exclude
     private byte[] logoPsp;
 
     @Column(name = "URL_INFORMAZIONI_PSP")

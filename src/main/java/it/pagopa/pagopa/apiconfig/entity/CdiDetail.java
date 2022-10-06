@@ -62,6 +62,7 @@ public class CdiDetail {
     private String tags;
 
     @Column(name = "LOGO_SERVIZIO")
+    @ToString.Exclude
     private byte[] logoServizio;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkCdiDetail", cascade = CascadeType.REMOVE)
