@@ -132,7 +132,7 @@ public class CdiController {
     @PostMapping(
             value = "/check",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
-            produces = {MediaType.MULTIPART_FORM_DATA_VALUE}
+            produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<List<CheckItem>> verifyCdi(@NotNull @Parameter(description = "XML file regarding CDI to check", required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(cdiService.verifyCdi(file));
