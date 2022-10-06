@@ -111,6 +111,17 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
+    /**
+     * Set the aux-digit to null if it is equals to 0 or 3
+     *
+     * @param creditorInstitutionStationEdit request
+     */
+    private static void setAuxDigitNull(CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
+            creditorInstitutionStationEdit.setAuxDigit(null);
+        }
+    }
+
     @Transactional
     public CreditorInstitutionStationEdit createCreditorInstitutionStation(String creditorInstitutionCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
         // check aux-digit, application and segregation codes are configured properly
@@ -127,45 +138,12 @@ public class CreditorInstitutionsService {
         checkApplicationCodePresent(creditorInstitutionStationEdit, pa);
 
         // add info into object for model mapper
-        if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
-            creditorInstitutionStationEdit.setAuxDigit(null);
-        }
+        setAuxDigitNull(creditorInstitutionStationEdit);
         creditorInstitutionStationEdit.setFkPa(pa);
         creditorInstitutionStationEdit.setFkStazioni(stazioni);
 
         // convert and save
         PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class);
-        paStazionePaRepository.save(entity);
-        return creditorInstitutionStationEdit;
-    }
-
-    @Transactional
-    public CreditorInstitutionStationEdit updateCreditorInstitutionStation(String creditorInstitutionCode, String stationCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
-        // check if the relation exists
-        Pa pa = getPaIfExists(creditorInstitutionCode);
-        Stazioni stazioni = getStazioniIfExists(stationCode);
-        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
-                .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
-
-        // check aux-digit, application and segregation codes are configured properly
-        checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
-
-        // check uniqueness rules
-        checkSegregationPresent(creditorInstitutionStationEdit, pa);
-        checkApplicationCodePresent(creditorInstitutionStationEdit, pa);
-
-        // add info into object for model mapper
-        if (creditorInstitutionStationEdit.getAuxDigit().equals(0L) || creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
-            creditorInstitutionStationEdit.setAuxDigit(null);
-        }
-        creditorInstitutionStationEdit.setFkPa(pa);
-        creditorInstitutionStationEdit.setFkStazioni(stazioni);
-
-        // convert and save
-        PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class)
-                .toBuilder()
-                .objId(paStazionePa.getObjId())
-                .build();
         paStazionePaRepository.save(entity);
         return creditorInstitutionStationEdit;
     }
@@ -344,6 +322,35 @@ public class CreditorInstitutionsService {
         } else if (!paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
             throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
         }
+    }
+
+    @Transactional
+    public CreditorInstitutionStationEdit updateCreditorInstitutionStation(String creditorInstitutionCode, String stationCode, CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+        // check if the relation exists
+        Pa pa = getPaIfExists(creditorInstitutionCode);
+        Stazioni stazioni = getStazioniIfExists(stationCode);
+        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
+                .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
+
+        // check aux-digit, application and segregation codes are configured properly
+        checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
+
+        // check uniqueness rules
+        checkSegregationPresent(creditorInstitutionStationEdit, pa);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa);
+
+        // add info into object for model mapper
+        setAuxDigitNull(creditorInstitutionStationEdit);
+        creditorInstitutionStationEdit.setFkPa(pa);
+        creditorInstitutionStationEdit.setFkStazioni(stazioni);
+
+        // convert and save
+        PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class)
+                .toBuilder()
+                .objId(paStazionePa.getObjId())
+                .build();
+        paStazionePaRepository.save(entity);
+        return creditorInstitutionStationEdit;
     }
 
 
