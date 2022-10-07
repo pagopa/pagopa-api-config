@@ -134,8 +134,8 @@ public class CreditorInstitutionsService {
         }
 
         // check uniqueness rules
-        checkSegregationPresent(creditorInstitutionStationEdit, pa);
-        checkApplicationCodePresent(creditorInstitutionStationEdit, pa);
+        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, false);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, false);
 
         // add info into object for model mapper
         setAuxDigitNull(creditorInstitutionStationEdit);
@@ -304,22 +304,28 @@ public class CreditorInstitutionsService {
                 .collect(Collectors.toList());
     }
 
-    private void checkApplicationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
+    private void checkApplicationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, boolean edit) {
         if (creditorInstitutionStationEdit.getAuxDigit() == 3L) {
             if (creditorInstitutionStationEdit.getApplicationCode() != null && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
                 throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
             }
-        } else if (!paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
+        } else if (edit && !paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode(), creditorInstitutionStationEdit.getStationCode()).isEmpty()) {
+            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
+        } else if (!edit && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
             throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
         }
+
     }
 
-    private void checkSegregationPresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
+    private void checkSegregationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, boolean edit) {
         if (creditorInstitutionStationEdit.getAuxDigit() == 0L) {
-            if (creditorInstitutionStationEdit.getSegregationCode() != null && !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
+            if (creditorInstitutionStationEdit.getSegregationCode() != null &&
+                    !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
                 throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
             }
-        } else if (!paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
+        } else if (edit && !paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode(), creditorInstitutionStationEdit.getStationCode()).isEmpty()) {
+            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
+        } else if (!edit && !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
             throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
         }
     }
@@ -336,7 +342,7 @@ public class CreditorInstitutionsService {
         checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
 
         // check uniqueness rules
-        checkSegregationPresent(creditorInstitutionStationEdit, pa);
+        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, true);
         checkApplicationCodePresent(creditorInstitutionStationEdit, pa);
 
         // add info into object for model mapper

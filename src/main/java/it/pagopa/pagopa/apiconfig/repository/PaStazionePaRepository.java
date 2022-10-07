@@ -18,6 +18,7 @@ public interface PaStazionePaRepository extends PagingAndSortingRepository<PaSta
     List<PaStazionePa> findAllByFkPa(Long creditorInstitutionCode);
 
     List<PaStazionePa> findAllByFkPaAndSegregazione(Long creditorInstitutionCode, Long segregazione);
+    List<PaStazionePa> findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(Long creditorInstitutionCode, Long segregazione, String stationCode);
 
     List<PaStazionePa> findAllByFkPaAndProgressivo(Long creditorInstitutionCode, Long progressivo);
 
