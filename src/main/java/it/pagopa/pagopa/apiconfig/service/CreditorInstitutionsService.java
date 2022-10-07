@@ -305,28 +305,29 @@ public class CreditorInstitutionsService {
     }
 
     private void checkApplicationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, boolean edit) {
+        String msg = "ApplicationCode already exists";
         if (creditorInstitutionStationEdit.getAuxDigit() == 3L) {
             if (creditorInstitutionStationEdit.getApplicationCode() != null && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
-                throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
+                throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
             }
         } else if (edit && !paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode(), creditorInstitutionStationEdit.getStationCode()).isEmpty()) {
-            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
+            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
         } else if (!edit && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
-            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
+            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
         }
-
     }
 
     private void checkSegregationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, boolean edit) {
+        String msg = "SegregationCode already exists";
         if (creditorInstitutionStationEdit.getAuxDigit() == 0L) {
             if (creditorInstitutionStationEdit.getSegregationCode() != null &&
                     !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
-                throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
+                throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
             }
         } else if (edit && !paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode(), creditorInstitutionStationEdit.getStationCode()).isEmpty()) {
-            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
+            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
         } else if (!edit && !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
-            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
+            throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
         }
     }
 
