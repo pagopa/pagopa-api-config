@@ -343,7 +343,7 @@ public class CreditorInstitutionsService {
 
         // check uniqueness rules
         checkSegregationCodePresent(creditorInstitutionStationEdit, pa, true);
-        checkApplicationCodePresent(creditorInstitutionStationEdit, pa);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, true);
 
         // add info into object for model mapper
         setAuxDigitNull(creditorInstitutionStationEdit);
