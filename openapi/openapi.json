@@ -4,7 +4,7 @@
         "title": "PagoPA API configuration",
         "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
         "termsOfService": "https://www.pagopa.gov.it/",
-        "version": "0.20.4"
+        "version": "0.21.2"
     },
     "servers": [
         {
@@ -38,7 +38,8 @@
         "/batchoperation/creditorinstitution-station/loading": {
             "post": {
                 "tags": [
-                    "Batch Operation"
+                    "Batch Operation",
+                    "Massive Loading"
                 ],
                 "summary": "Update a CSV file containing the relationship between Creditor Institution and Station",
                 "operationId": "manageCIStationRelationship",
@@ -188,7 +189,8 @@
         "/batchoperation/creditorinstitution-station/migration": {
             "post": {
                 "tags": [
-                    "Batch Operation"
+                    "Batch Operation",
+                    "Creditor Institutions"
                 ],
                 "summary": "Massive migration of the Station-CI relations",
                 "operationId": "massiveMigration",
@@ -389,11 +391,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -403,11 +405,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -1127,11 +1129,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -1141,11 +1143,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -2628,11 +2630,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -8115,11 +8117,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -8129,11 +8131,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -11031,11 +11033,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -11045,11 +11047,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -12486,14 +12488,14 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "IT",
                             "enum": [
                                 "IT",
                                 "EN",
                                 "FR",
                                 "DE",
                                 "SL"
-                            ],
-                            "default": "IT"
+                            ]
                         }
                     },
                     {
@@ -12677,11 +12679,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
