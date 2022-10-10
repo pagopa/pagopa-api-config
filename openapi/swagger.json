@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.20.0-2"
+    "version": "0.20.4"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -1661,6 +1661,127 @@
         ],
         "operationId": "createCdi",
         "summary": "Update a XML file containing the details of an CDI"
+      }
+    },
+    "/cdis/check": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "XML file regarding CDI to check",
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/CheckItem"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "verifyCdi",
+        "summary": "Verify a XML file containing the details of an CDI"
       }
     },
     "/cdis/{idcdi}": {
@@ -4641,6 +4762,7 @@
             "description": "Payment type code",
             "in": "path",
             "name": "paymentTypeCode",
+            "pattern": "[A-Z]*",
             "required": true,
             "type": "string"
           },
@@ -11159,6 +11281,8 @@
         },
         "port": {
           "format": "int64",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         },
         "protocol": {
@@ -11179,6 +11303,8 @@
         },
         "proxy_port": {
           "format": "int64",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         },
         "proxy_username": {
@@ -11195,6 +11321,8 @@
         },
         "redirect_port": {
           "format": "int64",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         },
         "redirect_protocol": {
@@ -11218,18 +11346,22 @@
         },
         "thread_number": {
           "format": "int64",
+          "minimum": 1,
           "type": "integer"
         },
         "timeout_a": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "timeout_b": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "timeout_c": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         }
       },
@@ -11309,6 +11441,30 @@
         "channels",
         "page_info"
       ],
+      "type": "object"
+    },
+    "CheckItem": {
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "valid": {
+          "enum": [
+            "VALID",
+            "NOT_VALID"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
       "type": "object"
     },
     "ConfigurationKey": {
@@ -11548,6 +11704,7 @@
       "properties": {
         "application_code": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "aux_digit": {
@@ -11572,6 +11729,7 @@
         },
         "segregation_code": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "station_code": {
@@ -11583,6 +11741,8 @@
         "version": {
           "description": "number version",
           "format": "int64",
+          "maximum": 2,
+          "minimum": 1,
           "type": "integer"
         }
       },
@@ -11597,6 +11757,7 @@
       "properties": {
         "application_code": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "aux_digit": {
@@ -11611,6 +11772,7 @@
         },
         "segregation_code": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "station_code": {
@@ -11966,6 +12128,7 @@
           "example": "AD",
           "maxLength": 15,
           "minLength": 0,
+          "pattern": "[A-Z]*",
           "type": "string"
         }
       },
@@ -12020,6 +12183,8 @@
         "port": {
           "example": 1234,
           "format": "int32",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         }
       },
@@ -12048,6 +12213,8 @@
         "port": {
           "example": 1234,
           "format": "int32",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         }
       },
@@ -12327,6 +12494,8 @@
         "version": {
           "description": "number version",
           "format": "int64",
+          "maximum": 2,
+          "minimum": 1,
           "type": "integer"
         }
       },
@@ -12438,10 +12607,14 @@
         },
         "port": {
           "format": "int64",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         },
         "port_4mod": {
           "format": "int64",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         },
         "protocol": {
@@ -12469,6 +12642,8 @@
         },
         "proxy_port": {
           "format": "int64",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         },
         "proxy_username": {
@@ -12482,6 +12657,8 @@
         },
         "redirect_port": {
           "format": "int64",
+          "maximum": 65535,
+          "minimum": 1,
           "type": "integer"
         },
         "redirect_protocol": {
@@ -12508,23 +12685,29 @@
         },
         "thread_number": {
           "format": "int64",
+          "minimum": 1,
           "type": "integer"
         },
         "timeout_a": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "timeout_b": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "timeout_c": {
           "format": "int64",
+          "minimum": 0,
           "type": "integer"
         },
         "version": {
           "description": "number version",
           "format": "int64",
+          "maximum": 2,
+          "minimum": 1,
           "type": "integer"
         }
       },

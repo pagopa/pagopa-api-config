@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<informativaContoAccredito>
+    <identificativoFlusso>02391510266_prova_prod_3</identificativoFlusso>
+    <identificativoDominio>00168480242</identificativoDominio>
+    <ragioneSociale>Comune di Bassano del Grappa</ragioneSociale>
+    <dataPubblicazione>2021-02-01T00:00:00</dataPubblicazione>
+    <dataInizioValidita>20122-02-03T00:00:00</dataInizioValidita>
+    <contiDiAccredito>
+        <infoContoDiAccreditoPair>
+            <ibanAccredito>IT59A0760212000000080969991</ibanAccredito>
+            <idBancaSeller>CT000159</idBancaSeller>
+        </infoContoDiAccreditoPair>
+        <infoContoDiAccreditoPair>
+            <ibanAccredito>IT75X0760212100001025050772</ibanAccredito>
+            <idBancaSeller>CT000159</idBancaSeller>
+        </infoContoDiAccreditoPair>
+        <infoContoDiAccreditoPair>
+            <ibanAccredito>IT47J0760212100001025051820</ibanAccredito>
+            <idBancaSeller>CT000159</idBancaSeller>
+        </infoContoDiAccreditoPair>
+        <infoContoDiAccreditoPair>
+            <ibanAccredito>IT31Q0760212000000001153548</ibanAccredito>
+            <idBancaSeller>CT000159</idBancaSeller>
+        </infoContoDiAccreditoPair>
+        <infoContoDiAccreditoPair>
+            <ibanAccredito>IT98B0760212100001018881902</ibanAccredito>
+            <idBancaSeller>CT000159</idBancaSeller>
+        </infoContoDiAccreditoPair>
+        <infoContoDiAccreditoPair>
+            <ibanAccredito>IT71P0760212100001032189274</ibanAccredito>
+            <idBancaSeller>CT000159</idBancaSeller>
+        </infoContoDiAccreditoPair>
+        <ibanAccredito>IT04I0103061821000000248378</ibanAccredito>
+        <infoContoDiAccreditoPair>
+            <ibanAccredito>IT54G0760210900000010270221</ibanAccredito>
+            <idBancaSeller>CT000159</idBancaSeller>
+        </infoContoDiAccreditoPair>
+        <ibanAccredito>IT89X0760212100000017452350</ibanAccredito>
+        <ibanAccredito>IT62P0891059570006000910367</ibanAccredito>
+    </contiDiAccredito>
+</informativaContoAccredito>

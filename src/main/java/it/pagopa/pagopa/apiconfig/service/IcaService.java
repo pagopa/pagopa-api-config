@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -44,7 +45,7 @@ import java.util.stream.Collectors;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getAbiFromIban;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getCcFromIban;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntacticValidationXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
 
 @Service
@@ -100,7 +101,7 @@ public class IcaService {
         String detail;
 
         try {
-            syntacticValidationXml(xml, xsdIca);
+            syntaxValidation(xml, xsdIca);
             xsdEvaluated = true;
             detail = "XML is valid against the XSD schema.";
         } catch (SAXException | IOException | XMLStreamException e) {
@@ -233,6 +234,10 @@ public class IcaService {
     private void checkValidityDate(IcaXml icaXml) {
         var now = LocalDate.now();
         Timestamp tomorrow = Timestamp.valueOf(LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 23, 59, 59));
+        XMLGregorianCalendar validityDate = icaXml.getDataInizioValidita();
+        if (!validityDate.toString().matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")) {
+            throw new AppException(AppError.ICA_BAD_REQUEST, "Validity start date must be formatted as yyyy-MM-ddTHH:mm:ss");
+        }
         if (toTimestamp(icaXml.getDataInizioValidita()).before(tomorrow)) {
             throw new AppException(AppError.ICA_BAD_REQUEST, "Validity start date must be greater than the today's date");
         }
@@ -353,7 +358,7 @@ public class IcaService {
      */
     private void checkSyntax(MultipartFile file) {
         try {
-            syntacticValidationXml(file, xsdIca);
+            syntaxValidation(file, xsdIca);
         } catch (SAXException | IOException | XMLStreamException e) {
             throw new AppException(AppError.ICA_BAD_REQUEST, e, e.getMessage());
         }

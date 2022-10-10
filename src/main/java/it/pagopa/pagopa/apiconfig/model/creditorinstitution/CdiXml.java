@@ -1,9 +1,6 @@
 package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,11 +23,12 @@ public class CdiXml {
     private String identificativoFlusso;
     private String identificativoPSP;
     private String ragioneSociale;
+    private String codiceABI;
+    private String codiceBIC;
     private InformativaMaster informativaMaster;
     private ListaInformativaDetail listaInformativaDetail;
 
     private String mybankIDVS;
-
 
     @XmlRootElement(name = "informativaMaster")
     @XmlAccessorType(XmlAccessType.FIELD)

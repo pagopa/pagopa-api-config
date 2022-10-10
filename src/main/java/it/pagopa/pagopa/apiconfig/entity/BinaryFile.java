@@ -31,9 +31,11 @@ public class BinaryFile {
     private Long id;
 
     @Column(name = "FILE_CONTENT", nullable = false)
+    @ToString.Exclude
     private byte[] fileContent;
 
     @Column(name = "FILE_HASH", nullable = false)
+    @ToString.Exclude
     private byte[] fileHash;
 
     @Column(name = "FILE_SIZE", nullable = false)
