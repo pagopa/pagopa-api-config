@@ -104,7 +104,7 @@ public class CdiService {
     private String xsdCdi;
 
     public Cdis getCdis(@NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by("dataPubblicazione"));
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataPubblicazione"));
         var filters = CommonUtil.getFilters(CdiMaster.builder()
                 .idInformativaPsp(idCdi)
                 .fkPsp(Psp.builder()
@@ -170,7 +170,7 @@ public class CdiService {
 
         List<CheckItem> checkItemList = new ArrayList<>();
         // syntax checks
-        String detail = "";
+        String detail;
         try {
             syntaxValidation(file, xsdCdi);
             detail = "XML is valid against the XSD schema.";
@@ -234,8 +234,7 @@ public class CdiService {
                         .valid(CheckItem.Validity.NOT_VALID)
                         .action("Channel not consistent")
                         .build());
-            }
-            else if (psp != null) {
+            } else if (psp != null) {
                 // check payment methods
                 checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
 
@@ -285,7 +284,7 @@ public class CdiService {
         List<CheckItem> checkItemList = new ArrayList<>();
         String title = "Language code";
 
-        for(CdiXml.InformazioniServizio informazioniServizio: informativaDetail.getListaInformazioniServizio().getInformazioniServizio()) {
+        for (CdiXml.InformazioniServizio informazioniServizio : informativaDetail.getListaInformazioniServizio().getInformazioniServizio()) {
             languages.add(informazioniServizio.getCodiceLingua());
         }
 
@@ -298,14 +297,14 @@ public class CdiService {
         frequencyMap.entrySet().stream()
                 .filter(item -> item.getValue() > 1)
                 .forEach(item -> {
-                    checkItemList.add(CheckItem.builder()
+                            checkItemList.add(CheckItem.builder()
                                     .title(title)
                                     .value(item.getKey())
                                     .valid(CheckItem.Validity.NOT_VALID)
                                     .action(String.format("%s occurrences", item.getValue()))
                                     .build());
-                    duplicate[0] = true;
-                }
+                            duplicate[0] = true;
+                        }
                 );
 
         if (languagesTarget.isEmpty() && !duplicate[0]) {
@@ -330,7 +329,7 @@ public class CdiService {
         List<Double> maxServiceAmountList = new ArrayList<>();
         List<CheckItem> checkItemList = new ArrayList<>();
         boolean valid = true;
-        for(CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
+        for (CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
             if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
                 checkItemList.add(CheckItem.builder()
                         .title("Maximum amount range")
@@ -339,8 +338,7 @@ public class CdiService {
                         .action("Duplicate amount")
                         .build());
                 valid = false;
-            }
-            else {
+            } else {
                 maxServiceAmountList.add(maxServiceAmount.getImportoMassimoFascia());
             }
         }
