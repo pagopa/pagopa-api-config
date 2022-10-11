@@ -77,7 +77,7 @@ public class IcaService {
     private String xsdIca;
 
     public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber, String idIca, String creditorInstitutionCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by("dataPubblicazione"));
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataPubblicazione"));
         var filters = CommonUtil.getFilters(InformativeContoAccreditoMaster.builder()
                 .idInformativaContoAccreditoPa(idIca)
                 .fkPa(Pa.builder()
@@ -107,7 +107,7 @@ public class IcaService {
             detail = "XML is valid against the XSD schema.";
         } catch (SAXException | IOException | XMLStreamException e) {
             String stringException = e.getMessage();
-            Matcher matcher = Pattern.compile("lineNumber: [0-9]*").matcher(stringException);
+            Matcher matcher = Pattern.compile("lineNumber: \\d*").matcher(stringException);
             if (matcher.find()) {
                 lineNumber = matcher.group(0);
             }

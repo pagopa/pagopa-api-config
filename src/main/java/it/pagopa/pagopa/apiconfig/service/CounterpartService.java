@@ -71,7 +71,7 @@ public class CounterpartService {
     private String xsdCounterpart;
 
     public CounterpartTables getCounterpartTables(@NotNull Integer limit, @NotNull Integer pageNumber, String idCounterpartTable, String creditorInstitutionCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by("dataPubblicazione"));
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataPubblicazione"));
         var filters = CommonUtil.getFilters(InformativePaMaster.builder()
                 .idInformativaPa(idCounterpartTable)
                 .fkPa(Pa.builder()
@@ -191,8 +191,7 @@ public class CounterpartService {
                             .oraA(oraA)
                             .oraDa(oraDa)
                             .build());
-                }
-                else if (Boolean.TRUE.equals(infoMaster.getPagamentiPressoPsp())){
+                } else if (Boolean.TRUE.equals(infoMaster.getPagamentiPressoPsp())) {
                     throw new AppException(HttpStatus.BAD_REQUEST, "Counterpart bad request", "One of from and to time slots should be specified.");
                 }
             }
