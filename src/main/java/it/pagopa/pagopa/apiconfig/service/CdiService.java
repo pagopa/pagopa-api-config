@@ -1,13 +1,30 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.*;
+import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
+import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
+import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
+import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
+import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
+import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.*;
+import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
+import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +49,19 @@ import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
 
 @Service
 @Validated
@@ -79,7 +104,7 @@ public class CdiService {
     private String xsdCdi;
 
     public Cdis getCdis(@NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by("dataPubblicazione"));
         var filters = CommonUtil.getFilters(CdiMaster.builder()
                 .idInformativaPsp(idCdi)
                 .fkPsp(Psp.builder()
@@ -283,19 +308,18 @@ public class CdiService {
                 }
                 );
 
-        if (languagesTarget.size() == 0 && !duplicate[0]) {
+        if (languagesTarget.isEmpty() && !duplicate[0]) {
             checkItemList.add(CheckItem.builder()
                     .title(title)
                     .value("")
                     .valid(CheckItem.Validity.VALID)
                     .build());
-        }
-        else if (languagesTarget.size() > 0) {
+        } else if (!languagesTarget.isEmpty()) {
             checkItemList.add(CheckItem.builder()
                     .title(title)
                     .value("")
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action(String.format("Missing languages: %s", languagesTarget.toString()))
+                    .action(String.format("Missing languages: %s", languagesTarget))
                     .build());
         }
 

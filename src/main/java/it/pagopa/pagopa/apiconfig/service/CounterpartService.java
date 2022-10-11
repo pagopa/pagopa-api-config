@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +71,7 @@ public class CounterpartService {
     private String xsdCounterpart;
 
     public CounterpartTables getCounterpartTables(@NotNull Integer limit, @NotNull Integer pageNumber, String idCounterpartTable, String creditorInstitutionCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by("dataPubblicazione"));
         var filters = CommonUtil.getFilters(InformativePaMaster.builder()
                 .idInformativaPa(idCounterpartTable)
                 .fkPa(Pa.builder()
