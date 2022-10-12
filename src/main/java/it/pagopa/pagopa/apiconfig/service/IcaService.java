@@ -77,7 +77,7 @@ public class IcaService {
     private String xsdIca;
 
     public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber, String idIca, String creditorInstitutionCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataPubblicazione"));
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
         var filters = CommonUtil.getFilters(InformativeContoAccreditoMaster.builder()
                 .idInformativaContoAccreditoPa(idIca)
                 .fkPa(Pa.builder()

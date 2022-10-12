@@ -71,7 +71,7 @@ public class CounterpartService {
     private String xsdCounterpart;
 
     public CounterpartTables getCounterpartTables(@NotNull Integer limit, @NotNull Integer pageNumber, String idCounterpartTable, String creditorInstitutionCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataPubblicazione"));
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
         var filters = CommonUtil.getFilters(InformativePaMaster.builder()
                 .idInformativaPa(idCounterpartTable)
                 .fkPa(Pa.builder()

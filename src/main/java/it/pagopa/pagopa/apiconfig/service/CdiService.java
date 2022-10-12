@@ -104,7 +104,7 @@ public class CdiService {
     private String xsdCdi;
 
     public Cdis getCdis(@NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataPubblicazione"));
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
         var filters = CommonUtil.getFilters(CdiMaster.builder()
                 .idInformativaPsp(idCdi)
                 .fkPsp(Psp.builder()
