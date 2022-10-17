@@ -150,12 +150,11 @@ class MassiveLoadingServiceEserTest {
         }
     }
 
-
     @Test
     void massiveMigration() throws IOException {
         when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
-        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(Optional.of(getMockPaStazionePa()), Optional.empty());
         when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
 
         File csv = TestUtil.readFile("file/massive_migration.csv");
@@ -167,11 +166,15 @@ class MassiveLoadingServiceEserTest {
 
     }
 
+    // broadcast enum valid
     @Test
-    void massiveMigrationBadRequest() throws IOException {
+    void massiveMigrationBadRequest_1() throws IOException {
         when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
-        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(
+                Optional.of(getMockPaStazionePa()),
+                Optional.empty()
+        );
         when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
 
         File csv = TestUtil.readFile("file/massive_migration_bad.csv");
@@ -184,14 +187,17 @@ class MassiveLoadingServiceEserTest {
 
         verify(paStazionePaRepository, times(0))
                 .save(any(PaStazionePa.class));
-
     }
 
+    // broadcast consistent with station version
     @Test
-    void massiveMigrationBadRequest2() throws IOException {
+    void massiveMigrationBadRequest_2() throws IOException {
         when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
-        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(Optional.of(getMockPaStazionePa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(
+                Optional.of(getMockPaStazionePa()),
+                Optional.empty()
+        );
         when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
 
         File csv = TestUtil.readFile("file/massive_migration_2.csv");
@@ -201,6 +207,52 @@ class MassiveLoadingServiceEserTest {
                     massiveLoadingService.massiveMigration(multipartFile);
                 });
         assertEquals(HttpStatus.BAD_REQUEST, thrown.getHttpStatus());
+
+        verify(paStazionePaRepository, times(0))
+                .save(any(PaStazionePa.class));
+    }
+
+    // start station not found
+    @Test
+    void massiveMigrationBadRequest_3() throws IOException {
+        when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(
+                Optional.empty(),
+                Optional.of(getMockPaStazionePa())
+        );
+        when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
+
+        File csv = TestUtil.readFile("file/massive_migration_2.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
+        AppException thrown = assertThrows(AppException.class,
+                () -> {
+                    massiveLoadingService.massiveMigration(multipartFile);
+                });
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getHttpStatus());
+
+        verify(paStazionePaRepository, times(0))
+                .save(any(PaStazionePa.class));
+    }
+
+    @Test
+    void massiveMigrationConflict_1() throws IOException {
+        when(stazioniRepository.findByIdStazione(anyString())).thenReturn(Optional.of(getMockStazioni()));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        PaStazionePa mockPaStazione = getMockPaStazionePa();
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), any())).thenReturn(
+                Optional.of(mockPaStazione),
+                Optional.of(mockPaStazione)
+        );
+        when(paStazionePaRepository.save(any(PaStazionePa.class))).thenReturn(getMockPaStazionePa());
+
+        File csv = TestUtil.readFile("file/massive_migration_conflict.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", csv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(csv));
+        AppException thrown = assertThrows(AppException.class,
+                () -> {
+                    massiveLoadingService.massiveMigration(multipartFile);
+                });
+        assertEquals(HttpStatus.CONFLICT, thrown.getHttpStatus());
 
         verify(paStazionePaRepository, times(0))
                 .save(any(PaStazionePa.class));

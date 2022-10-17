@@ -96,11 +96,15 @@ public class MassiveLoadingService {
             Stazioni newStation = getStationIfExists(item.getNewStation());
             Pa pa = getPaIfExists(item.getCreditorInstitution());
 
-            var relation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), oldStation.getObjId())
+            var relationWithOldStation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), oldStation.getObjId())
                     .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, item.getCreditorInstitution(), item.getOldStation()));
 
-            var builder = relation.toBuilder()
-                    .fkStazione(newStation);
+            var relationWithNewStation = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), newStation.getObjId());
+            if (relationWithNewStation.isPresent()) {
+                throw new AppException(AppError.RELATION_STATION_CONFLICT, item.getCreditorInstitution(), item.getNewStation());
+            }
+
+            var builder = relationWithOldStation.toBuilder().fkStazione(newStation);
             if (item.getBroadcast() != null) {
                 builder.broadcast(item.getBroadcast().isValue());
             }
