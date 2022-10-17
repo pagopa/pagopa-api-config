@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.util;
 
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Filter;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
@@ -213,6 +214,16 @@ public class CommonUtil {
             stringBuilder.append(" Error at ").append(lineNumber);
         }
         return stringBuilder.toString();
+    }
+
+    public static CheckItem checkData(String title, Object data, Object target, String action) {
+        CheckItem.Validity validity = target.equals(data) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+        return CheckItem.builder()
+                .title(title)
+                .value(data.toString())
+                .valid(validity)
+                .action(validity.equals(CheckItem.Validity.VALID) ? "" : action)
+                .build();
     }
 
     /**

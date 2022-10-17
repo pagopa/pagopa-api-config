@@ -204,7 +204,7 @@ public class CdiService {
             checkItemList.addAll(checkPsp(psp, pspId, xml));
 
             // check marca da bollo (stamp)
-            CheckItem checkItem = checkData("Stamp", xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Stamp not consistent");
+            CheckItem checkItem = CommonUtil.checkData("Stamp", xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Stamp not consistent");
             checkItemList.add(checkItem);
         } catch (AppException e) {
             checkItemList.add(CheckItem.builder()
@@ -259,10 +259,10 @@ public class CdiService {
 
     private List<CheckItem> checkPsp(Psp psp, String pspId, CdiXml xml) {
         List<CheckItem> checkItemList = new ArrayList<>();
-        checkItemList.add(checkData("PSP", psp.getIdPsp(), pspId, "PSP identifier not consistent"));
-        checkItemList.add(checkData("Business Name", psp.getRagioneSociale(), xml.getRagioneSociale(), "Business name not consistent"));
-        checkItemList.add(checkData("ABI Code", psp.getAbi(), xml.getCodiceABI(), "ABI code not consistent"));
-        checkItemList.add(checkData("BIC Code", psp.getBic(), xml.getCodiceBIC(), "BIC code not consistent"));
+        checkItemList.add(CommonUtil.checkData("PSP", psp.getIdPsp(), pspId, "PSP identifier not consistent"));
+        checkItemList.add(CommonUtil.checkData("Business Name", psp.getRagioneSociale(), xml.getRagioneSociale(), "Business name not consistent"));
+        checkItemList.add(CommonUtil.checkData("ABI Code", psp.getAbi(), xml.getCodiceABI(), "ABI code not consistent"));
+        checkItemList.add(CommonUtil.checkData("BIC Code", psp.getBic(), xml.getCodiceBIC(), "BIC code not consistent"));
         return checkItemList;
     }
 
@@ -380,16 +380,6 @@ public class CdiService {
                 .value(xml.getIdentificativoFlusso())
                 .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
                 .action(optFlow.isPresent() ? "Flow identifier already exists" : "")
-                .build();
-    }
-
-    private CheckItem checkData(String title, Object data, Object target, String action) {
-        CheckItem.Validity validity = target.equals(data) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
-        return CheckItem.builder()
-                .title(title)
-                .value(data.toString())
-                .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : action)
                 .build();
     }
 
@@ -573,7 +563,7 @@ public class CdiService {
         LocalDate tomorrow = now.plusDays(1);
         CheckItem.Validity validity = toTimestamp(startValidityDate).before(Timestamp.valueOf(tomorrow.atStartOfDay())) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
         return CheckItem.builder()
-                .title("Data validità")
+                .title("Validity date")
                 .value(startValidityDate.toString())
                 .valid(validity)
                 .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")

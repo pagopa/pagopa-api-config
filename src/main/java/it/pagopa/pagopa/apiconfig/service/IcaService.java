@@ -1,15 +1,10 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
-import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoDetail;
-import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.IcaXml;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
 import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoDetailRepository;
@@ -38,16 +33,14 @@ import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getAbiFromIban;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getCcFromIban;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
 
 @Service
 @Validated
@@ -130,26 +123,27 @@ public class IcaService {
 
     @Transactional
     public void createIca(@NotNull MultipartFile file) {
-        // syntactic checks
-        checkSyntax(file);
-
-        // map file into model class
-        IcaXml icaXml = mapXml(file, IcaXml.class);
-
-        // semantics checks
-        var pa = getPaIfExists(icaXml.getIdentificativoDominio());
-        checkFlusso(icaXml, pa);
-        checkRagioneSociale(icaXml, pa);
-        checkQrCode(pa);
-        checkValidityDate(icaXml);
-        checkPostalIban(icaXml, pa);
-
-        // save
-        var binaryFile = saveBinaryFile(file);
-        var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
-        for (Object elem : icaXml.getContiDiAccredito()) {
-            saveIcaDetail(elem, icaMaster);
-        }
+        // TODO
+//        // syntactic checks
+//        checkSyntax(file);
+//
+//        // map file into model class
+//        IcaXml icaXml = mapXml(file, IcaXml.class);
+//
+//        // semantics checks
+//        var pa = getPaIfExists(icaXml.getIdentificativoDominio());
+//        checkFlusso(icaXml, pa);
+//        checkRagioneSociale(icaXml, pa);
+//        checkQrCode(pa);
+//        checkValidityDate(icaXml);
+//        checkPostalIban(icaXml, pa);
+//
+//        // save
+//        var binaryFile = saveBinaryFile(file);
+//        var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
+//        for (Object elem : icaXml.getContiDiAccredito()) {
+//            saveIcaDetail(elem, icaMaster);
+//        }
     }
 
     public void deleteIca(String idIca, String creditorInstitutionCode) {
@@ -159,6 +153,77 @@ public class IcaService {
             throw new AppException(HttpStatus.CONFLICT, "ICA conflict", "This ICA is used.");
         }
         informativeContoAccreditoMasterRepository.delete(icaMaster);
+    }
+
+    public List<CheckItem> verifyIca(MultipartFile file) {
+        // checks are described here https://pagopa.atlassian.net/wiki/spaces/ACN/pages/441517396/Verifica+ICA
+        List<CheckItem> checkItemList = new ArrayList<>();
+
+        // syntax checks
+        String detail;
+        try {
+            syntaxValidation(file, xsdIca);
+            detail = "XML is valid against the XSD schema.";
+            checkItemList.add(CheckItem.builder()
+                    .title("XSD Schema")
+                    .value(xsdIca)
+                    .valid(CheckItem.Validity.VALID)
+                    .action(detail)
+                    .build()
+            );
+
+        } catch (SAXException | IOException | XMLStreamException e) {
+            detail = getExceptionErrors(e.getMessage());
+            checkItemList.add(CheckItem.builder()
+                    .title("XSD Schema")
+                    .value(xsdIca)
+                    .valid(CheckItem.Validity.NOT_VALID)
+                    .action(detail)
+                    .build()
+            );
+            return checkItemList;
+        }
+
+        // map file into model class
+        IcaXml xml = mapXml(file, IcaXml.class);
+
+        // check PA
+        String paFiscalCode = xml.getIdentificativoDominio();
+        Pa pa = null;
+        try {
+            pa = getPaIfExists(paFiscalCode);
+            checkItemList.addAll(checkPa(pa, xml));
+
+            // check qr-code
+            checkItemList.add(checkQrCode(pa));
+
+        } catch (AppException e) {
+            checkItemList.add(CheckItem.builder()
+                    .title("PA Fiscal Code")
+                    .value(paFiscalCode)
+                    .valid(CheckItem.Validity.NOT_VALID)
+                    .action("PA fiscal code not consistent")
+                    .build());
+        }
+
+        // check flow
+        if (pa != null) {
+            checkItemList.add(checkFlow(xml, pa));
+        }
+
+        // check date
+        checkItemList.add(checkValidityDate(xml.getDataInizioValidita()));
+
+        // TODO check Iban
+
+        return checkItemList;
+    }
+
+    private List<CheckItem> checkPa(Pa pa, IcaXml xml) {
+        List<CheckItem> checkItemList = new ArrayList<>();
+        checkItemList.add(CommonUtil.checkData("PA", pa.getIdDominio(), xml.getIdentificativoDominio(), "PA fiscal code not consistent"));
+        checkItemList.add(CommonUtil.checkData("Business Name", pa.getRagioneSociale(), xml.getRagioneSociale(), "Business name not consistent"));
+        return checkItemList;
     }
 
     /**
@@ -174,13 +239,17 @@ public class IcaService {
     /**
      * check if flusso in the xml already exists
      *
-     * @param icaXml XML file
+     * @param xml XML file
      * @param pa     the PA from DB
      */
-    private void checkFlusso(IcaXml icaXml, Pa pa) {
-        if (informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(icaXml.getIdentificativoFlusso(), pa.getIdDominio()).isPresent()) {
-            throw new AppException(AppError.ICA_CONFLICT, icaXml.getIdentificativoFlusso());
-        }
+    private CheckItem checkFlow(IcaXml xml, Pa pa) {
+        Optional<InformativeContoAccreditoMaster> optFlow = informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(xml.getIdentificativoFlusso(), pa.getIdDominio());
+        return CheckItem.builder()
+                .title("Flow identifier")
+                .value(xml.getIdentificativoFlusso())
+                .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
+                .action(optFlow.isPresent() ? "Flow identifier already exists" : "")
+                .build();
     }
 
     /**
@@ -230,30 +299,47 @@ public class IcaService {
     }
 
     /**
-     * @param icaXml check if the validity is after today
+     * @param validityDate check if the validity is after today
+     * @return item with validity info
      */
-    private void checkValidityDate(IcaXml icaXml) {
+    private CheckItem checkValidityDate(XMLGregorianCalendar validityDate) {
         var now = LocalDate.now();
         Timestamp tomorrow = Timestamp.valueOf(LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 23, 59, 59));
-        XMLGregorianCalendar validityDate = icaXml.getDataInizioValidita();
+        boolean valid = true;
+        String details = "";
         if (!validityDate.toString().matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, "Validity start date must be formatted as yyyy-MM-ddTHH:mm:ss");
+            details += "Validity start date must be formatted as yyyy-MM-ddTHH:mm:ss. ";
+            valid = false;
         }
-        if (toTimestamp(icaXml.getDataInizioValidita()).before(tomorrow)) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, "Validity start date must be greater than the today's date");
+
+        if (toTimestamp(validityDate).before(tomorrow)) {
+            details += "Validity start date must be greater than the today's date";
+            valid = false;
         }
+
+        return CheckItem.builder()
+                .title("Validity date")
+                .value(validityDate.toString())
+                .valid(valid ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID)
+                .action(valid ? "" : details)
+                .build();
     }
 
     /**
      * @param pa check if PA has QR-CODE encodings
      */
-    private void checkQrCode(Pa pa) {
+    private CheckItem checkQrCode(Pa pa) {
         boolean hasQrcodeEncoding = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())
                 .stream()
-                .noneMatch(elem -> elem.getFkCodifica().getIdCodifica().equals("QR-CODE"));
-        if (hasQrcodeEncoding) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, "QR-CODE encoding missing for " + pa.getIdDominio());
-        }
+                .anyMatch(elem -> elem.getFkCodifica().getIdCodifica().equals("QR-CODE"));
+
+        return CheckItem.builder()
+                .title("QR Code")
+                .value(pa.getIdDominio())
+                .valid(hasQrcodeEncoding ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID)
+                .action(hasQrcodeEncoding ? "Flow identifier already exists" : "")
+                .note(hasQrcodeEncoding ? "" : "ADD_QRCODE")
+                .build();
     }
 
     /**
