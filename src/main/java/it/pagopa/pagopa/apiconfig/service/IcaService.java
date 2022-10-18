@@ -121,27 +121,24 @@ public class IcaService {
 
     @Transactional
     public void createIca(@NotNull MultipartFile file) {
-        // TODO
-//        // syntactic checks
-//        checkSyntax(file);
-//
-//        // map file into model class
-//        IcaXml icaXml = mapXml(file, IcaXml.class);
-//
-//        // semantics checks
-//        var pa = getPaIfExists(icaXml.getIdentificativoDominio());
-//        checkFlusso(icaXml, pa);
-//        checkRagioneSociale(icaXml, pa);
-//        checkQrCode(pa);
-//        checkValidityDate(icaXml);
-//        checkPostalIban(icaXml, pa);
-//
-//        // save
-//        var binaryFile = saveBinaryFile(file);
-//        var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
-//        for (Object elem : icaXml.getContiDiAccredito()) {
-//            saveIcaDetail(elem, icaMaster);
-//        }
+        List<CheckItem> checks = verifyIca(file);
+
+        Optional<CheckItem> check = checks.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).findFirst();
+        if (check.isPresent()) {
+            throw new AppException(AppError.ICA_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
+        }
+
+        // map file into model class
+        IcaXml icaXml = mapXml(file, IcaXml.class);
+
+        var pa = getPaIfExists(icaXml.getIdentificativoDominio());
+
+        // save
+        var binaryFile = saveBinaryFile(file);
+        var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
+        for (Object elem : icaXml.getContiDiAccredito()) {
+            saveIcaDetail(elem, icaMaster);
+        }
     }
 
     public void deleteIca(String idIca, String creditorInstitutionCode) {

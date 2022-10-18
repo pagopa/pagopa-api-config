@@ -137,7 +137,6 @@ public class CdiService {
         // map file into model class
         CdiXml xml = mapXml(file, CdiXml.class);
 
-        // semantics checks
         var psp = getPspIfExists(xml.getIdentificativoPSP());
 
         // save BINARY_FILE and CDI_MASTER
