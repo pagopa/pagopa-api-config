@@ -131,7 +131,7 @@ public class CdiService {
 
         Optional<CheckItem> check = checks.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).findFirst();
         if (check.isPresent()) {
-            throw new AppException(AppError.CDI_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getAction()));
+            throw new AppException(AppError.CDI_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
         }
 
         // map file into model class
@@ -143,7 +143,7 @@ public class CdiService {
         // save BINARY_FILE and CDI_MASTER
         var binaryFile = saveBinaryFile(file);
         var master = saveCdiMaster(xml, psp, binaryFile);
-        // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCIE_COSTO, PREFERENCES
+        // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
         for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
             var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
 
@@ -178,7 +178,7 @@ public class CdiService {
                     .title("XSD Schema")
                     .value(xsdCdi)
                     .valid(CheckItem.Validity.VALID)
-                    .action(detail)
+                    .note(detail)
                     .build()
             );
         } catch (SAXException | IOException | XMLStreamException e) {
@@ -187,7 +187,7 @@ public class CdiService {
                     .title("XSD Schema")
                     .value(xsdCdi)
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action(detail)
+                    .note(detail)
                     .build()
             );
             return checkItemList;
@@ -211,7 +211,7 @@ public class CdiService {
                     .title("PSP Identifier")
                     .value(pspId)
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action("PSP identifier not consistent")
+                    .note("PSP identifier not consistent")
                     .build());
         }
 
@@ -232,7 +232,7 @@ public class CdiService {
                         .title("Channel - Payment Method")
                         .value(channelId + " - " + informativaDetail.getTipoVersamento())
                         .valid(CheckItem.Validity.NOT_VALID)
-                        .action("Channel not consistent")
+                        .note("Channel not consistent")
                         .build());
             } else if (psp != null) {
                 // check payment methods
@@ -275,7 +275,7 @@ public class CdiService {
                 .title("Channel - Payment Method")
                 .value(channel.getIdCanale() + " - " + informativaDetail.getTipoVersamento())
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Channel and/or payment method not consistent")
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Channel and/or payment method not consistent")
                 .build();
     }
 
@@ -301,7 +301,7 @@ public class CdiService {
                                     .title(title)
                                     .value(item.getKey())
                                     .valid(CheckItem.Validity.NOT_VALID)
-                                    .action(String.format("%s occurrences", item.getValue()))
+                                    .note(String.format("%s occurrences", item.getValue()))
                                     .build());
                             duplicate[0] = true;
                         }
@@ -318,7 +318,7 @@ public class CdiService {
                     .title(title)
                     .value("")
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action(String.format("Missing languages: %s", languagesTarget))
+                    .note(String.format("Missing languages: %s", languagesTarget))
                     .build());
         }
 
@@ -335,7 +335,7 @@ public class CdiService {
                         .title("Maximum amount range")
                         .value(maxServiceAmount.getImportoMassimoFascia().toString())
                         .valid(CheckItem.Validity.NOT_VALID)
-                        .action("Duplicate amount")
+                        .note("Duplicate amount")
                         .build());
                 valid = false;
             } else {
@@ -359,7 +359,7 @@ public class CdiService {
                 .title("Broker PSP")
                 .value(brokerPsp)
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Broker Psp not related to the channel")
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Broker Psp not related to the channel")
                 .build();
     }
 
@@ -369,7 +369,7 @@ public class CdiService {
                 .title("Payment model")
                 .value(informativaDetail.getModelloPagamento().toString())
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Payment model not related to payment method")
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Payment model not related to payment method")
                 .build();
     }
 
@@ -379,7 +379,7 @@ public class CdiService {
                 .title("Flow identifier")
                 .value(xml.getIdentificativoFlusso())
                 .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
-                .action(optFlow.isPresent() ? "Flow identifier already exists" : "")
+                .note(optFlow.isPresent() ? "Flow identifier already exists" : "")
                 .build();
     }
 
@@ -566,7 +566,7 @@ public class CdiService {
                 .title("Validity date")
                 .value(startValidityDate.toString())
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")
                 .build();
     }
 

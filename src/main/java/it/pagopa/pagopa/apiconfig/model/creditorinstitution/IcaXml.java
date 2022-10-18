@@ -34,7 +34,6 @@ public class IcaXml {
     })
     private List<Object> contiDiAccredito;
 
-
     @XmlRootElement(name = "infoContoDiAccreditoPair")
     @XmlAccessorType(XmlAccessType.FIELD)
     @AllArgsConstructor

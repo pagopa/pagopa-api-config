@@ -222,7 +222,7 @@ public class CommonUtil {
                 .title(title)
                 .value(data.toString())
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : action)
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : action)
                 .build();
     }
 

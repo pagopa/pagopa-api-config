@@ -5,12 +5,9 @@ import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import org.apache.commons.validator.routines.IBANValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,9 +30,7 @@ import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -62,6 +57,9 @@ public class IcaService {
 
     @Autowired
     private CodifichePaRepository codifichePaRepository;
+
+    @Autowired
+    private IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -168,7 +166,7 @@ public class IcaService {
                     .title("XSD Schema")
                     .value(xsdIca)
                     .valid(CheckItem.Validity.VALID)
-                    .action(detail)
+                    .note(detail)
                     .build()
             );
 
@@ -178,7 +176,7 @@ public class IcaService {
                     .title("XSD Schema")
                     .value(xsdIca)
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action(detail)
+                    .note(detail)
                     .build()
             );
             return checkItemList;
@@ -190,19 +188,21 @@ public class IcaService {
         // check PA
         String paFiscalCode = xml.getIdentificativoDominio();
         Pa pa = null;
+        List<CodifichePa> encodings = null;
         try {
             pa = getPaIfExists(paFiscalCode);
-            checkItemList.addAll(checkPa(pa, xml));
+            checkItemList.addAll(checkCi(pa, xml));
 
             // check qr-code
-            checkItemList.add(checkQrCode(pa));
+            encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
+            checkItemList.add(checkQrCode(pa, encodings));
 
         } catch (AppException e) {
             checkItemList.add(CheckItem.builder()
-                    .title("PA Fiscal Code")
+                    .title("CI fiscal Code")
                     .value(paFiscalCode)
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action("PA fiscal code not consistent")
+                    .note("CI fiscal code not consistent")
                     .build());
         }
 
@@ -214,16 +214,85 @@ public class IcaService {
         // check date
         checkItemList.add(checkValidityDate(xml.getDataInizioValidita()));
 
-        // TODO check Iban
+        // retrieve CI ibans
+        List<IbanValidiPerPa> ibans = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
+        checkItemList.addAll(checkIbans(xml.getContiDiAccredito(), ibans, encodings));
 
         return checkItemList;
     }
 
-    private List<CheckItem> checkPa(Pa pa, IcaXml xml) {
+    private List<CheckItem> checkCi(Pa pa, IcaXml xml) {
         List<CheckItem> checkItemList = new ArrayList<>();
-        checkItemList.add(CommonUtil.checkData("PA", pa.getIdDominio(), xml.getIdentificativoDominio(), "PA fiscal code not consistent"));
+        checkItemList.add(CommonUtil.checkData("Creditor Institution", pa.getIdDominio(), xml.getIdentificativoDominio(), "PA fiscal code not consistent"));
         checkItemList.add(CommonUtil.checkData("Business Name", pa.getRagioneSociale(), xml.getRagioneSociale(), "Business name not consistent"));
         return checkItemList;
+    }
+
+    private List<CheckItem> checkIbans(List<Object> contiDiAccredito, List<IbanValidiPerPa> ibans, List<CodifichePa> encodings) {
+        List<CheckItem> checkItemList = new ArrayList<>();
+        contiDiAccredito.forEach(item -> {
+            if (item.getClass().equals(String.class)) {
+                String iban = (String) item;
+                checkItemList.add(getIbanCheckItem(iban, ibans, encodings));
+            }
+            else if (item.getClass().equals(IcaXml.InfoContoDiAccreditoPair.class)) {
+                String iban = ((IcaXml.InfoContoDiAccreditoPair) item).getIbanAccredito();
+                checkItemList.add(getIbanCheckItem(iban, ibans, encodings));
+            }
+            else {
+                throw new AppException(AppError.ICA_BAD_REQUEST, "Iban field not mapped");
+            }
+        });
+        return checkItemList;
+    }
+
+    private CheckItem getIbanCheckItem(String iban, List<IbanValidiPerPa> ibans, List<CodifichePa> encodings) {
+        boolean valid = IBANValidator.getInstance().isValid(iban);
+        String note = null;
+        String action = null;
+        if (valid) {
+            // check if iban is already been added
+            boolean found = ibans.stream().anyMatch(i -> i.getIbanAccredito().equals(iban));
+            if (found) {
+                note = "Iban already added. ";
+
+                String abiCode = iban.substring(5, 10);
+                if (abiCode.equals("07601")) {
+                    Map<String, String> result = checkPostalCode(iban.substring(15), encodings);
+                    note += result.get("note");
+                    action = result.get("action");
+                }
+            }
+            else {
+                String abiCode = iban.substring(5, 10);
+                // check if postal iban and then check that the related barcode-128-aim encoding exists
+                note = "New Iban. ";
+                if (abiCode.equals("07601")) {
+                    Map<String, String> result = checkPostalCode(iban.substring(15), encodings);
+                    note += result.get("note");
+                    action = result.get("action");
+                }
+            }
+        } else {
+            note = "Iban not valid";
+        }
+        return CheckItem.builder()
+                .title("Iban")
+                .value(iban)
+                .valid(valid ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID)
+                .note(note)
+                .action(action)
+                .build();
+    }
+
+    private Map<String, String> checkPostalCode(String ibanEncoding, List<CodifichePa> encodings) {
+        boolean encodingFound = encodings.stream()
+                .filter(encoding -> encoding.getFkCodifica().getIdCodifica().equals(Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue()))
+                .anyMatch(encoding -> encoding.getCodicePa().equals(ibanEncoding));
+        Map<String, String> result = new HashMap<>();
+        result.put("action", encodingFound ? "" : "ADD_ENCODING");
+        result.put("note", encodingFound ? "Encoding already present." : "Encoding not found.");
+        return result;
     }
 
     /**
@@ -248,7 +317,7 @@ public class IcaService {
                 .title("Flow identifier")
                 .value(xml.getIdentificativoFlusso())
                 .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
-                .action(optFlow.isPresent() ? "Flow identifier already exists" : "")
+                .note(optFlow.isPresent() ? "Flow identifier already exists" : "")
                 .build();
     }
 
@@ -321,24 +390,24 @@ public class IcaService {
                 .title("Validity date")
                 .value(validityDate.toString())
                 .valid(valid ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID)
-                .action(valid ? "" : details)
+                .note(valid ? "" : details)
                 .build();
     }
 
     /**
      * @param pa check if PA has QR-CODE encodings
+     * @param codifichePaList
      */
-    private CheckItem checkQrCode(Pa pa) {
-        boolean hasQrcodeEncoding = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())
-                .stream()
+    private CheckItem checkQrCode(Pa pa, List<CodifichePa> codifichePaList) {
+        boolean hasQrcodeEncoding = codifichePaList.stream()
                 .anyMatch(elem -> elem.getFkCodifica().getIdCodifica().equals("QR-CODE"));
 
         return CheckItem.builder()
                 .title("QR Code")
                 .value(pa.getIdDominio())
                 .valid(hasQrcodeEncoding ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID)
-                .action(hasQrcodeEncoding ? "Flow identifier already exists" : "")
-                .note(hasQrcodeEncoding ? "" : "ADD_QRCODE")
+                .note(hasQrcodeEncoding ? "Flow identifier already exists" : "")
+                .action(hasQrcodeEncoding ? "" : "ADD_QRCODE")
                 .build();
     }
 
