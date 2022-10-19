@@ -179,11 +179,9 @@ class IcaServiceTest {
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
         when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
-        try {
-            icaService.verifyIca(file);
-        } catch (Exception e) {
-            fail(e);
-        }
+
+        List<CheckItem> checkItemList = icaService.verifyIca(file);
+        assertEquals(1,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 
 }

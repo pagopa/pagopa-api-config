@@ -42,6 +42,8 @@ import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
 public class IcaService {
 
     public static final String ABI_IBAN_POSTALI = "07601";
+    public static final String ACTION_KEY = "action";
+    public static final String NOTE_KEY = "note";
 
     @Autowired
     private PaRepository paRepository;
@@ -228,11 +230,11 @@ public class IcaService {
     private List<CheckItem> checkIbans(List<Object> contiDiAccredito, List<IbanValidiPerPa> ibans, List<CodifichePa> encodings) {
         List<CheckItem> checkItemList = new ArrayList<>();
         contiDiAccredito.forEach(item -> {
-            if (item.getClass().equals(String.class)) {
+            if (item instanceof String) {
                 String iban = (String) item;
                 checkItemList.add(getIbanCheckItem(iban, ibans, encodings));
             }
-            else if (item.getClass().equals(IcaXml.InfoContoDiAccreditoPair.class)) {
+            else if (item instanceof IcaXml.InfoContoDiAccreditoPair) {
                 String iban = ((IcaXml.InfoContoDiAccreditoPair) item).getIbanAccredito();
                 checkItemList.add(getIbanCheckItem(iban, ibans, encodings));
             }
@@ -247,8 +249,7 @@ public class IcaService {
         boolean valid = IBANValidator.getInstance().isValid(iban);
         String note = null;
         String action = null;
-        String actionKey = "action";
-        String noteKey = "action";
+
         if (valid) {
             // check if iban is already been added
             boolean found = ibans.stream().anyMatch(i -> i.getIbanAccredito().equals(iban));
@@ -258,8 +259,8 @@ public class IcaService {
                 String abiCode = iban.substring(5, 10);
                 if (abiCode.equals(ABI_IBAN_POSTALI)) {
                     Map<String, String> result = checkPostalCode(iban.substring(15), encodings);
-                    note += result.get(noteKey);
-                    action = result.get(actionKey);
+                    note += result.get(NOTE_KEY);
+                    action = result.get(ACTION_KEY);
                 }
             }
             else {
@@ -268,8 +269,8 @@ public class IcaService {
                 note = "New Iban. ";
                 if (abiCode.equals(ABI_IBAN_POSTALI)) {
                     Map<String, String> result = checkPostalCode(iban.substring(15), encodings);
-                    note += result.get(noteKey);
-                    action = result.get(actionKey);
+                    note += result.get(NOTE_KEY);
+                    action = result.get(ACTION_KEY);
                 }
             }
         } else {
@@ -289,8 +290,8 @@ public class IcaService {
                 .filter(encoding -> encoding.getFkCodifica().getIdCodifica().equals(Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue()))
                 .anyMatch(encoding -> encoding.getCodicePa().equals(ibanEncoding));
         Map<String, String> result = new HashMap<>();
-        result.put("action", encodingFound ? "" : "ADD_ENCODING");
-        result.put("note", encodingFound ? "Encoding already present." : "Encoding not found.");
+        result.put(ACTION_KEY, encodingFound ? "" : "ADD_ENCODING");
+        result.put(NOTE_KEY, encodingFound ? "Encoding already present." : "Encoding not found.");
         return result;
     }
 
