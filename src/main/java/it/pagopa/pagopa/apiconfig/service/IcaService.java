@@ -203,17 +203,17 @@ public class IcaService {
                     .build());
         }
 
-        // check flow
         if (pa != null) {
+            // check flow
             checkItemList.add(checkFlow(xml, pa));
+
+            // retrieve CI ibans
+            List<IbanValidiPerPa> ibans = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
+            checkItemList.addAll(checkIbans(xml.getContiDiAccredito(), ibans, encodings));
         }
 
         // check date
         checkItemList.add(checkValidityDate(xml.getDataInizioValidita()));
-
-        // retrieve CI ibans
-        List<IbanValidiPerPa> ibans = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
-        checkItemList.addAll(checkIbans(xml.getContiDiAccredito(), ibans, encodings));
 
         return checkItemList;
     }
@@ -247,6 +247,8 @@ public class IcaService {
         boolean valid = IBANValidator.getInstance().isValid(iban);
         String note = null;
         String action = null;
+        String actionKey = "action";
+        String noteKey = "action";
         if (valid) {
             // check if iban is already been added
             boolean found = ibans.stream().anyMatch(i -> i.getIbanAccredito().equals(iban));
@@ -254,20 +256,20 @@ public class IcaService {
                 note = "Iban already added. ";
 
                 String abiCode = iban.substring(5, 10);
-                if (abiCode.equals("07601")) {
+                if (abiCode.equals(ABI_IBAN_POSTALI)) {
                     Map<String, String> result = checkPostalCode(iban.substring(15), encodings);
-                    note += result.get("note");
-                    action = result.get("action");
+                    note += result.get(noteKey);
+                    action = result.get(actionKey);
                 }
             }
             else {
                 String abiCode = iban.substring(5, 10);
                 // check if postal iban and then check that the related barcode-128-aim encoding exists
                 note = "New Iban. ";
-                if (abiCode.equals("07601")) {
+                if (abiCode.equals(ABI_IBAN_POSTALI)) {
                     Map<String, String> result = checkPostalCode(iban.substring(15), encodings);
-                    note += result.get("note");
-                    action = result.get("action");
+                    note += result.get(noteKey);
+                    action = result.get(actionKey);
                 }
             }
         } else {
@@ -319,52 +321,6 @@ public class IcaService {
     }
 
     /**
-     * for each postal iban check if it is associated with a BARCODE-128-AIM encoding
-     * NOTE: is postal iban if ABI in the IBAN is equals to 07601.
-     *
-     * @param icaXml file with ibans
-     * @param pa     the entity from DB
-     */
-    private void checkPostalIban(IcaXml icaXml, Pa pa) {
-        icaXml.getContiDiAccredito().forEach(
-                elem -> {
-                    String iban = getIbanFromContoAccredito(elem);
-                    if (ABI_IBAN_POSTALI.equals(getAbiFromIban(iban))
-                            && hasBarcodeEncodings(pa, iban)) {
-                        throw new AppException(AppError.ICA_BAD_REQUEST, "BARCODE-128-AIM encoding missing for " + iban);
-                    }
-                }
-        );
-    }
-
-    /**
-     * @param pa   PA of the IBAN
-     * @param iban IBAN to check
-     * @return true if the IBAN of the PA has BARCODE-128-AIM encoding
-     */
-    private boolean hasBarcodeEncodings(Pa pa, String iban) {
-        return codifichePaRepository.findByCodicePaAndFkPa_ObjId(getCcFromIban(iban), pa.getObjId()).stream()
-                .noneMatch(i -> i.getFkCodifica().getIdCodifica().equals("BARCODE-128-AIM"));
-    }
-
-    /**
-     * @param elem String or {@link IcaXml.InfoContoDiAccreditoPair}
-     * @return the iban if valid
-     */
-    private String getIbanFromContoAccredito(Object elem) {
-        String iban = null;
-        if (elem instanceof String) {
-            iban = String.valueOf(elem);
-        } else if (elem instanceof IcaXml.InfoContoDiAccreditoPair) {
-            iban = ((IcaXml.InfoContoDiAccreditoPair) elem).getIbanAccredito();
-        }
-        if (iban == null || iban.length() != 27) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, iban + " is not a valid iban");
-        }
-        return iban;
-    }
-
-    /**
      * @param validityDate check if the validity is after today
      * @return item with validity info
      */
@@ -409,18 +365,6 @@ public class IcaService {
     }
 
     /**
-     * check if ragioneSociale in the xml is right
-     *
-     * @param icaXml XML file
-     * @param pa     the PA from DB
-     */
-    private void checkRagioneSociale(IcaXml icaXml, Pa pa) {
-        if (!pa.getRagioneSociale().equals(icaXml.getRagioneSociale())) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, "There is an error in '" + icaXml.getRagioneSociale() + "'");
-        }
-    }
-
-    /**
      * @param creditorInstitutionCode identificativo Dominio
      * @return get the PA from DB using identificativoDominio
      */
@@ -428,7 +372,6 @@ public class IcaService {
         return paRepository.findByIdDominio(creditorInstitutionCode)
                 .orElseThrow(() -> new AppException(AppError.ICA_BAD_REQUEST, creditorInstitutionCode + " not found"));
     }
-
 
     /**
      * @param contoAccredito info icaDetail
@@ -502,18 +445,5 @@ public class IcaService {
         return page.stream()
                 .map(elem -> modelMapper.map(elem, Ica.class))
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * check syntactic and XSD of a ICA file
-     *
-     * @param file ICA XML to check
-     */
-    private void checkSyntax(MultipartFile file) {
-        try {
-            syntaxValidation(file, xsdIca);
-        } catch (SAXException | IOException | XMLStreamException e) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, e, e.getMessage());
-        }
     }
 }

@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
@@ -29,15 +30,14 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockInformativeContoAccreditoMaster;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -153,6 +153,34 @@ class IcaServiceTest {
                 .thenReturn(Optional.of(getMockInformativeContoAccreditoMaster()));
         try {
             icaService.deleteIca("1234", "2");
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    void verifyIca_ok_1() throws IOException {
+        File xml = TestUtil.readFile("file/ica_valid_h2.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+
+        List<CheckItem> checkItemList = icaService.verifyIca(file);
+
+        assertFalse(checkItemList.stream().anyMatch(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)));
+    }
+
+    // xsd not valid
+    @Test
+    void verifyIca_ko_1() throws IOException {
+        File xml = TestUtil.readFile("file/ica_not_valid.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        try {
+            icaService.verifyIca(file);
         } catch (Exception e) {
             fail(e);
         }
