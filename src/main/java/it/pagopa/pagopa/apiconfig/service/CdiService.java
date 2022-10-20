@@ -550,22 +550,6 @@ public class CdiService {
                 .orElseThrow(() -> new AppException(AppError.PSP_NOT_FOUND, pspCode));
     }
 
-//    /**
-//     * @param startValidityDate check if the validity is after today
-//     * @return item with validity info
-//     */
-//    private CheckItem checkValidityDate(XMLGregorianCalendar startValidityDate) {
-//        LocalDate now = LocalDate.now();
-//        LocalDate tomorrow = now.plusDays(1);
-//        CheckItem.Validity validity = toTimestamp(startValidityDate).before(Timestamp.valueOf(tomorrow.atStartOfDay())) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
-//        return CheckItem.builder()
-//                .title("Validity date")
-//                .value(startValidityDate.toString())
-//                .valid(validity)
-//                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")
-//                .build();
-//    }
-
     /**
      * @param file binaryFile to save
      * @return the entity saved in the database

@@ -20,10 +20,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)

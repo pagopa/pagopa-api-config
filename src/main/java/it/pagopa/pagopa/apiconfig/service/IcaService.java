@@ -1,11 +1,25 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.*;
+import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
+import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
+import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoDetail;
+import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
-import it.pagopa.pagopa.apiconfig.repository.*;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.IcaXml;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
+import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
+import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
+import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoDetailRepository;
+import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.apache.commons.validator.routines.IBANValidator;
 import org.modelmapper.ModelMapper;
@@ -23,19 +37,23 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 
 @Service
 @Validated
@@ -376,10 +394,9 @@ public class IcaService {
      * @return the entity saved in the database
      */
     private InformativeContoAccreditoMaster saveIcaMaster(IcaXml icaXml, Pa pa, BinaryFile binaryFile) {
-        // TODO
         var icaMaster = InformativeContoAccreditoMaster.builder()
-//                .dataInizioValidita(toTimestamp(icaXml.getDataInizioValidita()))
-//                .dataPubblicazione(toTimestamp(icaXml.getDataPubblicazione()))
+                .dataInizioValidita(Timestamp.valueOf(icaXml.getDataInizioValidita()))
+                .dataPubblicazione(Timestamp.valueOf(icaXml.getDataPubblicazione()))
                 .ragioneSociale(icaXml.getRagioneSociale())
                 .idInformativaContoAccreditoPa(icaXml.getIdentificativoFlusso())
                 .fkBinaryFile(binaryFile)

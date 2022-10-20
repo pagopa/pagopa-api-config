@@ -4,7 +4,12 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionList;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -31,10 +36,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
