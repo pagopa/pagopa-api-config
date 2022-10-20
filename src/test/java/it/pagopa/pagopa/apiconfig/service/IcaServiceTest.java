@@ -240,17 +240,4 @@ class IcaServiceTest {
         assertEquals(3,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 
-    //
-//    @Test
-//    void verifyIca_ko_4() throws IOException {
-//        File xml = TestUtil.readFile("file/ica_info_not_valid_h2.xml");
-//        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
-//        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
-//        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
-//
-//
-//        List<CheckItem> checkItemList = icaService.verifyIca(file);
-//        assertEquals(1,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
-//    }
-
 }

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,11 +18,7 @@ import java.util.List;
 
 @XmlRootElement(name = "informativaContoAccredito")
 @XmlAccessorType(XmlAccessType.FIELD)
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@Builder
 @Getter
-@Setter
 public class IcaXml {
 
     private String identificativoFlusso;

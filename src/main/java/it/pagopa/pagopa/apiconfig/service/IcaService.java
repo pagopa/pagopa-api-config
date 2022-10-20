@@ -143,7 +143,10 @@ public class IcaService {
     public void createIca(@NotNull MultipartFile file) {
         List<CheckItem> checks = verifyIca(file);
 
-        Optional<CheckItem> check = checks.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).findFirst();
+        Optional<CheckItem> check = checks.stream()
+                .filter(item -> item.getValid()
+                .equals(CheckItem.Validity.NOT_VALID))
+                .findFirst();
         if (check.isPresent()) {
             throw new AppException(AppError.ICA_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
         }
@@ -270,7 +273,9 @@ public class IcaService {
 
         if (valid) {
             // check if iban is already been added
-            boolean found = ibans.stream().anyMatch(i -> i.getIbanAccredito().equals(iban));
+            boolean found = ibans.stream()
+                    .anyMatch(i -> i.getIbanAccredito()
+                    .equals(iban));
             if (found) {
                 note = "Iban already added. ";
 
