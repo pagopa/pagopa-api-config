@@ -235,11 +235,19 @@ public class CommonUtil {
     public static CheckItem checkValidityDate(LocalDateTime startValidityDate) {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
 
-        CheckItem.Validity validity = startValidityDate != null ? startValidityDate.toLocalDate().isBefore(tomorrow)
-                ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+        String value;
+        String note;
+        CheckItem.Validity validity;
 
-        String value = startValidityDate != null ? startValidityDate.toString() : "-";
-        String note = startValidityDate != null ? validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date" : "Not parsable";
+        if (startValidityDate == null) {
+            validity = CheckItem.Validity.NOT_VALID;
+            value = "-";
+            note = "Not parsable";
+        } else {
+            validity = startValidityDate.toLocalDate().isBefore(tomorrow) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
+            value = startValidityDate.toString();
+            note = validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date";
+        }
 
         return CheckItem.builder()
                 .title("Validity date")

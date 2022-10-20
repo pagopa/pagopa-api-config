@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
+package it.pagopa.pagopa.apiconfig.model.psp;
 
 import it.pagopa.pagopa.apiconfig.util.XMLDateAdapter;
 import lombok.AllArgsConstructor;
