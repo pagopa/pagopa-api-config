@@ -15,9 +15,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKey;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKeys;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFtpServer;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFtpServers;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockModelWfespPluginConf;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentType;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentTypes;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPdd;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPdds;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockWfespPluginConfigurations;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

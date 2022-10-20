@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.util;
 
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Filter;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
@@ -29,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -213,6 +216,45 @@ public class CommonUtil {
             stringBuilder.append(" Error at ").append(lineNumber);
         }
         return stringBuilder.toString();
+    }
+
+    public static CheckItem checkData(String title, Object data, Object target, String action) {
+        CheckItem.Validity validity = target.equals(data) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+        return CheckItem.builder()
+                .title(title)
+                .value(data.toString())
+                .valid(validity)
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : action)
+                .build();
+    }
+
+    /**
+     * @param startValidityDate check if the validity is after today
+     * @return item with validity info
+     */
+    public static CheckItem checkValidityDate(LocalDateTime startValidityDate) {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+
+        String value;
+        String note;
+        CheckItem.Validity validity;
+
+        if (startValidityDate == null) {
+            validity = CheckItem.Validity.NOT_VALID;
+            value = "-";
+            note = "Not parsable";
+        } else {
+            validity = startValidityDate.toLocalDate().isBefore(tomorrow) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
+            value = startValidityDate.toString();
+            note = validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date";
+        }
+
+        return CheckItem.builder()
+                .title("Validity date")
+                .value(value)
+                .valid(validity)
+                .note(note)
+                .build();
     }
 
     /**

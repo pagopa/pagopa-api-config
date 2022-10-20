@@ -84,12 +84,23 @@ class IcaControllerTest {
                         .file(multipartFile)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated());
-
     }
 
     @Test
     void deleteIca() throws Exception {
         mvc.perform(delete("/icas/1234?creditorinstitutioncode=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void verifyIca() throws Exception {
+        File xml = TestUtil.readFile("file/ica_valid.xml");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        String url = "/icas/check";
+
+        mvc.perform(multipart(url)
+                .file(multipartFile)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk());
     }
 }

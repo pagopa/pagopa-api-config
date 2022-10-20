@@ -4,7 +4,6 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannel;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.service.PspService;
@@ -19,8 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviderDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviders;
