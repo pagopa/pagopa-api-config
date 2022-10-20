@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<informativaContoAccredito>
+    <identificativoFlusso>02391510266_prova_prod_3</identificativoFlusso>
+    <identificativoDominio>00168480242</identificativoDominio>
+    <ragioneSociale>Comune di Bassano del Grappa</ragioneSociale>
+    <dataPubblicazione>2021-02-01T00:00:00</dataPubblicazione>
+    <dataInizioValidita>2021-02-03T00:00:00</dataInizioValidita>
+    <contiDiAccredito>
+        <ibanAccredito>IT04I0103061821000000248378</ibanAccredito>
+        <infoContoDiAccreditoPair>
+            <ibanAccredito>IT45R0760103200000000001016</ibanAccredito>
+            <idBancaSeller>CT000159</idBancaSeller>
+        </infoContoDiAccreditoPair>
+        <ibanAccredito>IT62P0891059570006000910367</ibanAccredito>
+    </contiDiAccredito>
+</informativaContoAccredito>

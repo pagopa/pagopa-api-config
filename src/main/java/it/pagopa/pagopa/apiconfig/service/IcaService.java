@@ -215,7 +215,7 @@ public class IcaService {
         }
 
         // check date
-        checkItemList.add(checkValidityDate(xml.getDataInizioValidita()));
+        checkItemList.add(CommonUtil.checkValidityDate(xml.getDataInizioValidita()));
 
         return checkItemList;
     }
@@ -247,7 +247,7 @@ public class IcaService {
 
     private CheckItem getIbanCheckItem(String iban, List<IbanValidiPerPa> ibans, List<CodifichePa> encodings) {
         boolean valid = IBANValidator.getInstance().isValid(iban);
-        String note = null;
+        String note;
         String action = null;
 
         if (valid) {
@@ -322,33 +322,6 @@ public class IcaService {
     }
 
     /**
-     * @param validityDate check if the validity is after today
-     * @return item with validity info
-     */
-    private CheckItem checkValidityDate(XMLGregorianCalendar validityDate) {
-        var now = LocalDate.now();
-        Timestamp tomorrow = Timestamp.valueOf(LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 23, 59, 59));
-        boolean valid = true;
-        String details = "";
-        if (!validityDate.toString().matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")) {
-            details += "Validity start date must be formatted as yyyy-MM-ddTHH:mm:ss. ";
-            valid = false;
-        }
-
-        if (toTimestamp(validityDate).before(tomorrow)) {
-            details += "Validity start date must be greater than the today's date";
-            valid = false;
-        }
-
-        return CheckItem.builder()
-                .title("Validity date")
-                .value(validityDate.toString())
-                .valid(valid ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID)
-                .note(valid ? "" : details)
-                .build();
-    }
-
-    /**
      * @param pa check if PA has QR-CODE encodings
      * @param codifichePaList
      */
@@ -360,7 +333,7 @@ public class IcaService {
                 .title("QR Code")
                 .value(pa.getIdDominio())
                 .valid(hasQrcodeEncoding ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID)
-                .note(hasQrcodeEncoding ? "Flow identifier already exists" : "")
+                .note(hasQrcodeEncoding ? "QR-Code already exists" : "QR-Code not present")
                 .action(hasQrcodeEncoding ? "" : "ADD_QRCODE")
                 .build();
     }
@@ -403,9 +376,10 @@ public class IcaService {
      * @return the entity saved in the database
      */
     private InformativeContoAccreditoMaster saveIcaMaster(IcaXml icaXml, Pa pa, BinaryFile binaryFile) {
+        // TODO
         var icaMaster = InformativeContoAccreditoMaster.builder()
-                .dataInizioValidita(toTimestamp(icaXml.getDataInizioValidita()))
-                .dataPubblicazione(toTimestamp(icaXml.getDataPubblicazione()))
+//                .dataInizioValidita(toTimestamp(icaXml.getDataInizioValidita()))
+//                .dataPubblicazione(toTimestamp(icaXml.getDataPubblicazione()))
                 .ragioneSociale(icaXml.getRagioneSociale())
                 .idInformativaContoAccreditoPa(icaXml.getIdentificativoFlusso())
                 .fkBinaryFile(binaryFile)

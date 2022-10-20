@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -223,6 +225,23 @@ public class CommonUtil {
                 .value(data.toString())
                 .valid(validity)
                 .note(validity.equals(CheckItem.Validity.VALID) ? "" : action)
+                .build();
+    }
+
+    /**
+     * @param startValidityDate check if the validity is after today
+     * @return item with validity info
+     */
+    public static CheckItem checkValidityDate(LocalDateTime startValidityDate) {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+
+        CheckItem.Validity validity = startValidityDate.toLocalDate().isBefore(tomorrow)
+                ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
+        return CheckItem.builder()
+                .title("Validity date")
+                .value(startValidityDate.toString())
+                .valid(validity)
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
+import it.pagopa.pagopa.apiconfig.util.XMLDateAdapter;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +10,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @XmlRootElement(name = "informativaPSP")
@@ -37,8 +40,14 @@ public class CdiXml {
     @Builder
     @Getter
     public static class InformativaMaster {
-        private XMLGregorianCalendar dataPubblicazione;
-        private XMLGregorianCalendar dataInizioValidita;
+        @XmlElement(name = "dataPubblicazione")
+        @XmlJavaTypeAdapter(XMLDateAdapter.class)
+        private LocalDateTime dataPubblicazione;
+
+        @XmlElement(name = "dataInizioValidita")
+        @XmlJavaTypeAdapter(XMLDateAdapter.class)
+        private LocalDateTime dataInizioValidita;
+
         private String urlInformazioniPSP;
         private Boolean stornoPagamento;
         private Boolean marcaBolloDigitale;

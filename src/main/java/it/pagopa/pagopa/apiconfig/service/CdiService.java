@@ -42,12 +42,10 @@ import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +59,6 @@ import java.util.stream.Stream;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
 
 @Service
 @Validated
@@ -215,7 +212,7 @@ public class CdiService {
         }
 
         // check date
-        checkItemList.add(checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
+        checkItemList.add(CommonUtil.checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
 
         // check flow id
         if (psp != null) {
@@ -520,8 +517,8 @@ public class CdiService {
      */
     private CdiMaster saveCdiMaster(CdiXml xml, Psp psp, BinaryFile binaryFile) {
         return cdiMasterRepository.save(CdiMaster.builder()
-                .dataPubblicazione(toTimestamp(xml.getInformativaMaster().getDataPubblicazione()))
-                .dataInizioValidita(toTimestamp(xml.getInformativaMaster().getDataInizioValidita()))
+                .dataPubblicazione(Timestamp.valueOf(xml.getInformativaMaster().getDataPubblicazione()))
+                .dataInizioValidita(Timestamp.valueOf(xml.getInformativaMaster().getDataInizioValidita()))
                 .idInformativaPsp(xml.getIdentificativoFlusso())
                 .logoPsp(xml.getInformativaMaster().getLogoPSP().strip().getBytes())
                 .urlInformazioniPsp(xml.getInformativaMaster().getUrlInformazioniPSP())
@@ -553,21 +550,21 @@ public class CdiService {
                 .orElseThrow(() -> new AppException(AppError.PSP_NOT_FOUND, pspCode));
     }
 
-    /**
-     * @param startValidityDate check if the validity is after today
-     * @return item with validity info
-     */
-    private CheckItem checkValidityDate(XMLGregorianCalendar startValidityDate) {
-        LocalDate now = LocalDate.now();
-        LocalDate tomorrow = now.plusDays(1);
-        CheckItem.Validity validity = toTimestamp(startValidityDate).before(Timestamp.valueOf(tomorrow.atStartOfDay())) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
-        return CheckItem.builder()
-                .title("Validity date")
-                .value(startValidityDate.toString())
-                .valid(validity)
-                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")
-                .build();
-    }
+//    /**
+//     * @param startValidityDate check if the validity is after today
+//     * @return item with validity info
+//     */
+//    private CheckItem checkValidityDate(XMLGregorianCalendar startValidityDate) {
+//        LocalDate now = LocalDate.now();
+//        LocalDate tomorrow = now.plusDays(1);
+//        CheckItem.Validity validity = toTimestamp(startValidityDate).before(Timestamp.valueOf(tomorrow.atStartOfDay())) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
+//        return CheckItem.builder()
+//                .title("Validity date")
+//                .value(startValidityDate.toString())
+//                .valid(validity)
+//                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")
+//                .build();
+//    }
 
     /**
      * @param file binaryFile to save
