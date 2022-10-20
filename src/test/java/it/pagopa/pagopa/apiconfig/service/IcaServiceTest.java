@@ -176,11 +176,9 @@ class IcaServiceTest {
     void verifyIca_ko_1() throws IOException {
         File xml = TestUtil.readFile("file/ica_xsd_not_valid.xml");
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
-        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
-        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
 
         List<CheckItem> checkItemList = icaService.verifyIca(file);
-        assertEquals(1,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
+        assertEquals(1, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 
     // creditor institution not consistent
