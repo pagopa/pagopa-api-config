@@ -213,7 +213,7 @@ public class TestUtil {
                 .codicePa("1234")
                 .fkCodifica(Codifiche.builder()
                         .objId(2L)
-                        .idCodifica("QR-CODE")
+                        .idCodifica(Encoding.CodeTypeEnum.QR_CODE.getValue())
                         .build())
                 .build();
     }

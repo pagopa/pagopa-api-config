@@ -2,12 +2,18 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.Codifiche;
+import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
 import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -29,6 +35,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
@@ -36,6 +43,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockInformativeContoAccreditoMaster;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,6 +68,9 @@ class IcaServiceTest {
 
     @MockBean
     InformativeContoAccreditoDetailRepository informativeContoAccreditoDetailRepository;
+
+    @MockBean
+    IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
     @Autowired
     @InjectMocks
@@ -110,10 +121,10 @@ class IcaServiceTest {
 
 //    @Test
 //    void checkNotValidXML() throws IOException, JSONException {
-//        File xml = TestUtil.readFile("file/ica_not_valid.xml");
+//        File xml = TestUtil.readFile("file/ica_xsd_not_valid.xml");
 //        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
 //        XSDValidation result = icaService.verifyXSD(file);
-//        String expected = TestUtil.readJsonFromFile("response/ica_not_valid_xml.json");
+//        String expected = TestUtil.readJsonFromFile("response/ica_xsd_not_valid_xml.json");
 //        JSONAssert.assertEquals(expected, TestUtil.toJson(result), JSONCompareMode.STRICT);
 //    }
 
@@ -156,6 +167,77 @@ class IcaServiceTest {
         } catch (Exception e) {
             fail(e);
         }
+    }
+
+    @Test
+    void verifyIca_ok_1() throws IOException {
+        File xml = TestUtil.readFile("file/ica_valid_h2.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+
+        List<CheckItem> checkItemList = icaService.verifyIca(file);
+
+        assertFalse(checkItemList.stream().anyMatch(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)));
+    }
+
+    // xsd not valid
+    @Test
+    void verifyIca_ko_1() throws IOException {
+        File xml = TestUtil.readFile("file/ica_xsd_not_valid.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+
+        List<CheckItem> checkItemList = icaService.verifyIca(file);
+        assertEquals(1, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
+    }
+
+    // creditor institution not consistent
+    // validityDate not consistent
+    @Test
+    void verifyIca_ko_2() throws IOException {
+        File xml = TestUtil.readFile("file/ica_info_not_valid_h2.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.empty());
+
+        List<CheckItem> checkItemList = icaService.verifyIca(file);
+        assertEquals(2,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
+    }
+
+
+    // qr-code not present
+    // flow ìdentifier present
+    @Test
+    void verifyIca_ko_3() throws IOException {
+        File xml = TestUtil.readFile("file/ica_info_not_valid_h2.xml");
+        MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+
+        CodifichePa barcode128aim = CodifichePa.builder()
+                .id(1L)
+                .codicePa("000000001016")
+                .fkCodifica(Codifiche.builder()
+                        .objId(2L)
+                        .idCodifica(Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue())
+                        .build())
+                .build();
+
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(List.of(barcode128aim));
+        when(informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(anyString(), anyString())).thenReturn(Optional.of(getMockInformativeContoAccreditoMaster()));
+
+        IbanValidiPerPa iban_1 = IbanValidiPerPa.builder()
+                .ibanAccredito("IT04I0103061821000000248378")
+                .build();
+
+        IbanValidiPerPa iban_2 = IbanValidiPerPa.builder()
+                .ibanAccredito("IT45R0760103200000000001016")
+                .build();
+
+        List<IbanValidiPerPa> ibans = List.of(iban_1, iban_2);
+
+        when(ibanValidiPerPaRepository.findAllByFkPa(anyLong())).thenReturn(ibans);
+
+        List<CheckItem> checkItemList = icaService.verifyIca(file);
+        assertEquals(3,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 
 }

@@ -1,13 +1,30 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.*;
+import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
+import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
+import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
+import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
+import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
+import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CdiXml;
+import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.*;
+import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
+import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,19 +42,23 @@ import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 
 @Service
 @Validated
@@ -79,7 +101,7 @@ public class CdiService {
     private String xsdCdi;
 
     public Cdis getCdis(@NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
-        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
         var filters = CommonUtil.getFilters(CdiMaster.builder()
                 .idInformativaPsp(idCdi)
                 .fkPsp(Psp.builder()
@@ -106,19 +128,18 @@ public class CdiService {
 
         Optional<CheckItem> check = checks.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).findFirst();
         if (check.isPresent()) {
-            throw new AppException(AppError.CDI_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getAction()));
+            throw new AppException(AppError.CDI_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
         }
 
         // map file into model class
         CdiXml xml = mapXml(file, CdiXml.class);
 
-        // semantics checks
         var psp = getPspIfExists(xml.getIdentificativoPSP());
 
         // save BINARY_FILE and CDI_MASTER
         var binaryFile = saveBinaryFile(file);
         var master = saveCdiMaster(xml, psp, binaryFile);
-        // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCIE_COSTO, PREFERENCES
+        // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
         for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
             var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
 
@@ -145,7 +166,7 @@ public class CdiService {
 
         List<CheckItem> checkItemList = new ArrayList<>();
         // syntax checks
-        String detail = "";
+        String detail;
         try {
             syntaxValidation(file, xsdCdi);
             detail = "XML is valid against the XSD schema.";
@@ -153,7 +174,7 @@ public class CdiService {
                     .title("XSD Schema")
                     .value(xsdCdi)
                     .valid(CheckItem.Validity.VALID)
-                    .action(detail)
+                    .note(detail)
                     .build()
             );
         } catch (SAXException | IOException | XMLStreamException e) {
@@ -162,7 +183,7 @@ public class CdiService {
                     .title("XSD Schema")
                     .value(xsdCdi)
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action(detail)
+                    .note(detail)
                     .build()
             );
             return checkItemList;
@@ -179,19 +200,19 @@ public class CdiService {
             checkItemList.addAll(checkPsp(psp, pspId, xml));
 
             // check marca da bollo (stamp)
-            CheckItem checkItem = checkData("Stamp", xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Stamp not consistent");
+            CheckItem checkItem = CommonUtil.checkData("Stamp", xml.getInformativaMaster().getMarcaBolloDigitale(), psp.getMarcaBolloDigitale(), "Stamp not consistent");
             checkItemList.add(checkItem);
         } catch (AppException e) {
             checkItemList.add(CheckItem.builder()
                     .title("PSP Identifier")
                     .value(pspId)
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action("PSP identifier not consistent")
+                    .note("PSP identifier not consistent")
                     .build());
         }
 
         // check date
-        checkItemList.add(checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
+        checkItemList.add(CommonUtil.checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
 
         // check flow id
         if (psp != null) {
@@ -207,10 +228,9 @@ public class CdiService {
                         .title("Channel - Payment Method")
                         .value(channelId + " - " + informativaDetail.getTipoVersamento())
                         .valid(CheckItem.Validity.NOT_VALID)
-                        .action("Channel not consistent")
+                        .note("Channel not consistent")
                         .build());
-            }
-            else if (psp != null) {
+            } else if (psp != null) {
                 // check payment methods
                 checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
 
@@ -235,10 +255,10 @@ public class CdiService {
 
     private List<CheckItem> checkPsp(Psp psp, String pspId, CdiXml xml) {
         List<CheckItem> checkItemList = new ArrayList<>();
-        checkItemList.add(checkData("PSP", psp.getIdPsp(), pspId, "PSP identifier not consistent"));
-        checkItemList.add(checkData("Business Name", psp.getRagioneSociale(), xml.getRagioneSociale(), "Business name not consistent"));
-        checkItemList.add(checkData("ABI Code", psp.getAbi(), xml.getCodiceABI(), "ABI code not consistent"));
-        checkItemList.add(checkData("BIC Code", psp.getBic(), xml.getCodiceBIC(), "BIC code not consistent"));
+        checkItemList.add(CommonUtil.checkData("PSP", psp.getIdPsp(), pspId, "PSP identifier not consistent"));
+        checkItemList.add(CommonUtil.checkData("Business Name", psp.getRagioneSociale(), xml.getRagioneSociale(), "Business name not consistent"));
+        checkItemList.add(CommonUtil.checkData("ABI Code", psp.getAbi(), xml.getCodiceABI(), "ABI code not consistent"));
+        checkItemList.add(CommonUtil.checkData("BIC Code", psp.getBic(), xml.getCodiceBIC(), "BIC code not consistent"));
         return checkItemList;
     }
 
@@ -251,7 +271,7 @@ public class CdiService {
                 .title("Channel - Payment Method")
                 .value(channel.getIdCanale() + " - " + informativaDetail.getTipoVersamento())
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Channel and/or payment method not consistent")
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Channel and/or payment method not consistent")
                 .build();
     }
 
@@ -260,7 +280,7 @@ public class CdiService {
         List<CheckItem> checkItemList = new ArrayList<>();
         String title = "Language code";
 
-        for(CdiXml.InformazioniServizio informazioniServizio: informativaDetail.getListaInformazioniServizio().getInformazioniServizio()) {
+        for (CdiXml.InformazioniServizio informazioniServizio : informativaDetail.getListaInformazioniServizio().getInformazioniServizio()) {
             languages.add(informazioniServizio.getCodiceLingua());
         }
 
@@ -273,29 +293,28 @@ public class CdiService {
         frequencyMap.entrySet().stream()
                 .filter(item -> item.getValue() > 1)
                 .forEach(item -> {
-                    checkItemList.add(CheckItem.builder()
+                            checkItemList.add(CheckItem.builder()
                                     .title(title)
                                     .value(item.getKey())
                                     .valid(CheckItem.Validity.NOT_VALID)
-                                    .action(String.format("%s occurrences", item.getValue()))
+                                    .note(String.format("%s occurrences", item.getValue()))
                                     .build());
-                    duplicate[0] = true;
-                }
+                            duplicate[0] = true;
+                        }
                 );
 
-        if (languagesTarget.size() == 0 && !duplicate[0]) {
+        if (languagesTarget.isEmpty() && !duplicate[0]) {
             checkItemList.add(CheckItem.builder()
                     .title(title)
                     .value("")
                     .valid(CheckItem.Validity.VALID)
                     .build());
-        }
-        else if (languagesTarget.size() > 0) {
+        } else if (!languagesTarget.isEmpty()) {
             checkItemList.add(CheckItem.builder()
                     .title(title)
                     .value("")
                     .valid(CheckItem.Validity.NOT_VALID)
-                    .action(String.format("Missing languages: %s", languagesTarget.toString()))
+                    .note(String.format("Missing languages: %s", languagesTarget))
                     .build());
         }
 
@@ -306,17 +325,16 @@ public class CdiService {
         List<Double> maxServiceAmountList = new ArrayList<>();
         List<CheckItem> checkItemList = new ArrayList<>();
         boolean valid = true;
-        for(CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
+        for (CdiXml.FasciaCostoServizio maxServiceAmount : informativaDetail.getCostiServizio().getListaFasceCostoServizio().getFasciaCostoServizio()) {
             if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
                 checkItemList.add(CheckItem.builder()
                         .title("Maximum amount range")
                         .value(maxServiceAmount.getImportoMassimoFascia().toString())
                         .valid(CheckItem.Validity.NOT_VALID)
-                        .action("Duplicate amount")
+                        .note("Duplicate amount")
                         .build());
                 valid = false;
-            }
-            else {
+            } else {
                 maxServiceAmountList.add(maxServiceAmount.getImportoMassimoFascia());
             }
         }
@@ -337,7 +355,7 @@ public class CdiService {
                 .title("Broker PSP")
                 .value(brokerPsp)
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Broker Psp not related to the channel")
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Broker Psp not related to the channel")
                 .build();
     }
 
@@ -347,7 +365,7 @@ public class CdiService {
                 .title("Payment model")
                 .value(informativaDetail.getModelloPagamento().toString())
                 .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Payment model not related to payment method")
+                .note(validity.equals(CheckItem.Validity.VALID) ? "" : "Payment model not related to payment method")
                 .build();
     }
 
@@ -357,17 +375,7 @@ public class CdiService {
                 .title("Flow identifier")
                 .value(xml.getIdentificativoFlusso())
                 .valid(optFlow.isPresent() ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID)
-                .action(optFlow.isPresent() ? "Flow identifier already exists" : "")
-                .build();
-    }
-
-    private CheckItem checkData(String title, Object data, Object target, String action) {
-        CheckItem.Validity validity = target.equals(data) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
-        return CheckItem.builder()
-                .title(title)
-                .value(data.toString())
-                .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : action)
+                .note(optFlow.isPresent() ? "Flow identifier already exists" : "")
                 .build();
     }
 
@@ -509,8 +517,8 @@ public class CdiService {
      */
     private CdiMaster saveCdiMaster(CdiXml xml, Psp psp, BinaryFile binaryFile) {
         return cdiMasterRepository.save(CdiMaster.builder()
-                .dataPubblicazione(toTimestamp(xml.getInformativaMaster().getDataPubblicazione()))
-                .dataInizioValidita(toTimestamp(xml.getInformativaMaster().getDataInizioValidita()))
+                .dataPubblicazione(Timestamp.valueOf(xml.getInformativaMaster().getDataPubblicazione()))
+                .dataInizioValidita(Timestamp.valueOf(xml.getInformativaMaster().getDataInizioValidita()))
                 .idInformativaPsp(xml.getIdentificativoFlusso())
                 .logoPsp(xml.getInformativaMaster().getLogoPSP().strip().getBytes())
                 .urlInformazioniPsp(xml.getInformativaMaster().getUrlInformazioniPSP())
@@ -540,22 +548,6 @@ public class CdiService {
     private Psp getPspIfExists(String pspCode) {
         return pspRepository.findByIdPsp(pspCode)
                 .orElseThrow(() -> new AppException(AppError.PSP_NOT_FOUND, pspCode));
-    }
-
-    /**
-     * @param startValidityDate check if the validity is after today
-     * @return item with validity info
-     */
-    private CheckItem checkValidityDate(XMLGregorianCalendar startValidityDate) {
-        LocalDate now = LocalDate.now();
-        LocalDate tomorrow = now.plusDays(1);
-        CheckItem.Validity validity = toTimestamp(startValidityDate).before(Timestamp.valueOf(tomorrow.atStartOfDay())) ? CheckItem.Validity.NOT_VALID : CheckItem.Validity.VALID;
-        return CheckItem.builder()
-                .title("Data validità")
-                .value(startValidityDate.toString())
-                .valid(validity)
-                .action(validity.equals(CheckItem.Validity.VALID) ? "" : "Validity start date must be greater than the today's date")
-                .build();
     }
 
     /**

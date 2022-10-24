@@ -13,7 +13,7 @@
 
     <groupId>it.pagopa.pagopa.api-config</groupId>
     <artifactId>api-config</artifactId>
-    <version>0.21.2</version>
+    <version>0.23.1</version>
     <description>Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti</description>
 
     <properties>
@@ -117,6 +117,13 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>${opencsv.version}</version>
+        </dependency>
+
+        <!-- Iban validation -->
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.7</version>
         </dependency>
 
 
