@@ -1,5 +1,7 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.entity.Codifiche;
+import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
@@ -13,9 +15,12 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionS
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
+import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.CodificheRepository;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -59,6 +64,12 @@ public class CreditorInstitutionsService {
     private IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
     @Autowired
+    private CodifichePaRepository codifichePaRepository;
+
+    @Autowired
+    private CodificheRepository codificheRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
 
@@ -86,6 +97,8 @@ public class CreditorInstitutionsService {
             throw new AppException(AppError.CREDITOR_INSTITUTION_CONFLICT, creditorInstitutionDetails.getCreditorInstitutionCode());
         }
         Pa pa = paRepository.save(modelMapper.map(creditorInstitutionDetails, Pa.class));
+
+        addQrEncoding(pa);
         return modelMapper.map(pa, CreditorInstitutionDetails.class);
     }
 
@@ -358,6 +371,18 @@ public class CreditorInstitutionsService {
                 .build();
         paStazionePaRepository.save(entity);
         return creditorInstitutionStationEdit;
+    }
+
+    private void addQrEncoding(Pa pa) {
+        Codifiche codifiche = codificheRepository.findByIdCodifica(Encoding.CodeTypeEnum.QR_CODE.getValue());
+        if (codifichePaRepository.findByFkPaAndFkCodifica(pa, codifiche).isEmpty()) {
+            CodifichePa codifichePa = CodifichePa.builder()
+                    .fkPa(pa)
+                    .fkCodifica(codifiche)
+//                .codicePa(pa) TODO
+                    .build();
+            codifichePaRepository.save(codifichePa);
+        }
     }
 
 

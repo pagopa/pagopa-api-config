@@ -1,6 +1,8 @@
 package it.pagopa.pagopa.apiconfig.repository;
 
+import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +17,5 @@ public interface CodifichePaRepository extends JpaRepository<CodifichePa, Long> 
 
     Optional<CodifichePa> findByCodicePa(String codicePa);
     Optional<CodifichePa> findByCodicePaAndFkPa_ObjId(String codicePa, Long fkPa);
+    Optional<CodifichePa> findByFkPaAndFkCodifica(Pa pa, Codifiche codificha);
 }
