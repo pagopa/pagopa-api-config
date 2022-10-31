@@ -17,7 +17,7 @@ services:
 
   flyway:
     container_name: 'flyway'
-    image: flyway/flyway
+    image: flyway/flyway:8.5.11
     command: migrate
     volumes:
       - ./database/sql:/flyway/sql
