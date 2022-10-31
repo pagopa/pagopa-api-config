@@ -375,14 +375,12 @@ public class CreditorInstitutionsService {
 
     private void addQrEncoding(Pa pa) {
         Codifiche codifiche = codificheRepository.findByIdCodifica(Encoding.CodeTypeEnum.QR_CODE.getValue());
-        if (codifichePaRepository.findByFkPaAndFkCodifica(pa, codifiche).isEmpty()) {
-            CodifichePa codifichePa = CodifichePa.builder()
-                    .fkPa(pa)
-                    .fkCodifica(codifiche)
-//                .codicePa(pa) TODO
-                    .build();
-            codifichePaRepository.save(codifichePa);
-        }
+        CodifichePa codifichePa = CodifichePa.builder()
+                .fkPa(pa)
+                .fkCodifica(codifiche)
+                .codicePa(pa.getIdDominio()) // for QR Code Encoding CODICE_PA is the fiscal code of the EC.
+                .build();
+        codifichePaRepository.save(codifichePa);
     }
 
 

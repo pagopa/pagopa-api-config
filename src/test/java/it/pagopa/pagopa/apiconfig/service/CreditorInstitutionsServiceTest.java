@@ -11,6 +11,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionS
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
+import it.pagopa.pagopa.apiconfig.repository.CodificheRepository;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
@@ -68,6 +70,9 @@ class CreditorInstitutionsServiceTest {
     @Autowired
     @InjectMocks
     private CreditorInstitutionsService creditorInstitutionsService;
+
+    @MockBean
+    private CodificheRepository codificheRepository;
 
 
     @Test
@@ -133,6 +138,7 @@ class CreditorInstitutionsServiceTest {
     void createCreditorInstitution() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.empty());
         when(paRepository.save(any(Pa.class))).thenReturn(getMockPa());
+        when(codificheRepository.findByIdCodifica(any())).thenReturn(getMockCodifichePa().getFkCodifica());
 
         CreditorInstitutionDetails result = creditorInstitutionsService.createCreditorInstitution(getMockCreditorInstitutionDetails());
         String actual = TestUtil.toJson(result);
