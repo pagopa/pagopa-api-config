@@ -8181,7 +8181,7 @@
             "in": "query",
             "name": "force",
             "required": false,
-            "type": "file"
+            "type": "boolean"
           },
           {
             "description": "XML file regarding ICA to create",
@@ -8189,7 +8189,7 @@
             "in": "formData",
             "name": "file",
             "required": true,
-            "type": "string"
+            "type": "file"
           }
         ],
         "responses": {
