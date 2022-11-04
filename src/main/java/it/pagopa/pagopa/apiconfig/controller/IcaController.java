@@ -119,7 +119,7 @@ public class IcaController {
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<List<CheckItem>> verifyIca(@NotNull @Parameter(description = "XML file regarding ICA to check", required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok(icaService.verifyIca(file));
+        return ResponseEntity.ok(icaService.verifyIca(file, false));
     }
 
     @Operation(summary = "Upload a XML file containing the details of an ICA", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Creditor Institutions",})
@@ -135,8 +135,9 @@ public class IcaController {
             value = "",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
     )
-    public ResponseEntity<Void> createIca(@NotNull @Parameter(description = "XML file regarding ICA to create", required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("file") MultipartFile file) {
-        icaService.createIca(file);
+    public ResponseEntity<Void> createIca(@NotNull @Parameter(description = "XML file regarding ICA to create", required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("file") MultipartFile file,
+                                          @Parameter(description = "Force upload ignoring the validity date") @RequestParam(value = "force", defaultValue = "false") Boolean force) {
+        icaService.createIca(file, force);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

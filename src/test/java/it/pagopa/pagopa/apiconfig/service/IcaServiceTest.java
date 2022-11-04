@@ -136,7 +136,7 @@ class IcaServiceTest {
         when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
         when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
         try {
-            icaService.createIca(file);
+            icaService.createIca(file, false);
         } catch (Exception e) {
             fail(e);
         }
@@ -150,7 +150,7 @@ class IcaServiceTest {
         when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
         when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
         try {
-            icaService.createIca(file);
+            icaService.createIca(file, false);
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
@@ -176,7 +176,7 @@ class IcaServiceTest {
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
 
-        List<CheckItem> checkItemList = icaService.verifyIca(file);
+        List<CheckItem> checkItemList = icaService.verifyIca(file, false);
 
         assertFalse(checkItemList.stream().anyMatch(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)));
     }
@@ -187,7 +187,7 @@ class IcaServiceTest {
         File xml = TestUtil.readFile("file/ica_xsd_not_valid.xml");
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
 
-        List<CheckItem> checkItemList = icaService.verifyIca(file);
+        List<CheckItem> checkItemList = icaService.verifyIca(file, false);
         assertEquals(1, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 
@@ -199,7 +199,7 @@ class IcaServiceTest {
         MockMultipartFile file = new MockMultipartFile("file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.empty());
 
-        List<CheckItem> checkItemList = icaService.verifyIca(file);
+        List<CheckItem> checkItemList = icaService.verifyIca(file, false);
         assertEquals(2,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 
@@ -236,7 +236,7 @@ class IcaServiceTest {
 
         when(ibanValidiPerPaRepository.findAllByFkPa(anyLong())).thenReturn(ibans);
 
-        List<CheckItem> checkItemList = icaService.verifyIca(file);
+        List<CheckItem> checkItemList = icaService.verifyIca(file, false);
         assertEquals(3,checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 

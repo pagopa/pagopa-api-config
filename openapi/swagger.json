@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.23.0"
+    "version": "0.24.0"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -8176,12 +8176,20 @@
         ],
         "parameters": [
           {
+            "default": false,
+            "description": "Force upload ignoring the validity date",
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "type": "file"
+          },
+          {
             "description": "XML file regarding ICA to create",
             "format": "binary",
             "in": "formData",
             "name": "file",
             "required": true,
-            "type": "file"
+            "type": "string"
           }
         ],
         "responses": {
