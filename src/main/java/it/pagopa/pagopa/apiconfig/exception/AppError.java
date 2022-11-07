@@ -18,6 +18,7 @@ public enum AppError {
     ENCODING_CREDITOR_INSTITUTION_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Creditor Institution Encoding bad request", "Encoding %s=%s is not compliant to requirements."),
     ENCODING_CREDITOR_INSTITUTION_DEPRECATED(HttpStatus.BAD_REQUEST, "Creditor Institution Encoding bad request", "Encoding %s=%s is deprecated."),
     ENCODING_CREDITOR_INSTITUTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Creditor Institution Encoding not found", "No Encoding found with code %s associated with Creditor Institution code %s"),
+    ENCODING_NOT_FOUND(HttpStatus.NOT_FOUND, "Creditor Institution Encoding not found", "No Encoding found with code %s"),
     ENCODING_CREDITOR_INSTITUTION_CONFLICT(HttpStatus.CONFLICT, "Creditor Institution Encoding conflict", "Encoding code %s associated with Creditor Institution code %s already exists"),
 
     BROKER_NOT_FOUND(HttpStatus.NOT_FOUND, "Broker not found", "No Broker found with code: %s"),
