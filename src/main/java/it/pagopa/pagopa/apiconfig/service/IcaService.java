@@ -140,12 +140,12 @@ public class IcaService {
     }
 
     @Transactional
-    public void createIca(@NotNull MultipartFile file) {
-        List<CheckItem> checks = verifyIca(file);
+    public void createIca(@NotNull MultipartFile file, Boolean force) {
+        List<CheckItem> checks = verifyIca(file, force);
 
         Optional<CheckItem> check = checks.stream()
                 .filter(item -> item.getValid()
-                .equals(CheckItem.Validity.NOT_VALID))
+                        .equals(CheckItem.Validity.NOT_VALID))
                 .findFirst();
         if (check.isPresent()) {
             throw new AppException(AppError.ICA_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
@@ -173,7 +173,7 @@ public class IcaService {
         informativeContoAccreditoMasterRepository.delete(icaMaster);
     }
 
-    public List<CheckItem> verifyIca(MultipartFile file) {
+    public List<CheckItem> verifyIca(MultipartFile file, Boolean force) {
         // checks are described here https://pagopa.atlassian.net/wiki/spaces/ACN/pages/441517396/Verifica+ICA
         List<CheckItem> checkItemList = new ArrayList<>();
 
@@ -236,7 +236,9 @@ public class IcaService {
         }
 
         // check date
-        checkItemList.add(CommonUtil.checkValidityDate(xml.getDataInizioValidita()));
+        if (Boolean.FALSE.equals(force)) {
+            checkItemList.add(CommonUtil.checkValidityDate(xml.getDataInizioValidita()));
+        }
 
         return checkItemList;
     }
@@ -254,12 +256,10 @@ public class IcaService {
             if (item instanceof String) {
                 String iban = (String) item;
                 checkItemList.add(getIbanCheckItem(iban, ibans, encodings));
-            }
-            else if (item instanceof IcaXml.InfoContoDiAccreditoPair) {
+            } else if (item instanceof IcaXml.InfoContoDiAccreditoPair) {
                 String iban = ((IcaXml.InfoContoDiAccreditoPair) item).getIbanAccredito();
                 checkItemList.add(getIbanCheckItem(iban, ibans, encodings));
-            }
-            else {
+            } else {
                 throw new AppException(AppError.ICA_BAD_REQUEST, "Iban field not mapped");
             }
         });
@@ -275,7 +275,7 @@ public class IcaService {
             // check if iban is already been added
             boolean found = ibans.stream()
                     .anyMatch(i -> i.getIbanAccredito()
-                    .equals(iban));
+                            .equals(iban));
             if (found) {
                 note = "Iban already added. ";
 
@@ -285,8 +285,7 @@ public class IcaService {
                     note += result.get(NOTE_KEY);
                     action = result.get(ACTION_KEY);
                 }
-            }
-            else {
+            } else {
                 String abiCode = iban.substring(5, 10);
                 // check if postal iban and then check that the related barcode-128-aim encoding exists
                 note = "New Iban. ";
@@ -332,7 +331,7 @@ public class IcaService {
      * check if flusso in the xml already exists
      *
      * @param xml XML file
-     * @param pa     the PA from DB
+     * @param pa  the PA from DB
      */
     private CheckItem checkFlow(IcaXml xml, Pa pa) {
         Optional<InformativeContoAccreditoMaster> optFlow = informativeContoAccreditoMasterRepository.findByIdInformativaContoAccreditoPaAndFkPa_IdDominio(xml.getIdentificativoFlusso(), pa.getIdDominio());
@@ -345,7 +344,7 @@ public class IcaService {
     }
 
     /**
-     * @param pa check if PA has QR-CODE encodings
+     * @param pa              check if PA has QR-CODE encodings
      * @param codifichePaList
      */
     private CheckItem checkQrCode(Pa pa, List<CodifichePa> codifichePaList) {

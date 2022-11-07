@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
@@ -9,8 +10,11 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionL
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
+import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.CodificheRepository;
 import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
@@ -21,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -37,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
@@ -48,6 +54,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -68,6 +76,12 @@ class CreditorInstitutionsServiceTest {
     @Autowired
     @InjectMocks
     private CreditorInstitutionsService creditorInstitutionsService;
+
+    @MockBean
+    private CodificheRepository codificheRepository;
+
+    @MockBean
+    private CodifichePaRepository codifichePaRepository;
 
 
     @Test
@@ -133,11 +147,17 @@ class CreditorInstitutionsServiceTest {
     void createCreditorInstitution() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.empty());
         when(paRepository.save(any(Pa.class))).thenReturn(getMockPa());
+        when(codificheRepository.findByIdCodifica(Encoding.CodeTypeEnum.QR_CODE.getValue())).thenReturn(getMockCodifichePa().getFkCodifica());
+
+        ArgumentCaptor<CodifichePa> codifichePa = ArgumentCaptor.forClass(CodifichePa.class);
 
         CreditorInstitutionDetails result = creditorInstitutionsService.createCreditorInstitution(getMockCreditorInstitutionDetails());
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/create_creditorinstitution_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+
+        verify(codifichePaRepository, times(1)).save(codifichePa.capture());
+        assertEquals(getMockPa().getIdDominio(), codifichePa.getValue().getCodicePa());
     }
 
     @Test

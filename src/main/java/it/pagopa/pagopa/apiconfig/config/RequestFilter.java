@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.ClientAbortException;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -52,6 +53,8 @@ public class RequestFilter implements Filter {
             // set requestId in the response header
             ((HttpServletResponse) response).setHeader(HEADER_REQUEST_ID, requestId);
             chain.doFilter(request, response);
+        } catch (ClientAbortException e) {
+            log.warn("the Client cancels the request");
         } finally {
             MDC.clear();
         }
