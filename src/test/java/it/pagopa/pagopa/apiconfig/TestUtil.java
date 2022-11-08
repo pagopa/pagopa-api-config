@@ -536,7 +536,7 @@ public class TestUtil {
                 .enabled(true)
                 .businessName("name")
                 .agidPsp(true)
-                .pspCode("1234")
+                .pspCode("1234ABC12345")
                 .bic("435")
                 .stamp(true)
                 .transfer(false)
@@ -634,7 +634,7 @@ public class TestUtil {
         return PaymentServiceProvider.builder()
                 .businessName("ciao")
                 .enabled(true)
-                .pspCode("1")
+                .pspCode("12345ABC12345")
                 .build();
     }
 

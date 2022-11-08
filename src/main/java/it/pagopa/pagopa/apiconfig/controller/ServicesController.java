@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
 @RestController()
@@ -45,7 +46,7 @@ public class ServicesController {
     public ResponseEntity<Services> getServices(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
             @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
-            @Parameter() @RequestParam(required = false, name = "pspcode") String pspCode,
+            @Pattern(regexp = "[A-Z0-9]{6,14}") @Parameter() @RequestParam(required = false, name = "pspcode") String pspCode,
             @Parameter() @RequestParam(required = false, name = "brokerpspcode") String brokerPspCode,
             @Parameter() @RequestParam(required = false, name = "channelcode") String channelCode,
             @Parameter() @RequestParam(required = false, name = "paymentmethodchannel") Long paymentMethodChannel,

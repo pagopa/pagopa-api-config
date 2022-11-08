@@ -58,8 +58,8 @@ class PspControllerTest {
     @ParameterizedTest
     @CsvSource({
             "/paymentserviceproviders?page=0",
-            "/paymentserviceproviders/1234",
-            "/paymentserviceproviders/1234/channels",
+            "/paymentserviceproviders/1234ABC12345",
+            "/paymentserviceproviders/1234ABC12345/channels",
     })
     void getPsp(String url) throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
