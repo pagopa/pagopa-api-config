@@ -23,8 +23,7 @@ jobs:
 
       - name: Update OpenApi and Swagger files
         run: |
-          mvn spring-boot:run -Dspring-boot.run.profiles=h2
-          sh generate_openapi_and_swagger.sh
+          sh ./openapi/generate_openapi_and_swagger.sh
           
       - name: Commit & Push changes
         uses: actions-js/push@master
