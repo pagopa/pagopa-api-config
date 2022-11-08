@@ -9,6 +9,8 @@ if [[ "$(pwd)" =~ .*"openapi".* ]]; then
     cd ..
 fi
 
+npm install -g api-spec-converter
+
 mvn spring-boot:run -Dmaven.test.skip=true -Dspring-boot.run.profiles=h2 &
 
 # waiting the service
