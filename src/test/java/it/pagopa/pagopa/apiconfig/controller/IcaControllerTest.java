@@ -103,4 +103,16 @@ class IcaControllerTest {
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk());
     }
+    
+    @Test
+    void massiveVerifyIcas() throws Exception {
+        File zip = TestUtil.readFile("file/massiveIca.zip");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+        String url = "/icas/check/massive";
+
+        mvc.perform(multipart(url)
+                .file(multipartFile)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+    }
 }

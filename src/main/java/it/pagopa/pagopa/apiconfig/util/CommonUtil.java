@@ -184,6 +184,18 @@ public class CommonUtil {
      * @throws XMLStreamException error during read XML
      */
     public static void syntaxValidation(MultipartFile xml, String xsdUrl) throws SAXException, IOException, XMLStreamException {
+        syntaxValidation(xml.getInputStream(), xsdUrl);
+    }
+
+
+    /**
+     * @param inputStream file xml to validate
+     * @param xsdUrl url of XSD
+     * @throws SAXException       if XML is not valid
+     * @throws IOException        if XSD schema not found
+     * @throws XMLStreamException error during read XML
+     */
+    public static void syntaxValidation(InputStream inputStream, String xsdUrl) throws SAXException, IOException, XMLStreamException {
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         // to be compliant, prohibit the use of all protocols by external entities:
         factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -196,7 +208,6 @@ public class CommonUtil {
         // to be compliant, completely disable DOCTYPE declaration:
         xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 
-        InputStream inputStream = xml.getInputStream();
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
         StAXSource source = new StAXSource(xmlStreamReader);
         validator.validate(source);
@@ -257,18 +268,31 @@ public class CommonUtil {
                 .build();
     }
 
-    /**
+        /**
      * @param file  XML to map
      * @param clazz class of model result
      * @return XML mapped in the model
      */
     public static <T> T mapXml(MultipartFile file, Class<T> clazz) {
+        try {
+            return mapXml(file.getInputStream(), clazz);
+        } catch (IOException e) {
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
+        }
+    }
+
+    /**
+     * @param inputStream XML to map
+     * @param clazz class of model result
+     * @return XML mapped in the model
+     */
+    public static <T> T mapXml(InputStream inputStream, Class<T> clazz) {
         T model;
         try {
             JAXBContext context = JAXBContext.newInstance(clazz);
             model = (T) context.createUnmarshaller()
-                    .unmarshal(file.getInputStream());
-        } catch (IOException | JAXBException e) {
+                    .unmarshal(inputStream);
+        } catch (JAXBException e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
         }
         return model;
