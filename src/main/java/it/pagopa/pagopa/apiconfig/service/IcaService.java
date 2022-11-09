@@ -180,25 +180,12 @@ public class IcaService {
         informativeContoAccreditoMasterRepository.delete(icaMaster);
     }
 
-    public List<CheckItem> verifyIca(MultipartFile file, Boolean force) {
-        // checks are described here https://pagopa.atlassian.net/wiki/spaces/ACN/pages/441517396/Verifica+ICA
-        List<CheckItem> checkItemList = new ArrayList<>();
-        
-        // syntax checks
-        String detail;
+    public List<CheckItem> verifyIca(MultipartFile file, Boolean force){
         try {
-            syntaxValidation(file.getInputStream(), xsdIca);
-            detail = "XML is valid against the XSD schema.";
-            checkItemList.add(CheckItem.builder()
-                    .title("XSD Schema")
-                    .value(xsdIca)
-                    .valid(CheckItem.Validity.VALID)
-                    .note(detail)
-                    .build()
-            );
-
-        } catch (SAXException | IOException | XMLStreamException e) {
-            detail = getExceptionErrors(e.getMessage());
+            return verifyIca(new ByteArrayInputStream(file.getInputStream().readAllBytes()), force);
+        } catch (IOException e) {
+            List<CheckItem> checkItemList = new ArrayList<>();
+            String detail = getExceptionErrors(e.getMessage());
             checkItemList.add(CheckItem.builder()
                     .title("XSD Schema")
                     .value(xsdIca)
@@ -208,63 +195,16 @@ public class IcaService {
             );
             return checkItemList;
         }
-
-        // map file into model class
-        InputStream inputStream = null;
-        try {
-            inputStream = file.getInputStream();
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        IcaXml xml = mapXml(inputStream, IcaXml.class);
-
-        // check PA
-        String paFiscalCode = xml.getIdentificativoDominio();
-        Pa pa = null;
-        List<CodifichePa> encodings = null;
-        try {
-            pa = getPaIfExists(paFiscalCode);
-            checkItemList.addAll(checkCi(pa, xml));
-
-            // check qr-code
-            encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
-            checkItemList.add(checkQrCode(pa, encodings));
-
-        } catch (AppException e) {
-            checkItemList.add(CheckItem.builder()
-                    .title("CI fiscal Code")
-                    .value(paFiscalCode)
-                    .valid(CheckItem.Validity.NOT_VALID)
-                    .note("CI fiscal code not consistent")
-                    .build());
-        }
-
-        if (pa != null) {
-            // check flow
-            checkItemList.add(checkFlow(xml, pa));
-
-            // retrieve CI ibans
-            List<IbanValidiPerPa> ibans = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
-            checkItemList.addAll(checkIbans(xml.getContiDiAccredito(), ibans, encodings));
-        }
-
-        // check date
-        if (Boolean.FALSE.equals(force)) {
-            checkItemList.add(CommonUtil.checkValidityDate(xml.getDataInizioValidita()));
-        }
-
-        return checkItemList;
     }
 
-    private List<CheckItem> verifyIca(byte[] input, Boolean force) {
+    private List<CheckItem> verifyIca(InputStream inputStream, Boolean force) {
         // checks are described here https://pagopa.atlassian.net/wiki/spaces/ACN/pages/441517396/Verifica+ICA
         List<CheckItem> checkItemList = new ArrayList<>();
-        
         // syntax checks
         String detail;
         try {
-            syntaxValidation(new ByteArrayInputStream(input), xsdIca);
+            syntaxValidation(inputStream, xsdIca);
+            inputStream.reset();
             detail = "XML is valid against the XSD schema.";
             checkItemList.add(CheckItem.builder()
                     .title("XSD Schema")
@@ -287,7 +227,7 @@ public class IcaService {
         }
 
         // map file into model class
-        IcaXml xml = mapXml(new ByteArrayInputStream(input), IcaXml.class);
+        IcaXml xml = mapXml(inputStream, IcaXml.class);
 
         // check PA
         String paFiscalCode = xml.getIdentificativoDominio();
@@ -341,7 +281,7 @@ public class IcaService {
                 //For every file, invoke verifyIca, build response, with name of file and list of checkItem
                 massiveChecks.add(MassiveCheck.builder()
                 .fileName(zipEntry.getName())
-                .checkItems(verifyIca(baos.toByteArray(), force))
+                .checkItems(verifyIca(new ByteArrayInputStream(baos.toByteArray()), force))
                 .build());
                 //Go to next file inside zip
                 zipEntry = zis.getNextEntry();
