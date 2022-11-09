@@ -1855,6 +1855,7 @@
                         "description": "filter by PSP",
                         "required": false,
                         "schema": {
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     }
@@ -2288,6 +2289,7 @@
                         "description": "PSP code",
                         "required": true,
                         "schema": {
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     }
@@ -2438,6 +2440,7 @@
                         "description": "PSP code",
                         "required": true,
                         "schema": {
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     }
@@ -11459,8 +11462,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 1,
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     }
@@ -11594,8 +11596,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 1,
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     }
@@ -11739,8 +11740,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 1,
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     }
@@ -11879,8 +11879,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 0,
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     }
@@ -12014,8 +12013,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 0,
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     }
@@ -12189,8 +12187,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 1,
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     },
@@ -12345,8 +12342,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 0,
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     },
@@ -12537,6 +12533,7 @@
                         "in": "query",
                         "required": false,
                         "schema": {
+                            "pattern": "[A-Z0-9]{6,14}",
                             "type": "string"
                         }
                     },
@@ -14167,6 +14164,7 @@
                 "type": "object",
                 "properties": {
                     "psp_code": {
+                        "pattern": "[A-Z0-9]{6,14}",
                         "type": "string"
                     },
                     "enabled": {
@@ -15198,6 +15196,7 @@
                 "type": "object",
                 "properties": {
                     "psp_code": {
+                        "pattern": "[A-Z0-9]{6,14}",
                         "type": "string"
                     },
                     "enabled": {
