@@ -9,6 +9,26 @@ if [[ "$(pwd)" =~ .*"openapi".* ]]; then
     cd ..
 fi
 
+npm install -g api-spec-converter
+
+mvn spring-boot:run -Dmaven.test.skip=true -Dspring-boot.run.profiles=h2 &
+
+# waiting the service
+printf 'Waiting for the service'
+attempt_counter=0
+max_attempts=50
+until $(curl --output /dev/null --silent --head --fail http://localhost:8080/apiconfig/api/v1/info); do
+    if [ ${attempt_counter} -eq ${max_attempts} ];then
+      echo "Max attempts reached"
+      exit 1
+    fi
+
+    printf '.'
+    attempt_counter=$((attempt_counter+1))
+    sleep 5
+done
+echo 'Service Started'
+
 
 curl http://127.0.0.1:8080/apiconfig/api/v1/v3/api-docs | python3 -m json.tool > ./openapi/openapi.json
 api-spec-converter  --from=openapi_3 --to=swagger_2 ./openapi/openapi.json > ./openapi/swagger.json
@@ -25,3 +45,5 @@ jq  '."paths"."/cdis".post.parameters[0].type |= "file"' ./openapi/swagger.json 
 jq  '."paths"."/cdis/check".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/batchoperation/creditorinstitution-station/loading".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/batchoperation/creditorinstitution-station/migration".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
+
+kill %% || true
