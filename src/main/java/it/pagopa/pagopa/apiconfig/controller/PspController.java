@@ -81,7 +81,7 @@ public class PspController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/{pspcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PaymentServiceProviderDetails> getPaymentServiceProvider(@NotBlank @Pattern(regexp = "[A-Z0-9]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode) {
+    public ResponseEntity<PaymentServiceProviderDetails> getPaymentServiceProvider(@NotBlank @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode) {
         return ResponseEntity.ok(pspService.getPaymentServiceProvider(pspCode));
     }
 
@@ -109,7 +109,7 @@ public class PspController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/{pspcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PaymentServiceProviderDetails> updatePaymentServiceProvider(@NotBlank @Pattern(regexp = "[A-Z0-9]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode, @RequestBody @Valid @NotNull PaymentServiceProviderDetails paymentServiceProviderDetails) {
+    public ResponseEntity<PaymentServiceProviderDetails> updatePaymentServiceProvider(@NotBlank @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode, @RequestBody @Valid @NotNull PaymentServiceProviderDetails paymentServiceProviderDetails) {
         return ResponseEntity.ok(pspService.updatePaymentServiceProvider(pspCode, paymentServiceProviderDetails));
     }
 
@@ -123,7 +123,7 @@ public class PspController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/{pspcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> deletePaymentServiceProvider(@NotBlank @Pattern(regexp = "[A-Z0-9]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode) {
+    public ResponseEntity<Void> deletePaymentServiceProvider(@NotBlank @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode) {
         pspService.deletePaymentServiceProvider(pspCode);
         return ResponseEntity.ok().build();
     }
@@ -141,7 +141,7 @@ public class PspController {
             value = "/{pspcode}/channels",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<PspChannelList> getPaymentServiceProvidersChannels(@Pattern(regexp = "[A-Z0-9]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode) {
+    public ResponseEntity<PspChannelList> getPaymentServiceProvidersChannels(@Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode) {
         return ResponseEntity.ok(pspService.getPaymentServiceProvidersChannels(pspCode));
 
     }
@@ -160,7 +160,7 @@ public class PspController {
             value = "/{pspcode}/channels",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<PspChannelCode> createPaymentServiceProvidersChannels(@Pattern(regexp = "[A-Z0-9]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
+    public ResponseEntity<PspChannelCode> createPaymentServiceProvidersChannels(@Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
                                                                                 @RequestBody @Valid @NotNull PspChannelCode pspChannelCode) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pspService.createPaymentServiceProvidersChannels(pspCode, pspChannelCode));
     }
@@ -175,7 +175,7 @@ public class PspController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @PutMapping(value = "/{pspcode}/channels/{channelcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<PspChannelPaymentTypes> updatePaymentServiceProvidersChannels(@Pattern(regexp = "[A-Z0-9]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
+    public ResponseEntity<PspChannelPaymentTypes> updatePaymentServiceProvidersChannels(@Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
                                                                                         @Size(max = 50) @Parameter(description = "Channel code.", required = true) @PathVariable("channelcode") String channelCode,
                                                                                         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true) @RequestBody @Valid @NotNull PspChannelPaymentTypes pspChannelPaymentTypes) {
         return ResponseEntity.ok(pspService.updatePaymentServiceProvidersChannels(pspCode, channelCode, pspChannelPaymentTypes));
@@ -194,7 +194,7 @@ public class PspController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @DeleteMapping(value = "/{pspcode}/channels/{channelcode}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> deletePaymentServiceProvidersChannels(
-            @Pattern(regexp = "[A-Z0-9]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
+            @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "Code of the payment service provider", required = true) @PathVariable("pspcode") String pspCode,
             @Size(max = 50) @Parameter(description = "Code of the channel", required = true) @PathVariable("channelcode") String channelCode) {
         pspService.deletePaymentServiceProvidersChannels(pspCode, channelCode);
         return ResponseEntity.ok().build();
