@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -58,7 +59,7 @@ public class CdiController {
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
             @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
             @Parameter(description = "filter by Id CDI") @RequestParam(value = "idcdi", required = false) String idCdi,
-            @Parameter(description = "filter by PSP") @RequestParam(value = "pspcode", required = false) String pspCode) {
+            @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "filter by PSP") @RequestParam(value = "pspcode", required = false) String pspCode) {
         return ResponseEntity.ok(cdiService.getCdis(limit, page, idCdi, pspCode));
     }
 
@@ -76,7 +77,7 @@ public class CdiController {
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<Resource> getCdi(@NotBlank @Size(max = 50) @Parameter(description = "Id of a CDI", required = true) @PathVariable("idcdi") String idCdi,
-                                           @NotBlank @Parameter(description = "PSP code", required = true) @RequestParam("pspcode") String pspCode) {
+                                           @NotBlank @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "PSP code", required = true) @RequestParam("pspcode") String pspCode) {
         byte[] file = cdiService.getCdi(idCdi, pspCode);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_XML)
@@ -115,7 +116,7 @@ public class CdiController {
     @DeleteMapping(value = "/{idcdi}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> deleteCdi(
             @NotBlank @Size(max = 50) @Parameter(description = "Id of a CDI", required = true) @PathVariable("idcdi") String idCdi,
-            @NotBlank @Parameter(description = "PSP code", required = true) @RequestParam("pspcode") String pspCode) {
+            @NotBlank @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "PSP code", required = true) @RequestParam("pspcode") String pspCode) {
         cdiService.deleteCdi(idCdi, pspCode);
         return ResponseEntity.ok().build();
     }

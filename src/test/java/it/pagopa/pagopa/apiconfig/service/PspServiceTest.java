@@ -52,6 +52,8 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = ApiConfig.class)
 class PspServiceTest {
 
+    public static final String PSP_CODE = "1234ABC12345";
+
     @MockBean
     PspRepository pspRepository;
 
@@ -86,7 +88,7 @@ class PspServiceTest {
     void getPaymentServiceProvider() throws IOException, JSONException {
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
 
-        PaymentServiceProviderDetails result = pspService.getPaymentServiceProvider("1234");
+        PaymentServiceProviderDetails result = pspService.getPaymentServiceProvider(PSP_CODE);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_paymentserviceprovider_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -97,7 +99,7 @@ class PspServiceTest {
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.empty());
 
         try {
-            pspService.getPaymentServiceProvider("1234");
+            pspService.getPaymentServiceProvider(PSP_CODE);
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
@@ -109,7 +111,7 @@ class PspServiceTest {
 
     @Test
     void createPsp() throws IOException, JSONException {
-        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.empty());
+        when(pspRepository.findByIdPsp(PSP_CODE)).thenReturn(Optional.empty());
         when(pspRepository.save(any(Psp.class))).thenReturn(getMockPsp());
 
         var result = pspService.createPaymentServiceProvider(getMockPaymentServiceProviderDetails());
@@ -120,7 +122,7 @@ class PspServiceTest {
 
     @Test
     void createPsp_conflict() {
-        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.of(getMockPsp()));
+        when(pspRepository.findByIdPsp(PSP_CODE)).thenReturn(Optional.of(getMockPsp()));
 
         try {
             pspService.createPaymentServiceProvider(getMockPaymentServiceProviderDetails());
@@ -133,10 +135,10 @@ class PspServiceTest {
 
     @Test
     void updatePsp() throws IOException, JSONException {
-        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.of(getMockPsp()));
+        when(pspRepository.findByIdPsp(PSP_CODE)).thenReturn(Optional.of(getMockPsp()));
         when(pspRepository.save(any(Psp.class))).thenReturn(getMockPsp());
 
-        var result = pspService.updatePaymentServiceProvider("1234", getMockPaymentServiceProviderDetails());
+        var result = pspService.updatePaymentServiceProvider(PSP_CODE, getMockPaymentServiceProviderDetails());
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/update_psp_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -144,9 +146,9 @@ class PspServiceTest {
 
     @Test
     void updatePsp_notFound() {
-        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.empty());
+        when(pspRepository.findByIdPsp(PSP_CODE)).thenReturn(Optional.empty());
         try {
-            pspService.updatePaymentServiceProvider("1234", getMockPaymentServiceProviderDetails());
+            pspService.updatePaymentServiceProvider(PSP_CODE, getMockPaymentServiceProviderDetails());
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
         } catch (Exception e) {
@@ -156,18 +158,18 @@ class PspServiceTest {
 
     @Test
     void deletePsp() {
-        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.of(getMockPsp()));
+        when(pspRepository.findByIdPsp(PSP_CODE)).thenReturn(Optional.of(getMockPsp()));
 
-        pspService.deletePaymentServiceProvider("1234");
+        pspService.deletePaymentServiceProvider(PSP_CODE);
         assertTrue(true);
     }
 
     @Test
     void deletePsp_notfound() {
-        when(pspRepository.findByIdPsp("1234")).thenReturn(Optional.empty());
+        when(pspRepository.findByIdPsp(PSP_CODE)).thenReturn(Optional.empty());
 
         try {
-            pspService.deletePaymentServiceProvider("1234");
+            pspService.deletePaymentServiceProvider(PSP_CODE);
         } catch (AppException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
         } catch (Exception e) {
@@ -181,7 +183,7 @@ class PspServiceTest {
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(getMockPsp()));
         when(pspCanaleTipoVersamentoRepository.findByFkPsp(anyLong())).thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
 
-        PspChannelList result = pspService.getPaymentServiceProvidersChannels("1234");
+        PspChannelList result = pspService.getPaymentServiceProvidersChannels(PSP_CODE);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_psp_channels_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -194,7 +196,7 @@ class PspServiceTest {
         when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
         when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
 
-        var result = pspService.createPaymentServiceProvidersChannels("1234", getMockPspChannelCode());
+        var result = pspService.createPaymentServiceProvidersChannels(PSP_CODE, getMockPspChannelCode());
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/create_psp_channels_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -210,7 +212,7 @@ class PspServiceTest {
         PspChannelCode mock = getMockPspChannelCode();
         mock.setPaymentTypeList(new ArrayList<>());
         try {
-            pspService.createPaymentServiceProvidersChannels("1234", mock);
+            pspService.createPaymentServiceProvidersChannels(PSP_CODE, mock);
             fail();
         } catch (Exception e) {
             assertEquals(AppException.class, e.getClass());
@@ -224,7 +226,7 @@ class PspServiceTest {
         when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
         when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
 
-        var result = pspService.updatePaymentServiceProvidersChannels("1234", "2", getMockPspChannelPaymentTypes());
+        var result = pspService.updatePaymentServiceProvidersChannels(PSP_CODE, "2", getMockPspChannelPaymentTypes());
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/update_psp_channels_ok.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -240,7 +242,7 @@ class PspServiceTest {
         try {
             PspChannelPaymentTypes paymentTypes = new PspChannelPaymentTypes();
             paymentTypes.setPaymentTypeList(new ArrayList<>());
-            pspService.updatePaymentServiceProvidersChannels("1234", "2", paymentTypes);
+            pspService.updatePaymentServiceProvidersChannels(PSP_CODE, "2", paymentTypes);
             fail();
         } catch (Exception e) {
             assertEquals(AppException.class, e.getClass());
@@ -253,7 +255,7 @@ class PspServiceTest {
         when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
 
         try {
-            pspService.deletePaymentServiceProvidersChannels("1234", "2");
+            pspService.deletePaymentServiceProvidersChannels(PSP_CODE, "2");
         } catch (Exception e) {
             fail();
         }
