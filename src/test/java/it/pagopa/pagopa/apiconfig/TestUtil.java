@@ -174,6 +174,9 @@ public class TestUtil {
                 .protocollo("HTTPS")
                 .protocollo4Mod("HTTPS")
                 .invioRtIstantaneo(false)
+                .targetHost("localhost")
+                .targetPort(443L)
+                .targetPath("/")
                 .build();
     }
 

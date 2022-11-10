@@ -143,4 +143,13 @@ public class StationDetails extends Station {
     @JsonProperty("invio_rt_istantaneo")
     private Boolean rtInstantaneousDispatch;
 
+    @JsonProperty("target_host")
+    private String targetHost;
+
+    @JsonProperty("target_port")
+    private Long targetPort;
+
+    @JsonProperty("target_path")
+    private String targetPath;
+
 }

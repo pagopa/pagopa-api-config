@@ -1474,7 +1474,6 @@
             "description": "filter by PSP",
             "in": "query",
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": false,
             "type": "string"
           }
@@ -1812,7 +1811,6 @@
             "description": "PSP code",
             "in": "query",
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -1936,7 +1934,6 @@
             "description": "PSP code",
             "in": "query",
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -9111,8 +9108,9 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -9213,8 +9211,9 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -9321,8 +9320,9 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           },
@@ -9444,8 +9444,9 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -9552,8 +9553,9 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           },
@@ -9687,8 +9689,9 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           },
@@ -9813,8 +9816,9 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
+            "maxLength": 50,
+            "minLength": 1,
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": true,
             "type": "string"
           },
@@ -9962,7 +9966,6 @@
           {
             "in": "query",
             "name": "pspcode",
-            "pattern": "[A-Z0-9]{6,14}",
             "required": false,
             "type": "string"
           },
@@ -12157,7 +12160,6 @@
           "type": "boolean"
         },
         "psp_code": {
-          "pattern": "[A-Z0-9]{6,14}",
           "type": "string"
         }
       },
@@ -12191,7 +12193,6 @@
           "type": "string"
         },
         "psp_code": {
-          "pattern": "[A-Z0-9]{6,14}",
           "type": "string"
         },
         "stamp": {
@@ -12798,6 +12799,16 @@
           "maxLength": 35,
           "minLength": 0,
           "type": "string"
+        },
+        "target_host": {
+          "type": "string"
+        },
+        "target_path": {
+          "type": "string"
+        },
+        "target_port": {
+          "format": "int64",
+          "type": "integer"
         },
         "thread_number": {
           "format": "int64",
