@@ -42,6 +42,7 @@ import javax.xml.stream.XMLStreamException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -274,22 +275,28 @@ public class IcaService {
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                for(int c = zis.read(); c != -1; c = zis.read()){
-                    baos.write(c);
-                }
-                //For every file, invoke verifyIca, build response, with name of file and list of checkItem
-                massiveChecks.add(MassiveCheck.builder()
-                .fileName(zipEntry.getName())
-                .checkItems(verifyIca(new ByteArrayInputStream(baos.toByteArray()), force))
-                .build());
-                //Go to next file inside zip
-                zipEntry = zis.getNextEntry();
-             }
+                File tempFile = File.createTempFile(zipEntry.getName(), "xml");
+                if(tempFile.isHidden() || zipEntry.isDirectory()){
+                    tempFile.deleteOnExit();
+                    zipEntry = zis.getNextEntry();
+                }else{
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    for(int c = zis.read(); c != -1; c = zis.read()){
+                        baos.write(c);
+                    }
+                    //For every file, invoke verifyIca, build response, with name of file and list of checkItem
+                    massiveChecks.add(MassiveCheck.builder()
+                    .fileName(zipEntry.getName())
+                    .checkItems(verifyIca(new ByteArrayInputStream(baos.toByteArray()), force))
+                    .build());
+                    tempFile.deleteOnExit();
+                    //Go to next file inside zip
+                    zipEntry = zis.getNextEntry();
+                }   
+            }
         }catch(IOException e){
             throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");
         }
-        System.out.println(massiveChecks.size());
         return massiveChecks;
     }
 
