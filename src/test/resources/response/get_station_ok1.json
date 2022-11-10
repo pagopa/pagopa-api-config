@@ -28,5 +28,8 @@
   "timeout_b": 30,
   "timeout_c": 120,
   "flag_online": true,
-  "invio_rt_istantaneo": false
+  "invio_rt_istantaneo": false,
+  "target_host":"localhost",
+  "target_port":443,
+  "target_path":"/"
 }
