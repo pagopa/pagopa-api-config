@@ -5,7 +5,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [ opened, reopened, synchronize, edited ]
+    types: [ opened, reopened, synchronize ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
         run: |
           git config --global user.name 'pagopa-github-bot' 
           git config --global user.email 'github-bot@pagopa.it'
-          git checkout ${{ github.event.pull_request.head.sha }}
+          git checkout ${{ github.event.pull_request.base.ref }}
           git add -A
           git commit -m "Auto Update Openapi and Swagger [skip ci]" || true
           git push
