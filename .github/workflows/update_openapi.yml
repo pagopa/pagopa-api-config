@@ -29,6 +29,7 @@ jobs:
         run: |
           git config --global user.name 'pagopa-github-bot' 
           git config --global user.email 'github-bot@pagopa.it'
+          git checkout ${{ github.event.pull_request.head.sha }}
           git add -A
           git commit -m "Auto Update Openapi and Swagger [skip ci]" || true
           git push
