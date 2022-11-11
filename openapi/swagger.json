@@ -4,7 +4,7 @@
     "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
-    "version": "0.25.0"
+    "version": "0.26.0"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -1474,6 +1474,7 @@
             "description": "filter by PSP",
             "in": "query",
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": false,
             "type": "string"
           }
@@ -1811,6 +1812,7 @@
             "description": "PSP code",
             "in": "query",
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -1934,6 +1936,7 @@
             "description": "PSP code",
             "in": "query",
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -9108,9 +9111,8 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
-            "maxLength": 50,
-            "minLength": 1,
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -9211,9 +9213,8 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
-            "maxLength": 50,
-            "minLength": 1,
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -9320,9 +9321,8 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
-            "maxLength": 50,
-            "minLength": 1,
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           },
@@ -9444,9 +9444,8 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
-            "maxLength": 50,
-            "minLength": 0,
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           }
@@ -9553,9 +9552,8 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
-            "maxLength": 50,
-            "minLength": 0,
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           },
@@ -9689,9 +9687,8 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
-            "maxLength": 50,
-            "minLength": 0,
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           },
@@ -9816,9 +9813,8 @@
           {
             "description": "Code of the payment service provider",
             "in": "path",
-            "maxLength": 50,
-            "minLength": 1,
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": true,
             "type": "string"
           },
@@ -9966,6 +9962,7 @@
           {
             "in": "query",
             "name": "pspcode",
+            "pattern": "[A-Z0-9_]{6,14}",
             "required": false,
             "type": "string"
           },
@@ -12160,6 +12157,7 @@
           "type": "boolean"
         },
         "psp_code": {
+          "pattern": "[A-Z0-9_]{6,14}",
           "type": "string"
         }
       },
@@ -12193,6 +12191,7 @@
           "type": "string"
         },
         "psp_code": {
+          "pattern": "[A-Z0-9_]{6,14}",
           "type": "string"
         },
         "stamp": {

@@ -4,7 +4,7 @@
         "title": "PagoPA API configuration",
         "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
         "termsOfService": "https://www.pagopa.gov.it/",
-        "version": "0.25.0"
+        "version": "0.26.0"
     },
     "servers": [
         {
@@ -389,11 +389,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -403,11 +403,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -1127,11 +1127,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -1141,11 +1141,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -1855,6 +1855,7 @@
                         "description": "filter by PSP",
                         "required": false,
                         "schema": {
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     }
@@ -2288,6 +2289,7 @@
                         "description": "PSP code",
                         "required": true,
                         "schema": {
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     }
@@ -2438,6 +2440,7 @@
                         "description": "PSP code",
                         "required": true,
                         "schema": {
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     }
@@ -2628,11 +2631,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -8115,11 +8118,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -8129,11 +8132,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -11182,11 +11185,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -11196,11 +11199,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -11459,8 +11462,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 1,
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     }
@@ -11594,8 +11596,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 1,
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     }
@@ -11739,8 +11740,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 1,
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     }
@@ -11879,8 +11879,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 0,
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     }
@@ -12014,8 +12013,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 0,
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     }
@@ -12189,8 +12187,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 1,
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     },
@@ -12345,8 +12342,7 @@
                         "description": "Code of the payment service provider",
                         "required": true,
                         "schema": {
-                            "maxLength": 50,
-                            "minLength": 0,
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     },
@@ -12537,6 +12533,7 @@
                         "in": "query",
                         "required": false,
                         "schema": {
+                            "pattern": "[A-Z0-9_]{6,14}",
                             "type": "string"
                         }
                     },
@@ -12637,14 +12634,14 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "IT",
                             "enum": [
                                 "IT",
                                 "EN",
                                 "FR",
                                 "DE",
                                 "SL"
-                            ],
-                            "default": "IT"
+                            ]
                         }
                     },
                     {
@@ -12828,11 +12825,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -14177,6 +14174,7 @@
                 "type": "object",
                 "properties": {
                     "psp_code": {
+                        "pattern": "[A-Z0-9_]{6,14}",
                         "type": "string"
                     },
                     "enabled": {
@@ -15208,6 +15206,7 @@
                 "type": "object",
                 "properties": {
                     "psp_code": {
+                        "pattern": "[A-Z0-9_]{6,14}",
                         "type": "string"
                     },
                     "enabled": {
