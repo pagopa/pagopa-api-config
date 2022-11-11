@@ -25,7 +25,7 @@ public class PaymentServiceProvider {
     @JsonProperty("psp_code")
     @Schema(required = true)
     @NotBlank
-    @Pattern(regexp = "[A-Z0-9]{6,14}")
+    @Pattern(regexp = "[A-Z0-9_]{6,14}")
     private String pspCode;
 
     @JsonProperty("enabled")

@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
@@ -85,6 +87,8 @@ public class PspService {
 
 
     public PaymentServiceProviderDetails createPaymentServiceProvider(PaymentServiceProviderDetails paymentServiceProviderDetails) {
+        validateInput(paymentServiceProviderDetails);
+
         if (pspRepository.findByIdPsp(paymentServiceProviderDetails.getPspCode()).isPresent()) {
             throw new AppException(AppError.PSP_CONFLICT, paymentServiceProviderDetails.getPspCode());
         }
@@ -270,4 +274,15 @@ public class PspService {
         pspCanaleTipoVersamentoRepository.save(entity);
     }
 
+    /**
+     * check if pspCode mathc the pattern
+     *
+     * @param paymentServiceProviderDetails PSP details
+     */
+    private static void validateInput(PaymentServiceProviderDetails paymentServiceProviderDetails) {
+        boolean match = Pattern.matches("[A-Z0-9]{6,14}", paymentServiceProviderDetails.getPspCode());
+        if (match) {
+            throw new ValidationException("pspCode doesn't match the pattern [A-Z0-9]{6,14}");
+        }
+    }
 }
