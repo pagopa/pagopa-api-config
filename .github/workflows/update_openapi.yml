@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - main
+    types: [ opened, reopened, edited ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,7 +25,7 @@ jobs:
       - name: Update OpenApi and Swagger files
         run: |
           sh ./openapi/generate_openapi_and_swagger.sh
-          
+
       - name: Commit & Push changes
         run: |
           git config --global user.name 'pagopa-github-bot' 
