@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Update OpenApi and Swagger files
         run: |
@@ -31,7 +31,6 @@ jobs:
         run: |
           git config --global user.name 'pagopa-github-bot' 
           git config --global user.email 'github-bot@pagopa.it'
-          git checkout HEAD^
           git add -A
           git commit -m "Auto Update Openapi and Swagger [skip ci]" || true
           git push
