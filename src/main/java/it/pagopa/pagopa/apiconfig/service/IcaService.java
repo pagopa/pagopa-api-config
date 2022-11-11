@@ -276,10 +276,9 @@ public class IcaService {
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                File tempFile = File.createTempFile("placeholder" + zipEntry.getName() + "placeholder", "xml");
+                File tempFile = File.createTempFile("placeholder" + zipEntry.getName(), "xml");
                 if(tempFile.isHidden() || zipEntry.isDirectory()){
-                    tempFile.deleteOnExit();
-                    zipEntry = zis.getNextEntry();
+                    tempFile.delete();
                 }else{
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     for(int c = zis.read(); c != -1; c = zis.read()){
@@ -290,10 +289,10 @@ public class IcaService {
                     .fileName(zipEntry.getName())
                     .checkItems(verifyIca(new ByteArrayInputStream(baos.toByteArray()), force))
                     .build());
-                    tempFile.deleteOnExit();
-                    //Go to next file inside zip
-                    zipEntry = zis.getNextEntry();
+                    tempFile.delete();
                 }   
+                //Go to next file inside zip
+                zipEntry = zis.getNextEntry();
             }
         }catch(IOException e){
             throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");

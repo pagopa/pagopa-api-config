@@ -268,7 +268,7 @@ public class CommonUtil {
                 .build();
     }
 
-        /**
+    /**
      * @param file  XML to map
      * @param clazz class of model result
      * @return XML mapped in the model
