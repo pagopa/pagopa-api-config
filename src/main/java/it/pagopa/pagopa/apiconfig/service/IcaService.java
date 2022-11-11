@@ -70,6 +70,7 @@ public class IcaService {
     public static final String ABI_IBAN_POSTALI = "07601";
     public static final String ACTION_KEY = "action";
     public static final String NOTE_KEY = "note";
+    public static final String XSD_SCHEMA_TITLE = "XSD Schema";
 
     @Autowired
     private PaRepository paRepository;
@@ -188,7 +189,7 @@ public class IcaService {
             List<CheckItem> checkItemList = new ArrayList<>();
             String detail = getExceptionErrors(e.getMessage());
             checkItemList.add(CheckItem.builder()
-                    .title("XSD Schema")
+                    .title(XSD_SCHEMA_TITLE)
                     .value(xsdIca)
                     .valid(CheckItem.Validity.NOT_VALID)
                     .note(detail)
@@ -208,7 +209,7 @@ public class IcaService {
             inputStream.reset();
             detail = "XML is valid against the XSD schema.";
             checkItemList.add(CheckItem.builder()
-                    .title("XSD Schema")
+                    .title(XSD_SCHEMA_TITLE)
                     .value(xsdIca)
                     .valid(CheckItem.Validity.VALID)
                     .note(detail)
@@ -218,7 +219,7 @@ public class IcaService {
         } catch (SAXException | IOException | XMLStreamException e) {
             detail = getExceptionErrors(e.getMessage());
             checkItemList.add(CheckItem.builder()
-                    .title("XSD Schema")
+                    .title(XSD_SCHEMA_TITLE)
                     .value(xsdIca)
                     .valid(CheckItem.Validity.NOT_VALID)
                     .note(detail)
@@ -275,7 +276,7 @@ public class IcaService {
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                File tempFile = File.createTempFile(zipEntry.getName(), "xml");
+                File tempFile = File.createTempFile("placeholder" + zipEntry.getName() + "placeholder", "xml");
                 if(tempFile.isHidden() || zipEntry.isDirectory()){
                     tempFile.deleteOnExit();
                     zipEntry = zis.getNextEntry();
