@@ -148,4 +148,13 @@ public class Stazioni {
     @Convert(converter = YesNoConverter.class)
     private Boolean invioRtIstantaneo;
 
+    @Column(name = "TARGET_HOST")
+    private String targetHost;
+
+    @Column(name = "TARGET_PORT")
+    private Long targetPort;
+
+    @Column(name = "TARGET_PATH")
+    private String targetPath;
+
 }

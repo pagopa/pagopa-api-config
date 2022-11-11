@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
@@ -24,6 +25,7 @@ public class PaymentServiceProvider {
     @JsonProperty("psp_code")
     @Schema(required = true)
     @NotBlank
+    @Pattern(regexp = "[A-Z0-9_]{6,14}")
     private String pspCode;
 
     @JsonProperty("enabled")

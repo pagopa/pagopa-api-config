@@ -90,10 +90,6 @@ create table NODO4_CFG.STAZIONI
     PROXY_PORT            numeric,
     PROXY_USERNAME        varchar(15),
     PROXY_PASSWORD        varchar(15),
-    PROTOCOLLO_AVV        varchar(255),
-    IP_AVV                varchar(100),
-    PORTA_AVV             numeric,
-    SERVIZIO_AVV          varchar(255),
     TIMEOUT               numeric(19)  not null default 120,
     NUM_THREAD            numeric      not null,
     TIMEOUT_A             numeric(19)  not null,
@@ -103,6 +99,9 @@ create table NODO4_CFG.STAZIONI
     VERSIONE              numeric      not null default 1.0,
     SERVIZIO_NMP          varchar(255),
     INVIO_RT_ISTANTANEO   char         not null default 'N',
+    TARGET_HOST            varchar(100),
+    TARGET_PORT            numeric,
+    TARGET_PATH            varchar(100),
     constraint PK_STAZIONI
         primary key (OBJ_ID),
     constraint UQ_ID_STAZIONE

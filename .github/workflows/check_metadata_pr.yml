@@ -2,7 +2,7 @@ name: Check PR
 
 # Controls when the workflow will run
 on:
-  pull_request_target:
+  pull_request:
     branches:
       - main
     types: [ opened, labeled, unlabeled, reopened ]
