@@ -2,7 +2,7 @@ name: Update Openapi
 
 # Controls when the workflow will run
 on:
-  pull_request_target:
+  pull_request:
     branches:
       - main
 
