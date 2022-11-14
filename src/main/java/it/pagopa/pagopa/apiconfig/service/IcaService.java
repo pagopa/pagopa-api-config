@@ -269,7 +269,7 @@ public class IcaService {
     }
 
     // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
-    @java.lang.SuppressWarnings("javasecurity:S6096")
+    @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
     public List<MassiveCheck> massiveVerifyIcas(MultipartFile file, Boolean force) {
         List<MassiveCheck> massiveChecks = new ArrayList<>();
         // extract zip file content
