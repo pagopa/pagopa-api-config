@@ -275,13 +275,13 @@ public class PspService {
     }
 
     /**
-     * check if pspCode mathc the pattern
+     * check if pspCode match the pattern
      *
      * @param paymentServiceProviderDetails PSP details
      */
     private static void validateInput(PaymentServiceProviderDetails paymentServiceProviderDetails) {
         boolean match = Pattern.matches("[A-Z0-9]{6,14}", paymentServiceProviderDetails.getPspCode());
-        if (match) {
+        if (!match) {
             throw new ValidationException("pspCode doesn't match the pattern [A-Z0-9]{6,14}");
         }
     }

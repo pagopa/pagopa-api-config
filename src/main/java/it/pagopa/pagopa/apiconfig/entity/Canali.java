@@ -89,6 +89,15 @@ public class Canali implements Serializable {
     @Column(name = "PROXY_USERNAME", length = 15)
     private String proxyUsername;
 
+    @Column(name = "TARGET_HOST")
+    private String targetHost;
+
+    @Column(name = "TARGET_PORT")
+    private Long targetPort;
+
+    @Column(name = "TARGET_PATH")
+    private String targetPath;
+
     @Type(type = "yes_no")
     @Column(name = "CANALE_NODO", nullable = false)
     private Boolean canaleNodo = false;
