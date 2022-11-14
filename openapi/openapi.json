@@ -389,11 +389,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -403,11 +403,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -1127,11 +1127,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -1141,11 +1141,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -2631,11 +2631,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -8118,11 +8118,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -8132,11 +8132,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -11185,11 +11185,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "CODE",
                             "enum": [
                                 "CODE",
                                 "NAME"
-                            ],
-                            "default": "CODE"
+                            ]
                         }
                     },
                     {
@@ -11199,11 +11199,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
@@ -12634,14 +12634,14 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "IT",
                             "enum": [
                                 "IT",
                                 "EN",
                                 "FR",
                                 "DE",
                                 "SL"
-                            ],
-                            "default": "IT"
+                            ]
                         }
                     },
                     {
@@ -12825,11 +12825,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "default": "DESC",
                             "enum": [
                                 "ASC",
                                 "DESC"
-                            ],
-                            "default": "DESC"
+                            ]
                         }
                     }
                 ],
