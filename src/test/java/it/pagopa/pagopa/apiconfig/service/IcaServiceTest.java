@@ -242,7 +242,15 @@ class IcaServiceTest {
     }
 
     @Test
-    void massiveVerifyIca() throws IOException {
+    void verifyIca_ko_4() throws IOException {
+        File tempFile = File.createTempFile("placeholder", "xml");
+        MockMultipartFile file = new MockMultipartFile("file", tempFile.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(tempFile));
+        List<CheckItem> list = icaService.verifyIca(file, false);
+        assertEquals(1,list.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
+    }
+
+    @Test
+    void massiveVerifyIca_ok() throws IOException {
         File zip = TestUtil.readFile("file/massiveIca.zip");
         MockMultipartFile file = new MockMultipartFile("file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
@@ -254,13 +262,5 @@ class IcaServiceTest {
 
         assertFalse(list1.stream().anyMatch(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)));
         assertEquals(9, list2.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
-    }
-
-    @Test
-    void verifyIca_Ko() throws IOException {
-        File tempFile = File.createTempFile("placeholder", "xml");
-        MockMultipartFile file = new MockMultipartFile("file", tempFile.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(tempFile));
-        List<CheckItem> list = icaService.verifyIca(file, false);
-        assertEquals(1,list.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
 }

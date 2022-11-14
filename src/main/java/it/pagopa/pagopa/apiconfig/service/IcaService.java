@@ -39,7 +39,6 @@ import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -185,7 +184,7 @@ public class IcaService {
     public List<CheckItem> verifyIca(MultipartFile file, Boolean force){
         try {
             return verifyIca(new ByteArrayInputStream(file.getInputStream().readAllBytes()), force);
-        } catch (IOException e) {
+        } catch (IOException | SAXException e) {
             List<CheckItem> checkItemList = new ArrayList<>();
             String detail = getExceptionErrors(e.getMessage());
             checkItemList.add(CheckItem.builder()
@@ -199,7 +198,7 @@ public class IcaService {
         }
     }
 
-    private List<CheckItem> verifyIca(InputStream inputStream, Boolean force) {
+    private List<CheckItem> verifyIca(InputStream inputStream, Boolean force) throws SAXException {
         // checks are described here https://pagopa.atlassian.net/wiki/spaces/ACN/pages/441517396/Verifica+ICA
         List<CheckItem> checkItemList = new ArrayList<>();
         // syntax checks
@@ -215,8 +214,7 @@ public class IcaService {
                     .note(detail)
                     .build()
             );
-
-        } catch (SAXException | IOException | XMLStreamException e) {
+        } catch (XMLStreamException | IOException e) {
             detail = getExceptionErrors(e.getMessage());
             checkItemList.add(CheckItem.builder()
                     .title(XSD_SCHEMA_TITLE)
@@ -287,14 +285,15 @@ public class IcaService {
                     //For every file, invoke verifyIca, build response, with name of file and list of checkItem
                     massiveChecks.add(MassiveCheck.builder()
                     .fileName(zipEntry.getName())
-                    .checkItems(verifyIca(new ByteArrayInputStream(baos.toByteArray()), force))
-                    .build());
+                    .checkItems(
+                            verifyIca(new ByteArrayInputStream(baos.toByteArray()), force)).build()
+                    );
                     tempFile.delete();
                 }   
                 //Go to next file inside zip
                 zipEntry = zis.getNextEntry();
             }
-        }catch(IOException e){
+        } catch(IOException | SAXException e){
             throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");
         }
         return massiveChecks;
