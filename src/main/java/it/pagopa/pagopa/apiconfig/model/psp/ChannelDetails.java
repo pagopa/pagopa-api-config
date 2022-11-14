@@ -78,6 +78,15 @@ public class ChannelDetails extends Channel {
     @JsonProperty("proxy_password")
     private String proxyPassword;
 
+    @JsonProperty("target_host")
+    private String targetHost;
+
+    @JsonProperty("target_port")
+    private Long targetPort;
+
+    @JsonProperty("target_path")
+    private String targetPath;
+
     @Min(1)
     @JsonProperty("thread_number")
     @NotNull

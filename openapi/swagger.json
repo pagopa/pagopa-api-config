@@ -11458,6 +11458,16 @@
         "service": {
           "type": "string"
         },
+        "target_host": {
+          "type": "string"
+        },
+        "target_path": {
+          "type": "string"
+        },
+        "target_port": {
+          "format": "int64",
+          "type": "integer"
+        },
         "thread_number": {
           "format": "int64",
           "minimum": 1,
