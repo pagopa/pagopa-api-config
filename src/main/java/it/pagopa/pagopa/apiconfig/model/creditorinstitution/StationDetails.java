@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StationDetails extends Station {
 

@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(callSuper = true)
 public class WfespPluginConf extends WfespPluginConfBase {
     @JsonProperty("id_serv_plugin")
     @Schema(example = "idPsp1", required = true)
