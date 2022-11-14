@@ -114,9 +114,9 @@ values (1, null, null, null, null, 'ATTIVATO_PRESSO_PSP', 'N', null, 'N', null, 
 insert into NODO4_CFG.CANALI (OBJ_ID, ID_CANALE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO, SERVIZIO,
                               DESCRIZIONE, FK_INTERMEDIARIO_PSP, PROXY_ENABLED, PROXY_HOST, PROXY_PASSWORD, PROXY_PORT,
                               PROXY_USERNAME, CANALE_NODO, CANALE_AVV, FK_CANALI_NODO, TIMEOUT, NUM_THREAD,
-                              USE_NEW_FAULT_CODE, TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, SERVIZIO_NMP)
+                              USE_NEW_FAULT_CODE, TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, SERVIZIO_NMP, TARGET_HOST, TARGET_PORT, TARGET_PATH)
 values (1, '00001060966_01', 'Y', '1.1.1.1', null, 'FakePay', 443, 'HTTPS', 'basepath/services/fake', null, 6, 'Y',
-        '2.2.2.2', null, 8080, null, 'Y', 'N', 1, 120, 2, 'Y', 15, 30, 120, null);
+        '2.2.2.2', null, 8080, null, 'Y', 'N', 1, 120, 2, 'Y', 15, 30, 120, null, 'localhost', 443, '/');
 
 insert into NODO4_CFG.ELENCO_SERVIZI (OBJ_ID, PSP_ID, FLUSSO_ID, PSP_RAG_SOC, PSP_FLAG_STORNO, PSP_FLAG_BOLLO, INTM_ID,
                                       CANALE_ID, NOME_SERVIZIO, CANALE_MOD_PAG, TIPO_VERS_COD, CODICE_LINGUA,

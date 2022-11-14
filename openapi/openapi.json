@@ -14582,6 +14582,16 @@
           "proxy_password": {
             "type": "string"
           },
+                    "target_host": {
+                        "type": "string"
+                    },
+                    "target_port": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "target_path": {
+                        "type": "string"
+                    },
           "thread_number": {
             "minimum": 1,
             "type": "integer",
