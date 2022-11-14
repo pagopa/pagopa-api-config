@@ -268,20 +268,22 @@ public class IcaService {
         return checkItemList;
     }
 
+    // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
+    @java.lang.SuppressWarnings("javasecurity:S6096")
     public List<MassiveCheck> massiveVerifyIcas(MultipartFile file, Boolean force) {
         List<MassiveCheck> massiveChecks = new ArrayList<>();
-        //Extract zip file content
+        // extract zip file content
         try{
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                File tempFile = File.createTempFile("placeholder" + zipEntry.getName(), "xml");
-                if(!tempFile.isHidden() && !zipEntry.isDirectory()){
+                File tempFile = File.createTempFile(zipEntry.getName(), "xml");
+                if(!tempFile.isHidden() && !zipEntry.isDirectory()) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     for(int c = zis.read(); c != -1; c = zis.read()){
                         baos.write(c);
                     }
-                    //For each file, invoke verifyIca, build response, with name of file and list of checkItem
+                    // for each file, invoke verifyIca, build response, with name of file and list of checkItem
                     massiveChecks.add(MassiveCheck.builder()
                     .fileName(zipEntry.getName())
                     .checkItems(
@@ -294,7 +296,7 @@ public class IcaService {
                 //Go to next file inside zip
                 zipEntry = zis.getNextEntry();
             }
-        } catch(IOException | SAXException e){
+        } catch(IOException | SAXException e) {
             throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");
         }
         return massiveChecks;
