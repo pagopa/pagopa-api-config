@@ -44,6 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -275,21 +276,21 @@ public class IcaService {
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
                 File tempFile = File.createTempFile("placeholder" + zipEntry.getName(), "xml");
-                if(tempFile.isHidden() || zipEntry.isDirectory()){
-                    tempFile.delete();
-                }else{
+                if(!tempFile.isHidden() && !zipEntry.isDirectory()){
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     for(int c = zis.read(); c != -1; c = zis.read()){
                         baos.write(c);
                     }
-                    //For every file, invoke verifyIca, build response, with name of file and list of checkItem
+                    //For each file, invoke verifyIca, build response, with name of file and list of checkItem
                     massiveChecks.add(MassiveCheck.builder()
                     .fileName(zipEntry.getName())
                     .checkItems(
                             verifyIca(new ByteArrayInputStream(baos.toByteArray()), force)).build()
                     );
-                    tempFile.delete();
-                }   
+                }
+                // remove temp file
+                Files.delete(tempFile.toPath());
+
                 //Go to next file inside zip
                 zipEntry = zis.getNextEntry();
             }
