@@ -173,6 +173,51 @@ public class IcaService {
         }
     }
 
+    @Transactional
+    @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
+    public void createMassiveIcas(@NotNull MultipartFile file, Boolean force) {
+        try{
+            ZipInputStream zis = new ZipInputStream(file.getInputStream());
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                File tempFile = File.createTempFile("placeholder" + zipEntry.getName() + "placeholder", "xml");
+                if(!tempFile.isHidden() && !zipEntry.isDirectory()) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    for(int c = zis.read(); c != -1; c = zis.read()){
+                        baos.write(c);
+                    }
+                    // for each file, invoke verifyIca, build response, with name of file and list of checkItem
+                    List<CheckItem> checks = verifyIca(new ByteArrayInputStream(baos.toByteArray()), force);
+                    Optional<CheckItem> check = checks.stream()
+                            .filter(item -> item.getValid()
+                                    .equals(CheckItem.Validity.NOT_VALID))
+                            .findFirst();
+                    if (check.isPresent()) {
+                        zipEntry = zis.getNextEntry();
+                        continue;
+                    }
+                    IcaXml icaXml = mapXml(new ByteArrayInputStream(baos.toByteArray()), IcaXml.class);
+
+                    var pa = getPaIfExists(icaXml.getIdentificativoDominio());
+
+                    // save
+                    var binaryFile = saveBinaryFile(file);
+                    var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
+                    for (Object elem : icaXml.getContiDiAccredito()) {
+                        saveIcaDetail(elem, icaMaster);
+                    }
+                }
+                // remove temp file
+                Files.delete(tempFile.toPath());
+
+                //Go to next file inside zip
+                zipEntry = zis.getNextEntry();
+            }
+        } catch(IOException | SAXException e) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");
+        }
+    }
+
     public void deleteIca(String idIca, String creditorInstitutionCode) {
         var icaMaster = getIcaMasterIfExists(idIca, creditorInstitutionCode);
         var valid = informativeContoAccreditoMasterRepository.findByFkPa_IdDominioAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(creditorInstitutionCode, Timestamp.valueOf(LocalDateTime.now()));
