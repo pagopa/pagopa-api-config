@@ -25,6 +25,9 @@ hs_err_pid*
 # IntelliJ
 .idea
 
+# Code
+.vscode
+
 # Project files
 /database/volume/*
 /target/
