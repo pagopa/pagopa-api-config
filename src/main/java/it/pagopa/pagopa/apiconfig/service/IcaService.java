@@ -9,6 +9,7 @@ import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
+import it.pagopa.pagopa.apiconfig.model.MassiveCheck;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.IcaXml;
@@ -38,7 +39,12 @@ import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -50,6 +56,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
@@ -62,6 +70,7 @@ public class IcaService {
     public static final String ABI_IBAN_POSTALI = "07601";
     public static final String ACTION_KEY = "action";
     public static final String NOTE_KEY = "note";
+    public static final String XSD_SCHEMA_TITLE = "XSD Schema";
 
     @Autowired
     private PaRepository paRepository;
@@ -173,27 +182,43 @@ public class IcaService {
         informativeContoAccreditoMasterRepository.delete(icaMaster);
     }
 
-    public List<CheckItem> verifyIca(MultipartFile file, Boolean force) {
+    public List<CheckItem> verifyIca(MultipartFile file, Boolean force){
+        try {
+            return verifyIca(new ByteArrayInputStream(file.getInputStream().readAllBytes()), force);
+        } catch (IOException | SAXException e) {
+            List<CheckItem> checkItemList = new ArrayList<>();
+            String detail = getExceptionErrors(e.getMessage());
+            checkItemList.add(CheckItem.builder()
+                    .title(XSD_SCHEMA_TITLE)
+                    .value(xsdIca)
+                    .valid(CheckItem.Validity.NOT_VALID)
+                    .note(detail)
+                    .build()
+            );
+            return checkItemList;
+        }
+    }
+
+    private List<CheckItem> verifyIca(InputStream inputStream, Boolean force) throws SAXException {
         // checks are described here https://pagopa.atlassian.net/wiki/spaces/ACN/pages/441517396/Verifica+ICA
         List<CheckItem> checkItemList = new ArrayList<>();
-
         // syntax checks
         String detail;
         try {
-            syntaxValidation(file, xsdIca);
+            syntaxValidation(inputStream, xsdIca);
+            inputStream.reset();
             detail = "XML is valid against the XSD schema.";
             checkItemList.add(CheckItem.builder()
-                    .title("XSD Schema")
+                    .title(XSD_SCHEMA_TITLE)
                     .value(xsdIca)
                     .valid(CheckItem.Validity.VALID)
                     .note(detail)
                     .build()
             );
-
-        } catch (SAXException | IOException | XMLStreamException e) {
+        } catch (XMLStreamException | IOException e) {
             detail = getExceptionErrors(e.getMessage());
             checkItemList.add(CheckItem.builder()
-                    .title("XSD Schema")
+                    .title(XSD_SCHEMA_TITLE)
                     .value(xsdIca)
                     .valid(CheckItem.Validity.NOT_VALID)
                     .note(detail)
@@ -203,7 +228,7 @@ public class IcaService {
         }
 
         // map file into model class
-        IcaXml xml = mapXml(file, IcaXml.class);
+        IcaXml xml = mapXml(inputStream, IcaXml.class);
 
         // check PA
         String paFiscalCode = xml.getIdentificativoDominio();
@@ -241,6 +266,40 @@ public class IcaService {
         }
 
         return checkItemList;
+    }
+
+    // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
+    @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
+    public List<MassiveCheck> massiveVerifyIcas(MultipartFile file, Boolean force) {
+        List<MassiveCheck> massiveChecks = new ArrayList<>();
+        // extract zip file content
+        try{
+            ZipInputStream zis = new ZipInputStream(file.getInputStream());
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                File tempFile = File.createTempFile(zipEntry.getName(), "xml");
+                if(!tempFile.isHidden() && !zipEntry.isDirectory()) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    for(int c = zis.read(); c != -1; c = zis.read()){
+                        baos.write(c);
+                    }
+                    // for each file, invoke verifyIca, build response, with name of file and list of checkItem
+                    massiveChecks.add(MassiveCheck.builder()
+                    .fileName(zipEntry.getName())
+                    .checkItems(
+                            verifyIca(new ByteArrayInputStream(baos.toByteArray()), force)).build()
+                    );
+                }
+                // remove temp file
+                Files.delete(tempFile.toPath());
+
+                //Go to next file inside zip
+                zipEntry = zis.getNextEntry();
+            }
+        } catch(IOException | SAXException e) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");
+        }
+        return massiveChecks;
     }
 
     private List<CheckItem> checkCi(Pa pa, IcaXml xml) {
