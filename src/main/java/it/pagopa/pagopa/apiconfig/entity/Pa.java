@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,13 +8,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Table(name = "PA", schema = "NODO4_CFG")
@@ -26,14 +28,16 @@ import javax.persistence.Table;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Pa {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+    @SequenceGenerator(name = "hibernate_sequence", sequenceName = "hibernate_sequence", allocationSize = 1)
+
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
 
     @Column(name = "ID_DOMINIO", unique = true)
     private String idDominio;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "ENABLED")
     private Boolean enabled;
 
@@ -58,19 +62,19 @@ public class Pa {
     @Column(name = "DENOMINAZIONE_DOMICILIO_FISCALE")
     private String denominazioneDomicilioFiscale;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "PAGAMENTO_PRESSO_PSP")
     private Boolean pagamentoPressoPsp;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "RENDICONTAZIONE_FTP")
     private Boolean rendicontazioneFtp;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "RENDICONTAZIONE_ZIP")
     private Boolean rendicontazioneZip;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "FLAG_REPO_COMMISSIONE_CARICO_PA")
     private Boolean flagRepoCommissioneCaricoPa;
 

@@ -66,7 +66,7 @@ class EncodingsServiceTest {
     void createCreditorInstitutionEncoding() throws JSONException, IOException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
         when(codifichePaRepository.findByCodicePa(anyString())).thenReturn(Optional.empty());
-        when(codificheRepository.findByIdCodifica(anyString())).thenReturn(getMockCodifiche());
+        when(codificheRepository.findByIdCodifica(anyString())).thenReturn(Optional.ofNullable(getMockCodifiche()));
         when(codifichePaRepository.save(any(CodifichePa.class))).thenReturn(getMockCodifichePa());
 
         Encoding result = encodingsService.createCreditorInstitutionEncoding("1234", getMockEncoding());

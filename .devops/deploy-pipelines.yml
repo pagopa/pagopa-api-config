@@ -44,20 +44,11 @@ variables:
     STAGE: "p"
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
     dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
-#  ${{ if eq(parameters['TEST'], 'true') }}:
-#    AZURE_SUBSCRIPTION: $(DEV_AZURE_SUBSCRIPTION)
-#    RESOURCE_GROUP: $(DEV_WEB_APP_RESOURCE_GROUP_NAME)
-#    APP_NAME: $(DEV_WEB_APP_NAME)
-#    STAGE: "t"
-#    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY)
-#    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
-  # github action use 'merge' as value of SourceBranchName
+  # GitHub action use 'merge' as value of SourceBranchName
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: "main" # force to main branch
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     SOURCE_BRANCH: ${{ variables['Build.SourceBranchName'] }}
-
-
 
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
@@ -70,6 +61,14 @@ pr: none
 
 pool:
   vmImage: ubuntu-latest
+
+resources:
+  repositories:
+    - repository: pagopaCommons
+      type: github
+      name: pagopa/azure-pipeline-templates
+      ref: refs/tags/v2.1.0
+      endpoint: 'io-azure-devops-github-ro'
 
 stages:
 
@@ -85,57 +84,17 @@ stages:
             clean: true
             persistCredentials: true
 
-          - script: |
-              git checkout $(SOURCE_BRANCH)
-
-          - script: |
-              git config --global user.name "$(GIT_USERNAME)"
-              git config --global user.email "$(GIT_EMAIL)"
-
-          - template: azure-templates/maven-versioning.yml
+          - template: templates/maven-github-release/template.yaml@pagopaCommons
             parameters:
-              semver: "${{ parameters.SEMVER }}"
-
-          - task: Bash@3
-            name: pomversion
-            inputs:
-              targetType: "inline"
-              script: |
-                version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
-                echo "##vso[task.setvariable variable=next;isOutput=true]$version"
-              failOnStderr: true
-
-          - script: |
-              git add pom.xml
-              git commit -m "Bump version [skip ci]"
-              git push origin $(SOURCE_BRANCH)
-
-
-          - script: |
-              HEAD_SHA=$(git rev-parse HEAD)
-              TAG="$(pomversion.next)"
-              TITLE="Release $(pomversion.next)"
-              echo "##vso[task.setvariable variable=title]$TITLE"
-              echo "##vso[task.setvariable variable=sha]$HEAD_SHA"
-              echo "##vso[task.setvariable variable=tag]$TAG"
-
-          - script: |
-              echo $(tag)
-              echo $(title)
-              echo $(sha)
-
-
-          # create new release
-          - task: GitHubRelease@0
-            inputs:
+              release_branch: $(SOURCE_BRANCH)
+              gitEmail: $(GIT_EMAIL)
+              gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
-              repositoryName: $(Build.Repository.Name)
-              action: create
-              target: $(sha)
-              tagSource: manual
-              tag: $(tag)
-              title: $(title)
-              addChangelog: true
+              ${{ if eq(parameters.SEMVER, 'skip') }}:
+                semver: 'buildNumber'
+              ${{ if ne(parameters.SEMVER, 'skip') }}:
+                semver: '${{ parameters.SEMVER }}'
+
 
   # Deploy on Azure
   - stage: deploy
@@ -254,7 +213,7 @@ stages:
               bash api-test/setup_env_api_test.sh $(STAGE)
 
           - script: |
-              newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml --verbose
+              newman run api-test/ApiConfig.postman_collection.json --environment=api-test/Azure.postman_environment.json --reporters cli,junit --reporter-junit-export Results/api-config-TEST.xml --delay-request 500 --verbose
             displayName: 'Run api test'
             continueOnError: false
 

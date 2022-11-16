@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,13 +8,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -28,11 +30,12 @@ import java.io.Serializable;
 public class FtpServers implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+    @SequenceGenerator(name = "hibernate_sequence", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 
-    @Column(name = "HOST", nullable = false, length = 255)
+    @Column(name = "HOST", nullable = false)
     private String host;
 
     @Column(name = "PORT", nullable = false)
@@ -44,25 +47,25 @@ public class FtpServers implements Serializable {
     @Column(name = "PASSWORD", nullable = false, length = 35)
     private String password;
 
-    @Column(name = "ROOT_PATH", nullable = false, length = 255)
+    @Column(name = "ROOT_PATH", nullable = false)
     private String rootPath;
 
-    @Column(name = "SERVICE", nullable = false, length = 255)
+    @Column(name = "SERVICE", nullable = false)
     private String service;
 
-    @Column(name = "TYPE", nullable = false, length = 255)
+    @Column(name = "TYPE", nullable = false)
     private String type;
 
-    @Column(name = "IN_PATH", length = 255)
+    @Column(name = "IN_PATH")
     private String inPath;
 
-    @Column(name = "OUT_PATH", length = 255)
+    @Column(name = "OUT_PATH")
     private String outPath;
 
-    @Column(name = "HISTORY_PATH", length = 255)
+    @Column(name = "HISTORY_PATH")
     private String historyPath;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "ENABLED")
     private Boolean enabled;
 

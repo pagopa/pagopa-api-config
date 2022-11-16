@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Getter
@@ -28,7 +29,8 @@ import javax.persistence.Table;
 @Table(name = "CDI_FASCIA_COSTO_SERVIZIO", schema = "NODO4_CFG")
 public class CdiFasciaCostoServizio {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+    @SequenceGenerator(name = "hibernate_sequence", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 
