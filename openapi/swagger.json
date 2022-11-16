@@ -8528,7 +8528,7 @@
             "type": "boolean"
           },
           {
-            "description": "XML file regarding ICA to create",
+            "description": "Zip file containing ICAs to create",
             "format": "binary",
             "in": "formData",
             "name": "file",

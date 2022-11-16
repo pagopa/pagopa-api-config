@@ -10737,7 +10737,7 @@
                                 "properties": {
                                     "file": {
                                         "type": "string",
-                                        "description": "XML file regarding ICA to create",
+                                        "description": "Zip file containing ICAs to create",
                                         "format": "binary"
                                     }
                                 }
