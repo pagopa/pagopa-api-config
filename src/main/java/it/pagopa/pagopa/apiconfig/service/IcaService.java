@@ -150,26 +150,10 @@ public class IcaService {
 
     @Transactional
     public void createIca(@NotNull MultipartFile file, Boolean force) {
-        List<CheckItem> checks = verifyIca(file, force);
-
-        Optional<CheckItem> check = checks.stream()
-                .filter(item -> item.getValid()
-                        .equals(CheckItem.Validity.NOT_VALID))
-                .findFirst();
-        if (check.isPresent()) {
-            throw new AppException(AppError.ICA_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
-        }
-
-        // map file into model class
-        IcaXml icaXml = mapXml(file, IcaXml.class);
-
-        var pa = getPaIfExists(icaXml.getIdentificativoDominio());
-
-        // save
-        var binaryFile = saveBinaryFile(file);
-        var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
-        for (Object elem : icaXml.getContiDiAccredito()) {
-            saveIcaDetail(elem, icaMaster);
+        try{
+            createIca(new ByteArrayInputStream(file.getInputStream().readAllBytes()), force, false);
+        }catch(SAXException | IOException e){
+            throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when creating new ICA");
         }
     }
 
@@ -180,32 +164,13 @@ public class IcaService {
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                File tempFile = File.createTempFile("placeholder" + zipEntry.getName() + "placeholder", "xml");
+                File tempFile = File.createTempFile(zipEntry.getName(), "xml");
                 if(!tempFile.isHidden() && !zipEntry.isDirectory()) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     for(int c = zis.read(); c != -1; c = zis.read()){
                         baos.write(c);
                     }
-                    // for each file, invoke verifyIca, build response, with name of file and list of checkItem
-                    List<CheckItem> checks = verifyIca(new ByteArrayInputStream(baos.toByteArray()), force);
-                    Optional<CheckItem> check = checks.stream()
-                            .filter(item -> item.getValid()
-                                    .equals(CheckItem.Validity.NOT_VALID))
-                            .findFirst();
-                    if (check.isPresent()) {
-                        zipEntry = zis.getNextEntry();
-                        continue;
-                    }
-                    IcaXml icaXml = mapXml(new ByteArrayInputStream(baos.toByteArray()), IcaXml.class);
-
-                    var pa = getPaIfExists(icaXml.getIdentificativoDominio());
-
-                    // save
-                    var binaryFile = saveBinaryFile(file);
-                    var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
-                    for (Object elem : icaXml.getContiDiAccredito()) {
-                        saveIcaDetail(elem, icaMaster);
-                    }
+                    createIca(new ByteArrayInputStream(baos.toByteArray()), force, true);
                 }
                 // remove temp file
                 Files.delete(tempFile.toPath());
@@ -215,6 +180,36 @@ public class IcaService {
             }
         } catch(IOException | SAXException e) {
             throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");
+        }
+    }
+
+    private void createIca(@NotNull InputStream inputStream, Boolean force, Boolean massive) throws SAXException, IOException{
+        List<CheckItem> checks = verifyIca(inputStream, force);
+
+        Optional<CheckItem> check = checks.stream()
+                .filter(item -> item.getValid()
+                        .equals(CheckItem.Validity.NOT_VALID))
+                .findFirst();
+        if (check.isPresent()) {
+            if(!massive) {
+                throw new AppException(AppError.ICA_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
+            }
+            else {
+                return;
+            }
+        }
+        // map file into model class
+        inputStream.reset();
+        IcaXml icaXml = mapXml(inputStream, IcaXml.class);
+
+        var pa = getPaIfExists(icaXml.getIdentificativoDominio());
+
+        // save
+        inputStream.reset();
+        var binaryFile = saveBinaryFile(inputStream.readAllBytes(), inputStream.readAllBytes().length);
+        var icaMaster = saveIcaMaster(icaXml, pa, binaryFile);
+        for (Object elem : icaXml.getContiDiAccredito()) {
+            saveIcaDetail(elem, icaMaster);
         }
     }
 
@@ -518,14 +513,27 @@ public class IcaService {
      * @param file binaryFile to save
      * @return the entity saved in the database
      */
-    private BinaryFile saveBinaryFile(MultipartFile file) {
+    private void saveBinaryFile(MultipartFile file) {
+        BinaryFile binaryFile;
+        try {
+            binaryFile = saveBinaryFile(file.getBytes(), file.getSize());
+        } catch (Exception e) {
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
+        }
+    }
+
+    /**
+     * @param file binaryFile to save
+     * @return the entity saved in the database
+     */
+    private BinaryFile saveBinaryFile(byte[] file, long size) {
         BinaryFile binaryFile;
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(file.getBytes());
+            md.update(file);
             binaryFile = BinaryFile.builder()
-                    .fileContent(file.getBytes())
-                    .fileSize(file.getSize())
+                    .fileContent(file)
+                    .fileSize(size)
                     .fileHash(md.digest())
                     .build();
         } catch (Exception e) {
