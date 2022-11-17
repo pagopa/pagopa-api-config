@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Map;
 
 import static it.pagopa.pagopa.apiconfig.util.Constants.HEADER_REQUEST_ID;
+import static it.pagopa.pagopa.apiconfig.util.Constants.HEADER_WARNING;
 
 @Configuration
 public class SwaggerConfig {
@@ -81,6 +82,13 @@ public class SwaggerConfig {
                             .forEach(response -> response.addHeaderObject(HEADER_REQUEST_ID, new Header()
                                     .schema(new StringSchema())
                                     .description("This header identifies the call"))));
+
+            // add Warning-ID as response header
+            value.readOperations()
+                    .forEach(operation -> operation.getResponses().values()
+                            .forEach(response -> response.addHeaderObject(HEADER_WARNING, new Header()
+                                    .schema(new StringSchema())
+                                    .description("This header identifies response validation error"))));
         });
     }
 
