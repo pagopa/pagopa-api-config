@@ -374,7 +374,9 @@ public class CreditorInstitutionsService {
     }
 
     private void addQrEncoding(Pa pa) {
-        Codifiche codifiche = codificheRepository.findByIdCodifica(Encoding.CodeTypeEnum.QR_CODE.getValue());
+        Codifiche codifiche = codificheRepository.findByIdCodifica(Encoding.CodeTypeEnum.QR_CODE.getValue())
+                .orElseThrow(() -> new AppException(AppError.ENCODING_CREDITOR_INSTITUTION_NOT_FOUND, Encoding.CodeTypeEnum.QR_CODE.getValue()));
+
         CodifichePa codifichePa = CodifichePa.builder()
                 .fkPa(pa)
                 .fkCodifica(codifiche)

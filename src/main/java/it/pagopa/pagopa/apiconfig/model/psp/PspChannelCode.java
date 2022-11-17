@@ -19,7 +19,7 @@ import javax.validation.constraints.NotBlank;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
+@ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PspChannelCode extends PspChannelPaymentTypes {

@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -30,7 +32,8 @@ import java.io.Serializable;
 @Builder
 public class CanaliNodo implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+    @SequenceGenerator(name = "hibernate_sequence", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "OBJ_ID", nullable = false)
     private Long id;
 
@@ -49,14 +52,14 @@ public class CanaliNodo implements Serializable {
     @Column(name = "MODELLO_PAGAMENTO", nullable = false)
     private String modelloPagamento;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "MULTI_PAYMENT", nullable = false)
     private Boolean multiPayment = false;
 
     @Column(name = "RAGIONE_SOCIALE", length = 35)
     private String ragioneSociale;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "RPT_RT_COMPLIANT", nullable = false)
     private Boolean rptRtCompliant = false;
 
@@ -77,35 +80,35 @@ public class CanaliNodo implements Serializable {
     @Column(name = "ID_FESP_INSTANCE", length = 275)
     private String idFespInstance;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "LENTO", nullable = false)
     private Boolean lento = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "RT_PUSH", nullable = false)
     private Boolean rtPush = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "AGID_CHANNEL", nullable = false)
     private Boolean agidChannel = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "ON_US", nullable = false)
     private Boolean onUs = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "CARRELLO_CARTE", nullable = false)
     private Boolean carrelloCarte = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "RECOVERY", nullable = false)
     private Boolean recovery = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "MARCA_BOLLO_DIGITALE", nullable = false)
     private Boolean marcaBolloDigitale = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "FLAG_IO")
     private Boolean flagIo;
 

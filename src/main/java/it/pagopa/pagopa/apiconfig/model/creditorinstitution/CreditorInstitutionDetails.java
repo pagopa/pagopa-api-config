@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutionDetails extends CreditorInstitution {

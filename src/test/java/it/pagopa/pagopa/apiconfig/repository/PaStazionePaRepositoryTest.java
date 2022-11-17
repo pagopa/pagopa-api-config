@@ -6,7 +6,9 @@ import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ApiConfig.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PaStazionePaRepositoryTest {
 
     @Autowired
@@ -29,95 +32,61 @@ class PaStazionePaRepositoryTest {
     @Autowired
     private IntermediariPaRepository intermediariPaRepository;
 
-    @Test
-    void findByFields_1() {
+    private PaStazionePa paStazionePa;
+    private Pa ci;
+    private Stazioni stazione;
+
+    @BeforeAll
+    void setup() {
         Pa pa = TestUtil.getMockPa();
-        paRepository.save(pa);
+        ci = paRepository.save(pa);
 
         IntermediariPa intermediariPa = TestUtil.getMockIntermediariePa();
-        intermediariPaRepository.save(intermediariPa);
+        var inter = intermediariPaRepository.save(intermediariPa);
 
         Stazioni stazioni = TestUtil.getMockStazioni();
         stazioni.setObjId(1L);
-        stazioniRepository.save(stazioni);
+        stazioni.setIntermediarioPa(inter);
+        stazione = stazioniRepository.save(stazioni);
 
-        PaStazionePa paStazionePa = TestUtil.getMockPaStazionePa();
-        paStazionePa.setFkStazione(stazioni);
-        paStazionePa.setSegregazione(1L);
-        paStazionePa.setProgressivo(1L);
-        paStazionePaRepository.save(paStazionePa);
+        PaStazionePa entity = TestUtil.getMockPaStazionePa();
+        entity.setFkStazione(stazione);
+        entity.setPa(ci);
+        entity.setSegregazione(1L);
+        entity.setProgressivo(1L);
+        paStazionePa = paStazionePaRepository.save(entity);
+    }
 
+    @Test
+    void findByFields_1() {
         assertTrue(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
-                1L, 1L, 1L, false, 1L, 1L).isPresent());
+                ci.getObjId(), stazione.getObjId(), 1L, false, 1L, 1L).isPresent());
     }
 
     @Test
     void findByFields_2() {
-        Pa pa = TestUtil.getMockPa();
-        paRepository.save(pa);
-
-        IntermediariPa intermediariPa = TestUtil.getMockIntermediariePa();
-        intermediariPaRepository.save(intermediariPa);
-
-        Stazioni stazioni = TestUtil.getMockStazioni();
-        stazioni.setObjId(1L);
-        stazioniRepository.save(stazioni);
-
-        PaStazionePa paStazionePa = TestUtil.getMockPaStazionePa();
-        paStazionePa.setFkStazione(stazioni);
         paStazionePa.setAuxDigit(0L);
-        paStazionePa.setSegregazione(1L);
-        paStazionePa.setProgressivo(1L);
         paStazionePaRepository.save(paStazionePa);
-
         assertTrue(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
-                1L, 1L, 0L, false, 1L, 1L).isPresent());
+                ci.getObjId(), stazione.getObjId(), 0L, false, 1L, 1L).isPresent());
     }
 
     @Test
     void findByFields_3() {
-        Pa pa = TestUtil.getMockPa();
-        paRepository.save(pa);
-
-        IntermediariPa intermediariPa = TestUtil.getMockIntermediariePa();
-        intermediariPaRepository.save(intermediariPa);
-
-        Stazioni stazioni = TestUtil.getMockStazioni();
-        stazioni.setObjId(1L);
-        stazioniRepository.save(stazioni);
-
-        PaStazionePa paStazionePa = TestUtil.getMockPaStazionePa();
-        paStazionePa.setFkStazione(stazioni);
         paStazionePa.setAuxDigit(3L);
-        paStazionePa.setSegregazione(1L);
-        paStazionePa.setProgressivo(1L);
         paStazionePaRepository.save(paStazionePa);
-
         assertTrue(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
-                1L, 1L, 3L, false, 1L, 1L).isPresent());
+                ci.getObjId(), stazione.getObjId(), 3L, false, 1L, 1L).isPresent());
     }
 
     @Test
     void findByFields_4() {
-        Pa pa = TestUtil.getMockPa();
-        paRepository.save(pa);
-
-        IntermediariPa intermediariPa = TestUtil.getMockIntermediariePa();
-        intermediariPaRepository.save(intermediariPa);
-
-        Stazioni stazioni = TestUtil.getMockStazioni();
-        stazioni.setObjId(1L);
-        stazioniRepository.save(stazioni);
-
-        PaStazionePa paStazionePa = TestUtil.getMockPaStazionePa();
-        paStazionePa.setFkStazione(stazioni);
         paStazionePa.setAuxDigit(3L);
         paStazionePa.setSegregazione(null);
         paStazionePa.setProgressivo(null);
         paStazionePaRepository.save(paStazionePa);
-
         assertTrue(paStazionePaRepository.findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
-                1L, 1L, 3L, false, null, null).isPresent());
+                ci.getObjId(), stazione.getObjId(), 3L, false, null, null).isPresent());
     }
 
     @Test

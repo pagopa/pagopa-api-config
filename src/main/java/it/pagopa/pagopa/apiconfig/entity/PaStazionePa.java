@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
+import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Table(name = "PA_STAZIONE_PA", schema = "NODO4_CFG")
@@ -29,7 +31,9 @@ import javax.persistence.Table;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaStazionePa {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+    @SequenceGenerator(name = "hibernate_sequence", sequenceName = "hibernate_sequence", allocationSize = 1)
+
     @Column(name = "OBJ_ID", nullable = false)
     private Long objId;
 
@@ -55,19 +59,19 @@ public class PaStazionePa {
     @Column(name = "SEGREGAZIONE")
     private Long segregazione;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "QUARTO_MODELLO", nullable = false)
     private Boolean quartoModello = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "STAZIONE_AVV", nullable = false)
     private Boolean stazioneAvv = false;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "STAZIONE_NODO", nullable = false)
     private Boolean stazioneNodo = true;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "BROADCAST", nullable = false)
     private Boolean broadcast = false;
 

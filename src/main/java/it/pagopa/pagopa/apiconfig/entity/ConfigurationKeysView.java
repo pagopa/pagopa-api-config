@@ -7,11 +7,11 @@ import java.io.Serializable;
 public class ConfigurationKeysView implements Serializable {
 
     @Id
-    @Column(name = "CONFIG_CATEGORY", nullable = false, length = 255)
+    @Column(name = "CONFIG_CATEGORY", nullable = false)
     private String configCategory;
 
     @Id
-    @Column(name = "CONFIG_KEY", nullable = false, length = 255)
+    @Column(name = "CONFIG_KEY", nullable = false)
     private String configKey;
 
 }

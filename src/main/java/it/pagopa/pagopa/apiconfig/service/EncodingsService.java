@@ -66,7 +66,8 @@ public class EncodingsService {
             throw new AppException(AppError.ENCODING_CREDITOR_INSTITUTION_BAD_REQUEST, encoding.getCodeType(), encoding.getEncodingCode());
         }
 
-        Codifiche codifiche = codificheRepository.findByIdCodifica(encoding.getCodeType().getValue());
+        Codifiche codifiche = codificheRepository.findByIdCodifica(encoding.getCodeType().getValue())
+                .orElseThrow(() -> new AppException(AppError.ENCODING_CREDITOR_INSTITUTION_NOT_FOUND, encoding.getCodeType().getValue()));
 
         // add ids into object for model mapper
         encoding.setPaObjId(pa.getObjId());

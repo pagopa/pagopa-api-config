@@ -147,7 +147,7 @@ class CreditorInstitutionsServiceTest {
     void createCreditorInstitution() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.empty());
         when(paRepository.save(any(Pa.class))).thenReturn(getMockPa());
-        when(codificheRepository.findByIdCodifica(Encoding.CodeTypeEnum.QR_CODE.getValue())).thenReturn(getMockCodifichePa().getFkCodifica());
+        when(codificheRepository.findByIdCodifica(Encoding.CodeTypeEnum.QR_CODE.getValue())).thenReturn(Optional.ofNullable(getMockCodifichePa().getFkCodifica()));
 
         ArgumentCaptor<CodifichePa> codifichePa = ArgumentCaptor.forClass(CodifichePa.class);
 
