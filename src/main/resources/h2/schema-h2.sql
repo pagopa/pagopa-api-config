@@ -99,9 +99,9 @@ create table NODO4_CFG.STAZIONI
     VERSIONE              numeric      not null default 1.0,
     SERVIZIO_NMP          varchar(255),
     INVIO_RT_ISTANTANEO   char         not null default 'N',
-    TARGET_HOST            varchar(100),
-    TARGET_PORT            numeric,
-    TARGET_PATH            varchar(100),
+--     TARGET_HOST            varchar(100),
+--     TARGET_PORT            numeric,
+--     TARGET_PATH            varchar(100),
     constraint PK_STAZIONI
         primary key (OBJ_ID),
     constraint UQ_ID_STAZIONE
@@ -397,9 +397,9 @@ create table NODO4_CFG.CANALI
                                   TIMEOUT_B numeric(19) not null,
                                   TIMEOUT_C numeric(19) not null,
                                   SERVIZIO_NMP varchar(255),
-                                  TARGET_HOST            varchar(100),
-                                  TARGET_PORT            numeric,
-                                  TARGET_PATH            varchar(100),
+--                                   TARGET_HOST            varchar(100),
+--                                   TARGET_PORT            numeric,
+--                                   TARGET_PATH            varchar(100),
                                   constraint PK_CANALI
                                       primary key (OBJ_ID),
                                   constraint UQ_ID_CANALE

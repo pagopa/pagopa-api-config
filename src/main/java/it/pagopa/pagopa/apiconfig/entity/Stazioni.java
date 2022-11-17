@@ -20,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "STAZIONI", schema = "NODO4_CFG")
@@ -148,13 +149,16 @@ public class Stazioni {
     @Convert(converter = YesNoConverter.class)
     private Boolean invioRtIstantaneo;
 
-    @Column(name = "TARGET_HOST")
+    //    @Column(name = "TARGET_HOST")
+    @Transient
     private String targetHost;
 
-    @Column(name = "TARGET_PORT")
+    //    @Column(name = "TARGET_PORT")
+    @Transient
     private Long targetPort;
 
-    @Column(name = "TARGET_PATH")
+    //    @Column(name = "TARGET_PATH")
+    @Transient
     private String targetPath;
 
 }

@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -92,13 +93,16 @@ public class Canali implements Serializable {
     @Column(name = "PROXY_USERNAME", length = 15)
     private String proxyUsername;
 
-    @Column(name = "TARGET_HOST")
+    //    @Column(name = "TARGET_HOST")
+    @Transient
     private String targetHost;
 
-    @Column(name = "TARGET_PORT")
+    //    @Column(name = "TARGET_PORT")
+    @Transient
     private Long targetPort;
 
-    @Column(name = "TARGET_PATH")
+    //    @Column(name = "TARGET_PATH")
+    @Transient
     private String targetPath;
 
     @Convert(converter = YesNoConverter.class)
