@@ -72,6 +72,8 @@ public class IcaService {
     public static final String NOTE_KEY = "note";
     public static final String XSD_SCHEMA_TITLE = "XSD Schema";
 
+    public static final String ICA_BAD_REQUEST = "ICA bad request";
+
     @Autowired
     private PaRepository paRepository;
 
@@ -153,7 +155,7 @@ public class IcaService {
         try{
             createIca(new ByteArrayInputStream(file.getInputStream().readAllBytes()), force, false);
         }catch(SAXException | IOException e){
-            throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when creating new ICA");
+            throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when creating new ICA");
         }
     }
 
@@ -179,11 +181,11 @@ public class IcaService {
                 zipEntry = zis.getNextEntry();
             }
         } catch(IOException | SAXException e) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");
+            throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when unzipping file");
         }
     }
 
-    private void createIca(@NotNull InputStream inputStream, Boolean force, Boolean massive) throws SAXException, IOException{
+    private void createIca(@NotNull InputStream inputStream, Boolean force, boolean massive) throws SAXException, IOException{
         List<CheckItem> checks = verifyIca(inputStream, force);
 
         Optional<CheckItem> check = checks.stream()
@@ -337,7 +339,7 @@ public class IcaService {
                 zipEntry = zis.getNextEntry();
             }
         } catch(IOException | SAXException e) {
-            throw new AppException(HttpStatus.BAD_REQUEST, "ICA bad request", "Problem when unzipping file");
+            throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when unzipping file");
         }
         return massiveChecks;
     }
@@ -513,10 +515,10 @@ public class IcaService {
      * @param file binaryFile to save
      * @return the entity saved in the database
      */
-    private void saveBinaryFile(MultipartFile file) {
+    private BinaryFile saveBinaryFile(MultipartFile file) {
         BinaryFile binaryFile;
         try {
-            binaryFile = saveBinaryFile(file.getBytes(), file.getSize());
+            return saveBinaryFile(file.getBytes(), file.getSize());
         } catch (Exception e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
         }
