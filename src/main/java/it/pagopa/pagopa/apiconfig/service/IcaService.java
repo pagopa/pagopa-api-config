@@ -515,19 +515,6 @@ public class IcaService {
      * @param file binaryFile to save
      * @return the entity saved in the database
      */
-    private BinaryFile saveBinaryFile(MultipartFile file) {
-        BinaryFile binaryFile;
-        try {
-            return saveBinaryFile(file.getBytes(), file.getSize());
-        } catch (Exception e) {
-            throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
-        }
-    }
-
-    /**
-     * @param file binaryFile to save
-     * @return the entity saved in the database
-     */
     private BinaryFile saveBinaryFile(byte[] file, long size) {
         BinaryFile binaryFile;
         try {
