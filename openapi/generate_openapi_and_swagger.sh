@@ -9,9 +9,14 @@ if [[ "$(pwd)" =~ .*"openapi".* ]]; then
     cd ..
 fi
 
-npm install -g api-spec-converter
+if [ $(npm list -g | grep -c api-spec-converter) -eq 0 ]; then
+  echo "YEEE"
+  npm install -g api-spec-converter
+fi
 
-mvn spring-boot:run -Dmaven.test.skip=true -Dspring-boot.run.profiles=h2 &
+if ! $(curl --output /dev/null --silent --head --fail http://localhost:8080/apiconfig/api/v1/info); then
+  mvn spring-boot:run -Dmaven.test.skip=true -Dspring-boot.run.profiles=h2 &
+fi
 
 # waiting the service
 printf 'Waiting for the service'
