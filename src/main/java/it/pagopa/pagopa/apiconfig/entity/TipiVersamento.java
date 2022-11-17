@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "TIPI_VERSAMENTO", schema = "NODO4_CFG")
+@Table(name = "TIPI_VERSAMENTO")
 @Setter
 @Getter
 @ToString

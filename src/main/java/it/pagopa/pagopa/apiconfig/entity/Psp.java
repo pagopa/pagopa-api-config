@@ -22,7 +22,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-@Table(name = "PSP", schema = "NODO4_CFG")
+@Table(name = "PSP")
 @Entity
 @Getter
 @Setter

@@ -26,7 +26,7 @@ import javax.persistence.Table;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "INFORMATIVE_PA_FASCE", schema = "NODO4_CFG")
+@Table(name = "INFORMATIVE_PA_FASCE")
 public class InformativePaFasce {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")

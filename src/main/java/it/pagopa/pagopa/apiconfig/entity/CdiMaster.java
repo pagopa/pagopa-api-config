@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 
-@Table(name = "CDI_MASTER", schema = "NODO4_CFG")
+@Table(name = "CDI_MASTER")
 @Entity
 @Getter
 @Setter

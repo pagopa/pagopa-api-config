@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "ELENCO_SERVIZI", schema = "NODO4_CFG")
+@Table(name = "ELENCO_SERVIZI")
 public class ElencoServizi {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")

@@ -21,7 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-@Table(name = "PA_STAZIONE_PA", schema = "NODO4_CFG")
+@Table(name = "PA_STAZIONE_PA")
 @Entity
 @Getter
 @Setter

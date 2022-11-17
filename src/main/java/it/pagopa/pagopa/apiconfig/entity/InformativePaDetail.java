@@ -31,7 +31,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "INFORMATIVE_PA_DETAIL", schema = "NODO4_CFG")
+@Table(name = "INFORMATIVE_PA_DETAIL")
 public class InformativePaDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")

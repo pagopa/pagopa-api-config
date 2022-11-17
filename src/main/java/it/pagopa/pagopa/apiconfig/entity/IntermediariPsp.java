@@ -19,7 +19,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-@Table(name = "INTERMEDIARI_PSP", schema = "NODO4_CFG")
+@Table(name = "INTERMEDIARI_PSP")
 @Entity
 @Getter
 @Setter

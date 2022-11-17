@@ -25,7 +25,7 @@ import java.io.Serializable;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "FTP_SERVERS", schema = "NODO4_CFG")
+@Table(name = "FTP_SERVERS")
 @Builder(toBuilder = true)
 public class FtpServers implements Serializable {
 

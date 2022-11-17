@@ -23,7 +23,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 
-@Table(name = "CDI_DETAIL", schema = "NODO4_CFG")
+@Table(name = "CDI_DETAIL")
 @Entity
 @Getter
 @Setter

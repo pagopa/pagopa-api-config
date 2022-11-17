@@ -19,7 +19,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-@Table(name = "PA", schema = "NODO4_CFG")
+@Table(name = "PA")
 @Entity
 @Getter
 @Setter

@@ -23,7 +23,7 @@ import javax.persistence.Table;
 @Setter
 @ToString
 @Entity
-@Table(name = "CDI_PREFERENCES", schema = "NODO4_CFG")
+@Table(name = "CDI_PREFERENCES")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

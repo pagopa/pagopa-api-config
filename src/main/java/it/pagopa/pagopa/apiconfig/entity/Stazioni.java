@@ -22,7 +22,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "STAZIONI", schema = "NODO4_CFG")
+@Table(name = "STAZIONI")
 @Setter
 @Getter
 @ToString

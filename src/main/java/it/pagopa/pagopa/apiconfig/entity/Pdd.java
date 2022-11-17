@@ -25,7 +25,7 @@ import java.io.Serializable;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "PDD", schema = "NODO4_CFG")
+@Table(name = "PDD")
 @Builder(toBuilder = true)
 public class Pdd implements Serializable {
 

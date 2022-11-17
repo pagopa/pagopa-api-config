@@ -19,7 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-@Table(name = "CODIFICHE_PA", schema = "NODO4_CFG")
+@Table(name = "CODIFICHE_PA")
 @Entity
 @Getter
 @Setter

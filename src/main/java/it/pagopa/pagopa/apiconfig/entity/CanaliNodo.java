@@ -28,7 +28,7 @@ import java.io.Serializable;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "CANALI_NODO", schema = "NODO4_CFG")
+@Table(name = "CANALI_NODO")
 @Builder
 public class CanaliNodo implements Serializable {
     @Id

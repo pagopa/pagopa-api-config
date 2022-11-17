@@ -25,7 +25,7 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Table(name = "INFORMATIVE_PA_MASTER", schema = "NODO4_CFG")
+@Table(name = "INFORMATIVE_PA_MASTER")
 @Entity
 @Getter
 @Setter

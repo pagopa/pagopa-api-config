@@ -22,7 +22,7 @@ import java.io.Serializable;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "CONFIGURATION_KEYS", schema = "NODO4_CFG")
+@Table(name = "CONFIGURATION_KEYS")
 @Builder(toBuilder = true)
 public class ConfigurationKeys implements Serializable {
 

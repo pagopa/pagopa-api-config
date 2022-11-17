@@ -16,7 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-@Table(name = "CODIFICHE", schema = "NODO4_CFG")
+@Table(name = "CODIFICHE")
 @Entity
 @Getter
 @Setter

@@ -26,7 +26,7 @@ import javax.persistence.Table;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "CDI_INFORMAZIONI_SERVIZIO", schema = "NODO4_CFG")
+@Table(name = "CDI_INFORMAZIONI_SERVIZIO")
 public class CdiInformazioniServizio {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")

@@ -18,7 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-@Table(name = "INTERMEDIARI_PA", schema = "NODO4_CFG")
+@Table(name = "INTERMEDIARI_PA")
 @Entity
 @Getter
 @Setter

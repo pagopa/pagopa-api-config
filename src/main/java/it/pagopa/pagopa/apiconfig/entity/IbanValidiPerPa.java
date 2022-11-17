@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
-@Table(name = "IBAN_VALIDI_PER_PA", schema = "NODO4_CFG")
+@Table(name = "IBAN_VALIDI_PER_PA")
 @Entity
 @Immutable
 @Getter

@@ -29,7 +29,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "CANALE_TIPO_VERSAMENTO", schema = "NODO4_CFG")
+@Table(name = "CANALE_TIPO_VERSAMENTO")
 @Builder
 public class CanaleTipoVersamento implements Serializable {
     @Id
