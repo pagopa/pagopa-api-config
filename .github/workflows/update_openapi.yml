@@ -5,7 +5,8 @@ on:
   pull_request:
     branches:
       - main
-    types: [ opened, reopened, synchronize ]
+    paths-ignore:
+      - 'openapi/openapi.json'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,7 +16,7 @@ jobs:
   build:
     name: Auto Update OpenApi file
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -25,12 +26,12 @@ jobs:
 
       - name: Update OpenApi and Swagger files
         run: |
-          sh ./openapi/generate_openapi_and_swagger.sh
+          sh ./openapi/generate_openapi.sh
 
       - name: Commit & Push changes
         run: |
           git config --global user.name 'pagopa-github-bot' 
           git config --global user.email 'github-bot@pagopa.it'
           git add -A
-          git commit -m "Auto Update Openapi and Swagger [skip ci]" || true
+          git commit -m "Auto Update Openapi and Swagger" || true
           git push
