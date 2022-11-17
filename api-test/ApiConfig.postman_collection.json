@@ -1,10 +1,10 @@
 {
 	"info": {
-      "_postman_id": "46c9942c-0d39-41ae-940d-ff15fd4483d5",
-      "name": "ApiConfig",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-      "_exporter_id": "205220"
-    },
+		"_postman_id": "46c9942c-0d39-41ae-940d-ff15fd4483d5",
+		"name": "ApiConfig",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "205220"
+	  },
 	"item": [
 		{
 			"name": "login",
@@ -572,6 +572,122 @@
 								"{{api-config-base-path}}",
 								"icas",
 								"xsd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "massiveCheckICA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"checkXSD\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "105513",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "src/test/resources/file/ica_valid_postman.xml"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/xsd",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"icas",
+								"xsd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "massiveCreateICA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"checkXSD\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; boundary=--------------------------305231672572246570767076",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "105513",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/federico.ruzzier/Desktop/gitProj/pagopa-api-config/src/test/resources/file/massiveIca.zip"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/icas/massive",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"icas",
+								"massive"
 							]
 						}
 					},
