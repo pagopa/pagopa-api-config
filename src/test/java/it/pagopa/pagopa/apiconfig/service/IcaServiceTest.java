@@ -266,13 +266,13 @@ class IcaServiceTest {
 
     @Test
     void massiveCreateIca_ok() throws IOException {
-        File zip = TestUtil.readFile("file/massiveIca.zip");
+        File zip = TestUtil.readFile("file/massiveIcaValid.zip");
         MockMultipartFile file = new MockMultipartFile("file",zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
         when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
         try {
-            icaService.createMassiveIcas(file, false);
+            icaService.createMassiveIcas(file);
         } catch (Exception e) {
             fail(e);
         }
@@ -286,7 +286,7 @@ class IcaServiceTest {
         when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
         when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
         try {
-            icaService.createMassiveIcas(file, false);
+            icaService.createMassiveIcas(file);
         } catch (AppException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
         }

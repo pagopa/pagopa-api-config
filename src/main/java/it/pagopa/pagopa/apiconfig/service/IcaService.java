@@ -153,7 +153,7 @@ public class IcaService {
     @Transactional
     public void createIca(@NotNull MultipartFile file, Boolean force) {
         try{
-            createIca(new ByteArrayInputStream(file.getInputStream().readAllBytes()), force, false);
+            createIca(new ByteArrayInputStream(file.getInputStream().readAllBytes()), force);
         }catch(SAXException | IOException e){
             throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when creating new ICA");
         }
@@ -161,7 +161,7 @@ public class IcaService {
 
     @Transactional
     @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
-    public void createMassiveIcas(@NotNull MultipartFile file, Boolean force) {
+    public void createMassiveIcas(@NotNull MultipartFile file) {
         try{
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
@@ -172,7 +172,7 @@ public class IcaService {
                     for(int c = zis.read(); c != -1; c = zis.read()){
                         baos.write(c);
                     }
-                    createIca(new ByteArrayInputStream(baos.toByteArray()), force, true);
+                    createIca(new ByteArrayInputStream(baos.toByteArray()), false);
                 }
                 // remove temp file
                 Files.delete(tempFile.toPath());
@@ -185,7 +185,7 @@ public class IcaService {
         }
     }
 
-    private void createIca(@NotNull InputStream inputStream, Boolean force, boolean massive) throws SAXException, IOException{
+    private void createIca(@NotNull InputStream inputStream, Boolean force) throws SAXException, IOException{
         List<CheckItem> checks = verifyIca(inputStream, force);
 
         Optional<CheckItem> check = checks.stream()
@@ -193,12 +193,7 @@ public class IcaService {
                         .equals(CheckItem.Validity.NOT_VALID))
                 .findFirst();
         if (check.isPresent()) {
-            if(!massive) {
-                throw new AppException(AppError.ICA_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
-            }
-            else {
-                return;
-            }
+            throw new AppException(AppError.ICA_BAD_REQUEST, String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
         }
         // map file into model class
         inputStream.reset();
