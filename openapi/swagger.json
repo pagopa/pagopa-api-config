@@ -10422,6 +10422,10 @@
               "X-Request-Id": {
                 "description": "This header identifies the call",
                 "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
               }
             },
             "schema": {
@@ -10437,6 +10441,10 @@
               "X-Request-Id": {
                 "description": "This header identifies the call",
                 "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
               }
             },
             "schema": {
@@ -10449,6 +10457,10 @@
               "X-Request-Id": {
                 "description": "This header identifies the call",
                 "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
               }
             }
           },
@@ -10457,6 +10469,10 @@
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
                 "type": "string"
               }
             }
@@ -10467,6 +10483,10 @@
               "X-Request-Id": {
                 "description": "This header identifies the call",
                 "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
               }
             }
           },
@@ -10475,6 +10495,10 @@
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
                 "type": "string"
               }
             },
