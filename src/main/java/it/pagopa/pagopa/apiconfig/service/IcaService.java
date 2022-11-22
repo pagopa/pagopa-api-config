@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -166,26 +167,24 @@ public class IcaService {
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                File tempFile = File.createTempFile(zipEntry.getName(), "xml");
-                if(!tempFile.isHidden() && !zipEntry.isDirectory()) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    for(int c = zis.read(); c != -1; c = zis.read()){
-                        baos.write(c);
+                Function<InputStream, List<CheckItem>> func = inputStream -> {
+                    try {
+                        return createIca(inputStream, false);
+                    } catch (SAXException | IOException e) {
+                        throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem in the file examination");
                     }
-                    createIca(new ByteArrayInputStream(baos.toByteArray()), false);
-                }
-                // remove temp file
-                Files.delete(tempFile.toPath());
+                };
+                zipReading(zipEntry, zis, func);
 
                 //Go to next file inside zip
                 zipEntry = zis.getNextEntry();
             }
-        } catch(IOException | SAXException e) {
+        } catch(IOException e) {
             throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when unzipping file");
         }
     }
 
-    private void createIca(@NotNull InputStream inputStream, Boolean force) throws SAXException, IOException{
+    private List<CheckItem> createIca(@NotNull InputStream inputStream, Boolean force) throws SAXException, IOException{
         List<CheckItem> checks = verifyIca(inputStream, force);
 
         Optional<CheckItem> check = checks.stream()
@@ -208,6 +207,7 @@ public class IcaService {
         for (Object elem : icaXml.getContiDiAccredito()) {
             saveIcaDetail(elem, icaMaster);
         }
+        return null;
     }
 
     public void deleteIca(String idIca, String creditorInstitutionCode) {
@@ -234,6 +234,39 @@ public class IcaService {
             );
             return checkItemList;
         }
+    }
+
+    // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
+    @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
+    public List<MassiveCheck> massiveVerifyIcas(MultipartFile file, Boolean force) {
+        List<MassiveCheck> massiveChecks = new ArrayList<>();
+        // extract zip file content
+        try{
+            ZipInputStream zis = new ZipInputStream(file.getInputStream());
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                Function<InputStream, List<CheckItem>> func = inputStream -> {
+                    try {
+                        return verifyIca(inputStream, force);
+                    } catch (SAXException e) {
+                        throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem in the file examination");
+                    }
+                };
+                List<CheckItem> listToAdd = zipReading(zipEntry, zis, func);
+                if(!(listToAdd == null)) {
+                    massiveChecks.add(MassiveCheck.builder()
+                            .fileName(zipEntry.getName())
+                            .checkItems(listToAdd)
+                            .build()
+                    );
+                }
+                //Go to next file inside zip
+                zipEntry = zis.getNextEntry();
+            }
+        } catch(IOException e) {
+            throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when unzipping file");
+        }
+        return massiveChecks;
     }
 
     private List<CheckItem> verifyIca(InputStream inputStream, Boolean force) throws SAXException {
@@ -303,40 +336,6 @@ public class IcaService {
         }
 
         return checkItemList;
-    }
-
-    // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
-    @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
-    public List<MassiveCheck> massiveVerifyIcas(MultipartFile file, Boolean force) {
-        List<MassiveCheck> massiveChecks = new ArrayList<>();
-        // extract zip file content
-        try{
-            ZipInputStream zis = new ZipInputStream(file.getInputStream());
-            ZipEntry zipEntry = zis.getNextEntry();
-            while (zipEntry != null) {
-                File tempFile = File.createTempFile(zipEntry.getName(), "xml");
-                if(!tempFile.isHidden() && !zipEntry.isDirectory()) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    for(int c = zis.read(); c != -1; c = zis.read()){
-                        baos.write(c);
-                    }
-                    // for each file, invoke verifyIca, build response, with name of file and list of checkItem
-                    massiveChecks.add(MassiveCheck.builder()
-                    .fileName(zipEntry.getName())
-                    .checkItems(
-                            verifyIca(new ByteArrayInputStream(baos.toByteArray()), force)).build()
-                    );
-                }
-                // remove temp file
-                Files.delete(tempFile.toPath());
-
-                //Go to next file inside zip
-                zipEntry = zis.getNextEntry();
-            }
-        } catch(IOException | SAXException e) {
-            throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when unzipping file");
-        }
-        return massiveChecks;
     }
 
     private List<CheckItem> checkCi(Pa pa, IcaXml xml) {
@@ -537,5 +536,27 @@ public class IcaService {
         return page.stream()
                 .map(elem -> modelMapper.map(elem, Ica.class))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Open zipEntry content and put it on an outputstream
+     *
+     * @param zipEntry entry of the zipFile
+     * @param zis zip file content
+     * @return a ByteArrayInputStream corresponding to the zip entry.
+     */
+    private List<CheckItem> zipReading(ZipEntry zipEntry, ZipInputStream zis, Function<InputStream, List<CheckItem>> func) throws IOException{
+        File tempFile = File.createTempFile(zipEntry.getName(), "xml");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if(!tempFile.isHidden() && !zipEntry.isDirectory()) {
+            for(int c = zis.read(); c != -1; c = zis.read()) {
+                baos.write(c);
+            }
+            Files.delete(tempFile.toPath());
+            return func.apply(new ByteArrayInputStream(baos.toByteArray()));
+        }
+        // remove temp file
+        Files.delete(tempFile.toPath());
+        return null;
     }
 }
