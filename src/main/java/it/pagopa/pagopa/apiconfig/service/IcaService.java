@@ -161,7 +161,6 @@ public class IcaService {
     }
 
     @Transactional
-    @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
     public void createMassiveIcas(@NotNull MultipartFile file) {
         try{
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
@@ -175,7 +174,6 @@ public class IcaService {
                     }
                 };
                 zipReading(zipEntry, zis, func);
-
                 //Go to next file inside zip
                 zipEntry = zis.getNextEntry();
             }
@@ -207,7 +205,7 @@ public class IcaService {
         for (Object elem : icaXml.getContiDiAccredito()) {
             saveIcaDetail(elem, icaMaster);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public void deleteIca(String idIca, String creditorInstitutionCode) {
@@ -236,8 +234,6 @@ public class IcaService {
         }
     }
 
-    // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
-    @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
     public List<MassiveCheck> massiveVerifyIcas(MultipartFile file, Boolean force) {
         List<MassiveCheck> massiveChecks = new ArrayList<>();
         // extract zip file content
@@ -253,7 +249,7 @@ public class IcaService {
                     }
                 };
                 List<CheckItem> listToAdd = zipReading(zipEntry, zis, func);
-                if(!(listToAdd == null)) {
+                if(!listToAdd.isEmpty()) {
                     massiveChecks.add(MassiveCheck.builder()
                             .fileName(zipEntry.getName())
                             .checkItems(listToAdd)
@@ -538,13 +534,16 @@ public class IcaService {
                 .collect(Collectors.toList());
     }
 
+
     /**
      * Open zipEntry content and put it on an outputstream
      *
      * @param zipEntry entry of the zipFile
      * @param zis zip file content
-     * @return a ByteArrayInputStream corresponding to the zip entry.
+     * @return a List of checkItems corresponding to the zip entry.
      */
+    // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
+    @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
     private List<CheckItem> zipReading(ZipEntry zipEntry, ZipInputStream zis, Function<InputStream, List<CheckItem>> func) throws IOException{
         File tempFile = File.createTempFile(zipEntry.getName(), "xml");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -557,6 +556,6 @@ public class IcaService {
         }
         // remove temp file
         Files.delete(tempFile.toPath());
-        return null;
+        return new ArrayList<>();
     }
 }
