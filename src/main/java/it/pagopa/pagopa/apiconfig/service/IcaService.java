@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -74,10 +73,6 @@ public class IcaService {
     public static final String NOTE_KEY = "note";
     public static final String XSD_SCHEMA_TITLE = "XSD Schema";
     public static final String ICA_BAD_REQUEST = "ICA bad request";
-
-    public static final int THRESHOLD_ENTRIES = 10;
-
-    public static final int THRESHOLD_SIZE=5000000;
 
     @Autowired
     private PaRepository paRepository;
@@ -102,6 +97,12 @@ public class IcaService {
 
     @Value("${xsd.ica}")
     private String xsdIca;
+
+    @Value("${zip.entries}")
+    private int THRESHOLD_ENTRIES; //Maximum number of entries allowed in the zip file
+
+    @Value("${zip.size}")
+    private int THRESHOLD_SIZE; //Max size of zip file content
 
     public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber, String idIca, String creditorInstitutionCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
@@ -166,31 +167,14 @@ public class IcaService {
 
     @Transactional
     public void createMassiveIcas(@NotNull MultipartFile file) {
-        try{
-            ZipInputStream zis = new ZipInputStream(file.getInputStream());
-            ZipEntry zipEntry = zis.getNextEntry();
-            var wrapper = new Object(){ int totalBytes = 0; };
-            int nOfFiles = 0;
-            while (zipEntry != null) {
-                BiFunction<InputStream, Integer,List<CheckItem>> func = (inputStream, k)-> {
-                    try {
-                        wrapper.totalBytes += k;
-                        return createIca(inputStream, false);
-                    } catch (SAXException | IOException e) {
-                        throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem in the file examination");
-                    }
-                };
-                zipReading(zipEntry, zis, func);
-                ++nOfFiles;
-                if(wrapper.totalBytes > THRESHOLD_SIZE || nOfFiles > THRESHOLD_ENTRIES){
-                    throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content too large or too many entries (check for hidden files)");
-                }
-                //Go to next file inside zip
-                zipEntry = zis.getNextEntry();
+        BiFunction<InputStream, Boolean, List<CheckItem>> func = (inputStream, k)-> {
+            try {
+                return createIca(inputStream, false);
+            } catch (IOException | SAXException e) {
+                throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem in the file examination");
             }
-        } catch(IOException e) {
-            throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when unzipping file");
-        }
+        };
+        massiveRead(file, func, false);
     }
 
     private List<CheckItem> createIca(@NotNull InputStream inputStream, Boolean force) throws SAXException, IOException{
@@ -245,42 +229,15 @@ public class IcaService {
         }
     }
 
-    public List<MassiveCheck> massiveVerifyIcas(MultipartFile file, Boolean force) {
-        List<MassiveCheck> massiveChecks = new ArrayList<>();
-        // extract zip file content
-        try{
-            ZipInputStream zis = new ZipInputStream(file.getInputStream());
-            ZipEntry zipEntry = zis.getNextEntry();
-            var wrapper = new Object(){ int totalBytes = 0; };
-            int nOfFiles = 0;
-            while (zipEntry != null) {
-                BiFunction<InputStream, Integer, List<CheckItem>> func = (inputStream, k) -> {
-                    try {
-                        wrapper.totalBytes += k;
-                        return verifyIca(inputStream, force);
-                    } catch (SAXException e) {
-                        throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem in the file examination");
-                    }
-                };
-                List<CheckItem> listToAdd = zipReading(zipEntry, zis, func);
-                ++nOfFiles;
-                if(wrapper.totalBytes > THRESHOLD_SIZE || nOfFiles > THRESHOLD_ENTRIES){
-                    throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content too large or too many entries (check for hidden files)");
-                }
-                if(!listToAdd.isEmpty()) {
-                    massiveChecks.add(MassiveCheck.builder()
-                            .fileName(zipEntry.getName())
-                            .checkItems(listToAdd)
-                            .build()
-                    );
-                }
-                //Go to next file inside zip
-                zipEntry = zis.getNextEntry();
+    public List<MassiveCheck> massiveVerifyIcas(MultipartFile file, boolean force) {
+        BiFunction<InputStream, Boolean, List<CheckItem>> func = (inputStream, k)-> {
+            try {
+                return verifyIca(inputStream, force);
+            } catch (SAXException e) {
+                throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem in the file examination");
             }
-        } catch(IOException e) {
-            throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when unzipping file");
-        }
-        return massiveChecks;
+        };
+        return massiveRead(file, func, force);
     }
 
     private List<CheckItem> verifyIca(InputStream inputStream, Boolean force) throws SAXException {
@@ -550,6 +507,47 @@ public class IcaService {
         return page.stream()
                 .map(elem -> modelMapper.map(elem, Ica.class))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Helper for the massive read
+     *
+     * @param file MultiPartFile to analyze
+     * @param func function to apply to file
+     * @param force boolean to bypass date verification
+     * @return a List of massiveChecks corresponding to the zip entry.
+     */
+    private List<MassiveCheck> massiveRead(MultipartFile file, BiFunction<InputStream, Boolean, List<CheckItem>> func, boolean force){
+        List<MassiveCheck> massiveChecks = new ArrayList<MassiveCheck>();
+        try{
+            ZipInputStream zis = new ZipInputStream(file.getInputStream());
+            ZipEntry zipEntry = zis.getNextEntry();
+            var wrapper = new Object(){ int totalBytes = 0; };
+            int nOfFiles = 0;
+            BiFunction<InputStream, Integer, List<CheckItem>> funcToCall = (inputStream, nBytesofEntry) -> {
+                wrapper.totalBytes += nBytesofEntry;
+                return func.apply(inputStream, force);
+            };
+            while (zipEntry != null) {
+                List<CheckItem> listToAdd = zipReading(zipEntry, zis, funcToCall);
+                ++nOfFiles;
+                if(wrapper.totalBytes > THRESHOLD_SIZE || nOfFiles > THRESHOLD_ENTRIES){
+                    throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content too large or too many entries (check for hidden files)");
+                }
+                if(!listToAdd.isEmpty()) {
+                    massiveChecks.add(MassiveCheck.builder()
+                            .fileName(zipEntry.getName())
+                            .checkItems(listToAdd)
+                            .build()
+                    );
+                }
+                //Go to next file inside zip
+                zipEntry = zis.getNextEntry();
+            }
+        } catch(IOException e) {
+            throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem when unzipping file");
+        }
+        return massiveChecks;
     }
 
 
