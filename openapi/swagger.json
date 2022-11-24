@@ -7794,8 +7794,8 @@
       },
       "get": {
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -10540,19 +10540,14 @@
         ],
         "parameters": [
           {
-            "default": false,
-            "description": "Force upload ignoring the validity date",
-            "in": "query",
-            "name": "force",
-            "required": false,
-            "type": "boolean"
-          },
-          {
             "description": "Zip file containing ICAs to create",
             "format": "binary",
             "in": "formData",
             "name": "file",
             "required": true,
+            "type": "string"
+          },
+          {
             "type": "file"
           }
         ],
@@ -10563,6 +10558,10 @@
               "X-Request-Id": {
                 "description": "This header identifies the call",
                 "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
               }
             }
           },
@@ -10571,6 +10570,10 @@
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
                 "type": "string"
               }
             },
@@ -10584,6 +10587,10 @@
               "X-Request-Id": {
                 "description": "This header identifies the call",
                 "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
               }
             }
           },
@@ -10593,6 +10600,10 @@
               "X-Request-Id": {
                 "description": "This header identifies the call",
                 "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
               }
             }
           },
@@ -10601,6 +10612,10 @@
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
                 "type": "string"
               }
             },
@@ -10614,6 +10629,10 @@
               "X-Request-Id": {
                 "description": "This header identifies the call",
                 "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
               }
             }
           },
@@ -10622,6 +10641,10 @@
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
                 "type": "string"
               }
             },

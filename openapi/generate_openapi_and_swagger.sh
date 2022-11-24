@@ -35,7 +35,7 @@ done
 echo 'Service Started'
 
 
-curl http://127.0.0.1:8080/apiconfig/api/v1/v3/api-docs | python3 -m json.tool > ./openapi/openapi.json
+curl http://127.0.0.1:8080/apiconfig/api/v1/v3/api-docs > ./openapi/openapi.json
 api-spec-converter  --from=openapi_3 --to=swagger_2 ./openapi/openapi.json > ./openapi/swagger.json
 
 # BugFix for api-spec-converter: swagger 2 does not support http as type
