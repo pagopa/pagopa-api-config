@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,8 +73,11 @@ public class IcaService {
     public static final String ACTION_KEY = "action";
     public static final String NOTE_KEY = "note";
     public static final String XSD_SCHEMA_TITLE = "XSD Schema";
-
     public static final String ICA_BAD_REQUEST = "ICA bad request";
+
+    public static final int THRESHOLD_ENTRIES = 10;
+
+    public static final int THRESHOLD_SIZE=5000000;
 
     @Autowired
     private PaRepository paRepository;
@@ -165,15 +169,22 @@ public class IcaService {
         try{
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
+            var wrapper = new Object(){ int totalBytes = 0; };
+            int nOfFiles = 0;
             while (zipEntry != null) {
-                Function<InputStream, List<CheckItem>> func = inputStream -> {
+                BiFunction<InputStream, Integer,List<CheckItem>> func = (inputStream, k)-> {
                     try {
+                        wrapper.totalBytes += k;
                         return createIca(inputStream, false);
                     } catch (SAXException | IOException e) {
                         throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem in the file examination");
                     }
                 };
                 zipReading(zipEntry, zis, func);
+                ++nOfFiles;
+                if(wrapper.totalBytes > THRESHOLD_SIZE || nOfFiles > THRESHOLD_ENTRIES){
+                    throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content too large or too many entries (check for hidden files)");
+                }
                 //Go to next file inside zip
                 zipEntry = zis.getNextEntry();
             }
@@ -240,9 +251,11 @@ public class IcaService {
         try{
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
+            var wrapper = new Object(){ int totalBytes = 0; };
             while (zipEntry != null) {
-                Function<InputStream, List<CheckItem>> func = inputStream -> {
+                BiFunction<InputStream, Integer, List<CheckItem>> func = (inputStream, k) -> {
                     try {
+                        wrapper.totalBytes += k;
                         return verifyIca(inputStream, force);
                     } catch (SAXException e) {
                         throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Problem in the file examination");
@@ -544,15 +557,17 @@ public class IcaService {
      */
     // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
     @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
-    private List<CheckItem> zipReading(ZipEntry zipEntry, ZipInputStream zis, Function<InputStream, List<CheckItem>> func) throws IOException{
+    private List<CheckItem> zipReading(ZipEntry zipEntry, ZipInputStream zis, BiFunction<InputStream, Integer, List<CheckItem>> func) throws IOException{
         File tempFile = File.createTempFile(zipEntry.getName(), "xml");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int nBytes = 0;
         if(!tempFile.isHidden() && !zipEntry.isDirectory()) {
             for(int c = zis.read(); c != -1; c = zis.read()) {
                 baos.write(c);
+                ++nBytes;
             }
             Files.delete(tempFile.toPath());
-            return func.apply(new ByteArrayInputStream(baos.toByteArray()));
+            return func.apply(new ByteArrayInputStream(baos.toByteArray()), nBytes);
         }
         // remove temp file
         Files.delete(tempFile.toPath());
