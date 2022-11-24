@@ -191,8 +191,7 @@ public class IcaController {
             value = "/massive",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
     )
-    public ResponseEntity<Void> massiveCreateIcas(@NotNull @Parameter(description = "Zip file containing ICAs to create", required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("file") MultipartFile file,
-                                          @Parameter(description = "Force upload ignoring the validity date") @RequestParam(value = "force", defaultValue = "false") Boolean force) {
+    public ResponseEntity<Void> massiveCreateIcas(@NotNull @Parameter(description = "Zip file containing ICAs to create", required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("file") MultipartFile file) {
         icaService.createMassiveIcas(file);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
