@@ -99,10 +99,10 @@ public class IcaService {
     private String xsdIca;
 
     @Value("${zip.entries}")
-    private int THRESHOLD_ENTRIES; //Maximum number of entries allowed in the zip file
+    private int thresholdEntries; //Maximum number of entries allowed in the zip file
 
     @Value("${zip.size}")
-    private int THRESHOLD_SIZE; //Max size of zip file content
+    private int thresholdSize; //Max size of zip file content
 
     public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber, String idIca, String creditorInstitutionCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
@@ -518,7 +518,7 @@ public class IcaService {
      * @return a List of massiveChecks corresponding to the zip entry.
      */
     private List<MassiveCheck> massiveRead(MultipartFile file, BiFunction<InputStream, Boolean, List<CheckItem>> func, boolean force){
-        List<MassiveCheck> massiveChecks = new ArrayList<MassiveCheck>();
+        List<MassiveCheck> massiveChecks = new ArrayList<>();
         try{
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
@@ -531,7 +531,7 @@ public class IcaService {
             while (zipEntry != null) {
                 List<CheckItem> listToAdd = zipReading(zipEntry, zis, funcToCall);
                 ++nOfFiles;
-                if(wrapper.totalBytes > THRESHOLD_SIZE || nOfFiles > THRESHOLD_ENTRIES){
+                if(wrapper.totalBytes > thresholdSize || nOfFiles > thresholdEntries){
                     throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content too large or too many entries (check for hidden files)");
                 }
                 if(!listToAdd.isEmpty()) {
