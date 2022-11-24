@@ -517,6 +517,7 @@ public class IcaService {
      * @param force boolean to bypass date verification
      * @return a List of massiveChecks corresponding to the zip entry.
      */
+    @java.lang.SuppressWarnings({"java:S50432"})
     private List<MassiveCheck> massiveRead(MultipartFile file, BiFunction<InputStream, Boolean, List<CheckItem>> callback, boolean force){
         List<MassiveCheck> massiveChecks = new ArrayList<>();
         try{
