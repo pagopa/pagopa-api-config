@@ -513,27 +513,40 @@ public class IcaService {
      * Helper for the massive read
      *
      * @param file MultiPartFile to analyze
-     * @param func function to apply to file
+     * @param callback function to apply to file
      * @param force boolean to bypass date verification
      * @return a List of massiveChecks corresponding to the zip entry.
      */
-    private List<MassiveCheck> massiveRead(MultipartFile file, BiFunction<InputStream, Boolean, List<CheckItem>> func, boolean force){
+    private List<MassiveCheck> massiveRead(MultipartFile file, BiFunction<InputStream, Boolean, List<CheckItem>> callback, boolean force){
         List<MassiveCheck> massiveChecks = new ArrayList<>();
         try{
+            // bytes and number of files counter
+            var bytesCounter = new Object(){ int totalBytes = 0; };
+            int nOfZipFiles = 0;
+
+            // function to execute input callback during the analysis of zip files
+            BiFunction<InputStream, Integer, List<CheckItem>> callbackCaller = (inputStream, nBytesOfEntries) -> {
+                bytesCounter.totalBytes += nBytesOfEntries;
+
+                if(bytesCounter.totalBytes > thresholdSize) {
+                    throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content too large");
+                }
+
+                return callback.apply(inputStream, force);
+            };
+
+            // unzip the input stream
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
-            var wrapper = new Object(){ int totalBytes = 0; };
-            int nOfFiles = 0;
-            BiFunction<InputStream, Integer, List<CheckItem>> funcToCall = (inputStream, nBytesofEntry) -> {
-                wrapper.totalBytes += nBytesofEntry;
-                return func.apply(inputStream, force);
-            };
             while (zipEntry != null) {
-                List<CheckItem> listToAdd = zipReading(zipEntry, zis, funcToCall);
-                ++nOfFiles;
-                if(wrapper.totalBytes > thresholdSize || nOfFiles > thresholdEntries){
-                    throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content too large or too many entries (check for hidden files)");
+                ++nOfZipFiles;
+                if(nOfZipFiles > thresholdEntries) {
+                    throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content has too many entries (check for hidden files)");
                 }
+
+                List<CheckItem> listToAdd = zipReading(zipEntry, zis, callbackCaller);
+
+                // empty if file is a hidden one or a folder
                 if(!listToAdd.isEmpty()) {
                     massiveChecks.add(MassiveCheck.builder()
                             .fileName(zipEntry.getName())
@@ -541,7 +554,7 @@ public class IcaService {
                             .build()
                     );
                 }
-                //Go to next file inside zip
+                // go to next file inside zip
                 zipEntry = zis.getNextEntry();
             }
         } catch(IOException e) {
@@ -560,7 +573,7 @@ public class IcaService {
      */
     // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and directories
     @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
-    private List<CheckItem> zipReading(ZipEntry zipEntry, ZipInputStream zis, BiFunction<InputStream, Integer, List<CheckItem>> func) throws IOException{
+    private List<CheckItem> zipReading(ZipEntry zipEntry, ZipInputStream zis, BiFunction<InputStream, Integer, List<CheckItem>> callback) throws IOException {
         File tempFile = File.createTempFile(zipEntry.getName(), "xml");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         int nBytes = 0;
@@ -570,7 +583,7 @@ public class IcaService {
                 ++nBytes;
             }
             Files.delete(tempFile.toPath());
-            return func.apply(new ByteArrayInputStream(baos.toByteArray()), nBytes);
+            return callback.apply(new ByteArrayInputStream(baos.toByteArray()), nBytes);
         }
         // remove temp file
         Files.delete(tempFile.toPath());
