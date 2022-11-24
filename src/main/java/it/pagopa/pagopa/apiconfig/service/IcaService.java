@@ -252,6 +252,7 @@ public class IcaService {
             ZipInputStream zis = new ZipInputStream(file.getInputStream());
             ZipEntry zipEntry = zis.getNextEntry();
             var wrapper = new Object(){ int totalBytes = 0; };
+            int nOfFiles = 0;
             while (zipEntry != null) {
                 BiFunction<InputStream, Integer, List<CheckItem>> func = (inputStream, k) -> {
                     try {
@@ -262,6 +263,10 @@ public class IcaService {
                     }
                 };
                 List<CheckItem> listToAdd = zipReading(zipEntry, zis, func);
+                ++nOfFiles;
+                if(wrapper.totalBytes > THRESHOLD_SIZE || nOfFiles > THRESHOLD_ENTRIES){
+                    throw new AppException(HttpStatus.BAD_REQUEST, ICA_BAD_REQUEST, "Zip content too large or too many entries (check for hidden files)");
+                }
                 if(!listToAdd.isEmpty()) {
                     massiveChecks.add(MassiveCheck.builder()
                             .fileName(zipEntry.getName())
