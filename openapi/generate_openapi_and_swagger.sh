@@ -9,9 +9,14 @@ if [[ "$(pwd)" =~ .*"openapi".* ]]; then
     cd ..
 fi
 
-npm install -g api-spec-converter
+if [ $(npm list -g | grep -c api-spec-converter) -eq 0 ]; then
+  echo "YEEE"
+  npm install -g api-spec-converter
+fi
 
-mvn spring-boot:run -Dmaven.test.skip=true -Dspring-boot.run.profiles=h2 &
+if ! $(curl --output /dev/null --silent --head --fail http://localhost:8080/apiconfig/api/v1/info); then
+  mvn spring-boot:run -Dmaven.test.skip=true -Dspring-boot.run.profiles=h2 &
+fi
 
 # waiting the service
 printf 'Waiting for the service'
@@ -30,7 +35,7 @@ done
 echo 'Service Started'
 
 
-curl http://127.0.0.1:8080/apiconfig/api/v1/v3/api-docs | python3 -m json.tool > ./openapi/openapi.json
+curl http://127.0.0.1:8080/apiconfig/api/v1/v3/api-docs > ./openapi/openapi.json
 api-spec-converter  --from=openapi_3 --to=swagger_2 ./openapi/openapi.json > ./openapi/swagger.json
 
 # BugFix for api-spec-converter: swagger 2 does not support http as type
@@ -46,5 +51,6 @@ jq  '."paths"."/cdis/check".post.parameters[0].type |= "file"' ./openapi/swagger
 jq  '."paths"."/batchoperation/creditorinstitution-station/loading".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/batchoperation/creditorinstitution-station/migration".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/icas/check/massive".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
+jq  '."paths"."/icas/massive".post.parameters[1].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 
 kill %% || true

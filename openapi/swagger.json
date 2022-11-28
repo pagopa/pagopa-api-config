@@ -7794,8 +7794,8 @@
       },
       "get": {
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -10520,6 +10520,152 @@
         ],
         "operationId": "massiveVerifyIcas",
         "summary": "Massive validation of XML files containing the details of an ICA"
+      }
+    },
+    "/icas/massive": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Zip file containing ICAs to create",
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "massiveCreateIcas",
+        "summary": "Upload a zip file containing the details of multiple ICAs"
       }
     },
     "/icas/xsd": {

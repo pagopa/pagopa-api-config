@@ -263,4 +263,32 @@ class IcaServiceTest {
         assertFalse(list1.stream().anyMatch(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)));
         assertEquals(9, list2.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
     }
+
+    @Test
+    void massiveCreateIca_ok() throws IOException {
+        File zip = TestUtil.readFile("file/massiveIcaValid.zip");
+        MockMultipartFile file = new MockMultipartFile("file",zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        try {
+            icaService.createMassiveIcas(file);
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    void massiveCreateIca_ko() throws IOException {
+        File tempFile = File.createTempFile("placeholder", "xml");
+        MockMultipartFile file = new MockMultipartFile("file", tempFile.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(tempFile));
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+        when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+        try {
+            icaService.createMassiveIcas(file);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        }
+    }
 }
