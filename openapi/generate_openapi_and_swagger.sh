@@ -10,7 +10,6 @@ if [[ "$(pwd)" =~ .*"openapi".* ]]; then
 fi
 
 if [ $(npm list -g | grep -c api-spec-converter) -eq 0 ]; then
-  echo "YEEE"
   npm install -g api-spec-converter
 fi
 
