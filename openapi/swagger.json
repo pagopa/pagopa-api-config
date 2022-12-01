@@ -10545,9 +10545,6 @@
             "in": "formData",
             "name": "file",
             "required": true,
-            "type": "string"
-          },
-          {
             "type": "file"
           }
         ],
