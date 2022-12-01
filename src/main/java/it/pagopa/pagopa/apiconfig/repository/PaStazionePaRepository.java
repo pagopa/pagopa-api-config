@@ -32,6 +32,9 @@ public interface PaStazionePaRepository extends PagingAndSortingRepository<PaSta
 
     Optional<PaStazionePa> findOne(Specification<PaStazionePa> paStazionePa);
 
+    @Override
+    List<PaStazionePa> findAll();
+
     default Optional<PaStazionePa> findByFkPaAndFkStazione_ObjIdAndAuxDigitAndBroadcastAndSegregazioneAndProgressivo(
             Long creditorInstitutionCode, Long stationCode, Long auxDigit, Boolean broadcast, Long segregationCode, Long applicationCode) {
         return findOne(search(creditorInstitutionCode, stationCode, auxDigit, broadcast, segregationCode, applicationCode));

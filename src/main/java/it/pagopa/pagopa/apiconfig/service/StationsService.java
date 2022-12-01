@@ -19,6 +19,7 @@ import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -55,6 +56,9 @@ public class StationsService {
 
     @Autowired
     private PaRepository paRepository;
+
+    @Value("${properties.environment}")
+    private String env;
 
 
     public Stations getStations(@NotNull Integer limit, @NotNull Integer pageNumber,
@@ -126,13 +130,7 @@ public class StationsService {
                 .map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class))
                 .map(this::getCsvValues)
                 .collect(Collectors.toList());
-        List<String> headers = Arrays.asList("Nome",
-                "Codice",
-                "Abilitato",
-                "Aux digit",
-                "ApplicationCode",
-                "Codice Segregazione",
-                "Broadcast");
+        List<String> headers = getStationHeaders();
         return CommonUtil.createCsv(headers, csvRows);
     }
     
@@ -147,8 +145,18 @@ public class StationsService {
         return modelMapper.map(relation, StationCreditorInstitution.class);
     }
 
+    public byte[] getStationsCSV() {
+        List<PaStazionePa> stazioni = paStazioniRepository.findAll();
+        var csvRows = stazioni.stream()
+                .map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class))
+                .map(this::getCsvValuesWithUrl)
+                .collect(Collectors.toList());
+        List<String> headers = getStationHeadersWithUrl();
+        return CommonUtil.createCsv(headers, csvRows);
+    }
+
     private List<String> getCsvValues(StationCreditorInstitution elem) {
-        var list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add(deNull(elem.getBusinessName()));
         list.add(deNull(elem.getCreditorInstitutionCode()));
         list.add(deNull(elem.getEnabled()).toString());
@@ -157,6 +165,35 @@ public class StationsService {
         list.add(deNull(elem.getSegregationCode()));
         list.add(deNull(elem.getBroadcast()).toString());
         return list;
+    }
+
+    private List<String> getCsvValuesWithUrl(StationCreditorInstitution elem) {
+        List<String> list = getCsvValues(elem);
+        list.add("https://config." + getEnvironment() + ".platform.pagopa.it" + deNull(elem.getCreditorInstitutionCode()));
+        return list;
+    }
+
+    private List<String> getStationHeaders() {
+        return Arrays.asList("Nome",
+                "Codice",
+                "Abilitato",
+                "Aux digit",
+                "ApplicationCode",
+                "Codice Segregazione",
+                "Broadcast");
+    }
+
+    private List<String> getStationHeadersWithUrl() {
+        List<String> headers = new ArrayList<>(getStationHeaders());
+        headers.add("URL");
+        return headers;
+    }
+
+    private String getEnvironment() {
+        if(env.equals("PROD")) {
+            return "";
+        }
+        return env.toLowerCase();
     }
 
     /**

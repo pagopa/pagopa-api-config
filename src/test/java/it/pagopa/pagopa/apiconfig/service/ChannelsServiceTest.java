@@ -332,4 +332,11 @@ class ChannelsServiceTest {
         assertNotNull(result);
     }
 
+    @Test
+    void getChannelsCsv() {
+        when(canaliRepository.findAll()).thenReturn(Lists.newArrayList(getMockCanali()));
+
+        var result = channelsService.getChannelsCSV();
+        assertNotNull(result);
+    }
 }

@@ -24,6 +24,7 @@ import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,6 +68,9 @@ public class ChannelsService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${properties.environment}")
+    private String env;
 
     public Channels getChannels(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
@@ -188,11 +192,15 @@ public class ChannelsService {
     public byte[] getChannelPaymentServiceProvidersCSV(String channelCode) {
         var pspList = getChannelPaymentServiceProviders(channelCode);
 
-        List<String> headers = Arrays.asList("PSP",
-                "Codice",
-                "Abilitato",
-                "Tipo Versamento");
+        List<String> headers = getHeaders();
         List<List<String>> rows = mapPspToCsv(pspList.getPsp());
+        return CommonUtil.createCsv(headers, rows);
+    }
+
+    public byte[] getChannelsCSV() {
+        var channelList = canaliRepository.findAll();
+        List<String> headers = getHeadersWithUrl();
+        List<List<String>> rows = mapChannelsToCsv(channelList);
         return CommonUtil.createCsv(headers, rows);
     }
 
@@ -208,6 +216,50 @@ public class ChannelsService {
                         deNull(String.join(" ", elem.getPaymentTypeList()))))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * @param channelList list of all channels
+     * @return list of list of strings representing the CSV file
+     */
+    private List<List<String>> mapChannelsToCsv(List<Canali> channelList) {
+        return channelList.stream()
+                .map(elem -> Arrays.asList(deNull(elem.getFkIntermediarioPsp().getCodiceIntermediario()),
+                        deNull(elem.getIdCanale()),
+                        deNull(elem.getEnabled()).toString(),
+                        deNull("https://config." + getEnvironment() + ".platform.pagopa.it/channels/" + elem.getIdCanale())))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @return the headers for the CSV file
+     */
+    private List<String> getHeaders() {
+        return Arrays.asList("PSP",
+                "Codice",
+                "Abilitato",
+                "Tipo Versamento",
+                "URL");
+    }
+
+    /**
+     * @return the headers with the URL for the CSV file
+     */
+    private List<String> getHeadersWithUrl() {
+        List<String> headers = new ArrayList<>(getHeaders());
+        headers.add("URL");
+        return headers;
+    }
+
+    /**
+     * @return the application environment
+     */
+    private String getEnvironment() {
+        if(env.equals("PROD")) {
+            return "";
+        }
+        return env.toLowerCase();
+    }
+
 
     /**
      * Map PSP and list of payment types to ChannelPsp

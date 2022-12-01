@@ -177,6 +177,14 @@ class StationsServiceTest {
         var result = stationsService.getStationCreditorInstitutionsCSV("1234");
         assertNotNull(result);
     }
+
+    @Test
+    void getStationsCsv() {
+        when(paStazionePaRepository.findAll()).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+
+        var result = stationsService.getStationsCSV();
+        assertNotNull(result);
+    }
     
     @Test
     void getStationCreditorInstitutionRelation() {
