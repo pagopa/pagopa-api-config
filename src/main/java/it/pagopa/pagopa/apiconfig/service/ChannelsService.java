@@ -236,9 +236,7 @@ public class ChannelsService {
     private List<String> getHeaders() {
         return Arrays.asList("PSP",
                 "Codice",
-                "Abilitato",
-                "Tipo Versamento",
-                "URL");
+                "Abilitato");
     }
 
     /**
