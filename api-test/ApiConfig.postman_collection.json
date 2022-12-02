@@ -16,15 +16,11 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-                                  "pm.test(\"login\", function () {",
-                                  "  pm.response.to.have.status(200);",
-                                  "});",
-                                  "",
-                                  "var jsonData = JSON.parse(responseBody);",
-                                  "// use this set when add one app for every environment",
-                                  "// postman.setEnvironmentVariable(\"jwt\", jsonData.access_token);",
-                                  "pm.globals.set(\"jwt\", jsonData.access_token);"
-                                ],
+									"var jsonData = JSON.parse(responseBody);",
+									"// use this set when add one app for every environment",
+									"// postman.setEnvironmentVariable(\"jwt\", jsonData.access_token);",
+									"pm.globals.set(\"jwt\", jsonData.access_token);"
+								],
 								"type": "text/javascript"
 							}
 						},
@@ -421,7 +417,7 @@
 									"    return result;",
 									"}",
 									"",
-                                  "pm.globals.set(\"encoding_code\", makeid(11));"
+									"pm.globals.set(\"encoding_code\", makeid(35));"
 								],
 								"type": "text/javascript"
 							}
@@ -1260,6 +1256,25 @@
 									"key": "code",
 									"value": "{{station_code}}"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStationsCSV",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations/csv",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"stations",
+								"csv"
 							]
 						}
 					},
@@ -2256,7 +2271,7 @@
 									"    return result;",
 									"}",
 									"",
-                                  "pm.globals.set(\"encoding_code\", makeid(11));"
+									"pm.globals.set(\"encoding_code\", makeid(35));"
 								],
 								"type": "text/javascript"
 							}
@@ -3967,6 +3982,25 @@
 									"key": "code",
 									"value": "{{channel_code}}"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getChannelsCsv",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/csv",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"channels",
+								"csv"
 							]
 						}
 					},
@@ -6661,14 +6695,14 @@
 							}
 						],
 						"body": {
-                          "mode": "raw",
-                          "raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\",\n    \"invio_rt_istantaneo\": false\n}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
 							"host": [
@@ -6700,7 +6734,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-                                  ""
+									"pm.globals.set(\"station_code\", \"01234567891\");"
 								],
 								"type": "text/javascript"
 							}
@@ -6716,14 +6750,14 @@
 							}
 						],
 						"body": {
-                          "mode": "raw",
-                          "raw": "{\n    \"station_code\": \"01234567891\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\",\n    \"invio_rt_istantaneo\": false\n}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
+							"mode": "raw",
+							"raw": "{\n    \"station_code\": \"{{station_code}}\",\n    \"enabled\": true,\n    \"version\": 1,\n    \"ip\": \"NodoDeiPagamentiDellaPATest.sia.eu\",\n    \"password\": \"password\",\n    \"port\": 80,\n    \"redirect_ip\": \"paygov.collaudo.regione.lazio.it\",\n    \"redirect_path\": \"nodo-regionale-fesp/paaInviaRispostaPagamento.html\",\n    \"redirect_port\": 443,\n    \"service\": \"openspcoop/PD/RT6TPDREGVENETO\",\n    \"redirect_protocol\": \"HTTPS\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"10.101.1.95\",\n    \"proxy_port\": 8080,\n    \"protocol\": \"HTTP\",\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"flag_online\": true,\n    \"broker_code\": \"80007580279\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{api-config-host}}/{{api-config-base-path}}/stations",
 							"host": [
@@ -6872,7 +6906,7 @@
 								},
 								{
 									"key": "stationcode",
-                                  "value": "01234567891"
+									"value": "{{station_code}}"
 								}
 							]
 						}

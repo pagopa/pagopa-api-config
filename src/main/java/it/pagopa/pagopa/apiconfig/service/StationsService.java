@@ -169,7 +169,7 @@ public class StationsService {
 
     private List<String> getCsvValuesWithUrl(StationCreditorInstitution elem) {
         List<String> list = getCsvValues(elem);
-        list.add("https://config." + getEnvironment() + ".platform.pagopa.it" + deNull(elem.getCreditorInstitutionCode()));
+        list.add("https://config" + getEnvironment() + ".platform.pagopa.it" + deNull(elem.getCreditorInstitutionCode()));
         return list;
     }
 
@@ -193,7 +193,7 @@ public class StationsService {
         if(env.equals("PROD")) {
             return "";
         }
-        return env.toLowerCase();
+        return "." + env.toLowerCase();
     }
 
     /**
