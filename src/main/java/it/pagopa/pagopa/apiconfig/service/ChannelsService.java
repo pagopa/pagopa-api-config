@@ -192,14 +192,20 @@ public class ChannelsService {
     public byte[] getChannelPaymentServiceProvidersCSV(String channelCode) {
         var pspList = getChannelPaymentServiceProviders(channelCode);
 
-        List<String> headers = getHeaders();
+        List<String> headers = Arrays.asList("PSP",
+                "Codice",
+                "Abilitato",
+                "Tipo Versamento");
         List<List<String>> rows = mapPspToCsv(pspList.getPsp());
         return CommonUtil.createCsv(headers, rows);
     }
 
     public byte[] getChannelsCSV() {
         var channelList = canaliRepository.findAll();
-        List<String> headers = getHeadersWithUrl();
+        List<String> headers = Arrays.asList("Descrizione Intermediario PSP",
+                "Canale",
+                "Abilitato",
+                "URL");
         List<List<String>> rows = mapChannelsToCsv(channelList);
         return CommonUtil.createCsv(headers, rows);
     }
@@ -221,31 +227,13 @@ public class ChannelsService {
      * @param channelList list of all channels
      * @return list of list of strings representing the CSV file
      */
-    private List<List<String>> mapChannelsToCsv(List<Canali> channelList) {
+    private List<List<String>> mapChannelsToCsv(List<Canali> channelList) { //ERRORE, HEADERS IN METODO CSV ESISTENTE SBAGLIATI
         return channelList.stream()
                 .map(elem -> Arrays.asList(deNull(elem.getFkIntermediarioPsp().getCodiceIntermediario()),
                         deNull(elem.getIdCanale()),
                         deNull(elem.getEnabled()).toString(),
                         deNull("https://config" + getEnvironment() + ".platform.pagopa.it/channels/" + elem.getIdCanale())))
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * @return the headers for the CSV file
-     */
-    private List<String> getHeaders() {
-        return Arrays.asList("PSP",
-                "Codice",
-                "Abilitato");
-    }
-
-    /**
-     * @return the headers with the URL for the CSV file
-     */
-    private List<String> getHeadersWithUrl() {
-        List<String> headers = new ArrayList<>(getHeaders());
-        headers.add("URL");
-        return headers;
     }
 
     /**

@@ -130,7 +130,13 @@ public class StationsService {
                 .map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class))
                 .map(this::getCsvValues)
                 .collect(Collectors.toList());
-        List<String> headers = getStationHeaders();
+        List<String> headers = Arrays.asList("Nome",
+                "Codice",
+                "Abilitato",
+                "Aux digit",
+                "ApplicationCode",
+                "Codice Segregazione",
+                "Broadcast");
         return CommonUtil.createCsv(headers, csvRows);
     }
     
@@ -151,7 +157,14 @@ public class StationsService {
                 .map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class))
                 .map(this::getCsvValuesWithUrl)
                 .collect(Collectors.toList());
-        List<String> headers = getStationHeadersWithUrl();
+        List<String> headers = Arrays.asList("Descrizione Intermediario EC",
+                "Stazione",
+                "Abilitato",
+                "Aux digit",
+                "ApplicationCode",
+                "Codice Segregazione",
+                "Broadcast",
+                "URL");
         return CommonUtil.createCsv(headers, csvRows);
     }
 
@@ -171,22 +184,6 @@ public class StationsService {
         List<String> list = getCsvValues(elem);
         list.add("https://config" + getEnvironment() + ".platform.pagopa.it" + deNull(elem.getCreditorInstitutionCode()));
         return list;
-    }
-
-    private List<String> getStationHeaders() {
-        return Arrays.asList("Nome",
-                "Codice",
-                "Abilitato",
-                "Aux digit",
-                "ApplicationCode",
-                "Codice Segregazione",
-                "Broadcast");
-    }
-
-    private List<String> getStationHeadersWithUrl() {
-        List<String> headers = new ArrayList<>(getStationHeaders());
-        headers.add("URL");
-        return headers;
     }
 
     private String getEnvironment() {
