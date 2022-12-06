@@ -11,6 +11,7 @@ import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
 import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
+import it.pagopa.pagopa.apiconfig.entity.ServiceAmountCosmos;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
@@ -24,6 +25,7 @@ import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
@@ -69,6 +71,9 @@ public class CdiService {
 
     @Autowired
     private CdiMasterRepository cdiMasterRepository;
+
+    @Autowired
+    private CdiMasterValidRepository cdiMasterValidRepository;
 
     @Autowired
     PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
@@ -170,7 +175,7 @@ public class CdiService {
 
     public void uploadHistory() {
         var result = new ArrayList<CdiCosmos>();
-        for (var master : cdiMasterRepository.findAll()) {
+        for (var master : cdiMasterValidRepository.findAll()) {
             var cdiDetails = master.getCdiDetail()
                     .stream()
                     .map(this::mapDetails)
@@ -188,12 +193,21 @@ public class CdiService {
 
     private CdiDetailCosmos mapDetails(CdiDetail detail) {
         return CdiDetailCosmos.builder()
-//                .idBrokerPsp(detail.get) TODO
                 .idChannel(detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale().getIdCanale())
                 .name(detail.getNomeServizio())
                 .description(getDescription(detail))
                 .channelApp(detail.getCanaleApp() == 1L)
                 .paymentMethod(detail.getModelloPagamento())
+//                .idBrokerPsp(detail.get) TODO
+//                .channelCardsCart()
+//                .onUs()
+                .serviceAmount(detail.getCdiFasciaCostoServizio().stream()
+                        .map(elem -> ServiceAmountCosmos.builder()
+                                .minPaymentAmount((int) (elem.getImportoMinimo() * 100))
+                                .maxPaymentAmount((int) (elem.getImportoMassimo() * 100))
+                                .paymentAmount((int) (elem.getCostoFisso() * 100))
+                                .build())
+                        .collect(Collectors.toList()))
                 .build();
     }
 
