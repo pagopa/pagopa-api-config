@@ -3,7 +3,7 @@
   "enabled": true,
   "business_name": "Comune di Bassano del Grappa",
   "address": {
-    "zip_code": "00123"
+    "zip_code": "00111"
   },
   "psp_payment": true,
   "reporting_ftp": false,
