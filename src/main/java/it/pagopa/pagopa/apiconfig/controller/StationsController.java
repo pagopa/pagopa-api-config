@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +42,7 @@ import javax.validation.constraints.Size;
 @RestController()
 @RequestMapping(path = "/stations")
 @Tag(name = "Creditor Institutions", description = "Everything about Creditor Institution")
+@Validated
 public class StationsController {
 
     @Autowired

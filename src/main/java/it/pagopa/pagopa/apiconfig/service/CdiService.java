@@ -2,7 +2,9 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
+import it.pagopa.pagopa.apiconfig.entity.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
@@ -12,10 +14,11 @@ import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
-import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
+import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
+import it.pagopa.pagopa.apiconfig.repository.CDIRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
@@ -97,6 +100,9 @@ public class CdiService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private CDIRepository cdiRepository;
+
     @Value("${xsd.cdi}")
     private String xsdCdi;
 
@@ -159,6 +165,45 @@ public class CdiService {
             throw new AppException(HttpStatus.CONFLICT, "CDI conflict", "This CDI is used.");
         }
         cdiMasterRepository.delete(cdiMaster);
+    }
+
+
+    public void uploadHistory() {
+        var result = new ArrayList<CdiCosmos>();
+        for (var master : cdiMasterRepository.findAll()) {
+            var cdiDetails = master.getCdiDetail()
+                    .stream()
+                    .map(this::mapDetails)
+                    .collect(Collectors.toList());
+            result.add(CdiCosmos.builder()
+                    .idPsp(master.getFkPsp().getIdPsp())
+                    .idCDI(master.getIdInformativaPsp())
+                    .digitalStamp(master.getMarcaBolloDigitale())
+                    .validityDateFrom(master.getDataInizioValidita() != null ? master.getDataInizioValidita().toLocalDateTime() : null)
+                    .details(cdiDetails)
+                    .build());
+        }
+        cdiRepository.saveAll(result);
+    }
+
+    private CdiDetailCosmos mapDetails(CdiDetail detail) {
+        return CdiDetailCosmos.builder()
+//                .idBrokerPsp(detail.get) TODO
+                .idChannel(detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale().getIdCanale())
+                .name(detail.getNomeServizio())
+                .description(getDescription(detail))
+                .channelApp(detail.getCanaleApp() == 1L)
+                .paymentMethod(detail.getModelloPagamento())
+                .build();
+    }
+
+    private static String getDescription(CdiDetail detail) {
+        return detail.getCdiInformazioniServizio()
+                .stream()
+                .filter(item -> "IT".equals(item.getCodiceLingua()))
+                .findFirst()
+                .map(CdiInformazioniServizio::getDescrizioneServizio)
+                .orElse("");
     }
 
     public List<CheckItem> verifyCdi(MultipartFile file) {
@@ -569,4 +614,5 @@ public class CdiService {
         }
         return binaryFileRepository.save(binaryFile);
     }
+
 }

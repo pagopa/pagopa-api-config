@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,13 +123,25 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({javax.validation.ConstraintViolationException.class})
+    public ResponseEntity<ProblemJson> handleConstraintViolationException(final javax.validation.ConstraintViolationException ex, final WebRequest request) {
+        log.warn("Validation Error raised:", ex);
+        var errorResponse = ProblemJson.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .title(BAD_REQUEST)
+                .detail(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
     /**
      * @param ex      {@link DataIntegrityViolationException} exception raised when the SQL statement cannot be executed
      * @param request from frontend
      * @return a {@link ProblemJson} as response with the cause and with an appropriated HTTP status
      */
-    @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity<ProblemJson> handleDataIntegrityViolationException(final DataIntegrityViolationException ex, final WebRequest request) {
+    @ExceptionHandler({ValidationException.class})
+    public ResponseEntity<ProblemJson> handleDataIntegrityViolationException(final ValidationException ex, final WebRequest request) {
         ProblemJson errorResponse = null;
 
         if (ex.getCause() instanceof ConstraintViolationException) {
