@@ -42,15 +42,6 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class CommonUtil {
 
-    /**
-     * @param zipcode zip code in long
-     * @return zip code in string with the format %05d (add leading zeroes to number)
-     * Example 00123
-     */
-    public static String numberToZipCode(Long zipcode) {
-        return zipcode == null ? null : String.format("%05d", zipcode);
-    }
-
 
     /**
      * @param page Page returned from the database

@@ -23,7 +23,7 @@ public class ConvertPaToCreditorInstitutionDetails implements Converter<Pa, Cred
                         .city(pa.getComuneDomicilioFiscale())
                         .location(pa.getIndirizzoDomicilioFiscale())
                         .countryCode(pa.getSiglaProvinciaDomicilioFiscale())
-                        .zipCode(CommonUtil.numberToZipCode(pa.getCapDomicilioFiscale()))
+                        .zipCode(pa.getCapDomicilioFiscale())
                         .taxDomicile(pa.getDenominazioneDomicilioFiscale())
                         .build())
                 .pspPayment(pa.getPagamentoPressoPsp())
