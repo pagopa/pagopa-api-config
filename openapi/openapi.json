@@ -1,10 +1,10 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "PagoPA API configuration",
-    "description" : "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
-    "termsOfService" : "https://www.pagopa.gov.it/",
-    "version" : "0.28.0-1"
+  "openapi": "3.0.1",
+  "info": {
+    "title": "PagoPA API configuration",
+    "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
+    "termsOfService": "https://www.pagopa.gov.it/",
+    "version": "0.28.2"
   },
   "servers" : [ {
     "url" : "http://127.0.0.1:8080/apiconfig/api/v1",
