@@ -19,6 +19,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/cdis")
 @Tag(name = "Payment Service Providers", description = "Everything about Payment Service Providers")
+@Validated
 public class CdiController {
 
     @Autowired
@@ -137,6 +139,12 @@ public class CdiController {
     )
     public ResponseEntity<List<CheckItem>> verifyCdi(@NotNull @Parameter(description = "XML file regarding CDI to check", required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)) @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(cdiService.verifyCdi(file));
+    }
+
+    @GetMapping("/uploadhistory")
+    public ResponseEntity<Void> uploadHistory() {
+        cdiService.uploadHistory();
+        return ResponseEntity.ok().build();
     }
 
 }
