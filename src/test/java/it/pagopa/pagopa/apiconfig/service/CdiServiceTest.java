@@ -323,7 +323,7 @@ class CdiServiceTest {
 
         ArgumentCaptor<List<CdiCosmos>> cdiCosmos = ArgumentCaptor.forClass(List.class);
         verify(cdiCosmosRepository, times(1)).saveAll(cdiCosmos.capture());
-        assertEquals(cdiCosmos.getValue().size(), 1);
+        assertEquals(1, cdiCosmos.getValue().size());
         assertEquals("50", cdiCosmos.getValue().get(0).getIdPsp() );
     }
 }
