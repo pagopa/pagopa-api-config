@@ -13,6 +13,7 @@ import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
@@ -90,6 +91,8 @@ class CdiServiceTest {
     @Autowired
     @InjectMocks
     private CdiService cdiService;
+    @Autowired
+    private CdiCosmosRepository cdiCosmosRepository;
 
 
     @Test
@@ -306,5 +309,11 @@ class CdiServiceTest {
         List<CheckItem> checkItemList = cdiService.verifyCdi(file);
         assertEquals(0, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.VALID)).count());
         assertEquals(1, checkItemList.stream().filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID)).count());
+    }
+
+    @Test
+    void uploadHistory(){
+        cdiService.uploadHistory();
+        verify(cdiCosmosRepository, times(1)).saveAll(any());
     }
 }
