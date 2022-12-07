@@ -102,7 +102,7 @@ class ConfigurationControllerTest {
 
     @Test
     void updateConfigurationKey() throws Exception {
-        mvc.perform(put("/configuration/paymenttypes/code")
+        mvc.perform(put("/configuration/paymenttypes/ABCVDF")
                 .content(TestUtil.toJson(getMockConfigurationKey()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -237,7 +237,7 @@ class ConfigurationControllerTest {
 
     @Test
     void updatePaymentType() throws Exception {
-        mvc.perform(put("/configuration/paymenttypes/code")
+        mvc.perform(put("/configuration/paymenttypes/ABCVDF")
                 .content(TestUtil.toJson(getMockPaymentType()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -245,7 +245,7 @@ class ConfigurationControllerTest {
 
     @Test
     void deletePaymentType() throws Exception {
-        mvc.perform(delete("/configuration/paymenttypes/code").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/configuration/paymenttypes/ABCVDF").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

@@ -53,7 +53,7 @@ class CdiControllerTest {
 
     @Test
     void getCdi() throws Exception {
-        String url = "/cdis/1234?pspcode=1";
+        String url = "/cdis/1234?pspcode=1234ABC12345";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_XML));
@@ -74,7 +74,7 @@ class CdiControllerTest {
 
     @Test
     void deleteCdi() throws Exception {
-        mvc.perform(delete("/cdis/1234?pspcode=1").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/cdis/1234?pspcode=1234ABC12345").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

@@ -22,7 +22,7 @@ import org.springframework.lang.Nullable;
 @EnableCosmosRepositories("it.pagopa.pagopa.apiconfig.repository")
 @EnableConfigurationProperties
 @EnableCosmosAuditing
-@ConditionalOnExpression("'${properties.environment}'!='test'")
+@ConditionalOnExpression("'${mock.cosmosdb.enabled}'== true")
 @Slf4j
 public class CosmosDBConfig extends AbstractCosmosConfiguration {
 

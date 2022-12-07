@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @RestController()
 @RequestMapping(path = "/services")
@@ -47,7 +48,7 @@ public class ServicesController {
     )
     public ResponseEntity<Services> getServices(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @PositiveOrZero @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
             @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter() @RequestParam(required = false, name = "pspcode") String pspCode,
             @Parameter() @RequestParam(required = false, name = "brokerpspcode") String brokerPspCode,
             @Parameter() @RequestParam(required = false, name = "channelcode") String channelCode,

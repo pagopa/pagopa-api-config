@@ -19,7 +19,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CDIRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
@@ -106,7 +106,7 @@ public class CdiService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private CDIRepository cdiRepository;
+    private CdiCosmosRepository cdiCosmosRepository;
 
     @Value("${xsd.cdi}")
     private String xsdCdi;
@@ -188,7 +188,7 @@ public class CdiService {
                     .details(cdiDetails)
                     .build());
         }
-        cdiRepository.saveAll(result);
+        cdiCosmosRepository.saveAll(result);
     }
 
     private CdiDetailCosmos mapDetails(CdiDetail detail) {

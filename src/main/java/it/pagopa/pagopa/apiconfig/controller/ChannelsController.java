@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilterAndOrder;
@@ -63,7 +64,7 @@ public class ChannelsController {
     )
     public ResponseEntity<Channels> getChannels(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @PositiveOrZero @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
             @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code") String filterByCode,
             @RequestParam(required = false, name = "ordering", defaultValue = "DESC") @Parameter(description = "Direction of ordering. Results are ordered by code") Sort.Direction ordering) {
         return ResponseEntity.ok(channelsService.getChannels(limit, page, getFilterAndOrder(filterByCode, null, Order.Channel.CODE, ordering)));

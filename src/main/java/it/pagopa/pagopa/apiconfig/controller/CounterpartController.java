@@ -31,6 +31,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @RestController()
@@ -57,7 +58,7 @@ public class CounterpartController {
     )
     public ResponseEntity<CounterpartTables> getCounterpartTables(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @PositiveOrZero @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
             @Parameter(description = "filter by Id of counterpart table") @RequestParam(value = "idcounterparttable", required = false) String idCounterpartTable,
             @Parameter(description = "filter by Creditor Institution") @RequestParam(value = "creditorinstitutioncode", required = false) String creditorInstitutionCode) {
         return ResponseEntity.ok(counterpartService.getCounterpartTables(limit, page, idCounterpartTable, creditorInstitutionCode));

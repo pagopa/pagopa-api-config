@@ -18,7 +18,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,8 +139,8 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      * @param request from frontend
      * @return a {@link ProblemJson} as response with the cause and with an appropriated HTTP status
      */
-    @ExceptionHandler({ValidationException.class})
-    public ResponseEntity<ProblemJson> handleDataIntegrityViolationException(final ValidationException ex, final WebRequest request) {
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<ProblemJson> handleDataIntegrityViolationException(final DataIntegrityViolationException ex, final WebRequest request) {
         ProblemJson errorResponse = null;
 
         if (ex.getCause() instanceof ConstraintViolationException) {
