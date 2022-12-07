@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
 import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
@@ -18,6 +19,7 @@ import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
@@ -47,6 +49,7 @@ import java.util.Optional;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMaster;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMasterValid;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,6 +75,8 @@ class CdiServiceTest {
 
     @MockBean
     PspRepository pspRepository;
+    @MockBean
+    CdiMasterValidRepository cdiMasterValidRepository;
 
     @MockBean
     CanaliRepository canaliRepository;
@@ -313,7 +318,12 @@ class CdiServiceTest {
 
     @Test
     void uploadHistory(){
+        when(cdiMasterValidRepository.findAll()).thenReturn(List.of(getMockCdiMasterValid()));
         cdiService.uploadHistory();
-        verify(cdiCosmosRepository, times(1)).saveAll(any());
+
+        ArgumentCaptor<List<CdiCosmos>> cdiCosmos = ArgumentCaptor.forClass(List.class);
+        verify(cdiCosmosRepository, times(1)).saveAll(cdiCosmos.capture());
+        assertEquals(cdiCosmos.getValue().size(), 1);
+        assertEquals("50", cdiCosmos.getValue().get(0).getIdPsp() );
     }
 }

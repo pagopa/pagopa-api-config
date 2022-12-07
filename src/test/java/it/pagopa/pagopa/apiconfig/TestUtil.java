@@ -8,6 +8,7 @@ import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
 import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
@@ -482,6 +483,16 @@ public class TestUtil {
 
     public static CdiMaster getMockCdiMaster() {
         return CdiMaster.builder()
+                .id(1L)
+                .fkPsp(getMockPsp())
+                .fkBinaryFile(getMockBinaryFile())
+                .dataPubblicazione(Timestamp.valueOf("2021-12-14 00:00:00"))
+                .dataInizioValidita(Timestamp.valueOf("2021-12-14 00:00:00"))
+                .build();
+    }
+
+    public static CdiMasterValid getMockCdiMasterValid() {
+        return CdiMasterValid.builder()
                 .id(1L)
                 .fkPsp(getMockPsp())
                 .fkBinaryFile(getMockBinaryFile())

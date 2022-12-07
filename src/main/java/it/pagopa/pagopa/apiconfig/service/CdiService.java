@@ -19,8 +19,8 @@ import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
@@ -175,19 +175,25 @@ public class CdiService {
 
     public void uploadHistory() {
         var result = new ArrayList<CdiCosmos>();
-        for (var master : cdiMasterValidRepository.findAll()) {
-            var cdiDetails = master.getCdiDetail()
-                    .stream()
-                    .map(this::mapDetails)
-                    .collect(Collectors.toList());
-            result.add(CdiCosmos.builder()
-                    .idPsp(master.getFkPsp().getIdPsp())
-                    .idCDI(master.getIdInformativaPsp())
-                    .digitalStamp(master.getMarcaBolloDigitale())
-                    .validityDateFrom(master.getDataInizioValidita() != null ? master.getDataInizioValidita().toLocalDateTime() : null)
-                    .details(cdiDetails)
-                    .build());
-        }
+        cdiMasterValidRepository.findAll()
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(master -> {
+                    var cdiDetails = master.getCdiDetail() != null ?
+                            master.getCdiDetail()
+                                    .stream()
+                                    .filter(Objects::nonNull)
+                                    .map(this::mapDetails)
+                                    .collect(Collectors.toList())
+                            : null;
+                    result.add(CdiCosmos.builder()
+                            .idPsp(master.getFkPsp().getIdPsp())
+                            .idCDI(master.getIdInformativaPsp())
+                            .digitalStamp(master.getMarcaBolloDigitale())
+                            .validityDateFrom(master.getDataInizioValidita() != null ? master.getDataInizioValidita().toLocalDateTime() : null)
+                            .details(cdiDetails)
+                            .build());
+                });
         cdiCosmosRepository.saveAll(result);
     }
 
