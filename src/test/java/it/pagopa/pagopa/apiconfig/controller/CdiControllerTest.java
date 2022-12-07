@@ -90,4 +90,12 @@ class CdiControllerTest {
                 .andExpect(status().isOk());
 
     }
+    @Test
+    void uploadHistory() throws Exception {
+        String url = "/cdis/uploadhistory";
+        mvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
 }
