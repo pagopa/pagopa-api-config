@@ -5,5 +5,5 @@ import it.pagopa.pagopa.apiconfig.entity.CdiCosmos;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CDIRepository extends CosmosRepository<CdiCosmos, String> {
+public interface CdiCosmosRepository extends CosmosRepository<CdiCosmos, String> {
 }

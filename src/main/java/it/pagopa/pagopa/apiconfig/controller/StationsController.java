@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @RestController()
@@ -68,7 +69,7 @@ public class StationsController {
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Stations> getStations(@Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-                                                @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+                                                @PositiveOrZero @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
                                                 @Parameter(description = "Filter by broker") @RequestParam(name = "brokercode", required = false) String brokerCode, @Parameter(description = "Filter by creditor institution") @RequestParam(name = "creditorinstitutioncode", required = false) String creditorInstitutionCode,
                                                 @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code") String filterByCode,
                                                 @RequestParam(required = false, name = "ordering", defaultValue = "DESC") @Parameter(description = "Direction of ordering. Results are ordered by code") Sort.Direction ordering) {
@@ -162,7 +163,7 @@ public class StationsController {
     public ResponseEntity<StationCreditorInstitutions> getStationCreditorInstitutions(
             @Size(max = 50) @Parameter(description = "station code.", required = true) @PathVariable("stationcode") String stationCode,
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
+            @PositiveOrZero @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page) {
         return ResponseEntity.ok(stationsService.getStationCreditorInstitutions(stationCode, limit, page));
     }
 

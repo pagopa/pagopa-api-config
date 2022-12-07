@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
@@ -46,6 +47,9 @@ class MassiveLoadingServiceEserTest {
 
     @MockBean
     private PaStazionePaRepository paStazionePaRepository;
+
+    @MockBean
+    private CdiCosmosRepository cdiCosmosRepository;
 
     @Autowired
     @InjectMocks

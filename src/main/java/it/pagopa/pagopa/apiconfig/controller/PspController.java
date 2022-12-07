@@ -37,6 +37,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilterAndOrder;
@@ -64,7 +65,7 @@ public class PspController {
     )
     public ResponseEntity<PaymentServiceProviders> getPaymentServiceProviders(
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
-            @Positive @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
+            @PositiveOrZero @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
             @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code") String filterByCode,
             @RequestParam(required = false, name = "name") @Parameter(description = "Filter by name") String filterByName,
             @RequestParam(required = false, name = "orderby", defaultValue = "CODE") @Parameter(description = "Order by code or name") Order.Psp orderBy,

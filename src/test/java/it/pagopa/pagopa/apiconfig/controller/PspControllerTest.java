@@ -90,7 +90,7 @@ class PspControllerTest {
 
     @Test
     void updatePsp() throws Exception {
-        mvc.perform(put("/paymentserviceproviders/1234")
+        mvc.perform(put("/paymentserviceproviders/1234ABC12345")
                         .content(TestUtil.toJson(getMockPaymentServiceProviderDetails()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -99,13 +99,13 @@ class PspControllerTest {
 
     @Test
     void deletePsp() throws Exception {
-        mvc.perform(delete("/paymentserviceproviders/1234").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/paymentserviceproviders/1234ABC12345").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     void createPspChannel() throws Exception {
-        mvc.perform(post("/paymentserviceproviders/1234/channels")
+        mvc.perform(post("/paymentserviceproviders/1234ABC12345/channels")
                 .content(TestUtil.toJson(getMockPspChannel()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -114,7 +114,7 @@ class PspControllerTest {
 
     @Test
     void updatePspChannel() throws Exception {
-        mvc.perform(put("/paymentserviceproviders/1234/channels/1234")
+        mvc.perform(put("/paymentserviceproviders/1234ABC12345/channels/1234")
                         .content(TestUtil.toJson(getMockPspChannel()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -123,7 +123,7 @@ class PspControllerTest {
 
     @Test
     void deletePspChannel() throws Exception {
-        mvc.perform(delete("/paymentserviceproviders/1234/channels/1234"))
+        mvc.perform(delete("/paymentserviceproviders/1234ABC12345/channels/1234"))
                 .andExpect(status().isOk());
     }
 
