@@ -7,6 +7,9 @@ import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
+import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
+import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
+import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
 import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
 import it.pagopa.pagopa.apiconfig.entity.Codifiche;
@@ -498,6 +501,34 @@ public class TestUtil {
                 .fkBinaryFile(getMockBinaryFile())
                 .dataPubblicazione(Timestamp.valueOf("2021-12-14 00:00:00"))
                 .dataInizioValidita(Timestamp.valueOf("2021-12-14 00:00:00"))
+                .build();
+    }
+
+    public static CdiDetail getMockCdiDetail() {
+        return CdiDetail.builder()
+                .id(1L)
+                .canaleApp(1L)
+                .nomeServizio("service")
+                .modelloPagamento(1L)
+                .fkPspCanaleTipoVersamento(getMockPspCanaleTipoVersamento())
+                .cdiInformazioniServizio(List.of(getMockCdiInformazioniServizio()))
+                .cdiFasciaCostoServizio(List.of(getMockCdiFasciaCostoServizio()))
+                .build();
+    }
+    public static CdiInformazioniServizio getMockCdiInformazioniServizio() {
+        return CdiInformazioniServizio.builder()
+                .id(1L)
+                .codiceLingua("IT")
+                .descrizioneServizio("descr")
+                .build();
+    }
+
+    public static CdiFasciaCostoServizio getMockCdiFasciaCostoServizio() {
+        return CdiFasciaCostoServizio.builder()
+                .id(1L)
+                .costoFisso(5.0)
+                .importoMinimo(1.0)
+                .importoMassimo(10.0)
                 .build();
     }
 

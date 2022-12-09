@@ -6,6 +6,7 @@ import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
 import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
@@ -48,6 +49,7 @@ import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiDetail;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMaster;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMasterValid;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
@@ -318,7 +320,9 @@ class CdiServiceTest {
 
     @Test
     void uploadHistory(){
-        when(cdiMasterValidRepository.findAll()).thenReturn(List.of(getMockCdiMasterValid()));
+        CdiMasterValid mockCdiMasterValid = getMockCdiMasterValid();
+        mockCdiMasterValid.setCdiDetail(List.of(getMockCdiDetail()));
+        when(cdiMasterValidRepository.findAll()).thenReturn(List.of(mockCdiMasterValid));
         cdiService.uploadHistory();
 
         ArgumentCaptor<List<CdiCosmos>> cdiCosmos = ArgumentCaptor.forClass(List.class);

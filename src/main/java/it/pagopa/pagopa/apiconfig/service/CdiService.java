@@ -218,12 +218,13 @@ public class CdiService {
     }
 
     private static String getDescription(CdiDetail detail) {
-        return detail.getCdiInformazioniServizio()
+        return detail != null ? detail.getCdiInformazioniServizio()
                 .stream()
                 .filter(item -> "IT".equals(item.getCodiceLingua()))
                 .findFirst()
                 .map(CdiInformazioniServizio::getDescrizioneServizio)
-                .orElse("");
+                .orElse("")
+                : null;
     }
 
     public List<CheckItem> verifyCdi(MultipartFile file) {
