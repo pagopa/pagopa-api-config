@@ -20,16 +20,12 @@ public class ConvertCreditorInstitutionDetailsToPa implements Converter<Creditor
                 .comuneDomicilioFiscale(source.getAddress().getCity())
                 .indirizzoDomicilioFiscale(source.getAddress().getLocation())
                 .siglaProvinciaDomicilioFiscale(source.getAddress().getCountryCode())
-                .capDomicilioFiscale(getCapDomicilioFiscale(source))
+                .capDomicilioFiscale(source.getAddress().getZipCode())
                 .denominazioneDomicilioFiscale(source.getAddress().getTaxDomicile())
                 .pagamentoPressoPsp(source.getPspPayment())
                 .rendicontazioneFtp(source.getReportingFtp())
                 .rendicontazioneZip(source.getReportingZip())
                 .flagRepoCommissioneCaricoPa(false)
                 .build();
-    }
-
-    private Long getCapDomicilioFiscale(CreditorInstitutionDetails source) {
-        return source.getAddress().getZipCode() != null && !source.getAddress().getZipCode().isBlank() ? Long.valueOf(source.getAddress().getZipCode()) : null;
     }
 }

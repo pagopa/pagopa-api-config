@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 @Table(name = "PA", schema = "NODO4_CFG")
 @Entity
@@ -51,7 +52,8 @@ public class Pa {
     private String indirizzoDomicilioFiscale;
 
     @Column(name = "CAP_DOMICILIO_FISCALE")
-    private Long capDomicilioFiscale;
+    @Size(max = 5)
+    private String capDomicilioFiscale;
 
     @Column(name = "SIGLA_PROVINCIA_DOMICILIO_FISCALE")
     private String siglaProvinciaDomicilioFiscale;
