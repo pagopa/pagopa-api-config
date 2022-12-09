@@ -46,7 +46,7 @@ create table NODO4_CFG.PA
     FLAG_REPO_COMMISSIONE_CARICO_PA   boolean     not null,
     EMAIL_REPO_COMMISSIONE_CARICO_PA  varchar(255),
     INDIRIZZO_DOMICILIO_FISCALE       varchar(255),
-    CAP_DOMICILIO_FISCALE             numeric(5),
+    CAP_DOMICILIO_FISCALE             varchar(5),
     SIGLA_PROVINCIA_DOMICILIO_FISCALE varchar(2),
     COMUNE_DOMICILIO_FISCALE          varchar(255),
     DENOMINAZIONE_DOMICILIO_FISCALE   varchar(255),
