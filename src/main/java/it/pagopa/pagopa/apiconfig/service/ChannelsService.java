@@ -227,25 +227,24 @@ public class ChannelsService {
      * @param channelList list of all channels
      * @return list of list of strings representing the CSV file
      */
-    private List<List<String>> mapChannelsToCsv(List<Canali> channelList) { //ERRORE, HEADERS IN METODO CSV ESISTENTE SBAGLIATI
+    private List<List<String>> mapChannelsToCsv(List<Canali> channelList) {
         return channelList.stream()
-                .map(elem -> Arrays.asList(deNull(elem.getFkIntermediarioPsp().getCodiceIntermediario()),
-                        deNull(elem.getIdCanale()),
+                .map(elem -> Arrays.asList(elem.getFkIntermediarioPsp().getCodiceIntermediario(),
+                        elem.getIdCanale(),
                         deNull(elem.getEnabled()).toString(),
-                        deNull("https://config" + getEnvironment() + ".platform.pagopa.it/channels/" + elem.getIdCanale())))
+                        "https://config" + getEnvironment() + ".platform.pagopa.it/channels/" + elem.getIdCanale()))
                 .collect(Collectors.toList());
     }
 
     /**
-     * @return the application environment
+     * @return the correct addition of the environments for the url
      */
-    private String getEnvironment() {
+    public String getEnvironment() {
         if(env.equals("PROD")) {
             return "";
         }
         return "." + env.toLowerCase();
     }
-
 
     /**
      * Map PSP and list of payment types to ChannelPsp

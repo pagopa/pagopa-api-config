@@ -336,7 +336,8 @@ class ChannelsServiceTest {
     void getChannelsCsv() {
         when(canaliRepository.findAll()).thenReturn(Lists.newArrayList(getMockCanali()));
 
-        var result = channelsService.getChannelsCSV();
-        assertNotNull(result);
+        String result = new String(channelsService.getChannelsCSV());
+        assertTrue(result.contains("Regione Lazio"));
+        assertTrue(result.contains("1234"));
     }
 }

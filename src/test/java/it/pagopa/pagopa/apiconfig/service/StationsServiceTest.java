@@ -182,8 +182,9 @@ class StationsServiceTest {
     void getStationsCsv() {
         when(paStazionePaRepository.findAll()).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
 
-        var result = stationsService.getStationsCSV();
-        assertNotNull(result);
+        String result = new String(stationsService.getStationsCSV());
+        assertTrue(result.contains("00168480242"));
+        assertTrue(result.contains("Bassano del Grappa"));
     }
     
     @Test
