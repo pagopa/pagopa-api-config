@@ -232,18 +232,8 @@ public class ChannelsService {
                 .map(elem -> Arrays.asList(elem.getFkIntermediarioPsp().getCodiceIntermediario(),
                         elem.getIdCanale(),
                         deNull(elem.getEnabled()).toString(),
-                        "https://config" + getEnvironment() + ".platform.pagopa.it/channels/" + elem.getIdCanale()))
+                        "https://config" + CommonUtil.getEnvironment(env) + ".platform.pagopa.it/channels/" + elem.getIdCanale()))
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * @return the correct addition of the environments for the url
-     */
-    public String getEnvironment() {
-        if(env.equals("PROD")) {
-            return "";
-        }
-        return "." + env.toLowerCase();
     }
 
     /**
