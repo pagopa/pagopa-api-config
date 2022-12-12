@@ -197,16 +197,17 @@ public class CdiService {
         cdiCosmosRepository.saveAll(result);
     }
 
-    private CdiDetailCosmos mapDetails(CdiDetail detail) {
+    private CdiDetailCosmos mapDetails(@NotNull CdiDetail detail) {
+        @NotNull Canali canale = detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale();
         return CdiDetailCosmos.builder()
-                .idChannel(detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale().getIdCanale())
+                .idChannel(canale.getIdCanale())
                 .name(detail.getNomeServizio())
                 .description(getDescription(detail))
                 .channelApp(detail.getCanaleApp() == 1L)
                 .paymentMethod(detail.getModelloPagamento())
-//                .idBrokerPsp(detail.get) TODO
-//                .channelCardsCart()
-//                .onUs()
+                .idBrokerPsp(canale.getFkIntermediarioPsp().getIdIntermediarioPsp())
+                .channelCardsCart(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getCarrelloCarte() : null)
+                .onUs(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getOnUs() : null)
                 .serviceAmount(detail.getCdiFasciaCostoServizio().stream()
                         .map(elem -> ServiceAmountCosmos.builder()
                                 .minPaymentAmount((int) (elem.getImportoMinimo() * 100))
@@ -217,14 +218,13 @@ public class CdiService {
                 .build();
     }
 
-    private static String getDescription(CdiDetail detail) {
-        return detail != null ? detail.getCdiInformazioniServizio()
+    private static String getDescription(@NotNull CdiDetail detail) {
+        return detail.getCdiInformazioniServizio()
                 .stream()
                 .filter(item -> "IT".equals(item.getCodiceLingua()))
                 .findFirst()
                 .map(CdiInformazioniServizio::getDescrizioneServizio)
-                .orElse("")
-                : null;
+                .orElse("");
     }
 
     public List<CheckItem> verifyCdi(MultipartFile file) {
