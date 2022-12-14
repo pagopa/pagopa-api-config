@@ -13,7 +13,7 @@
 
     <groupId>it.pagopa.pagopa.api-config</groupId>
     <artifactId>api-config</artifactId>
-    <version>0.28.2</version>
+    <version>0.29.0</version>
     <description>Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti</description>
 
     <properties>
