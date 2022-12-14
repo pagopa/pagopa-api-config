@@ -2793,6 +2793,125 @@
         "summary": "Create a Channel"
       }
     },
+    "/channels/csv": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "format": "binary",
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "getChannelsCSV",
+        "summary": "Download the list of channelss as CSV file"
+      }
+    },
     "/channels/{channelcode}": {
       "parameters": [
         {
@@ -13099,6 +13218,125 @@
         ],
         "operationId": "createStation",
         "summary": "Create a station"
+      }
+    },
+    "/stations/csv": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "format": "binary",
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "getStationsCSV",
+        "summary": "Download a CSV with all the stations in the system"
       }
     },
     "/stations/{stationcode}": {

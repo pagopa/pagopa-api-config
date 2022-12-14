@@ -208,4 +208,26 @@ public class StationsController {
         return ResponseEntity.ok(stationsService.getStationCreditorInstitutionRelation(stationCode, creditorInstitutionCode));
     }
 
+    /**
+     * GET /stations/csv : Get all the stations inside a csv file
+     *
+     * @return OK. (status code 200)
+     * or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Download a CSV with all the stations in the system", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Resource.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/csv", produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Resource> getStationsCSV() {
+        byte[] file = stationsService.getStationsCSV();
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .contentLength(file.length)
+                .body(new ByteArrayResource(file));
+    }
+
 }

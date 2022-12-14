@@ -54,6 +54,7 @@ class ChannelsControllerTest {
         when(channelsService.createPaymentType(anyString(), any(PspChannelPaymentTypes.class))).thenReturn(getMockPspChannelPaymentTypes());
         when(channelsService.getChannelPaymentServiceProviders(anyString())).thenReturn(getChannelPspList());
         when(channelsService.getChannelPaymentServiceProvidersCSV(anyString())).thenReturn(new byte[0]);
+        when(channelsService.getChannelsCSV()).thenReturn(new byte[0]);
     }
 
     @ParameterizedTest
@@ -136,6 +137,13 @@ class ChannelsControllerTest {
     @Test
     void getPspCsv() throws Exception {
         String url = "/channels/1234/paymentserviceproviders/csv";
+        mvc.perform(get(url).contentType(MediaType.TEXT_PLAIN_VALUE))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getChannelsCsv() throws Exception {
+        String url = "/channels/csv";
         mvc.perform(get(url).contentType(MediaType.TEXT_PLAIN_VALUE))
                 .andExpect(status().isOk());
     }
