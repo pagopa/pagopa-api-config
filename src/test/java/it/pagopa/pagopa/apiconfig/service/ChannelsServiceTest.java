@@ -332,4 +332,12 @@ class ChannelsServiceTest {
         assertNotNull(result);
     }
 
+    @Test
+    void getChannelsCsv() {
+        when(canaliRepository.findAll()).thenReturn(Lists.newArrayList(getMockCanali()));
+
+        String result = new String(channelsService.getChannelsCSV());
+        assertTrue(result.contains("Regione Lazio"));
+        assertTrue(result.contains("1234"));
+    }
 }

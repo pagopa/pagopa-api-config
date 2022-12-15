@@ -24,6 +24,7 @@ import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,6 +68,9 @@ public class ChannelsService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${properties.environment}")
+    private String env;
 
     public Channels getChannels(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
@@ -196,6 +200,16 @@ public class ChannelsService {
         return CommonUtil.createCsv(headers, rows);
     }
 
+    public byte[] getChannelsCSV() {
+        var channelList = canaliRepository.findAll();
+        List<String> headers = Arrays.asList("Descrizione Intermediario PSP",
+                "Canale",
+                "Abilitato",
+                "URL");
+        List<List<String>> rows = mapChannelsToCsv(channelList);
+        return CommonUtil.createCsv(headers, rows);
+    }
+
     /**
      * @param pspList list of PSPs of a channel
      * @return list of list of strings representing the CSV file
@@ -206,6 +220,19 @@ public class ChannelsService {
                         deNull(elem.getPspCode()),
                         deNull(elem.getEnabled()).toString(),
                         deNull(String.join(" ", elem.getPaymentTypeList()))))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @param channelList list of all channels
+     * @return list of list of strings representing the CSV file
+     */
+    private List<List<String>> mapChannelsToCsv(List<Canali> channelList) {
+        return channelList.stream()
+                .map(elem -> Arrays.asList(elem.getFkIntermediarioPsp().getCodiceIntermediario(),
+                        elem.getIdCanale(),
+                        deNull(elem.getEnabled()).toString(),
+                        "https://config" + CommonUtil.getEnvironment(env) + ".platform.pagopa.it/channels/" + elem.getIdCanale()))
                 .collect(Collectors.toList());
     }
 

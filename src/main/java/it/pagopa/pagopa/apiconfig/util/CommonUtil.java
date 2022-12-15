@@ -302,4 +302,16 @@ public class CommonUtil {
         return csv.toString().getBytes();
     }
 
+
+    /**
+     * @param env environment of the application
+     * @return String to help build the url with the correct application environment
+     */
+    public String getEnvironment(String env) {
+        if(env.equals("PROD")) {
+            return "";
+        }
+        return "." + env.toLowerCase();
+    }
+
 }
