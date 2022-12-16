@@ -25,6 +25,7 @@ import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
+import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
 import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
@@ -911,6 +912,13 @@ public class TestUtil {
     public static PaymentTypes getMockPaymentTypes() {
         return PaymentTypes.builder()
                 .paymentTypeList(List.of(getMockPaymentType()))
+                .build();
+    }
+
+    public static AfmMarketplacePaymentType getMockAfmMarketplacePaymentType () {
+        return AfmMarketplacePaymentType.builder()
+                .name("PPAL")
+                .used(false)
                 .build();
     }
     
