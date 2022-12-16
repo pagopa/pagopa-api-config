@@ -42,6 +42,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Validated
@@ -282,8 +283,20 @@ public class ConfigurationService {
 
         // check if payment type is used to create bundles (AFM Marketplace)
         String stringUrl = String.format("%s/paymenttypes/%s", afmMarketplaceHost, paymentTypeCode);
+
         try {
+            Stream<String> urlWhiteList = Stream.of(
+            "api.dev.platform.pagopa.it",
+                    "api.uat.platform.pagopa.it",
+                    "api.platform.pagopa.it",
+                    "localhost");
+
             URI uri = new URI(stringUrl);
+
+            if (urlWhiteList.noneMatch(url -> uri.getHost().equals(url))) {
+                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+            }
+
             HttpHeaders headers = new HttpHeaders();
             headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
             HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
