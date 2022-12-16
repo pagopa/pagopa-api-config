@@ -189,6 +189,7 @@ public class CdiService {
                     result.add(CdiCosmos.builder()
                             .idPsp(master.getFkPsp().getIdPsp())
                             .idCDI(master.getIdInformativaPsp())
+                            .cdiStatus("NEW")
                             .digitalStamp(master.getMarcaBolloDigitale())
                             .validityDateFrom(master.getDataInizioValidita() != null ? master.getDataInizioValidita().toLocalDateTime() : null)
                             .details(cdiDetails)
