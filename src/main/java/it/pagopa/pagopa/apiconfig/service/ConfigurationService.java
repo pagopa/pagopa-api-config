@@ -285,15 +285,16 @@ public class ConfigurationService {
         try {
             ResponseEntity<AfmMarketplacePaymentType> responseE = restTemplate.exchange(url, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class);
             AfmMarketplacePaymentType response = responseE.getBody();
-            if (response == null) {
+            if (responseE.getStatusCode().is2xxSuccessful() && response != null) {
+                if (response.getUsed()) {
+                    throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
+                }
+            }
+            else if (!responseE.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 throw new AppException(AppError.INTERNAL_SERVER_ERROR);
-            } else if (response.getUsed()) {
-                throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
             }
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() != HttpStatus.NOT_FOUND) {
-                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
-            }
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
 
         tipiVersamentoRepository.delete(tipiVersamento);
