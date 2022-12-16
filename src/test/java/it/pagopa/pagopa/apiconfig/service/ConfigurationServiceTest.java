@@ -772,4 +772,20 @@ class ConfigurationServiceTest {
         }
     }
 
+    @Test
+    void deletePaymentType_ko_afm_null() {
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
+        ResponseEntity<AfmMarketplacePaymentType> responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(), ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any()))
+                .thenReturn(responseEntity);
+
+        try {
+            configurationService.deletePaymentType("PPAL");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
 }
