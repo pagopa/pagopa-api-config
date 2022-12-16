@@ -37,6 +37,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -277,13 +279,15 @@ public class ConfigurationService {
 
     public void deletePaymentType(String paymentTypeCode) {
         TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
+
         // check if payment type is used to create bundles (AFM Marketplace)
-        String url = String.format("%s/paymenttypes/%s", afmMarketplaceHost, paymentTypeCode);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        String stringUrl = String.format("%s/paymenttypes/%s", afmMarketplaceHost, paymentTypeCode);
         try {
-            ResponseEntity<AfmMarketplacePaymentType> responseE = restTemplate.exchange(url, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class);
+            URI uri = new URI(stringUrl);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
+            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+            ResponseEntity<AfmMarketplacePaymentType> responseE = restTemplate.exchange(uri, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class);
             AfmMarketplacePaymentType response = responseE.getBody();
             if (responseE.getStatusCode().is2xxSuccessful() && response != null) {
                 if (response.getUsed()) {
@@ -293,7 +297,7 @@ public class ConfigurationService {
             else if (!responseE.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 throw new AppException(AppError.INTERNAL_SERVER_ERROR);
             }
-        } catch (HttpClientErrorException e) {
+        } catch (HttpClientErrorException | URISyntaxException e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
 
