@@ -7,6 +7,7 @@ import org.springframework.retry.annotation.EnableRetry;
 
 import java.util.Locale;
 
+
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableRetry
@@ -17,3 +18,4 @@ public class ApiConfig {
         SpringApplication.run(ApiConfig.class, args);
     }
 }
+
