@@ -281,23 +281,9 @@ public class ConfigurationService {
         TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
 
         // check if payment type is used to create bundles (AFM Marketplace)
-//        String stringUrl = String.format("%s/paymenttypes/%s", afmMarketplaceHost, paymentTypeCode);
         String stringUrl = String.format("%s/paymenttypes/{paymentTypeCode}", afmMarketplaceHost);
-//        String stringUrl = String.format("%s/paymenttypes/", afmMarketplaceHost);
 
         try {
-//            Stream<String> urlWhiteList = Stream.of(
-//            "api.dev.platform.pagopa.it",
-//                    "api.uat.platform.pagopa.it",
-//                    "api.platform.pagopa.it",
-//                    "localhost");
-
-//            URI uri = new URI(stringUrl);
-
-//            if (urlWhiteList.noneMatch(url -> uri.getHost().equals(url))) {
-//                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
-//            }
-
             Map<String, String> params = new HashMap<>();
             params.put("paymentTypeCode", paymentTypeCode);
 
@@ -314,7 +300,6 @@ public class ConfigurationService {
             else if (!responseE.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 throw new AppException(AppError.INTERNAL_SERVER_ERROR);
             }
-//        } catch (HttpClientErrorException | URISyntaxException e) {
         } catch (HttpClientErrorException e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
