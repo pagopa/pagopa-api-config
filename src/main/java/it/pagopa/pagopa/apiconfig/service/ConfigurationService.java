@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeyBase;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
@@ -24,8 +25,16 @@ import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -53,6 +62,12 @@ public class ConfigurationService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${service.marketplace.host}")
+    private String afmMarketplaceHost;
+
+    @Value("${service.marketplace.subscriptionKey}")
+    private String afmMarketplaceSubscriptionKey;
 
     public ConfigurationKeys getConfigurationKeys() {
         List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKeyList = configurationKeysRepository.findAll();
@@ -259,6 +274,26 @@ public class ConfigurationService {
 
     public void deletePaymentType(String paymentTypeCode) {
         TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
+        // check if payment type is used to create bundles (AFM Marketplace)
+        RestTemplate restTemplate = new RestTemplate();
+        String url = String.format("%s/paymenttypes/%s", afmMarketplaceHost, paymentTypeCode);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<AfmMarketplacePaymentType> responseE = restTemplate.exchange(url, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class);
+            AfmMarketplacePaymentType response = responseE.getBody();
+            if (response == null) {
+                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+            } else if (response.getUsed()) {
+                throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
+            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() != HttpStatus.NOT_FOUND) {
+                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+            }
+        }
+
         tipiVersamentoRepository.delete(tipiVersamento);
     }
 

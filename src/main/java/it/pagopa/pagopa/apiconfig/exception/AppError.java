@@ -50,7 +50,8 @@ public enum AppError {
     RELATION_CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, "Relation PSP-Channel not found", "No Relation PSP-Channel found between PSP with code %s and Channel with code %s and with payment type %s"),
     RELATION_CHANNEL_CONFLICT(HttpStatus.CONFLICT, "Relation PSP-Channel conflict", "Relation PSP-Channel between PSP with code %s and Channel with code %s and with payment type %s already exists"),
 
-    PAYMENT_TYPE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Payment type not found", "No payment type specified in the request"),
+    PAYMENT_TYPE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Payment type bad request", "No payment type specified in the request"),
+    PAYMENT_TYPE_NON_DELETABLE(HttpStatus.BAD_REQUEST, "Payment type bad request", "Payment type is used in AFM Marketplace bundles"),
     PAYMENT_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment type not found", "No payment type found with code: %s"),
     PAYMENT_TYPE_CONFLICT(HttpStatus.CONFLICT, "Payment type conflict", "Payment type with code %s already exists"),
 
