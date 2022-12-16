@@ -63,6 +63,9 @@ public class ConfigurationService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Value("${service.marketplace.host}")
     private String afmMarketplaceHost;
 
@@ -275,7 +278,6 @@ public class ConfigurationService {
     public void deletePaymentType(String paymentTypeCode) {
         TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
         // check if payment type is used to create bundles (AFM Marketplace)
-        RestTemplate restTemplate = new RestTemplate();
         String url = String.format("%s/paymenttypes/%s", afmMarketplaceHost, paymentTypeCode);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
