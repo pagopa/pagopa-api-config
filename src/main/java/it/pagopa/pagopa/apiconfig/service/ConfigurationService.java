@@ -37,12 +37,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Validated
@@ -282,25 +281,30 @@ public class ConfigurationService {
         TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
 
         // check if payment type is used to create bundles (AFM Marketplace)
-        String stringUrl = String.format("%s/paymenttypes/%s", afmMarketplaceHost, paymentTypeCode);
+//        String stringUrl = String.format("%s/paymenttypes/%s", afmMarketplaceHost, paymentTypeCode);
+        String stringUrl = String.format("%s/paymenttypes/{paymentTypeCode}", afmMarketplaceHost);
+//        String stringUrl = String.format("%s/paymenttypes/", afmMarketplaceHost);
 
         try {
-            Stream<String> urlWhiteList = Stream.of(
-            "api.dev.platform.pagopa.it",
-                    "api.uat.platform.pagopa.it",
-                    "api.platform.pagopa.it",
-                    "localhost");
+//            Stream<String> urlWhiteList = Stream.of(
+//            "api.dev.platform.pagopa.it",
+//                    "api.uat.platform.pagopa.it",
+//                    "api.platform.pagopa.it",
+//                    "localhost");
 
-            URI uri = new URI(stringUrl);
+//            URI uri = new URI(stringUrl);
 
-            if (urlWhiteList.noneMatch(url -> uri.getHost().equals(url))) {
-                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
-            }
+//            if (urlWhiteList.noneMatch(url -> uri.getHost().equals(url))) {
+//                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+//            }
+
+            Map<String, String> params = new HashMap<>();
+            params.put("paymentTypeCode", paymentTypeCode);
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
             HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-            ResponseEntity<AfmMarketplacePaymentType> responseE = restTemplate.exchange(uri, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class);
+            ResponseEntity<AfmMarketplacePaymentType> responseE = restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class, params);
             AfmMarketplacePaymentType response = responseE.getBody();
             if (responseE.getStatusCode().is2xxSuccessful() && response != null) {
                 if (response.getUsed()) {
@@ -310,7 +314,8 @@ public class ConfigurationService {
             else if (!responseE.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 throw new AppException(AppError.INTERNAL_SERVER_ERROR);
             }
-        } catch (HttpClientErrorException | URISyntaxException e) {
+//        } catch (HttpClientErrorException | URISyntaxException e) {
+        } catch (HttpClientErrorException e) {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
 
