@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-@Container(containerName = "cdi")
+@Container(containerName = "cdis")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CdiCosmos {
 
@@ -30,6 +30,7 @@ public class CdiCosmos {
     @PartitionKey
     private String idPsp;
     private String idCDI;
+    private String cdiStatus;
     private Boolean digitalStamp;
     private LocalDateTime validityDateFrom;
     private List<CdiDetailCosmos> details;
