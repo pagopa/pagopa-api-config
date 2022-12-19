@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.0.1"
+    tag: "0.27.2-1-PPR-505-postgresql"
     pullPolicy: Always
   livenessProbe:
     httpGet:
