@@ -70,8 +70,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.0</version>
-            <scope>runtime</scope>
+            <version>42.5.1</version>
         </dependency>
 
         <dependency>
@@ -127,6 +126,12 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <version>${spring-version}</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>${spring-version}</version>
         </dependency>
 
         <dependency>

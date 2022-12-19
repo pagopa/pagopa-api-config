@@ -1,0 +1,82 @@
+microservice-chart:
+  namespace: "nodo"
+  nameOverride: ""
+  fullnameOverride: ""
+  image:
+    repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
+    tag: "0.0.1"
+    pullPolicy: Always
+  livenessProbe:
+    httpGet:
+      path: /actuator/health/liveness
+      port: 8080
+    initialDelaySeconds: 90
+    failureThreshold: 6
+    periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /actuator/health/readiness
+      port: 8080
+    initialDelaySeconds: 90
+    failureThreshold: 6
+    periodSeconds: 10
+  deployment:
+    create: true
+  service:
+    create: true
+    type: ClusterIP
+    port: 8080
+  ingress:
+    create: true
+    host: "weudev.nodo.internal.dev.platform.pagopa.it"
+    path: /pagopa-api-config-service/(.*)
+  serviceAccount:
+    create: false
+    annotations: {}
+    name: ""
+  podAnnotations: {}
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "0.20"
+    limits:
+      memory: "512Mi"
+      cpu: "0.3"
+  autoscaling:
+    enable: true
+    minReplica: 1
+    maxReplica: 5
+    pollingInterval: 10 # seconds
+    cooldownPeriod: 50 # seconds
+    triggers:
+      - type: cpu
+        metadata:
+          # Required
+          type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+          value: "75"
+  envConfig:
+    WEBSITE_SITE_NAME: 'pagopaapiconfig'
+    ENV: "dev"
+    LOGGING_LEVEL: "INFO"
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo'
+    CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
+    XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/InformativaContoAccredito_1_2_1.xsd'
+    XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/TabellaDelleControparti_1_0_8.xsd'
+    XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/CatalogoDatiInformativiPSP.xsd'
+  envSecret:
+    # required
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
+    SPRING_DATASOURCE_USERNAME: 'db-cfg-username-dev'
+    SPRING_DATASOURCE_PASSWORD: 'db-cfg-password-dev'
+    DATABASE_SCHEMA: 'db-cfg-schema-dev'
+  keyvault:
+    name: "pagopa-d-nodo-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: pagopa-api-config
+description: APIs to manage configuration for CI and PSP of the Nodo dei Pagamenti
+type: application
+version: 0.0.1
+appVersion: 0.0.1
+dependencies:
+  - name: microservice-chart
+    version: 1.21.0
+    repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
