@@ -61,6 +61,7 @@ public enum AppError {
     CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
     CDI_CONFLICT(HttpStatus.CONFLICT, "CDI conflict", "CDI with code %s already exists"),
     CDI_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CDI bad request", "XML CDI file is not valid: %s"),
+    CDI_DETAILS_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI details not found", "No CDI Details found refers to Master %s"),
 
     CONFIGURATION_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "Configuration key not found", "No Configuration key found with category: %s key: %s"),
     CONFIGURATION_KEY_CONFLICT(HttpStatus.CONFLICT, "Configuration key conflict", "Configuration key with category %s and key %s already exists"),

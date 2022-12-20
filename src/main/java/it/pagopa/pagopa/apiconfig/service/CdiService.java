@@ -179,16 +179,17 @@ public class CdiService {
                 .stream()
                 .filter(Objects::nonNull)
                 .forEach(master -> {
-                    var cdiDetails = master.getCdiDetail() != null ?
-                            master.getCdiDetail()
-                                    .stream()
-                                    .filter(Objects::nonNull)
-                                    .map(this::mapDetails)
-                                    .collect(Collectors.toList())
-                            : null;
+                    if (master.getCdiDetail() == null) {
+                        throw new AppException(AppError.CDI_DETAILS_NOT_FOUND, master.getIdInformativaPsp());
+                    }
+                    var cdiDetails = master.getCdiDetail()
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .map(this::mapDetails)
+                            .collect(Collectors.toList());
                     result.add(CdiCosmos.builder()
                             .idPsp(master.getFkPsp().getIdPsp())
-                            .idCDI(master.getIdInformativaPsp())
+                            .idCdi(master.getIdInformativaPsp())
                             .cdiStatus("NEW")
                             .digitalStamp(master.getMarcaBolloDigitale())
                             .validityDateFrom(master.getDataInizioValidita() != null ? master.getDataInizioValidita().toLocalDateTime() : null)
@@ -205,7 +206,7 @@ public class CdiService {
                 .name(detail.getNomeServizio())
                 .description(getDescription(detail))
                 .channelApp(detail.getCanaleApp() == 1L)
-                .paymentMethod(detail.getModelloPagamento())
+                .paymentType(detail.getModelloPagamento())
                 .idBrokerPsp(canale.getFkIntermediarioPsp().getIdIntermediarioPsp())
                 .channelCardsCart(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getCarrelloCarte() : null)
                 .onUs(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getOnUs() : null)

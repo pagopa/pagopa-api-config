@@ -24,7 +24,7 @@ public class CdiDetailCosmos {
     private String idChannel;
     private String name;
     private String description;
-    private Long paymentMethod;
+    private Long paymentType;
     private Boolean onUs;
     private Boolean channelApp;
     private Boolean channelCardsCart;

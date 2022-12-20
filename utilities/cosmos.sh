@@ -6,17 +6,11 @@
 #docker container rm -f azure-cosmosdb-linux-emulator
 #docker image rm -f mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
 
-PORT=$1
-JVM_HOME=$2
+JVM_HOME=$1
 
 # Main ...
-if [ -z "$PORT" ]
-then
-  PORT=8081
-  echo "CosmosDB starting on DEFAULT port $PORT"
-else
-  echo "CosmosDB starting on specific port $PORT"
-fi
+PORT=8081
+echo "CosmosDB starting on DEFAULT port $PORT"
 
 if [ -z "$JVM_HOME" ]
 then
