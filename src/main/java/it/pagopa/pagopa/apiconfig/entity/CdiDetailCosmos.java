@@ -25,7 +25,6 @@ public class CdiDetailCosmos {
     private String name;
     private String description;
     private Long paymentType;
-    private Boolean onUs;
     private Boolean channelApp;
     private Boolean channelCardsCart;
     private List<ServiceAmountCosmos> serviceAmount;

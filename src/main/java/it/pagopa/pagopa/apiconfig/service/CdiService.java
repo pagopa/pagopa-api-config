@@ -209,7 +209,6 @@ public class CdiService {
                 .paymentType(detail.getModelloPagamento())
                 .idBrokerPsp(canale.getFkIntermediarioPsp().getIdIntermediarioPsp())
                 .channelCardsCart(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getCarrelloCarte() : null)
-                .onUs(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getOnUs() : null)
                 .serviceAmount(detail.getCdiFasciaCostoServizio().stream()
                         .map(elem -> ServiceAmountCosmos.builder()
                                 .minPaymentAmount((int) (elem.getImportoMinimo() * 100))
