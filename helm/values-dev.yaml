@@ -63,17 +63,17 @@ microservice-chart:
     WEBSITE_SITE_NAME: 'pagopaapiconfig'
     ENV: "dev"
     LOGGING_LEVEL: "INFO"
-    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/CatalogoDatiInformativiPSP.xsd'
   envSecret:
     # required
-    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
-    SPRING_DATASOURCE_USERNAME: 'db-cfg-username-dev'
-    SPRING_DATASOURCE_PASSWORD: 'db-cfg-password-dev'
-    DATABASE_SCHEMA: 'db-cfg-schema-dev'
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'nodo-azure-insight-connection-string-dev'
+    SPRING_DATASOURCE_URL: 'nodo-db-cfg-url-dev'
+    SPRING_DATASOURCE_USERNAME: 'nodo-db-cfg-username-dev'
+    SPRING_DATASOURCE_PASSWORD: 'nodo-db-cfg-password-dev'
+    DATABASE_SCHEMA: 'nodo-db-cfg-schema-dev'
   keyvault:
     name: "pagopa-d-nodo-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
