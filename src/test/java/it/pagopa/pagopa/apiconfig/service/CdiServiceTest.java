@@ -141,13 +141,15 @@ class CdiServiceTest {
         paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setTipoVersamento("BP");
 
         when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(psp));
-        when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
+        CdiMaster mockCdiMaster = getMockCdiMaster();
+        mockCdiMaster.setCdiDetail(List.of(getMockCdiDetail()));
+        when(cdiMasterRepository.save(any())).thenReturn(mockCdiMaster);
         when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(channel));
         when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(anyLong(), anyLong()))
                 .thenReturn(List.of(paymentMethod));
 
         when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
-        when(cdiMasterRepository.save(any())).thenReturn(getMockCdiMaster());
+        when(cdiMasterRepository.save(any())).thenReturn(mockCdiMaster);
         when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(anyLong(), anyString(), anyString()))
                 .thenReturn(Optional.of(getMockPspCanaleTipoVersamento()));
 

@@ -179,6 +179,7 @@ public class CdiService {
         var result = cdiMasterValidRepository.findAll()
                 .stream()
                 .filter(Objects::nonNull)
+                .map(elem -> modelMapper.map(elem, CdiMaster.class))
                 .map(this::mapToCosmosEntity)
                 .collect(Collectors.toList());
         cdiCosmosRepository.saveAll(result);
