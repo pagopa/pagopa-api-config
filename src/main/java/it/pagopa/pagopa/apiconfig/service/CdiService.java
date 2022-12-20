@@ -206,7 +206,7 @@ public class CdiService {
                 .name(detail.getNomeServizio())
                 .description(getDescription(detail))
                 .channelApp(detail.getCanaleApp() == 1L)
-                .paymentType(detail.getModelloPagamento())
+                .paymentType(detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getTipoVersamento().getTipoVersamento())
                 .idBrokerPsp(canale.getFkIntermediarioPsp().getIdIntermediarioPsp())
                 .channelCardsCart(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getCarrelloCarte() : null)
                 .serviceAmount(detail.getCdiFasciaCostoServizio().stream()
