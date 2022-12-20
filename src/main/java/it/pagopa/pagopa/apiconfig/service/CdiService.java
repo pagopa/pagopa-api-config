@@ -185,16 +185,17 @@ public class CdiService {
     }
 
     private CdiCosmos mapToCosmosEntity(CdiMaster master) {
-        var cdiDetails = master.getCdiDetail() != null ?
-                master.getCdiDetail()
+        if (master.getCdiDetail() == null) {
+            throw new AppException(AppError.CDI_DETAILS_NOT_FOUND, master.getIdInformativaPsp());
+        }
+        var cdiDetails = master.getCdiDetail()
                         .stream()
                         .filter(Objects::nonNull)
                         .map(this::mapDetails)
-                        .collect(Collectors.toList())
-                : null;
+                        .collect(Collectors.toList());
         return CdiCosmos.builder()
                 .idPsp(master.getFkPsp().getIdPsp())
-                .idCDI(master.getIdInformativaPsp())
+                .idCdi(master.getIdInformativaPsp())
                 .cdiStatus("NEW")
                 .digitalStamp(master.getMarcaBolloDigitale())
                 .validityDateFrom(master.getDataInizioValidita() != null ? master.getDataInizioValidita().toLocalDateTime() : null)
@@ -209,10 +210,9 @@ public class CdiService {
                 .name(detail.getNomeServizio())
                 .description(getDescription(detail))
                 .channelApp(detail.getCanaleApp() == 1L)
-                .paymentMethod(detail.getModelloPagamento())
+                .paymentType(detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getTipoVersamento().getTipoVersamento())
                 .idBrokerPsp(canale.getFkIntermediarioPsp().getIdIntermediarioPsp())
                 .channelCardsCart(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getCarrelloCarte() : null)
-                .onUs(canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getOnUs() : null)
                 .serviceAmount(detail.getCdiFasciaCostoServizio().stream()
                         .map(elem -> ServiceAmountCosmos.builder()
                                 .minPaymentAmount((int) (elem.getImportoMinimo() * 100))
