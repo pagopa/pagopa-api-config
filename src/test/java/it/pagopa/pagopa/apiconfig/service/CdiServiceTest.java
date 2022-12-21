@@ -170,6 +170,7 @@ class CdiServiceTest {
         verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
         assertEquals("MYBANK11", cdiPreference.getValue().getSeller());
         assertEquals(1.00, cdiPreference.getValue().getCostoConvenzione());
+        verify(cdiCosmosRepository, times(1)).save(any());
     }
 
     @Test
