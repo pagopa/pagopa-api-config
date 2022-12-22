@@ -77,6 +77,7 @@ class ConfigurationControllerTest {
             "/configuration/ftpservers",
             "/configuration/ftpservers/host/host/port/1/service/service",
             "/configuration/paymenttypes",
+            "/configuration/paymenttypes/history",
             "/configuration/paymenttypes/code"
     })
     void testGets(String url) throws Exception {
