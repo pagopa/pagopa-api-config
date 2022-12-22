@@ -12,7 +12,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+  verify:
     name: Check Labels
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -33,3 +33,26 @@ jobs:
         with:
           script: |
             core.setFailed('Missing required labels')
+  labeler:
+    runs-on: ubuntu-latest
+    name: Label the PR size
+    steps:
+      - uses: codelytv/pr-size-labeler@54ef36785e9f4cb5ecf1949cfc9b00dbb621d761
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          xs_label: 'size/xs'
+          xs_max_size: '50'
+          s_label: 'size/s'
+          s_max_size: '200'
+          m_label: 'size/m'
+          m_max_size: '400'
+          l_label: 'size/l'
+          l_max_size: '500'
+          xl_label: 'size/xl'
+          fail_if_xl: 'true'
+          message_if_xl: >
+            This PR exceeds the recommended size of 1000 lines.
+            Please make sure you are NOT addressing multiple issues with one PR.
+            Note this PR might be rejected due to its size.
+          github_api_url: 'api.github.com'
+          files_to_ignore: ''
