@@ -844,8 +844,19 @@ class ConfigurationServiceTest {
     }
 
     @Test
-    void uploadPaymentTypesHistory() {
+    void uploadPaymentTypesHistory_1() {
         when(tipiVersamentoRepository.findAll()).thenReturn(new ArrayList<>());
+
+        try {
+            configurationService.uploadPaymentTypesHistory();
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void uploadPaymentTypesHistory_2() {
+        when(tipiVersamentoRepository.findAll()).thenReturn(getMockTipiVersamento());
 
         try {
             configurationService.uploadPaymentTypesHistory();
