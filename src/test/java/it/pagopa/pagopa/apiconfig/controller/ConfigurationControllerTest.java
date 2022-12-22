@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeyBase;
 import it.pagopa.pagopa.apiconfig.service.ConfigurationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,9 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentTypes;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPdd;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPdds;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockWfespPluginConfigurations;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -64,6 +68,7 @@ class ConfigurationControllerTest {
     @ParameterizedTest
     @CsvSource({
             "/configuration/keys",
+            "/configuration/keys/category/category/key/key",
             "/configuration/paymenttypes/code",
             "/configuration/wfespplugins",
             "/configuration/wfespplugins/idServPlugin",
@@ -102,7 +107,9 @@ class ConfigurationControllerTest {
 
     @Test
     void updateConfigurationKey() throws Exception {
-        mvc.perform(put("/configuration/paymenttypes/ABCVDF")
+        when(configurationService.updateConfigurationKey(anyString(), anyString(), any(ConfigurationKeyBase.class))).thenReturn(getMockConfigurationKey("category", "key"));
+
+        mvc.perform(put("/configuration/keys/category/category/key/key")
                 .content(TestUtil.toJson(getMockConfigurationKey()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -110,7 +117,8 @@ class ConfigurationControllerTest {
 
     @Test
     void deleteConfigurationKey() throws Exception {
-        mvc.perform(delete("/configuration/paymenttypes/code").contentType(MediaType.APPLICATION_JSON))
+        doNothing().when(configurationService).deleteConfigurationKey(anyString(), anyString());
+        mvc.perform(delete("/configuration/keys/category/category/key/key").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
