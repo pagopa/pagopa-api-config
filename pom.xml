@@ -61,11 +61,11 @@
             <version>${spring-version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.retry</groupId>-->
-<!--            <artifactId>spring-retry</artifactId>-->
-<!--            <version>${spring-retry-version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>${spring-retry-version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
@@ -139,12 +139,6 @@
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
             <version>${commons.validator}</version>
-        </dependency>
-
-        <!-- Retry -->
-        <dependency>
-            <groupId>org.springframework.retry</groupId>
-            <artifactId>spring-retry</artifactId>
         </dependency>
 
 

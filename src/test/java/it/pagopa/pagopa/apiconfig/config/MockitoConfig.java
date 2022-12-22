@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.config;
 
 import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaymentTypesCosmosRepository;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,10 @@ public class MockitoConfig {
     public CdiCosmosRepository cdiCosmosRepository() {
         return Mockito.mock(CdiCosmosRepository.class);
     }
+
+    @Bean
+    @Primary
+    public PaymentTypesCosmosRepository paymentTypesCosmosRepository() { return Mockito.mock(PaymentTypesCosmosRepository.class); }
 
 
 }

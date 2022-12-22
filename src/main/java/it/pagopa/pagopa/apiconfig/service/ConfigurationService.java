@@ -1,5 +1,6 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.entity.PaymentTypesCosmos;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
@@ -20,6 +21,7 @@ import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfBase;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
 import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaymentTypesCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.PddRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
@@ -42,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
 @Service
 @Validated
@@ -67,6 +71,9 @@ public class ConfigurationService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private PaymentTypesCosmosRepository paymentTypesCosmosRepository;
 
     @Value("${service.marketplace.host}")
     private String afmMarketplaceHost;
@@ -265,6 +272,10 @@ public class ConfigurationService {
 
         TipiVersamento tipiVersamento = modelMapper.map(paymentType, TipiVersamento.class);
         tipiVersamentoRepository.save(tipiVersamento);
+
+        // save on cosmos
+        savePaymentTypeOnCosmos(tipiVersamento);
+
         return modelMapper.map(tipiVersamento, PaymentType.class);
     }
 
@@ -274,6 +285,10 @@ public class ConfigurationService {
         tipiVersamento.setDescrizione(paymentType.getDescription());
 
         tipiVersamentoRepository.save(tipiVersamento);
+
+        // save on cosmos
+        savePaymentTypeOnCosmos(tipiVersamento);
+
         return modelMapper.map(tipiVersamento, PaymentType.class);
     }
 
@@ -304,7 +319,28 @@ public class ConfigurationService {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
 
+        paymentTypesCosmosRepository.deleteByName(paymentTypeCode);
         tipiVersamentoRepository.delete(tipiVersamento);
+    }
+
+    public void uploadPaymentTypesHistory() {
+
+        List<PaymentTypesCosmos> paymentTypes = tipiVersamentoRepository.findAll().stream().map(tipiVersamento -> PaymentTypesCosmos.builder()
+                .id(tipiVersamento.getId() != null ? tipiVersamento.getId().toString() : "id-" + tipiVersamento.getTipoVersamento())
+                .name(tipiVersamento.getTipoVersamento())
+                .description(tipiVersamento.getDescrizione())
+                .build()).collect(Collectors.toList());
+        paymentTypesCosmosRepository.deleteAll();
+        paymentTypesCosmosRepository.saveAll(paymentTypes);
+    }
+
+    private void savePaymentTypeOnCosmos(TipiVersamento tipiVersamento) {
+        // save on cosmos
+        paymentTypesCosmosRepository.save(PaymentTypesCosmos.builder()
+                .id(deNull(tipiVersamento.getId()))
+                .name(tipiVersamento.getTipoVersamento())
+                .description(tipiVersamento.getDescrizione())
+                .build());
     }
 
     /**
