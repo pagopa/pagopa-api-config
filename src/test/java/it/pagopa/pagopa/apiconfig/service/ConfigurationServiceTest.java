@@ -33,9 +33,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -818,6 +820,35 @@ class ConfigurationServiceTest {
 
         try {
             configurationService.deletePaymentType("PPAL");
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deletePaymentType_ko_connection_ko() {
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
+        ResponseEntity<AfmMarketplacePaymentType> responseEntity = new ResponseEntity<AfmMarketplacePaymentType>(getMockAfmMarketplacePaymentType(), HttpStatus.INTERNAL_SERVER_ERROR);
+        when(restTemplate.exchange(any(), eq(HttpMethod.GET),
+                ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
+                ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
+                ArgumentMatchers.<Map>any())).thenThrow(HttpClientErrorException.class);
+
+        try {
+            configurationService.deletePaymentType("PPAL");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void uploadPaymentTypesHistory() {
+        when(tipiVersamentoRepository.findAll()).thenReturn(new ArrayList<>());
+
+        try {
+            configurationService.uploadPaymentTypesHistory();
         } catch (Exception e) {
             fail();
         }

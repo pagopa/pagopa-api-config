@@ -324,9 +324,8 @@ public class ConfigurationService {
     }
 
     public void uploadPaymentTypesHistory() {
-
         List<PaymentTypesCosmos> paymentTypes = tipiVersamentoRepository.findAll().stream().map(tipiVersamento -> PaymentTypesCosmos.builder()
-                .id(tipiVersamento.getId() != null ? tipiVersamento.getId().toString() : "id-" + tipiVersamento.getTipoVersamento())
+                .id(deNull(tipiVersamento.getId()))
                 .name(tipiVersamento.getTipoVersamento())
                 .description(tipiVersamento.getDescrizione())
                 .build()).collect(Collectors.toList());
