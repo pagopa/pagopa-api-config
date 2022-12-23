@@ -1,8 +1,10 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.entity.PaymentTypesCosmos;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeyBase;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
@@ -19,18 +21,31 @@ import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfBase;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
 import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaymentTypesCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.PddRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
 @Service
 @Validated
@@ -53,6 +68,18 @@ public class ConfigurationService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private PaymentTypesCosmosRepository paymentTypesCosmosRepository;
+
+    @Value("${service.marketplace.host}")
+    private String afmMarketplaceHost;
+
+    @Value("${service.marketplace.subscriptionKey}")
+    private String afmMarketplaceSubscriptionKey;
 
     public ConfigurationKeys getConfigurationKeys() {
         List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKeyList = configurationKeysRepository.findAll();
@@ -245,6 +272,10 @@ public class ConfigurationService {
 
         TipiVersamento tipiVersamento = modelMapper.map(paymentType, TipiVersamento.class);
         tipiVersamentoRepository.save(tipiVersamento);
+
+        // save on cosmos
+        savePaymentTypeOnCosmos(tipiVersamento);
+
         return modelMapper.map(tipiVersamento, PaymentType.class);
     }
 
@@ -254,12 +285,61 @@ public class ConfigurationService {
         tipiVersamento.setDescrizione(paymentType.getDescription());
 
         tipiVersamentoRepository.save(tipiVersamento);
+
+        // save on cosmos
+        savePaymentTypeOnCosmos(tipiVersamento);
+
         return modelMapper.map(tipiVersamento, PaymentType.class);
     }
 
     public void deletePaymentType(String paymentTypeCode) {
         TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
+
+        // check if payment type is used to create bundles (AFM Marketplace)
+        String stringUrl = String.format("%s/paymenttypes/{paymentTypeCode}", afmMarketplaceHost);
+
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("paymentTypeCode", paymentTypeCode);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
+            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+            ResponseEntity<AfmMarketplacePaymentType> responseE = restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class, params);
+            AfmMarketplacePaymentType response = responseE.getBody();
+            if (responseE.getStatusCode().is2xxSuccessful() && response != null) {
+                if (response.getUsed()) {
+                    throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
+                }
+            }
+            else if (!responseE.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+            }
+        } catch (HttpClientErrorException e) {
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+        }
+
+        paymentTypesCosmosRepository.deleteByName(paymentTypeCode);
         tipiVersamentoRepository.delete(tipiVersamento);
+    }
+
+    public void uploadPaymentTypesHistory() {
+        List<PaymentTypesCosmos> paymentTypes = tipiVersamentoRepository.findAll().stream().map(tipiVersamento -> PaymentTypesCosmos.builder()
+                .id(deNull(tipiVersamento.getId()))
+                .name(tipiVersamento.getTipoVersamento())
+                .description(tipiVersamento.getDescrizione())
+                .build()).collect(Collectors.toList());
+        paymentTypesCosmosRepository.deleteAll();
+        paymentTypesCosmosRepository.saveAll(paymentTypes);
+    }
+
+    private void savePaymentTypeOnCosmos(TipiVersamento tipiVersamento) {
+        // save on cosmos
+        paymentTypesCosmosRepository.save(PaymentTypesCosmos.builder()
+                .id(deNull(tipiVersamento.getId()))
+                .name(tipiVersamento.getTipoVersamento())
+                .description(tipiVersamento.getDescrizione())
+                .build());
     }
 
     /**
