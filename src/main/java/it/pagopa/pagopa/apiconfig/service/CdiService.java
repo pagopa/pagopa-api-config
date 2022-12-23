@@ -159,6 +159,8 @@ public class CdiService {
             saveCdiFasciaCostiServizio(xmlDetail, detail);
             saveCdiPreferences(xml, xmlDetail, detail);
         }
+        // save CDI to Cosmos DB
+        cdiCosmosRepository.save(mapToCosmosEntity(master));
     }
 
     public void deleteCdi(String idCdi, String pspCode) {
@@ -174,29 +176,32 @@ public class CdiService {
 
 
     public void uploadHistory() {
-        var result = new ArrayList<CdiCosmos>();
-        cdiMasterValidRepository.findAll()
+        var result = cdiMasterValidRepository.findAll()
                 .stream()
                 .filter(Objects::nonNull)
-                .forEach(master -> {
-                    if (master.getCdiDetail() == null) {
-                        throw new AppException(AppError.CDI_DETAILS_NOT_FOUND, master.getIdInformativaPsp());
-                    }
-                    var cdiDetails = master.getCdiDetail()
-                            .stream()
-                            .filter(Objects::nonNull)
-                            .map(this::mapDetails)
-                            .collect(Collectors.toList());
-                    result.add(CdiCosmos.builder()
-                            .idPsp(master.getFkPsp().getIdPsp())
-                            .idCdi(master.getIdInformativaPsp())
-                            .cdiStatus("NEW")
-                            .digitalStamp(master.getMarcaBolloDigitale())
-                            .validityDateFrom(master.getDataInizioValidita() != null ? master.getDataInizioValidita().toLocalDateTime() : null)
-                            .details(cdiDetails)
-                            .build());
-                });
+                .map(elem -> modelMapper.map(elem, CdiMaster.class))
+                .map(this::mapToCosmosEntity)
+                .collect(Collectors.toList());
         cdiCosmosRepository.saveAll(result);
+    }
+
+    private CdiCosmos mapToCosmosEntity(CdiMaster master) {
+        if (master.getCdiDetail() == null) {
+            throw new AppException(AppError.CDI_DETAILS_NOT_FOUND, master.getIdInformativaPsp());
+        }
+        var cdiDetails = master.getCdiDetail()
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .map(this::mapDetails)
+                        .collect(Collectors.toList());
+        return CdiCosmos.builder()
+                .idPsp(master.getFkPsp().getIdPsp())
+                .idCdi(master.getIdInformativaPsp())
+                .cdiStatus("NEW")
+                .digitalStamp(master.getMarcaBolloDigitale())
+                .validityDateFrom(master.getDataInizioValidita() != null ? master.getDataInizioValidita().toLocalDateTime() : null)
+                .details(cdiDetails)
+                .build();
     }
 
     private CdiDetailCosmos mapDetails(@NotNull CdiDetail detail) {
