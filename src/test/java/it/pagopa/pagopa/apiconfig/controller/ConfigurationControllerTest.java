@@ -77,7 +77,6 @@ class ConfigurationControllerTest {
             "/configuration/ftpservers",
             "/configuration/ftpservers/host/host/port/1/service/service",
             "/configuration/paymenttypes",
-            "/configuration/paymenttypes/history",
             "/configuration/paymenttypes/code"
     })
     void testGets(String url) throws Exception {
@@ -255,6 +254,13 @@ class ConfigurationControllerTest {
     @Test
     void deletePaymentType() throws Exception {
         mvc.perform(delete("/configuration/paymenttypes/ABCVDF").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getPaymentTypesHistory() throws Exception {
+        mvc.perform(get("/configuration/paymenttypes/history")
+                        .content(TestUtil.toJson(getMockConfigurationKey())))
                 .andExpect(status().isOk());
     }
 
