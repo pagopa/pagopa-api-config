@@ -152,18 +152,14 @@ public class StationsService {
     }
 
     public byte[] getStationsCSV() {
-        List<PaStazionePa> stazioni = paStazioniRepository.findAll();
-        var csvRows = stazioni.stream()
-                .map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class))
+        List<Stazioni> stations = stazioniRepository.findAll();
+        var csvRows = stations.stream()
                 .map(this::getCsvValuesWithUrl)
                 .collect(Collectors.toList());
         List<String> headers = Arrays.asList("Descrizione Intermediario EC",
                 "Stazione",
                 "Abilitato",
-                "Aux digit",
-                "ApplicationCode",
-                "Codice Segregazione",
-                "Broadcast",
+                "Versione",
                 "URL");
         return CommonUtil.createCsv(headers, csvRows);
     }
@@ -180,9 +176,18 @@ public class StationsService {
         return list;
     }
 
-    private List<String> getCsvValuesWithUrl(StationCreditorInstitution elem) {
-        List<String> list = getCsvValues(elem);
-        list.add("https://config" + CommonUtil.getEnvironment(env) + ".platform.pagopa.it/stations/" + deNull(elem.getCreditorInstitutionCode()));
+    private List<String> getCsvValues(Stazioni station) {
+        List<String> list = new ArrayList<>();
+        list.add(deNull(station.getIntermediarioPa().getCodiceIntermediario()));
+        list.add(deNull(station.getIdStazione()));
+        list.add(deNull(station.getEnabled()).toString());
+        list.add(deNull(station.getVersione()));
+        return list;
+    }
+
+    private List<String> getCsvValuesWithUrl(Stazioni station) {
+        List<String> list = getCsvValues(station);
+        list.add(String.format("https://config%s.platform.pagopa.it/stations/%s", CommonUtil.getEnvironment(env), deNull(station.getIdStazione())));
         return list;
     }
 

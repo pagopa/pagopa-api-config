@@ -180,11 +180,11 @@ class StationsServiceTest {
 
     @Test
     void getStationsCsv() {
-        when(paStazionePaRepository.findAll()).thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+        when(stazioniRepository.findAll()).thenReturn(Lists.newArrayList(getMockStazioni()));
 
         String result = new String(stationsService.getStationsCSV());
-        assertTrue(result.contains("00168480242"));
-        assertTrue(result.contains("Bassano del Grappa"));
+        assertTrue(result.contains("80007580279_01"));
+        assertTrue(result.contains("Regione Lazio"));
     }
     
     @Test
