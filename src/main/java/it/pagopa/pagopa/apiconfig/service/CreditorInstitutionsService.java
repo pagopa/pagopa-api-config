@@ -179,7 +179,7 @@ public class CreditorInstitutionsService {
     }
 
     public CreditorInstitutionList getCreditorInstitutionsByIban(@NotNull String iban) {
-        List<IbanValidiPerPa> items = ibanValidiPerPaRepository.findAllByIbanAccredito(iban);
+        List<IbanValidiPerPa> items = ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(iban);
 
         List<CreditorInstitution> ciList = items.isEmpty() ? new ArrayList<>() : items.stream().map(i -> paRepository.findById(i.getFkPa()))
                 .filter(Optional::isPresent)

@@ -610,7 +610,7 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getCreditorInstitutionsByIban_1() throws IOException, JSONException {
-        when(ibanValidiPerPaRepository.findAllByIbanAccredito(anyString())).thenReturn(Lists.newArrayList(getMockIbanValidiPerPa()));
+        when(ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(anyString())).thenReturn(Lists.newArrayList(getMockIbanValidiPerPa()));
         when(paRepository.findById(any())).thenReturn(Optional.of(getMockPa()));
 
         CreditorInstitutionList result = creditorInstitutionsService.getCreditorInstitutionsByIban("1234");
@@ -621,7 +621,7 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getCreditorInstitutionsByIban_2() throws IOException, JSONException {
-        when(ibanValidiPerPaRepository.findAllByIbanAccredito(anyString())).thenReturn(Lists.newArrayList());
+        when(ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(anyString())).thenReturn(Lists.newArrayList());
 
         CreditorInstitutionList result = creditorInstitutionsService.getCreditorInstitutionsByIban("1234");
         String actual = TestUtil.toJson(result);
