@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface CodifichePaRepository extends JpaRepository<CodifichePa, Long> {
 
     List<CodifichePa> findAllByFkPa_ObjId(Long fkPa);
+    List<CodifichePa> findAllByCodicePaAndFkCodifica_IdCodifica(String codicePa, String idCodifica);
 
     Optional<CodifichePa> findByCodicePa(String codicePa);
     Optional<CodifichePa> findByCodicePaAndFkPa_ObjId(String codicePa, Long fkPa);
