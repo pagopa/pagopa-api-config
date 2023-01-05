@@ -25,4 +25,11 @@ class UtilitiesControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void findEncoding() throws Exception {
+        String url = "/encodings/123456789012";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
 }
