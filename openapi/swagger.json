@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Spring Application exposes Api to manage configuration for EC/PSP on the Nodo dei Pagamenti",
+    "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "PagoPA API configuration",
     "version": "0.29.0-1"
@@ -325,6 +325,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -1056,6 +1057,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -1787,6 +1789,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -2193,6 +2196,38 @@
         "summary": "Verify a XML file containing the details of an CDI"
       }
     },
+    "/cdis/uploadhistory": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Payment Service Providers"
+        ],
+        "operationId": "uploadHistory_1"
+      }
+    },
     "/cdis/{idcdi}": {
       "parameters": [
         {
@@ -2529,6 +2564,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -2823,22 +2859,6 @@
             "schema": {
               "format": "binary",
               "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              },
-              "X-Warning": {
-                "description": "This header identifies response validation error",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
@@ -5730,6 +5750,137 @@
         "summary": "Create payment type"
       }
     },
+    "/configuration/paymenttypes/history": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Configuration"
+        ],
+        "operationId": "uploadHistory",
+        "summary": "Trigger to upload payment types history on AFM Marketplace"
+      }
+    },
     "/configuration/paymenttypes/{paymentTypeCode}": {
       "parameters": [
         {
@@ -7492,6 +7643,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -8080,6 +8232,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -9958,6 +10111,148 @@
         "summary": "Update a relation between creditor institution and station"
       }
     },
+    "/encodings/{encodingcode}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Code of the Encoding",
+            "in": "path",
+            "name": "encodingcode",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreditorInstitutions"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Utilities"
+        ],
+        "operationId": "getCreditorInstitutionByPostalEncoding",
+        "summary": "Get creditor institutions by encoding"
+      }
+    },
     "/ibans/{iban}": {
       "parameters": [
         {
@@ -10111,6 +10406,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -11362,6 +11658,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -12710,6 +13007,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -12942,6 +13240,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"
@@ -13250,22 +13549,6 @@
             "schema": {
               "format": "binary",
               "type": "string"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              },
-              "X-Warning": {
-                "description": "This header identifies response validation error",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
             }
           },
           "401": {
@@ -13796,6 +14079,7 @@
             "description": "Page number. Page value starts from 0",
             "format": "int32",
             "in": "query",
+            "minimum": 0,
             "name": "page",
             "required": true,
             "type": "integer"

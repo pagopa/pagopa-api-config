@@ -168,8 +168,17 @@ public class CreditorInstitutionsService {
                 .build();
     }
 
-    public CreditorInstitutionList getCreditorInstitutionByEncoding(String encodingCode) {
-        List<CodifichePa> codifichePa = codifichePaRepository.findAllByCodicePaAndFkCodifica_IdCodifica(encodingCode, Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue());
+    public CreditorInstitutionList getCreditorInstitutionByPostalEncoding(String encodingCode) {
+        return getCreditorInstitutionByEncoding(encodingCode, Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue());
+    }
+
+    /**
+     * @param encodingCode value of the encoding
+     * @param codeType encoding type (see: {@link Encoding.CodeTypeEnum})
+     * @return the list of EC with the encoding equals to {@code encodingCode} and type equals to {@code codeType}
+     */
+    private CreditorInstitutionList getCreditorInstitutionByEncoding(String encodingCode, String codeType) {
+        List<CodifichePa> codifichePa = codifichePaRepository.findAllByCodicePaAndFkCodifica_IdCodifica(encodingCode, codeType);
         return CreditorInstitutionList.builder()
                 .creditorInstitutions(getCreditorInstitutions(codifichePa))
                 .build();

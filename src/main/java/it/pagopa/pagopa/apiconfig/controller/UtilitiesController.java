@@ -62,8 +62,8 @@ public class UtilitiesController {
             value = "/encodings/{encodingcode}",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<CreditorInstitutionList> getCreditorInstitutionByEncoding(@NotBlank @Parameter(description = "Code of the Encoding", required = true) @PathVariable("encodingcode") String encodingCode) {
-        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionByEncoding(encodingCode));
+    public ResponseEntity<CreditorInstitutionList> getCreditorInstitutionByPostalEncoding(@NotBlank @Parameter(description = "Code of the Encoding", required = true) @PathVariable("encodingcode") String encodingCode) {
+        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionByPostalEncoding(encodingCode));
     }
 
 }
