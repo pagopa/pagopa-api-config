@@ -10147,7 +10147,7 @@
               }
             },
             "schema": {
-              "$ref": "#/definitions/CreditorInstitutions"
+              "$ref": "#/definitions/CreditorInstitutionList"
             }
           },
           "400": {

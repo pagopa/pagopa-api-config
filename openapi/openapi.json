@@ -12589,7 +12589,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/CreditorInstitutions"
+                  "$ref" : "#/components/schemas/CreditorInstitutionList"
                 }
               }
             },
