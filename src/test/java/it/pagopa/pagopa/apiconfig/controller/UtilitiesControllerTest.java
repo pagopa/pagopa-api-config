@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
-class IbanControllerTest {
+class UtilitiesControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -21,6 +21,13 @@ class IbanControllerTest {
     @Test
     void findIban() throws Exception {
         String url = "/ibans/IT01A1234567890123456789012";
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void findEncoding() throws Exception {
+        String url = "/encodings/123456789012";
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
