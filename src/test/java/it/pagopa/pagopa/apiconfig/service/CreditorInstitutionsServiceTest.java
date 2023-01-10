@@ -2,6 +2,7 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
@@ -41,14 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
+import static it.pagopa.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -610,7 +604,7 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getCreditorInstitutionsByIban_1() throws IOException, JSONException {
-        when(ibanValidiPerPaRepository.findAllByIbanAccredito(anyString())).thenReturn(Lists.newArrayList(getMockIbanValidiPerPa()));
+        when(ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(anyString())).thenReturn(Lists.newArrayList(getMockIbanValidiPerPa()));
         when(paRepository.findById(any())).thenReturn(Optional.of(getMockPa()));
 
         CreditorInstitutionList result = creditorInstitutionsService.getCreditorInstitutionsByIban("1234");
@@ -621,11 +615,26 @@ class CreditorInstitutionsServiceTest {
 
     @Test
     void getCreditorInstitutionsByIban_2() throws IOException, JSONException {
-        when(ibanValidiPerPaRepository.findAllByIbanAccredito(anyString())).thenReturn(Lists.newArrayList());
+        when(ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(anyString())).thenReturn(Lists.newArrayList());
 
         CreditorInstitutionList result = creditorInstitutionsService.getCreditorInstitutionsByIban("1234");
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_by_iban_2.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getCreditorInstitutionByPostalEncoding() throws IOException, JSONException {
+        CodifichePa mockCodifichePa = getMockCodifichePa();
+        Codifiche mockCodifiche = getMockCodifiche();
+        mockCodifiche.setIdCodifica(Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue());
+        mockCodifichePa.setFkCodifica(mockCodifiche);
+        mockCodifichePa.setFkPa(getMockPa());
+        when(codifichePaRepository.findAllByCodicePaAndFkCodifica_IdCodifica(anyString(), anyString())).thenReturn(Lists.newArrayList(mockCodifichePa));
+
+        CreditorInstitutionList result = creditorInstitutionsService.getCreditorInstitutionByPostalEncoding("123456789012");
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_by_encoding.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 }

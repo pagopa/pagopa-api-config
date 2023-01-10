@@ -1,30 +1,11 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.Codifiche;
-import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionList;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.CodificheRepository;
-import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -179,7 +156,7 @@ public class CreditorInstitutionsService {
     }
 
     public CreditorInstitutionList getCreditorInstitutionsByIban(@NotNull String iban) {
-        List<IbanValidiPerPa> items = ibanValidiPerPaRepository.findAllByIbanAccredito(iban);
+        List<IbanValidiPerPa> items = ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(iban);
 
         List<CreditorInstitution> ciList = items.isEmpty() ? new ArrayList<>() : items.stream().map(i -> paRepository.findById(i.getFkPa()))
                 .filter(Optional::isPresent)
@@ -188,6 +165,22 @@ public class CreditorInstitutionsService {
 
         return CreditorInstitutionList.builder()
                 .creditorInstitutions(ciList)
+                .build();
+    }
+
+    public CreditorInstitutionList getCreditorInstitutionByPostalEncoding(String encodingCode) {
+        return getCreditorInstitutionByEncoding(encodingCode, Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue());
+    }
+
+    /**
+     * @param encodingCode value of the encoding
+     * @param codeType encoding type (see: {@link Encoding.CodeTypeEnum})
+     * @return the list of EC with the encoding equals to {@code encodingCode} and type equals to {@code codeType}
+     */
+    private CreditorInstitutionList getCreditorInstitutionByEncoding(String encodingCode, String codeType) {
+        List<CodifichePa> codifichePa = codifichePaRepository.findAllByCodicePaAndFkCodifica_IdCodifica(encodingCode, codeType);
+        return CreditorInstitutionList.builder()
+                .creditorInstitutions(getCreditorInstitutions(codifichePa))
                 .build();
     }
 
@@ -385,5 +378,15 @@ public class CreditorInstitutionsService {
         codifichePaRepository.save(codifichePa);
     }
 
+    /**
+     * @param codifichePa a list of Encoding relations
+     * @return the PAs associated to the relations
+     */
+    private List<CreditorInstitution> getCreditorInstitutions(List<CodifichePa> codifichePa) {
+        return codifichePa.stream()
+                .map(CodifichePa::getFkPa)
+                .map(pa -> modelMapper.map(pa, CreditorInstitution.class))
+                .collect(Collectors.toList());
+    }
 
 }
