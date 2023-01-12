@@ -3,85 +3,19 @@ package it.pagopa.pagopa.apiconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
-import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
-import it.pagopa.pagopa.apiconfig.entity.Codifiche;
-import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
-import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
-import it.pagopa.pagopa.apiconfig.entity.InformativePaDetail;
-import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
-import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
 import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
 import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Brokers;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionAddress;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionEncodings;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Protocol;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitution;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
+import it.pagopa.pagopa.apiconfig.model.configuration.*;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Filter;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.OrderType;
-import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
-import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
-import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.ChannelPsp;
-import it.pagopa.pagopa.apiconfig.model.psp.ChannelPspList;
-import it.pagopa.pagopa.apiconfig.model.psp.Channels;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannel;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
-import it.pagopa.pagopa.apiconfig.model.psp.Service;
-import it.pagopa.pagopa.apiconfig.model.psp.Services;
+import it.pagopa.pagopa.apiconfig.model.psp.*;
 import lombok.experimental.UtilityClass;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
@@ -341,7 +275,7 @@ public class TestUtil {
                 .rtInstantaneousDispatch(false)
                 .build();
     }
-    
+
     public static StationCreditorInstitution getMockStationCreditorInstitutionDetails() {
         return StationCreditorInstitution.builder()
                 .applicationCode(1L)
@@ -516,6 +450,7 @@ public class TestUtil {
                 .cdiFasciaCostoServizio(List.of(getMockCdiFasciaCostoServizio()))
                 .build();
     }
+
     public static CdiInformazioniServizio getMockCdiInformazioniServizio() {
         return CdiInformazioniServizio.builder()
                 .id(1L)
@@ -958,12 +893,12 @@ public class TestUtil {
                 .build();
     }
 
-    public static AfmMarketplacePaymentType getMockAfmMarketplacePaymentType () {
+    public static AfmMarketplacePaymentType getMockAfmMarketplacePaymentType() {
         return AfmMarketplacePaymentType.builder()
                 .name("PPAL")
                 .used(false)
                 .build();
     }
-    
+
 
 }
