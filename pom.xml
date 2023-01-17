@@ -33,6 +33,7 @@
         <hibernate-version>5.6.5.Final</hibernate-version>
         <opencsv.version>5.6</opencsv.version>
         <commons.validator>1.7</commons.validator>
+        <azure-spring-cosmos-version>3.31.0</azure-spring-cosmos-version>
     </properties>
 
     <dependencies>
@@ -76,7 +77,7 @@
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-spring-data-cosmos</artifactId>
-            <version>3.30.0</version>
+            <version>${azure-spring-cosmos-version}</version>
         </dependency>
 
         <dependency>
