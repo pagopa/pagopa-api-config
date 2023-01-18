@@ -214,6 +214,7 @@ public class CdiService {
                         .map(this::mapDetails)
                         .collect(Collectors.toList());
         return CdiCosmos.builder()
+                .id(master.getId().toString())
                 .idPsp(master.getFkPsp().getIdPsp())
                 .idCdi(master.getIdInformativaPsp())
                 .cdiStatus("NEW")
