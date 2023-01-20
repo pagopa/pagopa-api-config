@@ -64,6 +64,8 @@ public enum AppError {
     CDI_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CDI bad request", "XML CDI file is not valid: %s"),
     CDI_DETAILS_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI details not found", "No CDI Details found refers to Master %s"),
 
+    CDI_SYNC_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Problem to sync CDIs", "Problem triggering AFM Utils"),
+
     CONFIGURATION_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "Configuration key not found", "No Configuration key found with category: %s key: %s"),
     CONFIGURATION_KEY_CONFLICT(HttpStatus.CONFLICT, "Configuration key conflict", "Configuration key with category %s and key %s already exists"),
 
