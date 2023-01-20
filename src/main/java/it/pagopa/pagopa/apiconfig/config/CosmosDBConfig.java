@@ -17,6 +17,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
+import java.time.Duration;
 
 @Configuration
 @EnableCosmosRepositories("it.pagopa.pagopa.apiconfig.repository")
@@ -42,11 +43,12 @@ public class CosmosDBConfig extends AbstractCosmosConfiguration {
     public CosmosClientBuilder getCosmosClientBuilder() {
         var azureKeyCredential = new AzureKeyCredential(cosmosKey);
         var directConnectionConfig = new DirectConnectionConfig();
+        directConnectionConfig.setNetworkRequestTimeout(Duration.ofSeconds(10));
         var gatewayConnectionConfig = new GatewayConnectionConfig();
         return new CosmosClientBuilder()
                 .endpoint(cosmosUri)
                 .credential(azureKeyCredential)
-                .directMode(directConnectionConfig, gatewayConnectionConfig);
+                .directMode(directConnectionConfig);
     }
 
     @Override
