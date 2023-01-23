@@ -10,14 +10,14 @@ microservice-chart:
     httpGet:
       path: /actuator/health/liveness
       port: 8080
-    initialDelaySeconds: 100
+    initialDelaySeconds: 120
     failureThreshold: 6
     periodSeconds: 10
   readinessProbe:
     httpGet:
       path: /actuator/health/readiness
       port: 8080
-    initialDelaySeconds: 100
+    initialDelaySeconds: 120
     failureThreshold: 6
     periodSeconds: 10
   deployment:
@@ -42,11 +42,11 @@ microservice-chart:
     allowPrivilegeEscalation: false
   resources:
     requests:
-      memory: "512Mi"
-      cpu: "0.20"
+      memory: "1Gi"
+      cpu: "0.40"
     limits:
       memory: "1Gi"
-      cpu: "0.4"
+      cpu: "0.5"
   autoscaling:
     enable: true
     minReplica: 1
@@ -68,7 +68,8 @@ microservice-chart:
     COSMOS_URI: 'https://pagopa-d-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
     DATABASE_SCHEMA: 'cfg'
     LOGGING_LEVEL: "INFO"
-    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo&sslmode=require'
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
+    SPRING_DATASOURCE_USERNAME: 'cfg'
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
@@ -78,7 +79,6 @@ microservice-chart:
     AFM_MARKETPLACE_SUBSCRIPTION_KEY: 'afm-marketplace-subscription-key'
     AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
-    SPRING_DATASOURCE_USERNAME: 'db-cfg-username-dev'
     SPRING_DATASOURCE_PASSWORD: 'db-cfg-password'
   keyvault:
     name: "pagopa-d-nodo-kv"
