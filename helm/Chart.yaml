@@ -2,8 +2,8 @@ apiVersion: v2
 name: pagopa-api-config
 description: APIs to manage configuration for CI and PSP of the Nodo dei Pagamenti
 type: application
-version: 0.29.1-11-PPR-505-postgresql
-appVersion: 0.29.1-11-PPR-505-postgresql
+version: 0.29.1-12-PPR-505-postgresql
+appVersion: 0.29.1-12-PPR-505-postgresql
 dependencies:
   - name: microservice-chart
     version: 1.21.0
