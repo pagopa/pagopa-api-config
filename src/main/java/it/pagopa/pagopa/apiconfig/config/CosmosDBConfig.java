@@ -8,20 +8,18 @@ import com.azure.spring.data.cosmos.config.AbstractCosmosConfiguration;
 import com.azure.spring.data.cosmos.config.CosmosConfig;
 import com.azure.spring.data.cosmos.core.ResponseDiagnostics;
 import com.azure.spring.data.cosmos.core.ResponseDiagnosticsProcessor;
-import com.azure.spring.data.cosmos.core.mapping.EnableCosmosAuditing;
 import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 
 @Configuration
 @EnableCosmosRepositories("it.pagopa.pagopa.apiconfig.cosmos.repository")
-@EnableConfigurationProperties
-@EnableCosmosAuditing
+//@EnableConfigurationProperties
+//@EnableCosmosAuditing
 @ConditionalOnExpression("'${cosmosdb.enable}' == 'true'")
 @Slf4j
 public class CosmosDBConfig extends AbstractCosmosConfiguration {
@@ -38,11 +36,12 @@ public class CosmosDBConfig extends AbstractCosmosConfiguration {
     @Value("${azure.cosmos.populate-query-metrics}")
     private Boolean cosmosQueryMetrics;
 
+    DirectConnectionConfig directConnectionConfig = new DirectConnectionConfig();
+    GatewayConnectionConfig gatewayConnectionConfig = new GatewayConnectionConfig();
+
     @Bean
     public CosmosClientBuilder getCosmosClientBuilder() {
         var azureKeyCredential = new AzureKeyCredential(cosmosKey);
-        var directConnectionConfig = new DirectConnectionConfig();
-        var gatewayConnectionConfig = new GatewayConnectionConfig();
         return new CosmosClientBuilder()
                 .endpoint(cosmosUri)
                 .credential(azureKeyCredential)
@@ -51,8 +50,9 @@ public class CosmosDBConfig extends AbstractCosmosConfiguration {
 
     @Override
     public CosmosConfig cosmosConfig() {
+
         return CosmosConfig.builder()
-                .enableQueryMetrics(cosmosQueryMetrics)
+//                .enableQueryMetrics(cosmosQueryMetrics)
                 .responseDiagnosticsProcessor(new ResponseDiagnosticsProcessorImplementation())
                 .build();
     }

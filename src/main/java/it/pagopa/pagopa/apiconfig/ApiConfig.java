@@ -11,7 +11,7 @@ import java.util.Locale;
 
 
 @SpringBootApplication
-@EnableJpaRepositories
+@EnableJpaRepositories("it.pagopa.pagopa.apiconfig.repository")
 @EnableRetry
 public class ApiConfig {
 
