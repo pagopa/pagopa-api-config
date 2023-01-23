@@ -10,14 +10,14 @@ microservice-chart:
     httpGet:
       path: /actuator/health/liveness
       port: 8080
-    initialDelaySeconds: 90
+    initialDelaySeconds: 100
     failureThreshold: 6
     periodSeconds: 10
   readinessProbe:
     httpGet:
       path: /actuator/health/readiness
       port: 8080
-    initialDelaySeconds: 90
+    initialDelaySeconds: 100
     failureThreshold: 6
     periodSeconds: 10
   deployment:
@@ -45,8 +45,8 @@ microservice-chart:
       memory: "512Mi"
       cpu: "0.20"
     limits:
-      memory: "512Mi"
-      cpu: "0.3"
+      memory: "1Gi"
+      cpu: "0.4"
   autoscaling:
     enable: true
     minReplica: 1
@@ -62,24 +62,24 @@ microservice-chart:
   envConfig:
     WEBSITE_SITE_NAME: 'pagopaapiconfig'
     ENV: "dev"
-    LOGGING_LEVEL: "INFO"
+    AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
+    AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
+    COSMOS_URI: 'https://pagopa-d-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
+    DATABASE_SCHEMA: 'cfg'
+    LOGGING_LEVEL: "INFO"
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo&sslmode=require'
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
-    AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
-    AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
-    COSMOS_URI: 'https://pagopa-d-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
   envSecret:
     # required
-    APPLICATIONINSIGHTS_CONNECTION_STRING: 'nodo-azure-insight-connection-string-dev'
-    SPRING_DATASOURCE_URL: 'nodo-db-cfg-url-dev'
-    SPRING_DATASOURCE_USERNAME: 'nodo-db-cfg-username-dev'
-    SPRING_DATASOURCE_PASSWORD: 'nodo-db-cfg-password-dev'
-    DATABASE_SCHEMA: 'nodo-db-cfg-schema-dev'
-    AFM_MARKETPLACE_KEY: 'afm-marketplace-subscription-key'
-    AFM_UTILS_KEY: 'afm-utils-subscription-key'
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'azure-insight-connection-string'
+    AFM_MARKETPLACE_SUBSCRIPTION_KEY: 'afm-marketplace-subscription-key'
+    AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
+    SPRING_DATASOURCE_USERNAME: 'db-cfg-username-dev'
+    SPRING_DATASOURCE_PASSWORD: 'db-cfg-password'
   keyvault:
     name: "pagopa-d-nodo-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
@@ -90,7 +90,7 @@ microservice-chart:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
-              - key: node_type
+              - key: nodo
                 operator: In
                 values:
-                  - nodo
+                  - "true"
