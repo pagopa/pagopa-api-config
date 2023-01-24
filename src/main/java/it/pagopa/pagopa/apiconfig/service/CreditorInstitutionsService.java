@@ -124,8 +124,8 @@ public class CreditorInstitutionsService {
         }
 
         // check uniqueness rules
-        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, false);
-        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, false);
+        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, null, false);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, null, false);
 
         // add info into object for model mapper
         setAuxDigitNull(creditorInstitutionStationEdit);
@@ -310,10 +310,19 @@ public class CreditorInstitutionsService {
                 .collect(Collectors.toList());
     }
 
-    private void checkApplicationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, boolean edit) {
+    private void checkApplicationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, PaStazionePa paStazionePa, boolean edit) {
         String msg = "ApplicationCode already exists";
         if (creditorInstitutionStationEdit.getAuxDigit() == 3L) {
-            if (creditorInstitutionStationEdit.getApplicationCode() != null && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
+        	List<PaStazionePa> items = paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode());
+        	// update
+        	if (edit &&
+        	    paStazionePa != null &&
+        	    creditorInstitutionStationEdit.getApplicationCode() != null &&
+        	    (items.size() > 1 || (items.size() == 1 && items.stream().noneMatch(ti -> ti.getObjId().equals(paStazionePa.getObjId()))))) {
+        		throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
+        	}
+        	// create
+            if (!edit && creditorInstitutionStationEdit.getApplicationCode() != null && !items.isEmpty()) {
                 throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
             }
         } else if (edit && !paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode(), creditorInstitutionStationEdit.getStationCode()).isEmpty()) {
@@ -323,11 +332,19 @@ public class CreditorInstitutionsService {
         }
     }
 
-    private void checkSegregationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, boolean edit) {
+    private void checkSegregationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, PaStazionePa paStazionePa, boolean edit) {
         String msg = "SegregationCode already exists";
         if (creditorInstitutionStationEdit.getAuxDigit() == 0L) {
-            if (creditorInstitutionStationEdit.getSegregationCode() != null &&
-                    !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
+        	List<PaStazionePa> items = paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode());
+        	// update
+        	if (edit && 
+        		paStazionePa != null &&
+        		creditorInstitutionStationEdit.getSegregationCode() != null &&
+        		(items.size() > 1 || (items.size() == 1 && items.stream().noneMatch(ti -> ti.getObjId().equals(paStazionePa.getObjId()))))) {
+        		throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
+        	}
+        	// create
+        	if (!edit && creditorInstitutionStationEdit.getSegregationCode() != null && !items.isEmpty()) {
                 throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
             }
         } else if (edit && !paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode(), creditorInstitutionStationEdit.getStationCode()).isEmpty()) {
@@ -349,8 +366,8 @@ public class CreditorInstitutionsService {
         checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
 
         // check uniqueness rules
-        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, true);
-        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, true);
+        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, paStazionePa, true);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, paStazionePa, true);
 
         // add info into object for model mapper
         setAuxDigitNull(creditorInstitutionStationEdit);
