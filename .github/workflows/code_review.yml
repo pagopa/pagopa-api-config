@@ -54,7 +54,6 @@ jobs:
       - name: log debug
         run: echo ${{ toJSON(github) }}
           echo github
-          echo ${{ toJSON(context) }}
       - name: Build and analyze
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.organization=pagopa
