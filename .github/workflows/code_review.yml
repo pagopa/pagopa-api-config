@@ -53,7 +53,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar-project.properties
       - name: Build and analyze
         run: mvn clean verify -P sonar \
-          -Dsonar.host.url="https://sonarcloud.io" \
+          -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.organization=pagopa \
           -Dsonar.projectKey=${{ env.PROJECT_KEY }} \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
