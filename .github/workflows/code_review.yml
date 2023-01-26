@@ -58,7 +58,6 @@ jobs:
           -Dsonar.projectKey=${{ env.PROJECT_KEY }}
           -Dsonar.coverage.exclusions="**/config/*,**/*Mock*,**/model/**,**/entity/*"
           -Dsonar.cpd.exclusions="**/model/**,**/entity/*"
-          -Dsonar.branch.name=${{ github.head_ref }}
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
