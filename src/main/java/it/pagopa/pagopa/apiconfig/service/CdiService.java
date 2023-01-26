@@ -6,9 +6,9 @@ import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CdiCosmos;
+import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetailCosmos;
+import it.pagopa.pagopa.apiconfig.cosmos.container.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
@@ -24,7 +24,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
+import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
@@ -57,10 +57,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
@@ -109,6 +114,15 @@ public class CdiService {
 
     @Value("${xsd.cdi}")
     private String xsdCdi;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${service.utils.host}")
+    private String afmUtilsHost;
+
+    @Value("${service.utils.subscriptionKey}")
+    private String afmUtilsSubscriptionKey;
 
     public Cdis getCdis(@NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
@@ -160,6 +174,9 @@ public class CdiService {
         }
         // save CDI to Cosmos DB
         cdiCosmosRepository.save(mapToCosmosEntity(master));
+
+        // trigger AFM Utils
+        afmUtilsTrigger();
     }
 
     public void deleteCdi(String idCdi, String pspCode) {
@@ -182,6 +199,9 @@ public class CdiService {
                 .map(this::mapToCosmosEntity)
                 .collect(Collectors.toList());
         cdiCosmosRepository.saveAll(result);
+
+        // trigger AFM Utils
+        afmUtilsTrigger();
     }
 
     private CdiCosmos mapToCosmosEntity(CdiMaster master) {
@@ -194,6 +214,7 @@ public class CdiService {
                         .map(this::mapDetails)
                         .collect(Collectors.toList());
         return CdiCosmos.builder()
+                .id(master.getId().toString())
                 .idPsp(master.getFkPsp().getIdPsp())
                 .idCdi(master.getIdInformativaPsp())
                 .cdiStatus("NEW")
@@ -639,6 +660,22 @@ public class CdiService {
             throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
         }
         return binaryFileRepository.save(binaryFile);
+    }
+
+  /**
+   * Trigger AFM Utils to analyze uploaded CDIs
+   */
+  private void afmUtilsTrigger() {
+        String stringUrl = String.format("%s/cdis/sync", afmUtilsHost);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Ocp-Apim-Subscription-Key", afmUtilsSubscriptionKey);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Object> response = restTemplate.exchange(stringUrl,
+            HttpMethod.GET, requestEntity, Object.class);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new AppException(AppError.CDI_SYNC_ERROR);
+        }
     }
 
 }

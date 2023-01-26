@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.entity;
+package it.pagopa.pagopa.apiconfig.cosmos.container;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
@@ -15,7 +15,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@Container(containerName = "paymenttypes")
+@Container(containerName = "paymenttypes", autoCreateContainer = false)
 public class PaymentTypesCosmos {
 
     @Id

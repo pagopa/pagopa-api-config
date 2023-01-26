@@ -1,52 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CdiCosmos;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
-import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.CheckItem;
-import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspRepository;
-import org.assertj.core.util.Lists;
-import org.json.JSONException;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiDetail;
@@ -62,9 +15,62 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
+import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
+import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
+import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
+import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
+import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
+import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
+import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.util.Lists;
+import org.json.JSONException;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CdiServiceTest {
@@ -94,13 +100,14 @@ class CdiServiceTest {
     @MockBean
     private CdiFasciaCostoServizioRepository cdiFasciaCostoServizioRepository;
 
-
     @Autowired
     @InjectMocks
     private CdiService cdiService;
     @Autowired
     private CdiCosmosRepository cdiCosmosRepository;
 
+    @MockBean
+    private RestTemplate restTemplate;
 
     @Test
     void getCdis() throws IOException, JSONException {
@@ -152,6 +159,14 @@ class CdiServiceTest {
         when(cdiMasterRepository.save(any())).thenReturn(mockCdiMaster);
         when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(anyLong(), anyString(), anyString()))
                 .thenReturn(Optional.of(getMockPspCanaleTipoVersamento()));
+
+        ResponseEntity<Object> responseEntity = new ResponseEntity<Object>(new Object(), HttpStatus.OK);
+        when(restTemplate.exchange(
+            anyString(),
+            eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<Void>>any(),
+            ArgumentMatchers.<Class<Object>>any()
+        )).thenReturn(responseEntity);
 
         cdiService.createCdi(file);
 
@@ -322,10 +337,19 @@ class CdiServiceTest {
     }
 
     @Test
-    void uploadHistory(){
+    void uploadHistory() {
         CdiMasterValid mockCdiMasterValid = getMockCdiMasterValid();
         mockCdiMasterValid.setCdiDetail(List.of(getMockCdiDetail()));
         when(cdiMasterValidRepository.findAll()).thenReturn(List.of(mockCdiMasterValid));
+
+        ResponseEntity<Object> responseEntity = new ResponseEntity<Object>(new Object(), HttpStatus.OK);
+        when(restTemplate.exchange(
+            anyString(),
+            eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<Void>>any(),
+            ArgumentMatchers.<Class<Object>>any()
+        )).thenReturn(responseEntity);
+
         cdiService.uploadHistory();
 
         ArgumentCaptor<List<CdiCosmos>> cdiCosmos = ArgumentCaptor.forClass(List.class);
