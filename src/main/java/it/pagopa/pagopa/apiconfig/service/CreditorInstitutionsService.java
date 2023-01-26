@@ -124,8 +124,8 @@ public class CreditorInstitutionsService {
         }
 
         // check uniqueness rules
-        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, false);
-        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, false);
+        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, null, false);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, null, false);
 
         // add info into object for model mapper
         setAuxDigitNull(creditorInstitutionStationEdit);
@@ -310,29 +310,48 @@ public class CreditorInstitutionsService {
                 .collect(Collectors.toList());
     }
 
-    private void checkApplicationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, boolean edit) {
+    private void checkApplicationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, PaStazionePa paStazionePa, boolean edit) {
         String msg = "ApplicationCode already exists";
+        List<PaStazionePa> allByPaAndProgressivo = paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode());
+        List<PaStazionePa> allByPaAndProgressivoAndStazione = paStazionePaRepository.findAllByFkPaAndProgressivoAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode(), creditorInstitutionStationEdit.getStationCode());
         if (creditorInstitutionStationEdit.getAuxDigit() == 3L) {
-            if (creditorInstitutionStationEdit.getApplicationCode() != null && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
+        	// update
+        	if (edit &&
+        	    paStazionePa != null &&
+        	    creditorInstitutionStationEdit.getApplicationCode() != null &&
+        	    (allByPaAndProgressivo.size() > 1 || (allByPaAndProgressivo.size() == 1 && allByPaAndProgressivo.stream().noneMatch(ti -> ti.getObjId().equals(paStazionePa.getObjId()))))) {
+        		throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
+        	}
+        	// create
+            if (!edit && creditorInstitutionStationEdit.getApplicationCode() != null && !allByPaAndProgressivo.isEmpty()) {
                 throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
             }
-        } else if (edit && !paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode(), creditorInstitutionStationEdit.getStationCode()).isEmpty()) {
+        } else if (edit && !allByPaAndProgressivoAndStazione.isEmpty()) {
             throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-        } else if (!edit && !paStazionePaRepository.findAllByFkPaAndProgressivo(pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode()).isEmpty()) {
+        } else if (!edit && !allByPaAndProgressivo.isEmpty()) {
             throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
         }
     }
 
-    private void checkSegregationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, boolean edit) {
+    private void checkSegregationCodePresent(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa, PaStazionePa paStazionePa, boolean edit) {
         String msg = "SegregationCode already exists";
+        List<PaStazionePa> allByPaAndSegregazione = paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode());
+        List<PaStazionePa> allByPaAndSegregazioneAndStazione = paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode(), creditorInstitutionStationEdit.getStationCode());
         if (creditorInstitutionStationEdit.getAuxDigit() == 0L) {
-            if (creditorInstitutionStationEdit.getSegregationCode() != null &&
-                    !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
+        	// update
+        	if (edit && 
+        		paStazionePa != null &&
+        		creditorInstitutionStationEdit.getSegregationCode() != null &&
+        		(allByPaAndSegregazione.size() > 1 || (allByPaAndSegregazione.size() == 1 && allByPaAndSegregazione.stream().noneMatch(ti -> ti.getObjId().equals(paStazionePa.getObjId()))))) {
+        		throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
+        	}
+        	// create
+        	if (!edit && creditorInstitutionStationEdit.getSegregationCode() != null && !allByPaAndSegregazione.isEmpty()) {
                 throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
             }
-        } else if (edit && !paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode(), creditorInstitutionStationEdit.getStationCode()).isEmpty()) {
+        } else if (edit && !allByPaAndSegregazioneAndStazione.isEmpty()) {
             throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-        } else if (!edit && !paStazionePaRepository.findAllByFkPaAndSegregazione(pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode()).isEmpty()) {
+        } else if (!edit && !allByPaAndSegregazione.isEmpty()) {
             throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
         }
     }
@@ -342,6 +361,11 @@ public class CreditorInstitutionsService {
         // check if the relation exists
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(stationCode);
+        
+        creditorInstitutionStationEdit.setFkPa(pa);
+        creditorInstitutionStationEdit.setFkStazioni(stazioni);
+        creditorInstitutionStationEdit.setStationCode(stationCode);
+        
         PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
                 .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
 
@@ -349,14 +373,12 @@ public class CreditorInstitutionsService {
         checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
 
         // check uniqueness rules
-        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, true);
-        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, true);
+        checkSegregationCodePresent(creditorInstitutionStationEdit, pa, paStazionePa, true);
+        checkApplicationCodePresent(creditorInstitutionStationEdit, pa, paStazionePa, true);
 
         // add info into object for model mapper
         setAuxDigitNull(creditorInstitutionStationEdit);
-        creditorInstitutionStationEdit.setFkPa(pa);
-        creditorInstitutionStationEdit.setFkStazioni(stazioni);
-
+        
         // convert and save
         PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class)
                 .toBuilder()
