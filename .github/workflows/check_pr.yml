@@ -121,13 +121,12 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo
               });
-              console.log(comments);
-              console.log(context.repo);
               for (const comment of comments.data) {
                 if (comment.body.includes('This PR exceeds the recommended size')){
                   github.rest.issues.deleteComment({
                     issue_number: context.issue.number,
                     owner: context.repo.owner,
+                    repo: context.repo.repo,
                     comment_id: comment.id
                   })
                 }
