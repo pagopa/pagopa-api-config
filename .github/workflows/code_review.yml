@@ -51,6 +51,10 @@ jobs:
           path: ~/.sonar-project.properties/cache
           key: ${{ runner.os }}-sonar-project.properties
           restore-keys: ${{ runner.os }}-sonar-project.properties
+      - name: log debug
+        run: echo ${{ toJSON(github) }}
+          echo github
+          echo ${{ toJSON(context) }}
       - name: Build and analyze
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.organization=pagopa
@@ -58,6 +62,7 @@ jobs:
           -Dsonar.coverage.exclusions="**/config/*,**/*Mock*,**/model/**,**/entity/*"
           -Dsonar.cpd.exclusions="**/model/**,**/entity/*"
           -Dsonar.branch.name=${{ github.ref_name }}
+          -Dsonar.host.url=https://sonarcloud.io
         env:
           # Needed to get some information about the pull request, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
