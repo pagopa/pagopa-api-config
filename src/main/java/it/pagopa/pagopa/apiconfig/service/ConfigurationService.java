@@ -2,7 +2,7 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
-import it.pagopa.pagopa.apiconfig.entity.PaymentTypesCosmos;
+import it.pagopa.pagopa.apiconfig.cosmos.container.PaymentTypesCosmos;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
@@ -23,7 +23,7 @@ import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfBase;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
 import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaymentTypesCosmosRepository;
+import it.pagopa.pagopa.apiconfig.cosmos.repository.PaymentTypesCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.PddRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;

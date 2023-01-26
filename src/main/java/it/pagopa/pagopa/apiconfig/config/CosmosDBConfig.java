@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 
 @Configuration
-@EnableCosmosRepositories("it.pagopa.pagopa.apiconfig.repository")
+@EnableCosmosRepositories("it.pagopa.pagopa.apiconfig.cosmos.repository")
 @EnableConfigurationProperties
 @EnableCosmosAuditing
 @ConditionalOnExpression("'${cosmosdb.enable}' == 'true'")

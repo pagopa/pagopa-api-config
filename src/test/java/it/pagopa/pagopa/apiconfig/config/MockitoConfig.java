@@ -1,7 +1,7 @@
 package it.pagopa.pagopa.apiconfig.config;
 
-import it.pagopa.pagopa.apiconfig.repository.CdiCosmosRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaymentTypesCosmosRepository;
+import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
+import it.pagopa.pagopa.apiconfig.cosmos.repository.PaymentTypesCosmosRepository;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
