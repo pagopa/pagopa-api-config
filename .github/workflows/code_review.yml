@@ -51,7 +51,8 @@ jobs:
           path: ~/.sonar-project.properties/cache
           key: ${{ runner.os }}-sonar-project.properties
           restore-keys: ${{ runner.os }}-sonar-project.properties
-      - name: Build and analyze
+      - name: Build and analyze on Pull Requests
+        if: ${{ github.event_name == 'pull_request' }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.organization=pagopa
           -Dsonar.projectKey=${{ env.PROJECT_KEY }}
@@ -60,8 +61,25 @@ jobs:
           -Dsonar.branch.name=${{ github.head_ref }}
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+          -Dsonar.pullrequest.branch=${{ github.head_ref }}
+          -Dsonar.pullrequest.base=${{ github.base_ref }}
         env:
           # Needed to get some information about the pull request, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # SonarCloud access token should be generated from https://sonarcloud.io/account/security/
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Build and analyze on Push main
+        if: ${{ github.event_name == 'push' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          -Dsonar.organization=pagopa
+          -Dsonar.projectKey=${{ env.PROJECT_KEY }}
+          -Dsonar.coverage.exclusions="**/config/*,**/*Mock*,**/model/**,**/entity/*"
+          -Dsonar.cpd.exclusions="**/model/**,**/entity/*"
+          -Dsonar.branch.name=main
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
