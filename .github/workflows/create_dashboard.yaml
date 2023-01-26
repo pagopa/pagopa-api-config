@@ -10,9 +10,9 @@ on:
 
 env:
   TEMPLATE_DIR: azure-dashboard
-  CLIENT_ID:  # TODO
-  TENANT_ID: # TODO
-  SUBSCRIPTION_ID: # TODO
+  CLIENT_ID: 71c1e731-b5bf-4259-a312-fac380811354
+  TENANT_ID: 7788edaf-0346-4068-9d79-c868aed15b3d
+  SUBSCRIPTION_ID: bbe47ad4-08b3-4925-94c5-1278e5819b86
 
 permissions:
   id-token: write
