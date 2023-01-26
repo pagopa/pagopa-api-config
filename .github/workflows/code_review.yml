@@ -53,12 +53,12 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar-project.properties
       - name: Build and analyze
         run: mvn clean verify -P sonar \
-          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.host.url="https://sonarcloud.io" \
           -Dsonar.organization=pagopa \
           -Dsonar.projectKey=${{ env.PROJECT_KEY }} \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-          -Dsonar.coverage.exclusions=**/config/*,**/*Mock*,**/model/**,**/entity/* \
-          -Dsonar.cpd.exclusions=**/model/**,**/entity/* \
+          -Dsonar.coverage.exclusions="**/config/*,**/*Mock*,**/model/**,**/entity/*" \
+          -Dsonar.cpd.exclusions="**/model/**,**/entity/*" \
           -Dsonar.branch.name=${{ github.ref_name }}
         env:
           # Needed to get some information about the pull request, if any
