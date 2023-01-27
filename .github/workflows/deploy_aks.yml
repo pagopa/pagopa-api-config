@@ -1,211 +1,207 @@
-#name: Auto Deploy
-#
-## Controls when the workflow will run
-#on:
-#  pull_request:
-#    branches:
-#      - main
-#    types: [ closed ]
-#
-#
-#  # Allows you to run this workflow manually from the Actions tab
-#  workflow_dispatch:
-#    inputs:
-#      environment:
-#        required: true
-#        type: choice
-#        description: Select the Environment
-#        options:
-#          - dev
-#          - uat
-#          - prod
-#      semver:
-#        required: true
-#        type: choice
-#        description: Select the new Semantic Version
-#        options:
-#          - major
-#          - minor
-#          - patch
-#          - buildNumber
-#          - skip
-#
-#env:
-#  NAMESPACE: # TODO
-#  APP_NAME: # TODO
-#
-#permissions:
-#  packages: write
-#  contents: write
-#  issues: write
-#
-#
-## A workflow run is made up of one or more jobs that can run sequentially or in parallel
-#jobs:
-#  release:
-#    name: Create a New Release
-#    # The type of runner that the job will run on
-#    runs-on: ubuntu-latest
-#    outputs:
-#      version: ${{ steps.get_version.outputs.version }}
-#    # Steps represent a sequence of tasks that will be executed as part of the job
-#    steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          ref: main
-#
-#      - name: Set up JDK 11
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 11
-#      - name: Set up Maven
-#        uses: stCarolas/setup-maven@v4.5
-#        with:
-#          maven-version: 3.8.2
-#      - name: Cache Maven packages
-#        uses: actions/cache@v1
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: ${{ runner.os }}-m2
-#
-#      - name: Set build-number
-#        run: |
-#          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}-${{github.ref_name}}'
-#        if: ${{ github.event.inputs.semver == 'buildNumber' }}
-#
-#      - name: Set major
-#        run: |
-#          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.nextMajorVersion}.0.0'
-#        if: ${{ contains(github.event.pull_request.labels.*.name, 'breaking-change') || github.event.inputs.semver == 'major' }}
-#
-#      - name: Set minor
-#        run: |
-#          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0'
-#        if: ${{ contains(github.event.pull_request.labels.*.name, 'enhancement') || github.event.inputs.semver == 'minor' }}
-#
-#      - name: Set patch
-#        run: |
-#          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}'
-#        if: ${{ contains(github.event.pull_request.labels.*.name, 'bug') || github.event.inputs.semver == 'patch' }}
-#
-#      - id: get_version
-#        name: Get Version
-#        run: |
-#          echo "$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
-#          echo "version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
-#
-#      - name: Update Version Helm
-#        run: |
-#          for i in helm/values-*.yaml; do
-#            [ -f "$i" ] || break
-#            yq -i ".microservice-chart.image.tag = \"${{ steps.get_version.outputs.version }}\"" "$i"
-#            git add "$i"
-#          done
-#          CHART_FILE="helm/Chart.yaml"
-#          if [[ -f "$CHART_FILE" ]]; then
-#            yq -i ".version = \"${{ steps.get_version.outputs.version }}\"" "$CHART_FILE"
-#            yq -i ".appVersion = \"${{ steps.get_version.outputs.version }}\"" "$CHART_FILE"
-#            git add "$CHART_FILE"
-#          fi
-#      - name: Update Openapi/Swagger Version
-#        run: |
-#          for i in openapi/*.json; do
-#            [ -f "$i" ] || break
-#            cat <<< "$(jq ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i")" > "$i"
-#            git add $i
-#          done
-#          for i in openapi/*.yaml; do
-#            [ -f "$i" ] || break
-#            yq -i ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i"
-#            git add "$i"
-#          done
-#          for i in openapi/*.yml; do
-#            [ -f "$i" ] || break
-#            yq -i ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i"
-#            git add "$i"
-#          done
-#
-#      - name: Push New Version
-#        if: ${{ !contains(github.event.pull_request.labels.*.name, 'ignore-for-release') || github.event.inputs.semver != 'skip' }}
-#        run: |
-#          echo "${{ steps.get_version.outputs.version }}"
-#          git ls-files . | grep 'pom.xml'  | xargs git add
-#          git config --global user.email "github-bot@pagopa.it"
-#          git config --global user.name "pagopa-github-bot"
-#          git commit -m "Bump version [skip ci]" || exit 0
-#          git push origin main
-#
-#      - name: Create Release
-#        if: ${{ !contains(github.event.pull_request.labels.*.name, 'ignore-for-release') || github.event.inputs.semver != 'skip'}}
-#        uses: ncipollo/release-action@v1.12.0
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag: ${{ steps.get_version.outputs.version }}
-#          name: Release ${{ steps.get_version.outputs.version }}
-#          makeLatest: latest
-#          generateReleaseNotes: true
-#
-#
-#  build:
-#    needs: release
-#    runs-on: ubuntu-latest
-#    name: Build and Push Docker Image
-#    steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          ref: main
-#
-#      - name: Login to GitHub Container Registry
-#        uses: docker/login-action@v2
-#        with:
-#          registry: ghcr.io
-#          username: ${{ github.actor }}
-#          password: ${{ secrets.GITHUB_TOKEN }}
-#
-#      - name: Docker meta
-#        id: meta
-#        uses: docker/metadata-action@v4.3.0
-#        with:
-#          images: ghcr.io/${{ github.repository }}
-#          tags: |
-#            latest
-#            ${{ needs.release.outputs.version }}
-#            type=ref,event=branch
-#            type=sha
-#
-#      - name: Build and push
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: .
-#          push: true
-#          tags: ${{ steps.meta.outputs.tags }}
-#          labels: ${{ steps.meta.outputs.labels }}
-#    # TODO remember to add the package write permissions to the action https://github.com/users/<OWNER>/packages/container/<REPOSITORY>/settings
-#
-#  deploy:
-#    needs: [release, build]
-#    runs-on: ubuntu-latest
-#    name: Deploy on AKS
-#    strategy:
-#      matrix:
-#        environment: [ dev, uat, prod ]
-#    steps:
-#      - uses: actions/checkout@v3
-#        if: ${{ github.event.inputs.environment == null || matrix.environment == github.event.inputs.environment }}
-#        with:
-#          ref: main
-#
-#      - name: Manual Workflow Approval
-#        uses: trstringer/manual-approval@v1.8.0
-#        if: ${{ matrix.environment != 'dev' && (github.event.inputs.environment == null || matrix.environment == github.event.inputs.environment) }}
-#        with:
-#          secret: ${{ github.TOKEN }}
-#          approvers: user1, team1 # TODO
-#          minimum-approvals: 1
-#          issue-title: "Deploying v${{ needs.release.outputs.version }} to ${{ matrix.environment }}"
-#          exclude-workflow-initiator-as-approver: false
+name: Auto Deploy
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        description: Select the Environment
+        options:
+          - dev
+          - uat
+          - prod
+      semver:
+        required: true
+        type: choice
+        description: Select the new Semantic Version
+        options:
+          - major
+          - minor
+          - patch
+          - buildNumber
+          - skip
+
+permissions:
+  packages: write
+  contents: write
+  issues: write
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  release:
+    name: Create a New Release
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.8.2
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Set build-number
+        run: |
+          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}-${{github.ref_name}}'
+        if: ${{ github.event.inputs.semver == 'buildNumber' }}
+
+      - name: Set major
+        run: |
+          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.nextMajorVersion}.0.0'
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'breaking-change') || github.event.inputs.semver == 'major' }}
+
+      - name: Set minor
+        run: |
+          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0'
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'enhancement') || github.event.inputs.semver == 'minor' }}
+
+      - name: Set patch
+        run: |
+          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}'
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'bug') || github.event.inputs.semver == 'patch' }}
+
+      - id: get_version
+        name: Get Version
+        run: |
+          echo "$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
+          echo "version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
+      - name: Update Version Helm
+        run: |
+          for i in helm/values-*.yaml; do
+            [ -f "$i" ] || break
+            yq -i ".microservice-chart.image.tag = \"${{ steps.get_version.outputs.version }}\"" "$i"
+            git add "$i"
+          done
+          CHART_FILE="helm/Chart.yaml"
+          if [[ -f "$CHART_FILE" ]]; then
+            yq -i ".version = \"${{ steps.get_version.outputs.version }}\"" "$CHART_FILE"
+            yq -i ".appVersion = \"${{ steps.get_version.outputs.version }}\"" "$CHART_FILE"
+            git add "$CHART_FILE"
+          fi
+      - name: Update Openapi/Swagger Version
+        run: |
+          for i in openapi/*.json; do
+            [ -f "$i" ] || break
+            cat <<< "$(jq ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i")" > "$i"
+            git add $i
+          done
+          for i in openapi/*.yaml; do
+            [ -f "$i" ] || break
+            yq -i ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i"
+            git add "$i"
+          done
+          for i in openapi/*.yml; do
+            [ -f "$i" ] || break
+            yq -i ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i"
+            git add "$i"
+          done
+
+      - name: Push New Version
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'ignore-for-release') || github.event.inputs.semver != 'skip' }}
+        run: |
+          echo "${{ steps.get_version.outputs.version }}"
+          git ls-files . | grep 'pom.xml'  | xargs git add
+          git config --global user.email "github-bot@pagopa.it"
+          git config --global user.name "pagopa-github-bot"
+          git commit -m "Bump version [skip ci]" || exit 0
+          git push origin main
+
+      - name: Create Release
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'ignore-for-release') || github.event.inputs.semver != 'skip'}}
+        uses: ncipollo/release-action@v1.12.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          makeLatest: latest
+          generateReleaseNotes: true
+
+
+  build:
+    needs: release
+    runs-on: ubuntu-latest
+    name: Build and Push Docker Image
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4.3.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            latest
+            ${{ needs.release.outputs.version }}
+            type=ref,event=branch
+            type=sha
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+    # TODO remember to add the package write permissions to the action https://github.com/users/<OWNER>/packages/container/<REPOSITORY>/settings
+
+  deploy:
+    needs: [release, build]
+    runs-on: ubuntu-latest
+    name: Deploy on AKS
+    strategy:
+      matrix:
+        environment: [ dev, uat, prod ]
+    steps:
+      - uses: actions/checkout@v3
+        if: ${{ github.event.inputs.environment == null || matrix.environment == github.event.inputs.environment }}
+        with:
+          ref: main
+
+      - name: Manual Workflow Approval
+        uses: trstringer/manual-approval@v1.8.0
+        if: ${{ matrix.environment != 'dev' && (github.event.inputs.environment == null || matrix.environment == github.event.inputs.environment) }}
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: user1, team1 # TODO
+          minimum-approvals: 1
+          issue-title: "Deploying v${{ needs.release.outputs.version }} to ${{ matrix.environment }}"
+          exclude-workflow-initiator-as-approver: false
 #
 #      - name: Helm Setup
 #        if: ${{ github.event.inputs.environment == null || matrix.environment == github.event.inputs.environment }}
@@ -221,23 +217,23 @@
 #            --set microservice-chart.image.tag=${{ needs.release.outputs.version }}
 #            --wait --timeout 5m0s
 #            ${{ env.APP_NAME }} ./helm
-#
-#        # TODO log deployment successful on App Insights
-#
-#  notify:
-#    needs: [ deploy ]
-#    runs-on: ubuntu-latest
-#    name: Notify
-#    if: always()
-#    steps:
-#      - name: Report Status
-#        if: always()
-#        uses: ravsamhq/notify-slack-action@v2
-#        with:
-#          status: ${{ needs.deploy.result }}
-#          notify_when: 'failure,skipped'
-#          notification_title: '{workflow} has {status_message}'
-#          message_format: '{emoji} *{workflow}* {status_message} in <{repo_url}|{repo}>'
-#          footer: 'Linked to Repo <{repo_url}|{repo}>'
-#        env:
-#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # TODO
+
+        # TODO log deployment successful on App Insights
+
+  notify:
+    needs: [ deploy ]
+    runs-on: ubuntu-latest
+    name: Notify
+    if: always()
+    steps:
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@v2
+        with:
+          status: ${{ needs.deploy.result }}
+          notify_when: 'failure,skipped'
+          notification_title: '{workflow} has {status_message}'
+          message_format: '{emoji} *{workflow}* {status_message} in <{repo_url}|{repo}>'
+          footer: 'Linked to Repo <{repo_url}|{repo}>'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # TODO
