@@ -62,7 +62,7 @@ public class CdiMaster {
     private Boolean stornoPagamento;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "FK_PSP", nullable = false)
     private Psp fkPsp;
 

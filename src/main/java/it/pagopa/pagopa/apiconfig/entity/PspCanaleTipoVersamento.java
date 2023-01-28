@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,12 +43,12 @@ public class PspCanaleTipoVersamento implements Serializable {
     private Long fkPsp;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "FK_CANALE_TIPO_VERSAMENTO", nullable = false)
     private CanaleTipoVersamento canaleTipoVersamento;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "FK_PSP", nullable = false)
     private Psp psp;
 

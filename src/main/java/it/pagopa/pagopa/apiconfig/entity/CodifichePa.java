@@ -37,12 +37,12 @@ public class CodifichePa {
     @Column(name = "CODICE_PA", nullable = false, length = 35)
     private String codicePa;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "FK_CODIFICA", nullable = false)
     @ToString.Exclude
     private Codifiche fkCodifica;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "FK_PA", nullable = false)
     @ToString.Exclude
     private Pa fkPa;

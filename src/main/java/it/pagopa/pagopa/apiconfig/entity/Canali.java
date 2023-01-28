@@ -70,7 +70,7 @@ public class Canali implements Serializable {
     private String descrizione;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "FK_INTERMEDIARIO_PSP", nullable = false)
     @NotNull
     private IntermediariPsp fkIntermediarioPsp;
@@ -110,7 +110,7 @@ public class Canali implements Serializable {
     private Boolean canaleAvv = false;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "FK_CANALI_NODO")
     private CanaliNodo fkCanaliNodo;
 
