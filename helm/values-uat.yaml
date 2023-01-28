@@ -1,9 +1,9 @@
 microservice-chart:
-  namespace: "nodo"
+  namespace: "your-namespace" # TODO: set your AKS namespace
   nameOverride: ""
   fullnameOverride: ""
   image:
-    repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
+    repository: pagopaucommonacr.azurecr.io/yourname # TODO
     tag: "0.29.1-13-PPR-505-postgresql"
     pullPolicy: Always
   livenessProbe:
@@ -28,8 +28,8 @@ microservice-chart:
     port: 8080
   ingress:
     create: true
-    host: "weuuat.nodo.internal.uat.platform.pagopa.it"
-    path: /pagopa-api-config-service/(.*)
+    host: "your.host" # TODO: set the host
+    path: /your-path-here/(.*) # TODO: set your path
   serviceAccount:
     create: false
     annotations: {}
@@ -42,14 +42,14 @@ microservice-chart:
     allowPrivilegeEscalation: false
   resources:
     requests:
-      memory: "1Gi"
-      cpu: "0.40"
+      memory: "512Mi"
+      cpu: "0.25"
     limits:
-      memory: "1Gi"
-      cpu: "0.5"
+      memory: "512Mi"
+      cpu: "0.25"
   autoscaling:
     enable: true
-    minReplica: 1
+    minReplica: 3
     maxReplica: 10
     pollingInterval: 10 # seconds
     cooldownPeriod: 50 # seconds
@@ -60,38 +60,14 @@ microservice-chart:
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "75"
   envConfig:
-    envConfig:
-      WEBSITE_SITE_NAME: 'pagopaapiconfig'
-      ENV: "uat"
-      AFM_MARKETPLACE_HOST: 'https://api.uat.platform.pagopa.it/afm/marketplace-service/v1'
-      AFM_UTILS_HOST: 'https://api.uat.platform.pagopa.it/afm/utils/v1'
-      CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
-      COSMOS_URI: 'https://pagopa-u-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
-      DATABASE_SCHEMA: 'cfg'
-      LOGGING_LEVEL: "DEBUG"
-      SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-u-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
-      SPRING_DATASOURCE_USERNAME: 'cfg'
-      XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
-      XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
-      XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
+    # TODO: set your name
+    WEBSITE_SITE_NAME: 'yourProjectName' # required to show cloud role name in application insights
   envSecret:
     # required
-    APPLICATIONINSIGHTS_CONNECTION_STRING: 'azure-insight-connection-string'
-    AFM_MARKETPLACE_SUBSCRIPTION_KEY: 'afm-marketplace-subscription-key'
-    AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
-    COSMOS_KEY: 'afm-cosmos-key'
-    SPRING_DATASOURCE_PASSWORD: 'db-cfg-password'
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-u-connection-string'
   keyvault:
     name: "pagopa-u-afm-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   nodeSelector: {}
   tolerations: []
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: nodo
-                operator: In
-                values:
-                  - "true"
+  affinity: {}
