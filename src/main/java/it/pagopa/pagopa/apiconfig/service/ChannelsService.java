@@ -41,6 +41,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Service
@@ -133,6 +134,7 @@ public class ChannelsService {
                 .build();
     }
 
+    @Transactional
     public PspChannelPaymentTypes createPaymentType(@NotBlank String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
         // necessary to prevent 201 status code without at least one payment type specified
         if (pspChannelPaymentTypes.getPaymentTypeList().isEmpty()) {
@@ -159,13 +161,14 @@ public class ChannelsService {
         return getPaymentTypes(channelCode);
     }
 
-    public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {
+  @Transactional
+  public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {
         var channel = getCanaliIfExists(channelCode);
 //        var paymentType = getPaymentTypeIfExists(paymentTypeCode);
         var paymentType = tipiVersamentoRepository.findAllByTipoVersamento(paymentTypeCode);
 //        var result = getCanaleTipoVersamentoIfExists(channel, paymentType);
-        var result = canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(channel.getId(), paymentType.get(0).getId());
-        canaleTipoVersamentoRepository.delete(result.get());
+        canaleTipoVersamentoRepository.deleteAllByFkCanaleAndFkTipoVersamento(channel.getId(), paymentType.get(0).getId());
+//        canaleTipoVersamentoRepository.delete(result.get());
     }
 
     public ChannelPspList getChannelPaymentServiceProviders(String channelCode) {
