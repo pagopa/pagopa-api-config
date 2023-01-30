@@ -216,6 +216,7 @@ public class CdiService {
         return CdiCosmos.builder()
                 .id(master.getId().toString())
                 .idPsp(master.getFkPsp().getIdPsp())
+                .abi(master.getFkPsp().getAbi())
                 .idCdi(master.getIdInformativaPsp())
                 .cdiStatus("NEW")
                 .digitalStamp(master.getMarcaBolloDigitale())
