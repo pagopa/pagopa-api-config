@@ -2,6 +2,11 @@ microservice-chart:
   namespace: "nodo"
   nameOverride: ""
   fullnameOverride: ""
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
     tag: "0.29.1-14-PPR-505-postgresql"
@@ -25,15 +30,15 @@ microservice-chart:
   service:
     create: true
     type: ClusterIP
-    port: 8080
+    ports:
+      - 8080
   ingress:
     create: true
     host: "weudev.nodo.internal.dev.platform.pagopa.it"
     path: /pagopa-api-config-service/(.*)
+    servicePort: 8080
   serviceAccount:
     create: false
-    annotations: {}
-    name: ""
   podAnnotations: {}
   podSecurityContext:
     seccompProfile:
@@ -84,7 +89,11 @@ microservice-chart:
     name: "pagopa-d-nodo-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   nodeSelector: {}
-  tolerations: []
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: "nodo"
+      effect: NoSchedule
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
