@@ -154,6 +154,6 @@ jobs:
                 })
               }
             
-              core.setFailed('PR is too large')
+              core.setFailed('PR is too large: ' + changes + ' changes.')
             }
 
