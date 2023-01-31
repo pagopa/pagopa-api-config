@@ -154,6 +154,7 @@ public class StationDetails extends Station {
 
     @Min(1)
     @Max(2)
+    @NotNull
     @Schema(required = true, description = "Primitive number version")
     @JsonProperty("primitive_version")
     private Integer primitiveVersion;
