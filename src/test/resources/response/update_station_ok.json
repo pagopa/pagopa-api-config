@@ -31,5 +31,6 @@
   "invio_rt_istantaneo": false,
   "target_host":"localhost",
   "target_port":443,
-  "target_path":"/"
+  "target_path":"/",
+  "primitive_version": 1
 }

@@ -173,6 +173,11 @@ public class ChannelDetails extends Channel {
     @NotNull
     private Boolean agid;
 
+    @Min(1)
+    @Max(2)
+    @Schema(required = true, description = "Primitive number version")
+    @JsonProperty("primitive_version")
+    private Integer primitiveVersion;
 
     @JsonIgnore
     private IntermediariPsp fkIntermediarioPsp;

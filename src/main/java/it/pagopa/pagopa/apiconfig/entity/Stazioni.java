@@ -20,6 +20,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "STAZIONI", schema = "NODO4_CFG")
@@ -157,4 +159,6 @@ public class Stazioni {
     @Column(name = "TARGET_PATH")
     private String targetPath;
 
+    @Column(name = "VERSIONE_PRIMITIVE")
+    private Integer versionePrimitive;
 }

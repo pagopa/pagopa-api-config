@@ -14,5 +14,6 @@
   "timeout_b": 1,
   "timeout_c": 1,
   "flag_online": true,
-  "invio_rt_istantaneo": false
+  "invio_rt_istantaneo": false,
+  "primitive_version": 1
 }
