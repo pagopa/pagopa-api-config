@@ -50,6 +50,7 @@ public class ConvertStazioniToStationDetails implements Converter<Stazioni, Stat
                 .timeoutB(source.getTimeoutB())
                 .timeoutC(source.getTimeoutC())
                 .rtInstantaneousDispatch(source.getInvioRtIstantaneo())
+                .primitiveVersion(source.getVersionePrimitive())
                 .build();
     }
 }

@@ -14801,6 +14801,13 @@
           "minimum": 1,
           "type": "integer"
         },
+        "primitive_version": {
+          "description": "Primitive number version",
+          "format": "int32",
+          "maximum": 2,
+          "minimum": 1,
+          "type": "integer"
+        },
         "protocol": {
           "enum": [
             "HTTPS",
@@ -14901,6 +14908,7 @@
         "on_us",
         "payment_model",
         "port",
+        "primitive_version",
         "protocol",
         "recovery",
         "rt_push",
@@ -16159,6 +16167,13 @@
           "minimum": 1,
           "type": "integer"
         },
+        "primitive_version": {
+          "description": "Primitive number version",
+          "format": "int32",
+          "maximum": 2,
+          "minimum": 1,
+          "type": "integer"
+        },
         "protocol": {
           "enum": [
             "HTTPS",
@@ -16267,6 +16282,7 @@
         "broker_code",
         "enabled",
         "port",
+        "primitive_version",
         "protocol",
         "station_code",
         "thread_number",

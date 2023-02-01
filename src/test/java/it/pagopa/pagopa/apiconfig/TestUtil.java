@@ -117,6 +117,7 @@ public class TestUtil {
                 .targetHost("localhost")
                 .targetPort(443L)
                 .targetPath("/")
+                .versionePrimitive(1)
                 .build();
     }
 
@@ -273,6 +274,7 @@ public class TestUtil {
                 .service("/api")
                 .threadNumber(2L)
                 .rtInstantaneousDispatch(false)
+                .primitiveVersion(1)
                 .build();
     }
 
@@ -399,6 +401,7 @@ public class TestUtil {
                 .flagIo(true)
                 .marcaBolloDigitale(true)
                 .modelloPagamento("IMMEDIATO")
+                .versionePrimitive(1)
                 .build();
     }
 
@@ -709,6 +712,7 @@ public class TestUtil {
                 .digitalStampBrand(false)
                 .paymentModel(ChannelDetails.PaymentModel.DEFERRED)
                 .agid(true)
+                .primitiveVersion(1)
                 .build();
     }
 
