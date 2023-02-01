@@ -164,11 +164,9 @@ public class ChannelsService {
   @Transactional
   public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {
         var channel = getCanaliIfExists(channelCode);
-//        var paymentType = getPaymentTypeIfExists(paymentTypeCode);
-        var paymentType = tipiVersamentoRepository.findAllByTipoVersamento(paymentTypeCode);
-//        var result = getCanaleTipoVersamentoIfExists(channel, paymentType);
-        canaleTipoVersamentoRepository.deleteAllByFkCanaleAndFkTipoVersamento(channel.getId(), paymentType.get(0).getId());
-//        canaleTipoVersamentoRepository.delete(result.get());
+        var paymentType = getPaymentTypeIfExists(paymentTypeCode);
+        var result = getCanaleTipoVersamentoIfExists(channel, paymentType);
+        canaleTipoVersamentoRepository.delete(result);
     }
 
     public ChannelPspList getChannelPaymentServiceProviders(String channelCode) {

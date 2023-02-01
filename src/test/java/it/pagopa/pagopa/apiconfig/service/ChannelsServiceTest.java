@@ -301,17 +301,17 @@ class ChannelsServiceTest {
         }
     }
 
-//    @Test
-//    void deletePaymentType() {
-//        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-//        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
-//        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
-//        try {
-//            channelsService.deletePaymentType("1234", "PO");
-//        } catch (Exception e) {
-//            fail();
-//        }
-//    }
+    @Test
+    void deletePaymentType() {
+        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
+        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+        try {
+            channelsService.deletePaymentType("1234", "PO");
+        } catch (Exception e) {
+            fail();
+        }
+    }
 
     @Test
     void getChannelsPaymentServiceProviders() throws JSONException, IOException {

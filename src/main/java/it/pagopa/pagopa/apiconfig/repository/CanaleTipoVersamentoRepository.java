@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface CanaleTipoVersamentoRepository extends JpaRepository<CanaleTipoVersamento, Long> {
 
     Optional<CanaleTipoVersamento> findByFkCanaleAndFkTipoVersamento(Long fkCanale, Long fkTipoVersamento);
-    void deleteAllByFkCanaleAndFkTipoVersamento(Long fkCanale, Long fkTipoVersamento);
 
     List<CanaleTipoVersamento> findByFkCanale(Long fkCanale);
 }
