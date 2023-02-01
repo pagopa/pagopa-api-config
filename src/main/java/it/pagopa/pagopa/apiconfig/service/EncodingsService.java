@@ -13,6 +13,7 @@ import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
@@ -37,6 +38,7 @@ public class EncodingsService {
     private ModelMapper modelMapper;
 
 
+    @Transactional(readOnly = true)
     public CreditorInstitutionEncodings getCreditorInstitutionEncodings(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());

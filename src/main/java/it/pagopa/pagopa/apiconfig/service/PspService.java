@@ -1,5 +1,7 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
+
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
@@ -19,19 +21,6 @@ import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import javax.validation.ValidationException;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,8 +30,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
+import javax.validation.Valid;
+import javax.validation.ValidationException;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 
 @Service
@@ -112,6 +111,7 @@ public class PspService {
         pspRepository.delete(psp);
     }
 
+    @Transactional(readOnly = true)
     public PspChannelList getPaymentServiceProvidersChannels(@NotBlank String pspCode) {
         Psp psp = getPspIfExists(pspCode);
         List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList = pspCanaleTipoVersamentoRepository.findByFkPsp(psp.getObjId());

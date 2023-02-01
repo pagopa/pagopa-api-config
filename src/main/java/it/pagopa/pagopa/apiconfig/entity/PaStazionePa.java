@@ -40,7 +40,7 @@ public class PaStazionePa {
     @Column(name = "PROGRESSIVO")
     private Long progressivo;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_PA", nullable = false)
     @ToString.Exclude
     private Pa pa;
@@ -48,7 +48,7 @@ public class PaStazionePa {
     @Column(name = "FK_PA", nullable = false, insertable = false, updatable = false)
     private Long fkPa;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_STAZIONE", nullable = false)
     @ToString.Exclude
     private Stazioni fkStazione;

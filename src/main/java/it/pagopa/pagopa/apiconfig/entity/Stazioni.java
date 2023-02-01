@@ -82,7 +82,7 @@ public class Stazioni {
     @Column(name = "SERVIZIO_POF")
     private String servizioPof;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_INTERMEDIARIO_PA", nullable = false)
     @ToString.Exclude
     private IntermediariPa intermediarioPa;

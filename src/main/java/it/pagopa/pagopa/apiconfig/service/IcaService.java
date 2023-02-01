@@ -1,5 +1,9 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
+
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
@@ -22,23 +26,6 @@ import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoDetailRepo
 import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import org.apache.commons.validator.routines.IBANValidator;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
-
-import javax.validation.constraints.NotNull;
-import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,10 +46,22 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
+import javax.validation.constraints.NotNull;
+import javax.xml.stream.XMLStreamException;
+import org.apache.commons.validator.routines.IBANValidator;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
 
 @Service
 @Validated
@@ -104,6 +103,7 @@ public class IcaService {
     @Value("${zip.size}")
     private int thresholdSize; //Max size of zip file content
 
+    @Transactional(readOnly = true)
     public Icas getIcas(@NotNull Integer limit, @NotNull Integer pageNumber, String idIca, String creditorInstitutionCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
         var filters = CommonUtil.getFilters(InformativeContoAccreditoMaster.builder()

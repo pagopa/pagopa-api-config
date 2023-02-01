@@ -1,5 +1,8 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
+
 import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
@@ -22,6 +25,14 @@ import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,19 +41,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 @Service
 @Validated
@@ -84,6 +84,7 @@ public class ChannelsService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public ChannelDetails getChannel(@NotBlank String channelCode) {
         Canali canali = getCanaliIfExists(channelCode);
         return modelMapper.map(canali, ChannelDetails.class);
@@ -126,6 +127,7 @@ public class ChannelsService {
         }
     }
 
+    @Transactional(readOnly = true)
     public PspChannelPaymentTypes getPaymentTypes(@NotBlank String channelCode) {
         var channel = getCanaliIfExists(channelCode);
         var type = canaleTipoVersamentoRepository.findByFkCanale(channel.getId());
@@ -167,6 +169,7 @@ public class ChannelsService {
         canaleTipoVersamentoRepository.delete(result);
     }
 
+    @Transactional(readOnly = true)
     public ChannelPspList getChannelPaymentServiceProviders(String channelCode) {
         // get all the PSPs of the channel with relative payment types
         Map<Psp, List<PspCanaleTipoVersamento>> pspList = pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(channelCode)

@@ -93,6 +93,7 @@ public class CreditorInstitutionsService {
         paRepository.delete(pa);
     }
 
+    @Transactional(readOnly = true)
     public CreditorInstitutionStationList getCreditorInstitutionStations(@NotNull String creditorInstitutionCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa(pa.getObjId());

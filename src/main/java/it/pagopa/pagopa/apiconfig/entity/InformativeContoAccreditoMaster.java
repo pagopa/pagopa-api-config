@@ -50,7 +50,7 @@ public class InformativeContoAccreditoMaster {
     @Column(name = "RAGIONE_SOCIALE", length = 70)
     private String ragioneSociale;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_PA")
     @ToString.Exclude
     private Pa fkPa;

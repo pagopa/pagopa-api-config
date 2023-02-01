@@ -124,9 +124,8 @@ public class CdiService {
     @Value("${service.utils.subscriptionKey}")
     private String afmUtilsSubscriptionKey;
 
-    public Cdis
-
-    getCdis(@NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
+    @Transactional(readOnly = true)
+    public Cdis getCdis(@NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
         Pageable pageable = PageRequest.of(pageNumber, limit, Sort.by(Sort.Direction.DESC, "dataInizioValidita"));
         var filters = CommonUtil.getFilters(CdiMaster.builder()
                 .idInformativaPsp(idCdi)

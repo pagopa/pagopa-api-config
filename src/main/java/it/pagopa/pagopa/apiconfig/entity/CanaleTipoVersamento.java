@@ -45,16 +45,16 @@ public class CanaleTipoVersamento implements Serializable {
     private Long fkTipoVersamento;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_CANALE", nullable = false)
     private Canali canale;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "FK_TIPO_VERSAMENTO", nullable = false)
     private TipiVersamento tipoVersamento;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "fkCanaleTipoVersamento", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkCanaleTipoVersamento", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList;
 
