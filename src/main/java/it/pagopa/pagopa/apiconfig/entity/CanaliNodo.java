@@ -112,4 +112,6 @@ public class CanaliNodo implements Serializable {
     @Column(name = "FLAG_IO")
     private Boolean flagIo;
 
+    @Column(name = "VERSIONE_PRIMITIVE")
+    private Integer versionePrimitive;
 }

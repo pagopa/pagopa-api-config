@@ -65,6 +65,7 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
                 .rptRtCompliant(true)
                 .lento(false)
                 .agidChannel(source.getAgid())
+                .versionePrimitive(source.getPrimitiveVersion())
                 .build();
     }
 
