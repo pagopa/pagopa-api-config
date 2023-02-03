@@ -1,5 +1,8 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
+
 import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
@@ -22,6 +25,14 @@ import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,19 +41,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 @Service
 @Validated
@@ -134,6 +134,7 @@ public class ChannelsService {
                 .build();
     }
 
+    @Transactional
     public PspChannelPaymentTypes createPaymentType(@NotBlank String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
         // necessary to prevent 201 status code without at least one payment type specified
         if (pspChannelPaymentTypes.getPaymentTypeList().isEmpty()) {
@@ -160,7 +161,8 @@ public class ChannelsService {
         return getPaymentTypes(channelCode);
     }
 
-    public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {
+  @Transactional
+  public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {
         var channel = getCanaliIfExists(channelCode);
         var paymentType = getPaymentTypeIfExists(paymentTypeCode);
         var result = getCanaleTipoVersamentoIfExists(channel, paymentType);
