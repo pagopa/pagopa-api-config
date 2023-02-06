@@ -13,4 +13,5 @@ public interface CanaleTipoVersamentoRepository extends JpaRepository<CanaleTipo
     Optional<CanaleTipoVersamento> findByFkCanaleAndFkTipoVersamento(Long fkCanale, Long fkTipoVersamento);
 
     List<CanaleTipoVersamento> findByFkCanale(Long fkCanale);
+    List<CanaleTipoVersamento> findByCanale_fkIntermediarioPsp_idIntermediarioPsp(String brokerPspCode);
 }

@@ -1,5 +1,7 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilterAndOrder;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +18,13 @@ import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.service.PspService;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -31,16 +40,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getFilterAndOrder;
 
 @RestController()
 @RequestMapping(path = "/paymentserviceproviders")
@@ -168,7 +167,7 @@ public class PspController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pspService.createPaymentServiceProvidersChannels(pspCode, pspChannelCode));
     }
 
-    @Operation(summary = "Update a relation between creditor institution and station", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
+    @Operation(summary = "Update a relation between PSP and channel", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Payment Service Providers"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PspChannelPaymentTypes.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
