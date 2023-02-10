@@ -34,6 +34,7 @@
         <opencsv.version>5.6</opencsv.version>
         <commons.validator>1.7</commons.validator>
         <azure-spring-cosmos-version>3.31.0</azure-spring-cosmos-version>
+        <redis-cache>2.7.8</redis-cache>
     </properties>
 
     <dependencies>
@@ -141,6 +142,22 @@
             <artifactId>commons-validator</artifactId>
             <version>${commons.validator}</version>
         </dependency>
+
+        <!-- Redis cache -->
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-cache</artifactId>
+          <version>${redis-cache}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-redis</artifactId>
+          <version>${redis-cache}</version>
+        </dependency>
+<!--        <dependency>-->
+<!--          <groupId>redis.client</groupId>-->
+<!--          <artifactId>jedis</artifactId>-->
+<!--        </dependency>-->
 
 
     </dependencies>

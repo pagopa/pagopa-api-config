@@ -42,7 +42,7 @@ INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, NEW_PASSWORD, 
 VALUES (3, '1123', 'Y', 'site.eu', null, 'password', 80, 'HTTP',
         'site.it', 'page.html', 443, null,
         'service/', 'Y', 'service/', 2, 'HTTPS', 'HTTP', null, null, null,
-        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 2);
+        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 2, null, 'N', 'localhost', 443, '/', 2);
 
 INSERT INTO NODO4_CFG.PA_STAZIONE_PA (OBJ_ID, PROGRESSIVO, FK_PA, FK_STAZIONE, AUX_DIGIT, SEGREGAZIONE, QUARTO_MODELLO,
                                       STAZIONE_NODO, STAZIONE_AVV, BROADCAST)

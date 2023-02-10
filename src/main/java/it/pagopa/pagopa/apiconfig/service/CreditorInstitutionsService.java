@@ -1,14 +1,35 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.*;
+import it.pagopa.pagopa.apiconfig.entity.Codifiche;
+import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
+import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
+import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionList;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.repository.*;
+import it.pagopa.pagopa.apiconfig.redis.repository.RedisRepository;
+import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.CodificheRepository;
+import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +41,11 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +53,13 @@ import java.util.stream.Collectors;
 public class CreditorInstitutionsService {
 
     public static final String BAD_RELATION_INFO = "Bad Relation info";
+
+    @Value("${redis.domain}")
+    private String redisDomain;
+
+    @Value("${redis.ttl}")
+    private int redisTtl;
+
     @Autowired
     private PaRepository paRepository;
 
@@ -48,6 +80,9 @@ public class CreditorInstitutionsService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private RedisRepository redisRepository;
 
 
     public CreditorInstitutions getCreditorInstitutions(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
@@ -386,6 +421,17 @@ public class CreditorInstitutionsService {
                 .build();
         paStazionePaRepository.save(entity);
         return creditorInstitutionStationEdit;
+    }
+
+
+   @Transactional(readOnly = true)
+    public List getCreditorInstitutionStationV2() {
+      List<PaStazionePa> paStazionePaList = paStazionePaRepository.findAllByFkStazione_Versione(2L);
+      List cis = paStazionePaList.stream().map(p -> p.getPa().getIdDominio()).collect(Collectors.toList());
+
+      // store data on redis
+      redisRepository.save(String.format("%s_verifier", redisDomain), cis, redisTtl);
+      return cis;
     }
 
     private void addQrEncoding(Pa pa) {

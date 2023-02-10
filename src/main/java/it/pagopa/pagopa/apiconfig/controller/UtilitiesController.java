@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionList;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -47,21 +48,38 @@ public class UtilitiesController {
         return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionsByIban(iban));
     }
 
-    @Operation(summary = "Get creditor institutions by encoding", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = CreditorInstitutionList.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
-            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
-            @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
-    @GetMapping(
-            value = "/encodings/{encodingcode}",
-            produces = {MediaType.APPLICATION_JSON_VALUE}
-    )
-    public ResponseEntity<CreditorInstitutionList> getCreditorInstitutionByPostalEncoding(@NotBlank @Parameter(description = "Code of the Encoding", required = true) @PathVariable("encodingcode") String encodingCode) {
-        return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionByPostalEncoding(encodingCode));
-    }
+  @Operation(summary = "Get creditor institutions by encoding", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = CreditorInstitutionList.class))),
+      @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+      @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+      @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+      @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+      @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+  @GetMapping(
+      value = "/encodings/{encodingcode}",
+      produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
+  public ResponseEntity<CreditorInstitutionList> getCreditorInstitutionByPostalEncoding(@NotBlank @Parameter(description = "Code of the Encoding", required = true) @PathVariable("encodingcode") String encodingCode) {
+    return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionByPostalEncoding(encodingCode));
+  }
+
+  @Operation(summary = "Get cis with station v2", security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = List.class))),
+      @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+      @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+      @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+      @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+      @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+  @GetMapping(
+      value = "/utilities/cache/verifier",
+      produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
+  public ResponseEntity<List> getCache() {
+    return ResponseEntity.ok(creditorInstitutionsService.getCreditorInstitutionStationV2());
+  }
 
 }

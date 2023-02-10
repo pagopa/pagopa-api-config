@@ -1,4 +1,4 @@
-create sequence HIBERNATE_SEQUENCE START WITH 1 INCREMENT BY 1;
+create sequence HIBERNATE_SEQUENCE START WITH 5000 INCREMENT BY 1;
 
 -- create tables
 

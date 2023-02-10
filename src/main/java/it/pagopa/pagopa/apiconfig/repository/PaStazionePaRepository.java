@@ -31,6 +31,8 @@ public interface PaStazionePaRepository extends PagingAndSortingRepository<PaSta
 
     List<PaStazionePa> findAllByFkStazione_ObjId(Long stationCode);
 
+    List<PaStazionePa> findAllByFkStazione_Versione(Long version);
+
     Optional<PaStazionePa> findOne(Specification<PaStazionePa> paStazionePa);
 
     @Override
