@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
+@java.lang.SuppressWarnings("java:S1700")
 public class Cache {
 
     @Id
