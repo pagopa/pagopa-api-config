@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCache;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCacheVersions;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,7 +31,7 @@ class CacheControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(cacheService.getCacheVersions()).thenReturn(getMockCacheVersions());
+        when(cacheService.getCacheVersions(anyInt(), anyInt())).thenReturn(getMockCacheVersions());
         when(cacheService.getCache(anyString())).thenReturn(getMockCache());
     }
 

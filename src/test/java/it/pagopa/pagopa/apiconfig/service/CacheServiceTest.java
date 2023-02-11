@@ -1,22 +1,24 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Cache;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.repository.CacheRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
 import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCacheByVersion;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCacheVersionsE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -59,9 +61,14 @@ class CacheServiceTest {
 
     @Test
     void getCacheVersions() {
-        when(cacheRepository.findAll(any(Sort.class))).thenReturn(getMockCacheVersionsE());
+        Page<it.pagopa.pagopa.apiconfig.model.configuration.Cache> page = TestUtil.mockPage(Lists.newArrayList(it.pagopa.pagopa.apiconfig.model.configuration.Cache.builder()
+                        .id("2023-02-08 01:00:06")
+                        .version("3.10.0")
+                        .build()),
+                50, 0);
+        when(cacheRepository.findAllPaged(any(Pageable.class))).thenReturn(page);
 
-        List<it.pagopa.pagopa.apiconfig.model.configuration.Cache> result = cacheService.getCacheVersions();
+        var result = cacheService.getCacheVersions(0, 50);
         assertNotNull(result);
     }
 

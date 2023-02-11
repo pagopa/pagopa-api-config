@@ -906,15 +906,22 @@ public class TestUtil {
                 .build();
     }
 
-    public static List<Cache> getMockCacheVersions() {
-        return List.of(Cache.builder()
-                .id("2023-02-08 01:00:06")
-                .version("3.10.0")
-                .build());
+    public static CacheVersions getMockCacheVersions() {
+        return CacheVersions.builder()
+                .versionList(List.of(Cache.builder()
+                                .id("2023-02-08 01:00:06")
+                                .version("3.10.0")
+                                .build()))
+                .pageInfo(getMockPageInfo())
+                .build();
     }
 
-    public static List<it.pagopa.pagopa.apiconfig.entity.Cache> getMockCacheVersionsE() {
-        return List.of(getMockCache());
+    public static Page<it.pagopa.pagopa.apiconfig.model.configuration.Cache> getMockCacheVersionsPaged() {
+        return mockPage(List.of(Cache.builder()
+                .id("2023-02-08 01:00:06")
+                .version("3.10.0")
+                .build()),
+                50, 0);
     }
 
     public static Optional<it.pagopa.pagopa.apiconfig.entity.Cache> getMockCacheByVersion() {

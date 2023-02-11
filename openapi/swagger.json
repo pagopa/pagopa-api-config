@@ -1937,7 +1937,27 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "default": 3,
+            "description": "Number of elements on one page. Default = 3",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "default": 0,
+            "description": "Page number. Page value starts from 0",
+            "format": "int32",
+            "in": "query",
+            "minimum": 0,
+            "name": "page",
+            "required": false,
+            "type": "integer"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1952,10 +1972,7 @@
               }
             },
             "schema": {
-              "items": {
-                "$ref": "#/definitions/Cache"
-              },
-              "type": "array"
+              "$ref": "#/definitions/CacheVersions"
             }
           },
           "400": {
@@ -15260,6 +15277,24 @@
           "type": "string"
         }
       },
+      "type": "object"
+    },
+    "CacheVersions": {
+      "properties": {
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "version_list": {
+          "items": {
+            "$ref": "#/definitions/Cache"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "page_info",
+        "version_list"
+      ],
       "type": "object"
     },
     "Cdi": {

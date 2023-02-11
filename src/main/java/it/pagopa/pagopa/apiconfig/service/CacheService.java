@@ -3,16 +3,17 @@ package it.pagopa.pagopa.apiconfig.service;
 import it.pagopa.pagopa.apiconfig.entity.Cache;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.configuration.CacheVersions;
 import it.pagopa.pagopa.apiconfig.repository.CacheRepository;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @Validated
@@ -29,10 +30,14 @@ public class CacheService {
                 .orElseThrow(() -> new AppException(AppError.CACHE_NOT_FOUND, version));
     }
 
-    public List<it.pagopa.pagopa.apiconfig.model.configuration.Cache> getCacheVersions() {
-
+    public CacheVersions getCacheVersions(Integer page, Integer limit) {
         Sort sortOrder = Sort.by( Sort.Direction.DESC, "time").and(Sort.by("version"));
-        var data = cacheRepository.findAll(sortOrder);
-        return StreamSupport.stream(data.spliterator(), true).map(c -> modelMapper.map(c, it.pagopa.pagopa.apiconfig.model.configuration.Cache.class)).collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, limit, sortOrder);
+        Page<it.pagopa.pagopa.apiconfig.model.configuration.Cache> data = cacheRepository.findAllPaged(pageable);
+
+        return CacheVersions.builder()
+                .versionList(data.toList())
+                .pageInfo(CommonUtil.buildPageInfo(data))
+                .build();
     }
 }
