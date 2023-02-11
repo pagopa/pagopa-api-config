@@ -625,3 +625,12 @@ create table NODO4_CFG.CDI_PREFERENCES
         foreign key (FK_INFORMATIVA_DETAIL)
             references NODO4_CFG.CDI_DETAIL
 );
+create table NODO4_CFG.CACHE
+(
+    ID               varchar(20) not null,
+    TIME             timestamp(6),
+    VERSION          varchar(32) not null,
+    CACHE            blob    not null,
+    constraint PK_BINARY_FILE
+        primary key (OBJ_ID)
+);

@@ -21,12 +21,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController()
+@RequestMapping(path = "/cache")
 @Tag(name = "Cache", description = "Everything about Cache")
 @Validated
 public class CacheController {
@@ -44,7 +46,7 @@ public class CacheController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
-            value = "/cache/versions",
+            value = "/versions",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<List<it.pagopa.pagopa.apiconfig.model.configuration.Cache>> getCacheVersions() {
@@ -61,7 +63,7 @@ public class CacheController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
-            value = "/cache/versions/{version}",
+            value = "/versions/{version}",
             produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<Resource> getCacheByVersion(@NotBlank @Parameter(description = "Node version", required = true) @PathVariable("version") String version) {
@@ -86,7 +88,7 @@ public class CacheController {
             @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(
-            value = "/cache/versions/{version}/id",
+            value = "/versions/{version}/id",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<it.pagopa.pagopa.apiconfig.model.configuration.Cache> getCacheId(@NotBlank @Parameter(description = "Node version", required = true) @PathVariable("version") String version) {
