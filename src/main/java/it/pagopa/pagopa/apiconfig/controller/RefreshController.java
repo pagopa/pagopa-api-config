@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.service.RefreshService;
+import it.pagopa.pagopa.apiconfig.service.RefreshService.ConfigDomain;
+import it.pagopa.pagopa.apiconfig.service.RefreshService.JobTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +47,28 @@ public class RefreshController {
         @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/job/{jobtype}", produces = {MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<String> getJobTrigger(
-        @Parameter(description = "Job Trigger", required = true) @PathVariable("jobtype") String jobType
+        @Parameter(description = "Job Trigger", required = true) @PathVariable("jobtype") JobTrigger jobType
     ) {
         return ResponseEntity.ok(refreshService.jobTrigger(jobType));
+    }
+
+    /**
+     * GET /refresh/config : Get global configuration refresh activation
+     *
+     * @return OK. (status code 200) or Service unavailable (status code 500)
+     */
+    @Operation(summary = "Global Refresh Configuration activation: for all domains", security = {
+        @SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Refresh Config"})
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+        @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+        @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+        @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
+    @GetMapping(value = "/config", produces = {MediaType.TEXT_PLAIN_VALUE})
+    public ResponseEntity<String> getRefreshGlobalConfig() {
+        return ResponseEntity.ok(refreshService.refreshConfig(ConfigDomain.Global));
     }
 
     /**
@@ -56,8 +77,7 @@ public class RefreshController {
      * @return OK. (status code 200) or Service unavailable (status code 500)
      */
     @Operation(summary = "Refresh Configuration activation for a specific domain", security = {
-        @SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {
-        "Refresh Config"})
+        @SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}, tags = {"Refresh Config domains"})
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
@@ -67,8 +87,7 @@ public class RefreshController {
         @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/config/{configtype}", produces = {MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<String> getRefreshConfig(
-        @Parameter(description = "Configuration domain", required = true) @PathVariable("configtype") String configtype
-    ) {
+        @Parameter(description = "Configuration domain", required = true) @PathVariable("configtype") ConfigDomain configtype) {
       return ResponseEntity.ok(refreshService.refreshConfig(configtype));
     }
 }

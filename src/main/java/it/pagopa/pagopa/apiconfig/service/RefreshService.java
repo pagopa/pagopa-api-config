@@ -13,16 +13,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import static org.springframework.http.HttpMethod.*;
-import java.util.List;
 
 @Service
 @Validated
 public class RefreshService {
-    private static final List<String> VALID_JOB_LIST = List.of("refreshConfiguration", "paInviaRt",
-        "paRetryPaInviaRtNegative", "paInviaRtRecovery", "paSendRt");
+    public enum ConfigDomain {
+        FTP_SERVER, INFORMATIVA_CDI, INFORMATIVA_PA, PA, PDD, PSP, Global
+    }
 
-    public static final List<String> VALID_CONFIG_LIST = List.of("FTP_SERVER", "INFORMATIVA_CDI",
-        "INFORMATIVA_PA", "PA", "PDD", "PSP");
+    public enum JobTrigger {
+        paInviaRt, paRetryPaInviaRtNegative, paInviaRtRecovery, paSendRt
+    }
 
     @Autowired
     private RestTemplate restTemplate;
@@ -30,40 +31,34 @@ public class RefreshService {
     @Value("${service.trigger.job.host}")
     private String jobTriggerUrl;
 
-    @Value("${service.trigger.job.subscriptionKey}")
-    private String jobServiceSubscriptionKey;
-
     @Value("${service.refresh-config.domains.host}")
     private String refreshConfigUrl;
 
-    @Value("${service.refresh-config.domains.subscriptionKey}")
-    private String refreshConfigSubscriptionKey;
-
-    public String jobTrigger(String jobType) {
-        if(VALID_JOB_LIST.contains(jobType))
-          return get(jobTriggerUrl + "/" + jobType, jobServiceSubscriptionKey).getBody();
-        else throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+    public String jobTrigger(JobTrigger jobType) {
+        return get(jobTriggerUrl + "/" + jobType).getBody();
     }
 
-    public String refreshConfig(String configType) {
-      if(VALID_CONFIG_LIST.contains(configType))
-        return get(refreshConfigUrl + "/" + configType, refreshConfigSubscriptionKey).getBody();
-      else throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+    public String refreshConfig(ConfigDomain configType) {
+        String url;
+        if(configType.equals(ConfigDomain.Global))
+          url = jobTriggerUrl + "/refreshConfiguration";
+        else url = refreshConfigUrl + "/" + configType;
+
+        return get(url).getBody();
     }
 
-    private ResponseEntity<String> get(String url, String subscriptionKey) {
+    private ResponseEntity<String> get(String url) {
         try {
-          HttpHeaders headers = new HttpHeaders();
-          headers.set("Ocp-Apim-Subscription-Key", subscriptionKey);
-          HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-          ResponseEntity<String> responseE = restTemplate.exchange(url, GET, requestEntity, String.class);
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+            ResponseEntity<String> responseE = restTemplate.exchange(url, GET, requestEntity, String.class);
 
-          if (!responseE.getStatusCode().is2xxSuccessful() && !responseE.getStatusCode().equals(HttpStatus.NOT_FOUND))
-            throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+            if (!responseE.getStatusCode().is2xxSuccessful() && !responseE.getStatusCode().equals(HttpStatus.NOT_FOUND))
+              throw new AppException(AppError.INTERNAL_SERVER_ERROR);
 
-          return responseE;
+            return responseE;
         } catch(HttpClientErrorException e){
-          throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
     }
 }
