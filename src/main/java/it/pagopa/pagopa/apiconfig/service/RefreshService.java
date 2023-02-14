@@ -2,6 +2,8 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
+import it.pagopa.pagopa.apiconfig.model.JobTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,13 +19,6 @@ import static org.springframework.http.HttpMethod.*;
 @Service
 @Validated
 public class RefreshService {
-    public enum ConfigDomain {
-        FTP_SERVER, INFORMATIVA_CDI, INFORMATIVA_PA, PA, PDD, PSP, Global
-    }
-
-    public enum JobTrigger {
-        paInviaRt, paRetryPaInviaRtNegative, paInviaRtRecovery, paSendRt
-    }
 
     @Autowired
     private RestTemplate restTemplate;
@@ -38,9 +33,9 @@ public class RefreshService {
         return get(jobTriggerUrl + "/" + jobType).getBody();
     }
 
-    public String refreshConfig(ConfigDomain configType) {
+    public String refreshConfig(ConfigurationDomain configType) {
         String url;
-        if(configType.equals(ConfigDomain.Global))
+        if(configType.equals(ConfigurationDomain.GLOBAL))
           url = jobTriggerUrl + "/refreshConfiguration";
         else url = refreshConfigUrl + "/" + configType;
 

@@ -8,10 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
+import it.pagopa.pagopa.apiconfig.model.JobTrigger;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.service.RefreshService;
-import it.pagopa.pagopa.apiconfig.service.RefreshService.ConfigDomain;
-import it.pagopa.pagopa.apiconfig.service.RefreshService.JobTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -68,7 +68,7 @@ public class RefreshController {
         @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/config", produces = {MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<String> getRefreshGlobalConfig() {
-        return ResponseEntity.ok(refreshService.refreshConfig(ConfigDomain.Global));
+        return ResponseEntity.ok(refreshService.refreshConfig(ConfigurationDomain.GLOBAL));
     }
 
     /**
@@ -87,7 +87,7 @@ public class RefreshController {
         @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/config/{configtype}", produces = {MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<String> getRefreshConfig(
-        @Parameter(description = "Configuration domain", required = true) @PathVariable("configtype") ConfigDomain configtype) {
+        @Parameter(description = "Configuration domain", required = true) @PathVariable("configtype") ConfigurationDomain configtype) {
       return ResponseEntity.ok(refreshService.refreshConfig(configtype));
     }
 }

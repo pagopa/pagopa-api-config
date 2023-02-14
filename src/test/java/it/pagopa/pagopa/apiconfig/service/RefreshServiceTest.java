@@ -1,8 +1,8 @@
 package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.service.RefreshService.ConfigDomain;
-import it.pagopa.pagopa.apiconfig.service.RefreshService.JobTrigger;
+import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
+import it.pagopa.pagopa.apiconfig.model.JobTrigger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -34,9 +34,9 @@ public class RefreshServiceTest {
     void setUp() {
       ResponseEntity<String> responseEntityOK = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
       String mock_url = "mock_url/";
-      String validConfigDomain = mock_url+ConfigDomain.FTP_SERVER;
-      String validJobTrigger = mock_url+JobTrigger.paInviaRt;
-      String globalConfig = mock_url+"refreshConfiguration";
+      String validConfigDomain = mock_url + ConfigurationDomain.FTP_SERVER;
+      String validJobTrigger = mock_url + JobTrigger.PA_INVIA_RT;
+      String globalConfig = mock_url + "refreshConfiguration";
 
       String regexValidArg = "(^" +
           validConfigDomain + "$|^" +
@@ -54,20 +54,20 @@ public class RefreshServiceTest {
     @Test
     void refreshDomainConfig() {
         // valid param case: picking one among ConfigDomain values
-        String response = refreshService.refreshConfig(ConfigDomain.FTP_SERVER);
+        String response = refreshService.refreshConfig(ConfigurationDomain.FTP_SERVER);
         assertEquals("SUCCESS", response);
     }
 
     @Test
     void refreshGlobalConfig() {
-      String response = refreshService.refreshConfig(ConfigDomain.Global);
+      String response = refreshService.refreshConfig(ConfigurationDomain.GLOBAL);
       assertEquals("SUCCESS", response);
     }
 
     @Test
     void jobTrigger() {
       // valid param case: picking one among JobTrigger values
-      String response = refreshService.jobTrigger(JobTrigger.paInviaRt);
+      String response = refreshService.jobTrigger(JobTrigger.PA_INVIA_RT);
       assertEquals("SUCCESS", response);
     }
 }

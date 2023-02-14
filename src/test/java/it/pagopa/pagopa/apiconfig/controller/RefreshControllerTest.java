@@ -1,9 +1,9 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
+import it.pagopa.pagopa.apiconfig.model.JobTrigger;
 import it.pagopa.pagopa.apiconfig.service.RefreshService;
-import it.pagopa.pagopa.apiconfig.service.RefreshService.ConfigDomain;
-import it.pagopa.pagopa.apiconfig.service.RefreshService.JobTrigger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +28,14 @@ public class RefreshControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(refreshService.refreshConfig(any(ConfigDomain.class))).thenReturn("SUCCESS");
+        when(refreshService.refreshConfig(any(ConfigurationDomain.class))).thenReturn("SUCCESS");
         when(refreshService.jobTrigger(any(JobTrigger.class))).thenReturn("SUCCESS");
     }
 
     @Test
     void refreshService() throws Exception {
       // valid param case: picking one among ConfigDomain values
-      String url = "/refresh/config/" + ConfigDomain.FTP_SERVER;
+      String url = "/refresh/config/" + ConfigurationDomain.FTP_SERVER;
       mvc.perform(get(url))
           .andExpect(status().isOk());
     }
@@ -57,7 +57,7 @@ public class RefreshControllerTest {
     @Test
     void jobTrigger() throws Exception {
       // valid param case: picking one among JobTrigger values
-      String url = "/refresh/job/" + JobTrigger.paInviaRt;
+      String url = "/refresh/job/" + JobTrigger.PA_INVIA_RT;
       mvc.perform(get(url))
           .andExpect(status().isOk());
     }
