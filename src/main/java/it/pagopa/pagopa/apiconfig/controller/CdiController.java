@@ -62,7 +62,7 @@ public class CdiController {
             @Positive @Parameter(description = "Number of elements on one page. Default = 50") @RequestParam(required = false, defaultValue = "50") Integer limit,
             @PositiveOrZero @Parameter(description = "Page number. Page value starts from 0", required = true) @RequestParam Integer page,
             @Parameter(description = "filter by Id CDI") @RequestParam(value = "idcdi", required = false) String idCdi,
-            @Pattern(regexp = "[A-Z0-9_]{6,14}") @Parameter(description = "filter by PSP") @RequestParam(value = "pspcode", required = false) String pspCode) {
+            @Pattern(regexp = "([A-Z0-9_]{6,14}| {0})") @Parameter(description = "filter by PSP") @RequestParam(value = "pspcode", required = false) String pspCode) {
         return ResponseEntity.ok(cdiService.getCdis(limit, page, idCdi, pspCode));
     }
 
