@@ -630,7 +630,5 @@ create table NODO4_CFG.CACHE
     ID               varchar(20) not null,
     TIME             timestamp(6),
     VERSION          varchar(32) not null,
-    CACHE            blob    not null,
-    constraint PK_CACHE
-        primary key (ID)
+    CACHE            blob    not null
 );
