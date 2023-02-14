@@ -12980,6 +12980,125 @@
         "summary": "Update a relation between creditor institution and station"
       }
     },
+    "/refresh/config": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "text/plain",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              },
+              "X-Warning": {
+                "description": "This header identifies response validation error",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Refresh Operation"
+        ],
+        "operationId": "getRefreshGlobalConfig",
+        "summary": "Global Refresh Configuration activation: for all domains"
+      }
+    },
     "/refresh/config/{configtype}": {
       "parameters": [
         {
@@ -12997,6 +13116,15 @@
         "parameters": [
           {
             "description": "Configuration domain",
+            "enum": [
+              "FTP_SERVER",
+              "INFORMATIVA_CDI",
+              "INFORMATIVA_PA",
+              "PA",
+              "PDD",
+              "PSP",
+              "Global"
+            ],
             "in": "path",
             "name": "configtype",
             "required": true,
@@ -13124,6 +13252,12 @@
         "parameters": [
           {
             "description": "Job Trigger",
+            "enum": [
+              "paInviaRt",
+              "paRetryPaInviaRtNegative",
+              "paInviaRtRecovery",
+              "paSendRt"
+            ],
             "in": "path",
             "name": "jobtype",
             "required": true,
