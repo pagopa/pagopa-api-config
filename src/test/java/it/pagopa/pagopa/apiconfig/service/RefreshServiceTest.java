@@ -14,17 +14,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.RestTemplate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.Mockito.when;
 
-@TestPropertySource(properties = {
-    "service.trigger.job.host=mock_url",
-    "service.refresh-config.domains.host=mock_url"
-})
 @SpringBootTest(classes = ApiConfig.class)
 public class RefreshServiceTest {
 
