@@ -130,7 +130,9 @@ create table NODO4_CFG.PA_STAZIONE_PA
             references NODO4_CFG.PA,
     constraint FK_PA_STAZIONE_PA_STAZIONE
         foreign key (FK_STAZIONE)
-            references NODO4_CFG.STAZIONI
+            references NODO4_CFG.STAZIONI,
+    constraint UQ_FK_PA_FK_STAZIONE
+        unique (FK_PA, FK_STAZIONE)
 );
 
 create table NODO4_CFG.CODIFICHE
