@@ -9,7 +9,7 @@ microservice-chart:
       maxSurge: 1
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.29.1-15-PPR-505-postgresql"
+    tag: "0.29.1-16-PPR-505-postgresql"
     pullPolicy: Always
   livenessProbe:
     httpGet:
