@@ -86,7 +86,7 @@ microservice-chart:
     COSMOS_KEY: 'afm-cosmos-key'
     SPRING_DATASOURCE_PASSWORD: 'db-cfg-password'
   keyvault:
-    name: "pagopa-u-nodo-kv"
+    name: "pagopa-p-nodo-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   nodeSelector: {}
   tolerations:
