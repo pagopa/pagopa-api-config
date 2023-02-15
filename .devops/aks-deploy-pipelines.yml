@@ -94,10 +94,7 @@ stages:
               gitEmail: $(GIT_EMAIL)
               gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
-              ${{ if eq(parameters.SEMVER, 'skip') }}:
-                semver: 'buildNumber'
-              ${{ if ne(parameters.SEMVER, 'skip') }}:
-                semver: '${{ parameters.SEMVER }}'
+              semver: '${{ parameters.SEMVER }}'
 
           - template: templates/maven-github-current-version/template.yaml@pagopaCommons
 
