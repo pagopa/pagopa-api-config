@@ -33,8 +33,9 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     public static final String INTERNAL_SERVER_ERROR = "INTERNAL SERVER ERROR";
     public static final String BAD_REQUEST = "BAD REQUEST";
     public static final String FOREIGN_KEY_VIOLATION = "23503";
-  public static final String UNIQUE_INDEX_VIOLATION = "23505";
+    public static final String UNIQUE_INDEX_VIOLATION = "23505";
     public static final int CHILD_RECORD_VIOLATION = 2292;
+    public static final String CONFLICT_RESPONSE_TITLE = "Conflict with the current state of the resource";
 
 
     /**
@@ -151,7 +152,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 log.warn("Can't delete from Database", ex);
                 errorResponse = ProblemJson.builder()
                         .status(HttpStatus.CONFLICT.value())
-                        .title("Conflict with the current state of the resource")
+                        .title(CONFLICT_RESPONSE_TITLE)
                         .detail("There is a relation with other resource. Delete it first.")
                         .build();
             }
@@ -159,7 +160,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 log.warn("Can't update the Database", ex);
                 errorResponse = ProblemJson.builder()
                         .status(HttpStatus.CONFLICT.value())
-                        .title("Conflict with the current state of the resource")
+                        .title(CONFLICT_RESPONSE_TITLE)
                         .detail("There is a relation with other resource. Delete it first.")
                         .build();
             }
@@ -167,7 +168,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
               log.warn("Can't insert in Database", ex);
               errorResponse = ProblemJson.builder()
                   .status(HttpStatus.CONFLICT.value())
-                  .title("Conflict with the current state of the resource")
+                  .title(CONFLICT_RESPONSE_TITLE)
                   .detail("There is another relation with the same resource. Delete it first.")
                   .build();
             }
