@@ -1,58 +1,41 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import feign.Feign;
+import feign.FeignException;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
 import it.pagopa.pagopa.apiconfig.model.JobTrigger;
-import org.springframework.beans.factory.annotation.Autowired;
+import it.pagopa.pagopa.apiconfig.util.RefreshClient;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import static org.springframework.http.HttpMethod.*;
 
 @Service
 @Validated
+@Setter
 public class RefreshService {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private RefreshClient client;
 
-    @Value("${service.trigger.job.host}")
-    private String jobTriggerUrl;
-
-    @Value("${service.refresh-config.domains.host}")
-    private String refreshConfigUrl;
+    public RefreshService(@Value("${service.nodo-monitoring.host}") String monitoringUrl) {
+        client = Feign.builder()
+            .target(RefreshClient.class, monitoringUrl);
+    }
 
     public String jobTrigger(JobTrigger jobType) {
-        return get(jobTriggerUrl + "/" + jobType).getBody();
-    }
-
-    public String refreshConfig(ConfigurationDomain configType) {
-        String url;
-        if(configType.equals(ConfigurationDomain.GLOBAL))
-          url = jobTriggerUrl + "/refreshConfiguration";
-        else url = refreshConfigUrl + "/" + configType;
-
-        return get(url).getBody();
-    }
-
-    private ResponseEntity<String> get(String url) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-            ResponseEntity<String> responseE = restTemplate.exchange(url, GET, requestEntity, String.class);
+            return client.triggerJob(jobType.getValue());
+        } catch(FeignException e){
+            throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-            if (!responseE.getStatusCode().is2xxSuccessful() && !responseE.getStatusCode().equals(HttpStatus.NOT_FOUND))
-              throw new AppException(AppError.INTERNAL_SERVER_ERROR);
-
-            return responseE;
-        } catch(HttpClientErrorException e){
+    public String refreshConfig(ConfigurationDomain domain) {
+        try {
+            return client.refreshConfiguration(domain.getValue());
+        } catch(FeignException e){
             throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
     }

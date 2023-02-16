@@ -11,8 +11,7 @@ public enum ConfigurationDomain {
   INFORMATIVA_PA("INFORMATIVA_PA"),
   PA("PA"),
   PDD("PDD"),
-  PSP("PSP"),
-  GLOBAL("GLOBAL");
+  PSP("PSP");
 
   private final String value;
 }

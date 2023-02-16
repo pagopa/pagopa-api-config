@@ -1,73 +1,59 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import feign.Feign;
+import feign.mock.HttpMethod;
+import feign.mock.MockClient;
+import feign.mock.MockTarget;
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
 import it.pagopa.pagopa.apiconfig.model.JobTrigger;
+import it.pagopa.pagopa.apiconfig.util.RefreshClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.matches;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
 public class RefreshServiceTest {
-
     @Autowired
-    @InjectMocks
     private RefreshService refreshService;
+    private MockClient mockClient;
 
-    @MockBean
-    private RestTemplate restTemplate;
+      @BeforeEach
+      void setUp() {
+          mockClient = new MockClient()
+              .ok(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.PA_INVIA_RT.getValue(), "SUCCESS")
+              .ok(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.GLOBAL.getValue(), "SUCCESS")
+              .ok(HttpMethod.GET, "/config/refresh/" + ConfigurationDomain.FTP_SERVER.getValue(), "SUCCESS");
 
-    @BeforeEach
-    void setUp() {
-      ResponseEntity<String> responseEntityOK = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-      String mock_url = "mock_url/";
-      String validConfigDomain = mock_url + ConfigurationDomain.FTP_SERVER;
-      String validJobTrigger = mock_url + JobTrigger.PA_INVIA_RT;
-      String globalConfig = mock_url + "refreshConfiguration";
+          RefreshClient refreshClient = Feign.builder()
+              .client(mockClient)
+              .target(new MockTarget<>(RefreshClient.class));
 
-      String regexValidArg = "(^" +
-          validConfigDomain + "$|^" +
-          validJobTrigger + "$|^" +
-          globalConfig + "$)";
-
-      when(restTemplate.exchange(
-            matches(regexValidArg),
-            eq(HttpMethod.GET),
-            ArgumentMatchers.<HttpEntity<Void>>any(),
-            ArgumentMatchers.<Class<String>>any()
-      )).thenReturn(responseEntityOK);
-    }
+          refreshService.setClient(refreshClient);
+      }
 
     @Test
     void refreshDomainConfig() {
         // valid param case: picking one among ConfigDomain values
         String response = refreshService.refreshConfig(ConfigurationDomain.FTP_SERVER);
+        mockClient.verifyOne(HttpMethod.GET, "/config/refresh/" + ConfigurationDomain.FTP_SERVER.getValue());
         assertEquals("SUCCESS", response);
     }
 
     @Test
     void refreshGlobalConfig() {
-      String response = refreshService.refreshConfig(ConfigurationDomain.GLOBAL);
-      assertEquals("SUCCESS", response);
+        String response = refreshService.jobTrigger(JobTrigger.GLOBAL);
+        mockClient.verifyOne(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.GLOBAL.getValue());
+        assertEquals("SUCCESS", response);
     }
 
     @Test
     void jobTrigger() {
-      // valid param case: picking one among JobTrigger values
-      String response = refreshService.jobTrigger(JobTrigger.PA_INVIA_RT);
-      assertEquals("SUCCESS", response);
+        // valid param case: picking one among JobTrigger values
+        String response = refreshService.jobTrigger(JobTrigger.PA_INVIA_RT);
+        mockClient.verifyOne(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.PA_INVIA_RT.getValue());
+        assertEquals("SUCCESS", response);
     }
 }

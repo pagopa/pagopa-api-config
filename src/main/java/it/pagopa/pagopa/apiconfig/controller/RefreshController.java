@@ -68,7 +68,7 @@ public class RefreshController {
         @ApiResponse(responseCode = "500", description = "Service unavailable", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))})
     @GetMapping(value = "/config", produces = {MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<String> getRefreshGlobalConfig() {
-        return ResponseEntity.ok(refreshService.refreshConfig(ConfigurationDomain.GLOBAL));
+        return ResponseEntity.ok(refreshService.jobTrigger(JobTrigger.GLOBAL));
     }
 
     /**
@@ -88,6 +88,6 @@ public class RefreshController {
     @GetMapping(value = "/config/{configtype}", produces = {MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<String> getRefreshConfig(
         @Parameter(description = "Configuration domain", required = true) @PathVariable("configtype") ConfigurationDomain configtype) {
-      return ResponseEntity.ok(refreshService.refreshConfig(configtype));
+        return ResponseEntity.ok(refreshService.refreshConfig(configtype));
     }
 }
