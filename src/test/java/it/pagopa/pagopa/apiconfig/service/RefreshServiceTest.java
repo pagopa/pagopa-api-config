@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = ApiConfig.class)
-public class RefreshServiceTest {
+class RefreshServiceTest {
     @Autowired
     private RefreshService refreshService;
     private MockClient mockClient;

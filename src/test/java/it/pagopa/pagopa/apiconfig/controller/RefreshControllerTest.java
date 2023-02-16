@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
-public class RefreshControllerTest {
+class RefreshControllerTest {
     @Autowired
     private MockMvc mvc;
 
