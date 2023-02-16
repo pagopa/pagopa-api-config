@@ -142,9 +142,7 @@ public class CreditorInstitutionsService {
     public void deleteCreditorInstitutionStation(String creditorInstitutionCode, String stationCode) {
         Pa pa = getPaIfExists(creditorInstitutionCode);
         Stazioni stazioni = getStazioniIfExists(stationCode);
-        PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
-                .orElseThrow(() -> new AppException(AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
-        paStazionePaRepository.delete(paStazionePa);
+        paStazionePaRepository.deleteByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId());
     }
 
     public Ibans getCreditorInstitutionsIbans(@NotNull String creditorInstitutionCode) {
