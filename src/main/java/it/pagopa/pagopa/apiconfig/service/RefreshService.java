@@ -34,7 +34,7 @@ public class RefreshService {
 
     public String refreshConfig(ConfigurationDomain domain) {
         try {
-            if(domain.equals(ConfigurationDomain.global))
+            if(domain.equals(ConfigurationDomain.GLOBAL))
               return client.triggerJob(JobTrigger.REFRESH_CONFIGURATION.getValue());
             else
               return client.refreshConfiguration(domain.getValue());

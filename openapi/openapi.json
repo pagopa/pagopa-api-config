@@ -16304,7 +16304,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "FTP_SERVER", "INFORMATIVA_CDI", "INFORMATIVA_PA", "PA", "PDD", "PSP", "global" ]
+            "enum" : [ "FTP_SERVER", "INFORMATIVA_CDI", "INFORMATIVA_PA", "PA", "PDD", "PSP", "GLOBAL" ]
           }
         } ],
         "responses" : {

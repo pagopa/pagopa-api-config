@@ -12,7 +12,7 @@ public enum ConfigurationDomain {
   PA("PA"),
   PDD("PDD"),
   PSP("PSP"),
-  global("global");
+  GLOBAL("GLOBAL");
 
   private final String value;
 }

@@ -13123,7 +13123,7 @@
               "PA",
               "PDD",
               "PSP",
-              "global"
+              "GLOBAL"
             ],
             "in": "path",
             "name": "configtype",

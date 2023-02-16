@@ -47,7 +47,7 @@ class RefreshServiceTest {
 
     @Test
     void refreshGlobalConfig() {
-        String response = refreshService.refreshConfig(ConfigurationDomain.global);
+        String response = refreshService.refreshConfig(ConfigurationDomain.GLOBAL);
         mockClient.verifyOne(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue());
         assertEquals("SUCCESS", response);
     }
