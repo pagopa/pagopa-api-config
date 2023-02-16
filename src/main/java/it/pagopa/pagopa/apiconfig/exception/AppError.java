@@ -80,6 +80,8 @@ public enum AppError {
 
     MASSIVELOADING_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CSV file is not valid", "%s"),
 
+    CACHE_NOT_FOUND(HttpStatus.NOT_FOUND, "Cache not found", "No version found with code: %s"),
+
     UNKNOWN(null, null, null);
 
     public final HttpStatus httpStatus;

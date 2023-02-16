@@ -1,14 +1,8 @@
 package it.pagopa.pagopa.apiconfig.entity;
 
 import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
+import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -18,9 +12,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.io.Serializable;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Table(name = "PSP", schema = "NODO4_CFG")
 @Entity
@@ -95,5 +96,9 @@ public class Psp implements Serializable {
 
     @Column(name = "VAT_NUMBER", length = 20)
     private String vatNumber;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "psp")
+  @ToString.Exclude
+  private List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList;
 
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
+import it.pagopa.pagopa.apiconfig.model.configuration.Cache;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
 import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
 import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
@@ -28,6 +29,7 @@ import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -901,6 +903,36 @@ public class TestUtil {
         return AfmMarketplacePaymentType.builder()
                 .name("PPAL")
                 .used(false)
+                .build();
+    }
+
+    public static CacheVersions getMockCacheVersions() {
+        return CacheVersions.builder()
+                .versionList(List.of(Cache.builder()
+                                .id("2023-02-08 01:00:06")
+                                .version("3.10.0")
+                                .build()))
+                .pageInfo(getMockPageInfo())
+                .build();
+    }
+
+    public static Page<it.pagopa.pagopa.apiconfig.model.configuration.Cache> getMockCacheVersionsPaged() {
+        return mockPage(List.of(Cache.builder()
+                .id("2023-02-08 01:00:06")
+                .version("3.10.0")
+                .build()),
+                50, 0);
+    }
+
+    public static Optional<it.pagopa.pagopa.apiconfig.entity.Cache> getMockCacheByVersion() {
+        return Optional.of(getMockCache());
+    }
+
+    public static it.pagopa.pagopa.apiconfig.entity.Cache getMockCache() {
+        return it.pagopa.pagopa.apiconfig.entity.Cache.builder()
+                .id("2023-02-08 01:00:06")
+                .cache(new byte[]{1, 11})
+                .version("3.10.0")
                 .build();
     }
 
