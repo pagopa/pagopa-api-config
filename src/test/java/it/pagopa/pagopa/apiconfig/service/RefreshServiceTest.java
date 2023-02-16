@@ -24,7 +24,7 @@ public class RefreshServiceTest {
       void setUp() {
           mockClient = new MockClient()
               .ok(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.PA_INVIA_RT.getValue(), "SUCCESS")
-              .ok(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.GLOBAL.getValue(), "SUCCESS")
+              .ok(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue(), "SUCCESS")
               .ok(HttpMethod.GET, "/config/refresh/" + ConfigurationDomain.FTP_SERVER.getValue(), "SUCCESS");
 
           RefreshClient refreshClient = Feign.builder()
@@ -44,8 +44,8 @@ public class RefreshServiceTest {
 
     @Test
     void refreshGlobalConfig() {
-        String response = refreshService.jobTrigger(JobTrigger.GLOBAL);
-        mockClient.verifyOne(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.GLOBAL.getValue());
+        String response = refreshService.refreshConfig(ConfigurationDomain.global);
+        mockClient.verifyOne(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue());
         assertEquals("SUCCESS", response);
     }
 

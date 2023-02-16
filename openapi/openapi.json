@@ -16304,7 +16304,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "FTP_SERVER", "INFORMATIVA_CDI", "INFORMATIVA_PA", "PA", "PDD", "PSP", "Global" ]
+            "enum" : [ "FTP_SERVER", "INFORMATIVA_CDI", "INFORMATIVA_PA", "PA", "PDD", "PSP", "global" ]
           }
         } ],
         "responses" : {
@@ -16459,7 +16459,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "paInviaRt", "paRetryPaInviaRtNegative", "paInviaRtRecovery", "paSendRt" ]
+            "enum" : [ "PA_INVIA_RT", "PA_RETRY_PA_INVIA_RT_NEGATIVE", "PA_INVIA_RT_RECOVERY", "PA_SEND_RT", "REFRESH_CONFIGURATION" ]
           }
         } ],
         "responses" : {

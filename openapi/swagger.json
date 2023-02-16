@@ -13123,7 +13123,7 @@
               "PA",
               "PDD",
               "PSP",
-              "Global"
+              "global"
             ],
             "in": "path",
             "name": "configtype",
@@ -13253,10 +13253,11 @@
           {
             "description": "Job Trigger",
             "enum": [
-              "paInviaRt",
-              "paRetryPaInviaRtNegative",
-              "paInviaRtRecovery",
-              "paSendRt"
+              "PA_INVIA_RT",
+              "PA_RETRY_PA_INVIA_RT_NEGATIVE",
+              "PA_INVIA_RT_RECOVERY",
+              "PA_SEND_RT",
+              "REFRESH_CONFIGURATION"
             ],
             "in": "path",
             "name": "jobtype",

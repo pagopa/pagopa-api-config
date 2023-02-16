@@ -34,7 +34,10 @@ public class RefreshService {
 
     public String refreshConfig(ConfigurationDomain domain) {
         try {
-            return client.refreshConfiguration(domain.getValue());
+            if(domain.equals(ConfigurationDomain.global))
+              return client.triggerJob(JobTrigger.REFRESH_CONFIGURATION.getValue());
+            else
+              return client.refreshConfiguration(domain.getValue());
         } catch(FeignException e){
             throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
