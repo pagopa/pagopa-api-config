@@ -83,7 +83,7 @@ class ErrorHandlerTest {
         ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(new DataIntegrityViolationException("", new ConstraintViolationException("A REFERENCES B", new SQLException("foreign key", "23503"), "A REFERENCES B")), null);
         assertEquals(HttpStatus.CONFLICT, actual.getStatusCode());
         assertNotNull(actual.getBody());
-        assertEquals("Conflict with the current state of the resource", actual.getBody().getTitle());
+        assertEquals(ErrorHandler.CONFLICT_RESPONSE_TITLE, actual.getBody().getTitle());
         assertEquals(HttpStatus.CONFLICT.value(), actual.getBody().getStatus());
     }
 
@@ -94,8 +94,17 @@ class ErrorHandlerTest {
         ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(exception, null);
         assertEquals(HttpStatus.CONFLICT, actual.getStatusCode());
         assertNotNull(actual.getBody());
-        assertEquals("Conflict with the current state of the resource", actual.getBody().getTitle());
+        assertEquals(ErrorHandler.CONFLICT_RESPONSE_TITLE, actual.getBody().getTitle());
         assertEquals(HttpStatus.CONFLICT.value(), actual.getBody().getStatus());
+    }
+
+    @Test
+    void handleDataIntegrityViolationException4() {
+      ResponseEntity<ProblemJson> actual = errorHandler.handleDataIntegrityViolationException(new DataIntegrityViolationException("", new ConstraintViolationException("A REFERENCES B", new SQLException("foreign key", "23505"), "A REFERENCES B")), null);
+      assertEquals(HttpStatus.CONFLICT, actual.getStatusCode());
+      assertNotNull(actual.getBody());
+      assertEquals(ErrorHandler.CONFLICT_RESPONSE_TITLE, actual.getBody().getTitle());
+      assertEquals(HttpStatus.CONFLICT.value(), actual.getBody().getStatus());
     }
 
     @Test

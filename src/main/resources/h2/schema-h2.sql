@@ -130,7 +130,9 @@ create table NODO4_CFG.PA_STAZIONE_PA
             references NODO4_CFG.PA,
     constraint FK_PA_STAZIONE_PA_STAZIONE
         foreign key (FK_STAZIONE)
-            references NODO4_CFG.STAZIONI
+            references NODO4_CFG.STAZIONI,
+    constraint UQ_PA_STAZIONE_PA
+        unique (FK_PA, FK_STAZIONE)
 );
 
 create table NODO4_CFG.CODIFICHE
@@ -498,7 +500,9 @@ create table NODO4_CFG.CANALE_TIPO_VERSAMENTO
             references NODO4_CFG.CANALI,
     constraint FK_CANALE_TIPO_VERSAMENTO_TIPO_VERSAMENTO
         foreign key (FK_TIPO_VERSAMENTO)
-            references NODO4_CFG.TIPI_VERSAMENTO
+            references NODO4_CFG.TIPI_VERSAMENTO,
+    constraint UQ_CANALE_TIPO_VERSAMENTO
+        unique (FK_CANALE, FK_TIPO_VERSAMENTO)
 );
 
 create table NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO
