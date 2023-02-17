@@ -1,5 +1,5 @@
 microservice-chart:
-  namespace: "nodo"
+  namespace: "apiconfig"
   nameOverride: ""
   fullnameOverride: ""
   strategy:
@@ -34,8 +34,8 @@ microservice-chart:
       - 8080
   ingress:
     create: true
-    host: "weuuat.nodo.internal.uat.platform.pagopa.it"
-    path: /pagopa-api-config-service/(.*)
+    host: "weuuat.apiconfig-core.internal.uat.platform.pagopa.it"
+    path: /pagopa-apiconfig-core-service/(.*)
     servicePort: 8080
   serviceAccount:
     create: false
@@ -86,20 +86,20 @@ microservice-chart:
     COSMOS_KEY: 'afm-cosmos-key'
     SPRING_DATASOURCE_PASSWORD: 'db-cfg-password'
   keyvault:
-    name: "pagopa-u-nodo-kv"
+    name: "pagopa-u-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   nodeSelector: {}
   tolerations:
     - key: dedicated
       operator: Equal
-      value: "nodo"
+      value: "apiconfig"
       effect: NoSchedule
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
-              - key: nodo
+              - key: apiconfig
                 operator: In
                 values:
                   - "true"

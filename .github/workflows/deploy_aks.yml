@@ -262,7 +262,7 @@ jobs:
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
         run: |
           helm repo add microservice-chart https://pagopa.github.io/aks-microservice-chart-blueprint
-          helm dep build helm  
+          helm dep build helm
 
       - name: Helm Deploy
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
