@@ -69,7 +69,7 @@ public class ChannelsService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Value("${properties.environment}")
+    @Value("${info.properties.environment}")
     private String env;
 
     public Channels getChannels(@NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {

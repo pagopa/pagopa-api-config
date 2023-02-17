@@ -1,49 +1,47 @@
 version: "3.2"
 
 services:
-  api-config:
-    container_name: 'spring-api-config'
+  app:
+    container_name: 'app'
+#    image: ${image}
+    build:
+      dockerfile: Dockerfile
+      context: ../
+    env_file:
+      - ./config/.env
     ports:
       - "8080:8080"
-    env_file:
-      - .env
-    build:
-      context: ./
-      dockerfile: Dockerfile-local
-    depends_on:
-      - oracle
-    networks:
-      - api-conf-net
-
-  flyway:
-    container_name: 'flyway'
-    image: flyway/flyway:8.5.11
-    command: migrate
-    volumes:
-      - ./database/sql:/flyway/sql
-      - ./database/drivers:/flyway/drivers
-      - ./database/conf:/flyway/conf
-    depends_on:
-      - oracle
-    networks:
-      - api-conf-net
-
-  oracle:
-    container_name: 'oracle-db-12c'
-    image: pagopadcommonacr.azurecr.io/dboracle-ee-12.2.0.1-slim:latest
-    volumes:
-      - './database/volume:/ORCL'
-    ports:
-      - "1521:1521"
-      - "5500:5500"
-    networks:
-      - api-conf-net
 
 
-networks:
-  api-conf-net:
-    driver: bridge
-    driver_opts:
-      com.docker.network.driver.mtu: 1450
+#  flyway:
+#    container_name: 'flyway'
+#    image: flyway/flyway:8.5.11
+#    command: migrate
+#    volumes:
+#      - ./database/sql:/flyway/sql
+#      - ./database/drivers:/flyway/drivers
+#      - ./database/conf:/flyway/conf
+#    depends_on:
+#      - oracle
+#    networks:
+#      - api-conf-net
+#
+#  oracle:
+#    container_name: 'oracle-db-12c'
+#    image: pagopadcommonacr.azurecr.io/dboracle-ee-12.2.0.1-slim:latest
+#    volumes:
+#      - './database/volume:/ORCL'
+#    ports:
+#      - "1521:1521"
+#      - "5500:5500"
+#    networks:
+#      - api-conf-net
+
+
+#networks:
+#  api-conf-net:
+#    driver: bridge
+#    driver_opts:
+#      com.docker.network.driver.mtu: 1450
 
 

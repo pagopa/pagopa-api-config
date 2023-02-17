@@ -35,7 +35,7 @@ import java.util.Optional;
 @Valid
 public class MassiveLoadingService {
 
-    @Value("${properties.environment}")
+    @Value("${info.properties.environment}")
     private String environment;
 
     @Autowired

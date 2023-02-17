@@ -8,7 +8,7 @@ microservice-chart:
       maxUnavailable: 0
       maxSurge: 1
   image:
-    repository: ghcr.io/pagopa/pagopa-afm-utils
+    repository: ghcr.io/pagopa/pagopa-api-config
     tag: "0.29.1-17-PPR-505-postgresql"
     pullPolicy: Always
   livenessProbe:
