@@ -259,7 +259,7 @@ jobs:
 
       - name: Gets K8s context
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
-        uses: azure/aks-set-context@4e5aec273183a197b181314721843e047123d9fa
+        uses: azure/aks-set-context@v3
         with:
           resource-group: pagopa-${{matrix.short}}-weu-dev-aks-rg
           cluster-name: pagopa-${{matrix.short}}-weu-dev-aks
