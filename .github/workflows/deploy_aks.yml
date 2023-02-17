@@ -255,7 +255,6 @@ jobs:
     needs: [setup, release, build]
     if: |
       always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
-      && (matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all')
     runs-on: ubuntu-latest
     name: Deploy on AKS
     strategy:
