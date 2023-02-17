@@ -30,6 +30,12 @@ on:
           - patch
           - buildNumber
           - skip
+      force_push_image:
+        required: false
+        type: boolean
+        description: To Re-build and push the docker image
+        default: false
+
 
 env:
   NAMESPACE: apiconfig
@@ -47,6 +53,38 @@ permissions:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - if: ${{ contains(github.event.pull_request.labels.*.name, 'breaking-change') || github.event.inputs.semver == 'major' }}
+        run: echo "SEMVER=major" >> $GITHUB_ENV
+
+      - if: ${{ contains(github.event.pull_request.labels.*.name, 'enhancement') || github.event.inputs.semver == 'minor' }}
+        run: echo "SEMVER=minor" >> $GITHUB_ENV
+
+      - if: ${{ contains(github.event.pull_request.labels.*.name, 'bug') || github.event.inputs.semver == 'patch' }}
+        run: echo "SEMVER=patch" >> $GITHUB_ENV
+
+      - if: ${{ contains(github.event.pull_request.labels.*.name, 'ignore-for-release') || github.event.inputs.semver == 'skip' }}
+        run: echo "SEMVER=skip" >> $GITHUB_ENV
+
+      - if: ${{ github.event.inputs.semver == 'buildNumber' }}
+        run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
+
+      - if: ${{ github.event.inputs.environment == null || github.event.inputs.environment == 'dev' }}
+        run: echo "ENVIRNOMENT=dev" >> $GITHUB_ENV
+
+      - if: ${{ github.event.inputs.environment == 'uat' }}
+        run: echo "ENVIRNOMENT=uat" >> $GITHUB_ENV
+
+      - if: ${{ github.event.inputs.environment == 'prod' }}
+        run: echo "ENVIRNOMENT=prod" >> $GITHUB_ENV
+
+      - if: ${{ github.event.inputs.environment == 'all' }}
+        run: echo "ENVIRNOMENT=all" >> $GITHUB_ENV
+
+
   release:
     name: Create a New Release
     # The type of runner that the job will run on
@@ -88,22 +126,22 @@ jobs:
       - name: Set build-number
         run: |
           mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}${{env.BRANCH}}'
-        if: ${{ github.event.inputs.semver == 'buildNumber' }}
+        if: ${{ env.SEMVER == 'buildNumber' }}
 
       - name: Set major
         run: |
           mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.nextMajorVersion}.0.0${{env.BRANCH}}'
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'breaking-change') || github.event.inputs.semver == 'major' }}
+        if: ${{ env.SEMVER == 'major' }}
 
       - name: Set minor
         run: |
           mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0${{env.BRANCH}}'
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'enhancement') || github.event.inputs.semver == 'minor' }}
+        if: ${{ env.SEMVER == 'minor' }}
 
       - name: Set patch
         run: |
           mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}${{env.BRANCH}}'
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'bug') || github.event.inputs.semver == 'patch' }}
+        if: ${{ env.SEMVER == 'patch' }}
 
       - id: get_version
         name: Get Version
@@ -112,7 +150,7 @@ jobs:
           echo "version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
 
       - name: Update Version Helm
-        if: ${{ (github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ignore-for-release')) || (github.event.inputs.semver != null && github.event.inputs.semver != 'skip') }}
+        if: ${{ env.SEMVER != 'skip') }}
         run: |
           for i in helm/values-*.yaml; do
             [ -f "$i" ] || break
@@ -126,7 +164,7 @@ jobs:
             git add "$CHART_FILE"
           fi
       - name: Update Openapi/Swagger Version
-        if: ${{ (github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ignore-for-release')) || (github.event.inputs.semver != null && github.event.inputs.semver != 'skip') }}
+        if: ${{ env.SEMVER != 'skip') }}
         run: |
           for i in openapi/*.json; do
             [ -f "$i" ] || break
@@ -145,7 +183,7 @@ jobs:
           done
 
       - name: Push New Version
-        if: ${{ (github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ignore-for-release')) || (github.event.inputs.semver != null && github.event.inputs.semver != 'skip') }}
+        if: ${{ env.SEMVER != 'skip') }}
         run: |
           echo "${{ steps.get_version.outputs.version }}"
           git ls-files . | grep 'pom.xml'  | xargs git add
@@ -155,7 +193,7 @@ jobs:
           git push origin ${{ github.ref_name}}
 
       - name: Create Release
-        if: ${{ (github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ignore-for-release')) || (github.event.inputs.semver != null && github.event.inputs.semver != 'skip') }}
+        if: ${{ env.SEMVER != 'skip') }}
         uses: ncipollo/release-action@v1.12.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -170,6 +208,7 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     name: Build and Push Docker Image
+    if: ${{ env.SEMVER != 'skip' || github.event.inputs.force_push_image == 'true' }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -219,32 +258,33 @@ jobs:
             short: p
     environment:
       name: ${{ matrix.environment }}
+    if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
     steps:
       - uses: actions/checkout@v3
-        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
         with:
           ref: ${{ github.ref_name}}
 
       - name: Read terraform version
-        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
         shell: bash
         run: |
           echo "TERRAFORM_VERSION=`cat .terraform-version`" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@8feba2b913ea459066180f9cb177f58a881cf146
-        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
 
       - name: Set up kubelogin for non-interactive login
-        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
         uses: azure/use-kubelogin@v1
         with:
           kubelogin-version: 'v0.0.24'
 
       - name: Login
-        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
         uses: azure/login@89d153571fe9a34ed70fcf9f1d95ab8debea7a73
         with:
           client-id: ${{ vars.CLIENT_ID }}
@@ -258,7 +298,7 @@ jobs:
 #          az acr build --image ${{ env.APP_NAME }}:${{ needs.release.outputs.version }} --registry pagopa${{ matrix.short }}commonacr .
 
       - name: Gets K8s context
-        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
         uses: azure/aks-set-context@v3
         with:
           resource-group: pagopa-${{matrix.short}}-weu-dev-aks-rg
@@ -267,13 +307,13 @@ jobs:
           use-kubelogin: 'true'
 
       - name: Helm Setup
-        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
         run: |
           helm repo add microservice-chart https://pagopa.github.io/aks-microservice-chart-blueprint
           helm dep build helm
 
       - name: Helm Deploy
-        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
         run: helm upgrade --namespace ${{ env.NAMESPACE }}
           --install --values ./helm/values-${{ matrix.environment }}.yaml
           --set microservice-chart.image.tag=${{ needs.release.outputs.version }}
