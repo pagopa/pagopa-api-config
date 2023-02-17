@@ -226,7 +226,6 @@ jobs:
           ref: ${{ github.ref_name}}
 
       - name: Read terraform version
-        id: read-version
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
         shell: bash
         run: |
@@ -239,7 +238,6 @@ jobs:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
 
       - name: Login
-        id: login
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
         uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
         with:
@@ -254,15 +252,11 @@ jobs:
 #          az acr build --image ${{ env.APP_NAME }}:${{ needs.release.outputs.version }} --registry pagopa${{ matrix.short }}commonacr .
 
       - name: Gets K8s context
-        id: login
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
-        uses: azure/aks-set-context@4e5aec273183a197b181314721843e047123d9fa
+        uses: azure/aks-set-context@v3
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
           resource-group: pagopa-${{matrix.short}}-weu-dev-aks-rg
           cluster-name: pagopa-${{matrix.short}}-weu-dev-aks
-          cluster-type: arc
-          method: service-principal
 
       - name: Helm Setup
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
