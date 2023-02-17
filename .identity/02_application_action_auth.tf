@@ -21,3 +21,9 @@ resource "azurerm_role_assignment" "product" {
   role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.action.object_id
 }
+
+resource "azurerm_role_assignment" "aks" {
+  scope                = data.azurerm_kubernetes_cluster.aks.id
+  role_definition_name = "Contributor"
+  principal_id         = azuread_service_principal.action.object_id
+}
