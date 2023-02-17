@@ -87,7 +87,7 @@ jobs:
 
   release:
     name: Create a New Release
-    # The type of runner that the job will run on
+    needs: [setup]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get_version.outputs.version }}
@@ -150,7 +150,7 @@ jobs:
           echo "version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
 
       - name: Update Version Helm
-        if: ${{ env.SEMVER != 'skip') }}
+        if: ${{ env.SEMVER != 'skip' }}
         run: |
           for i in helm/values-*.yaml; do
             [ -f "$i" ] || break
@@ -164,7 +164,7 @@ jobs:
             git add "$CHART_FILE"
           fi
       - name: Update Openapi/Swagger Version
-        if: ${{ env.SEMVER != 'skip') }}
+        if: ${{ env.SEMVER != 'skip' }}
         run: |
           for i in openapi/*.json; do
             [ -f "$i" ] || break
@@ -183,7 +183,7 @@ jobs:
           done
 
       - name: Push New Version
-        if: ${{ env.SEMVER != 'skip') }}
+        if: ${{ env.SEMVER != 'skip' }}
         run: |
           echo "${{ steps.get_version.outputs.version }}"
           git ls-files . | grep 'pom.xml'  | xargs git add
@@ -193,7 +193,7 @@ jobs:
           git push origin ${{ github.ref_name}}
 
       - name: Create Release
-        if: ${{ env.SEMVER != 'skip') }}
+        if: ${{ env.SEMVER != 'skip' }}
         uses: ncipollo/release-action@v1.12.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

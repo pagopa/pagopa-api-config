@@ -27,3 +27,9 @@ resource "azurerm_role_assignment" "aks" {
   role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.action.object_id
 }
+
+resource "azurerm_role_assignment" "key_vault" {
+  scope                = data.azurerm_key_vault.key_vault.id
+  role_definition_name = "Reader"
+  principal_id         = azuread_service_principal.action.object_id
+}
