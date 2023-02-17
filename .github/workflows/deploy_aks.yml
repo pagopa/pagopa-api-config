@@ -237,9 +237,15 @@ jobs:
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
 
+      - name: Set up kubelogin for non-interactive login
+        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.24'
+
       - name: Login
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
-        uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+        uses: azure/login@89d153571fe9a34ed70fcf9f1d95ab8debea7a73
         with:
           client-id: ${{ vars.CLIENT_ID }}
           tenant-id: ${{ vars.TENANT_ID }}
@@ -253,10 +259,12 @@ jobs:
 
       - name: Gets K8s context
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
-        uses: azure/aks-set-context@v3
+        uses: azure/aks-set-context@4e5aec273183a197b181314721843e047123d9fa
         with:
           resource-group: pagopa-${{matrix.short}}-weu-dev-aks-rg
           cluster-name: pagopa-${{matrix.short}}-weu-dev-aks
+          admin: 'false'
+          use-kubelogin: 'true'
 
       - name: Helm Setup
         if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
