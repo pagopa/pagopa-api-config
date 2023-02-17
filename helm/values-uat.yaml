@@ -72,7 +72,7 @@ microservice-chart:
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
     COSMOS_URI: 'https://pagopa-u-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
     DATABASE_SCHEMA: 'cfg'
-    LOGGING_LEVEL: "DEBUG"
+    APP_LOGGING_LEVEL: "INFO"
     SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-u-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
     SPRING_DATASOURCE_USERNAME: 'cfg'
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
