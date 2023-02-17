@@ -205,7 +205,7 @@ jobs:
 
 
   build:
-    needs: release
+    needs: [setup, release]
     runs-on: ubuntu-latest
     name: Build and Push Docker Image
     if: ${{ env.SEMVER != 'skip' || github.event.inputs.force_push_image == 'true' }}
