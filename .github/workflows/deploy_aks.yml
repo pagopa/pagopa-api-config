@@ -258,7 +258,6 @@ jobs:
             short: p
     environment:
       name: ${{ matrix.environment }}
-    if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
     steps:
       - uses: actions/checkout@v3
         if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
