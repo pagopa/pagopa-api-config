@@ -323,21 +323,21 @@ jobs:
         # TODO remove target?
 
 
-  notify:
-    needs: [ update_infra ]
-    runs-on: ubuntu-latest
-    name: Notify
-    if: always()
-    steps:
-      - name: Report Status
-        if: always()
-        uses: ravsamhq/notify-slack-action@v2
-        with:
-          status: ${{ needs.update_infra.result }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          notify_when: 'failure,skipped'
-          notification_title: '{workflow} has {status_message}'
-          message_format: '{emoji} <{workflow_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
-          footer: 'Linked to Repo <{repo_url}|{repo}>'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#  notify:
+#    needs: [ update_infra ]
+#    runs-on: ubuntu-latest
+#    name: Notify
+#    if: always()
+#    steps:
+#      - name: Report Status
+#        if: always()
+#        uses: ravsamhq/notify-slack-action@v2
+#        with:
+#          status: ${{ needs.update_infra.result }}
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          notify_when: 'failure,skipped'
+#          notification_title: '{workflow} has {status_message}'
+#          message_format: '{emoji} <{workflow_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
+#          footer: 'Linked to Repo <{repo_url}|{repo}>'
+#        env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

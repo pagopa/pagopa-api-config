@@ -80,7 +80,7 @@ microservice-chart:
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
   envSecret:
     # required
-    APPLICATIONINSIGHTS_CONNECTION_STRING: 'azure-insight-connection-string'
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-u-connection-string'
     AFM_MARKETPLACE_SUBSCRIPTION_KEY: 'afm-marketplace-subscription-key'
     AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
@@ -89,17 +89,13 @@ microservice-chart:
     name: "pagopa-u-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
   nodeSelector: {}
-  tolerations:
-    - key: dedicated
-      operator: Equal
-      value: "apiconfig"
-      effect: NoSchedule
+  tolerations: []
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
-              - key: apiconfig
+              - key: node_type
                 operator: In
                 values:
-                  - "true"
+                  - user
