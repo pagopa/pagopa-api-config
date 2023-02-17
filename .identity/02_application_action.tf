@@ -15,6 +15,23 @@ resource "azuread_application_federated_identity_credential" "environment" {
   subject               = "repo:${local.github.org}/${local.github.repository}:environment:${var.env}"
 }
 
+resource "azurerm_key_vault_access_policy" "adgroup_action_policy" {
+  count = var.env_short != "p" ? 1 : 0
+
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = azuread_service_principal.action.object_id
+
+  key_permissions     = ["Get", "List", "Update", "Create", "Import", "Delete", ]
+  secret_permissions  = ["Get", "List", "Set", "Delete", ]
+  storage_permissions = []
+  certificate_permissions = [
+    "Get", "List", "Update", "Create", "Import",
+    "Delete", "Restore", "Purge", "Recover"
+  ]
+}
+
 output "azure_action_client_id" {
   value = azuread_service_principal.action.application_id
 }

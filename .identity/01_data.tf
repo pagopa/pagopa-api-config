@@ -18,9 +18,7 @@ data "azurerm_kubernetes_cluster" "aks" {
   resource_group_name = local.aks_resource_group_name
 }
 
-
 data "azurerm_key_vault" "key_vault" {
   name                = "${local.product}-${local.domain}-kv"
   resource_group_name = "${local.product}-${local.domain}-sec-rg"
 }
-
