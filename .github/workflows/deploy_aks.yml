@@ -310,6 +310,7 @@ jobs:
         run: |
           cd ./pagopa-infra/src/domains/apiconfig-app
           bash ./terraform.sh apply weu-${{ matrix.environment }} -auto-approve -target=module.${{ env.TARGET }}
+        # TODO remove target?
 
 
   notify:
