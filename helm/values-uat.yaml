@@ -9,7 +9,7 @@ microservice-chart:
       maxSurge: 1
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.29.1-18-aks"
+    tag: "0.29.1-19-aks"
     pullPolicy: Always
   livenessProbe:
     httpGet:
