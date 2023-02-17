@@ -56,6 +56,9 @@ jobs:
   setup:
     name: Setup
     runs-on: ubuntu-latest
+    outputs:
+      semver: ${{ steps.output.outputs.semver }}
+      environment: ${{ steps.output.outputs.environment }}
     steps:
       - if: ${{ contains(github.event.pull_request.labels.*.name, 'breaking-change') || github.event.inputs.semver == 'major' }}
         run: echo "SEMVER=major" >> $GITHUB_ENV
@@ -83,6 +86,12 @@ jobs:
 
       - if: ${{ github.event.inputs.environment == 'all' }}
         run: echo "ENVIRNOMENT=all" >> $GITHUB_ENV
+
+      - id: output
+        name: Set Output
+        run: |
+          echo "semver=${{env.SEMVER}}" >> $GITHUB_OUTPUT
+          echo "environment=${{env.ENVIRNOMENT}}" >> $GITHUB_OUTPUT
 
 
   release:
@@ -126,22 +135,22 @@ jobs:
       - name: Set build-number
         run: |
           mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}${{env.BRANCH}}'
-        if: ${{ env.SEMVER == 'buildNumber' }}
+        if: ${{ needs.setup.outputs.semver == 'buildNumber' }}
 
       - name: Set major
         run: |
           mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.nextMajorVersion}.0.0${{env.BRANCH}}'
-        if: ${{ env.SEMVER == 'major' }}
+        if: ${{ needs.setup.outputs.semver == 'major' }}
 
       - name: Set minor
         run: |
           mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0${{env.BRANCH}}'
-        if: ${{ env.SEMVER == 'minor' }}
+        if: ${{ needs.setup.outputs.semver == 'minor' }}
 
       - name: Set patch
         run: |
           mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}${{env.BRANCH}}'
-        if: ${{ env.SEMVER == 'patch' }}
+        if: ${{ needs.setup.outputs.semver == 'patch' }}
 
       - id: get_version
         name: Get Version
@@ -150,7 +159,7 @@ jobs:
           echo "version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
 
       - name: Update Version Helm
-        if: ${{ env.SEMVER != 'skip' }}
+        if: ${{ needs.setup.outputs.semver != 'skip' }}
         run: |
           for i in helm/values-*.yaml; do
             [ -f "$i" ] || break
@@ -164,7 +173,7 @@ jobs:
             git add "$CHART_FILE"
           fi
       - name: Update Openapi/Swagger Version
-        if: ${{ env.SEMVER != 'skip' }}
+        if: ${{ needs.setup.outputs.semver != 'skip' }}
         run: |
           for i in openapi/*.json; do
             [ -f "$i" ] || break
@@ -183,7 +192,7 @@ jobs:
           done
 
       - name: Push New Version
-        if: ${{ env.SEMVER != 'skip' }}
+        if: ${{ needs.setup.outputs.semver != 'skip' }}
         run: |
           echo "${{ steps.get_version.outputs.version }}"
           git ls-files . | grep 'pom.xml'  | xargs git add
@@ -193,7 +202,7 @@ jobs:
           git push origin ${{ github.ref_name}}
 
       - name: Create Release
-        if: ${{ env.SEMVER != 'skip' }}
+        if: ${{ needs.setup.outputs.semver != 'skip' }}
         uses: ncipollo/release-action@v1.12.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -208,7 +217,7 @@ jobs:
     needs: [setup, release]
     runs-on: ubuntu-latest
     name: Build and Push Docker Image
-    if: ${{ !(contains(github.event.pull_request.labels.*.name, 'ignore-for-release') || github.event.inputs.semver == 'skip') || (github.event.inputs.force_push_image == 'true') }}
+    if: ${{ !(needs.setup.outputs.semver == 'skip') || (github.event.inputs.force_push_image == 'true') }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -243,7 +252,7 @@ jobs:
     # TODO remember to add the package write permissions to the action https://github.com/users/<OWNER>/packages/container/<REPOSITORY>/settings
 
   deploy:
-    needs: [release, build]
+    needs: [setup, release, build]
     runs-on: ubuntu-latest
     name: Deploy on AKS
     strategy:
@@ -260,30 +269,30 @@ jobs:
       name: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v3
-        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         with:
           ref: ${{ github.ref_name}}
 
       - name: Read terraform version
-        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         shell: bash
         run: |
           echo "TERRAFORM_VERSION=`cat .terraform-version`" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@8feba2b913ea459066180f9cb177f58a881cf146
-        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
 
       - name: Set up kubelogin for non-interactive login
-        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         uses: azure/use-kubelogin@v1
         with:
           kubelogin-version: 'v0.0.24'
 
       - name: Login
-        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         uses: azure/login@89d153571fe9a34ed70fcf9f1d95ab8debea7a73
         with:
           client-id: ${{ vars.CLIENT_ID }}
@@ -297,7 +306,7 @@ jobs:
 #          az acr build --image ${{ env.APP_NAME }}:${{ needs.release.outputs.version }} --registry pagopa${{ matrix.short }}commonacr .
 
       - name: Gets K8s context
-        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         uses: azure/aks-set-context@v3
         with:
           resource-group: pagopa-${{matrix.short}}-weu-dev-aks-rg
@@ -306,13 +315,13 @@ jobs:
           use-kubelogin: 'true'
 
       - name: Helm Setup
-        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         run: |
           helm repo add microservice-chart https://pagopa.github.io/aks-microservice-chart-blueprint
           helm dep build helm
 
       - name: Helm Deploy
-        if: ${{ matrix.environment == env.ENVIRONMENT || env.ENVIRONMENT == 'all' }}
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         run: helm upgrade --namespace ${{ env.NAMESPACE }}
           --install --values ./helm/values-${{ matrix.environment }}.yaml
           --set microservice-chart.image.tag=${{ needs.release.outputs.version }}
