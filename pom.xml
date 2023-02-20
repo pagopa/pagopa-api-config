@@ -67,11 +67,17 @@
             <version>${spring-retry-version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.5.1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.postgresql</groupId>-->
+<!--            <artifactId>postgresql</artifactId>-->
+<!--            <version>42.5.1</version>-->
+<!--        </dependency>-->
+
+      <dependency>
+        <groupId>com.oracle.database.jdbc</groupId>
+        <artifactId>ojdbc8</artifactId>
+        <version>21.4.0.0</version>
+      </dependency>
 
         <dependency>
             <groupId>com.azure</groupId>
