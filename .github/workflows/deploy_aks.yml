@@ -99,7 +99,7 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.get_version.outputs.version }}
+      version: ${{ steps.semver.outputs.version }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
@@ -112,8 +112,8 @@ jobs:
         env:
           JSON: ${{ toJSON(github) }}
 
-      - name: semver
-        id: get_version
+      - name: Update Semantic Version
+        id: semver
         uses: pagopa/github-actions-template/maven-semver@main
         with:
           semver: ${{needs.setup.outputs.semver}}
