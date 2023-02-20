@@ -127,69 +127,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Set branch
-        run: |
-          echo "BRANCH=-${{github.ref_name}}" >> $GITHUB_ENV
-        if: ${{ github.ref_name != 'main' }}
-
-      - name: Set build-number
-        run: |
-          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}${{env.BRANCH}}'
-        if: ${{ needs.setup.outputs.semver == 'buildNumber' }}
-
-      - name: Set major
-        run: |
-          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.nextMajorVersion}.0.0${{env.BRANCH}}'
-        if: ${{ needs.setup.outputs.semver == 'major' }}
-
-      - name: Set minor
-        run: |
-          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0${{env.BRANCH}}'
-        if: ${{ needs.setup.outputs.semver == 'minor' }}
-
-      - name: Set patch
-        run: |
-          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}${{env.BRANCH}}'
-        if: ${{ needs.setup.outputs.semver == 'patch' }}
-
-      - id: get_version
-        name: Get Version
-        run: |
-          echo "$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
-          echo "version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
-
-      - name: Update Version Helm
-        if: ${{ needs.setup.outputs.semver != 'skip' }}
-        run: |
-          for i in helm/values-*.yaml; do
-            [ -f "$i" ] || break
-            yq -i ".microservice-chart.image.tag = \"${{ steps.get_version.outputs.version }}\"" "$i"
-            git add "$i"
-          done
-          CHART_FILE="helm/Chart.yaml"
-          if [[ -f "$CHART_FILE" ]]; then
-            yq -i ".version = \"${{ steps.get_version.outputs.version }}\"" "$CHART_FILE"
-            yq -i ".appVersion = \"${{ steps.get_version.outputs.version }}\"" "$CHART_FILE"
-            git add "$CHART_FILE"
-          fi
-      - name: Update Openapi/Swagger Version
-        if: ${{ needs.setup.outputs.semver != 'skip' }}
-        run: |
-          for i in openapi/*.json; do
-            [ -f "$i" ] || break
-            cat <<< "$(jq ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i")" > "$i"
-            git add $i
-          done
-          for i in openapi/*.yaml; do
-            [ -f "$i" ] || break
-            yq -i ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i"
-            git add "$i"
-          done
-          for i in openapi/*.yml; do
-            [ -f "$i" ] || break
-            yq -i ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i"
-            git add "$i"
-          done
+      - name: semver
+        id: get_version
+        uses: pagopa/github-actions-template/maven-semver@main
 
       - name: Push New Version
         if: ${{ needs.setup.outputs.semver != 'skip' }}

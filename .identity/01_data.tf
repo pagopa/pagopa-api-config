@@ -3,6 +3,11 @@ data "azurerm_storage_account" "tfstate_app" {
   resource_group_name = "io-infra-rg"
 }
 
+data "azurerm_storage_account" "tfstate_inf" {
+  name                = "pagopainfraterraform${var.env}"
+  resource_group_name = "io-infra-rg"
+}
+
 data "azurerm_resource_group" "dashboards" {
   name = "dashboards"
 }
@@ -21,4 +26,8 @@ data "azurerm_kubernetes_cluster" "aks" {
 data "azurerm_key_vault" "key_vault" {
   name                = "${local.product}-${local.domain}-kv"
   resource_group_name = "${local.product}-${local.domain}-sec-rg"
+}
+
+resource "azuread_directory_role" "directory_readers" {
+  display_name = "Directory Readers"
 }

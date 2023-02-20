@@ -16,3 +16,10 @@ variable "prefix" {
     error_message = "Max length is 6 chars."
   }
 }
+
+variable "environment_cd_roles" {
+  type = object({
+    subscription = list(string)
+  })
+  description = "GitHub Continous Delivery roles"
+}
