@@ -121,7 +121,7 @@ jobs:
       - name: Push New Version
         if: ${{ needs.setup.outputs.semver != 'skip' }}
         run: |
-          echo "${{ steps.get_version.outputs.version }}"
+          echo "${{ steps.semver.outputs.version }}"
           git ls-files . | grep 'pom.xml'  | xargs git add
           git config --global user.email "github-bot@pagopa.it"
           git config --global user.name "pagopa-github-bot"
@@ -134,8 +134,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ steps.get_version.outputs.version }}
-          name: Release ${{ steps.get_version.outputs.version }}
+          tag: ${{ steps.semver.outputs.version }}
+          name: Release ${{ steps.semver.outputs.version }}
           makeLatest: latest
           generateReleaseNotes: true
 
