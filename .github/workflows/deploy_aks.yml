@@ -99,7 +99,7 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.get_version.outputs.version }}
+      version: ${{ steps.semver.outputs.version }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
@@ -112,84 +112,11 @@ jobs:
         env:
           JSON: ${{ toJSON(github) }}
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
+      - name: Update Semantic Version
+        id: semver
+        uses: pagopa/github-actions-template/maven-semver@main
         with:
-          java-version: 11
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.5
-        with:
-          maven-version: 3.8.2
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Set branch
-        run: |
-          echo "BRANCH=-${{github.ref_name}}" >> $GITHUB_ENV
-        if: ${{ github.ref_name != 'main' }}
-
-      - name: Set build-number
-        run: |
-          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${parsedVersion.nextBuildNumber}${{env.BRANCH}}'
-        if: ${{ needs.setup.outputs.semver == 'buildNumber' }}
-
-      - name: Set major
-        run: |
-          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.nextMajorVersion}.0.0${{env.BRANCH}}'
-        if: ${{ needs.setup.outputs.semver == 'major' }}
-
-      - name: Set minor
-        run: |
-          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0${{env.BRANCH}}'
-        if: ${{ needs.setup.outputs.semver == 'minor' }}
-
-      - name: Set patch
-        run: |
-          mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}${{env.BRANCH}}'
-        if: ${{ needs.setup.outputs.semver == 'patch' }}
-
-      - id: get_version
-        name: Get Version
-        run: |
-          echo "$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
-          echo "version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
-
-      - name: Update Version Helm
-        if: ${{ needs.setup.outputs.semver != 'skip' }}
-        run: |
-          for i in helm/values-*.yaml; do
-            [ -f "$i" ] || break
-            yq -i ".microservice-chart.image.tag = \"${{ steps.get_version.outputs.version }}\"" "$i"
-            git add "$i"
-          done
-          CHART_FILE="helm/Chart.yaml"
-          if [[ -f "$CHART_FILE" ]]; then
-            yq -i ".version = \"${{ steps.get_version.outputs.version }}\"" "$CHART_FILE"
-            yq -i ".appVersion = \"${{ steps.get_version.outputs.version }}\"" "$CHART_FILE"
-            git add "$CHART_FILE"
-          fi
-      - name: Update Openapi/Swagger Version
-        if: ${{ needs.setup.outputs.semver != 'skip' }}
-        run: |
-          for i in openapi/*.json; do
-            [ -f "$i" ] || break
-            cat <<< "$(jq ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i")" > "$i"
-            git add $i
-          done
-          for i in openapi/*.yaml; do
-            [ -f "$i" ] || break
-            yq -i ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i"
-            git add "$i"
-          done
-          for i in openapi/*.yml; do
-            [ -f "$i" ] || break
-            yq -i ".info.version = \"${{ steps.get_version.outputs.version }}\"" "$i"
-            git add "$i"
-          done
+          semver: ${{needs.setup.outputs.semver}}
 
       - name: Push New Version
         if: ${{ needs.setup.outputs.semver != 'skip' }}
@@ -219,37 +146,12 @@ jobs:
     name: Build and Push Docker Image
     if: ${{ !(needs.setup.outputs.semver == 'skip') || (github.event.inputs.force_push_image == 'true') }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Build and Push
+        id: semver
+        uses: pagopa/github-actions-template/ghcr-build-push@main
         with:
-          ref: ${{ github.ref_name}}
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4.3.0
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            latest
-            ${{ needs.release.outputs.version }}
-            type=ref,event=branch
-            type=sha
-            ${{ github.event.inputs.environment != null && github.event.inputs.environment || 'dev'  }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-    # TODO remember to add the package write permissions to the action https://github.com/users/<OWNER>/packages/container/<REPOSITORY>/settings
+          branch: ${{ github.ref_name}}
+          tag: ${{ needs.release.outputs.version }}
 
   deploy:
     needs: [setup, release, build]
