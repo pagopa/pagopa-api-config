@@ -102,43 +102,17 @@ jobs:
       version: ${{ steps.semver.outputs.version }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref_name}}
-          token: ${{ secrets.API_TOKEN_GITHUB }}
-
       - name: Dump GitHub context
         run: echo $JSON
         env:
           JSON: ${{ toJSON(github) }}
 
-      - name: Update Semantic Version
-        id: semver
-        uses: pagopa/github-actions-template/maven-semver@main
+      - name: Make Release
+        id: release
+        uses: pagopa/github-actions-template/release@main
         with:
           semver: ${{needs.setup.outputs.semver}}
-
-      - name: Push New Version
-        if: ${{ needs.setup.outputs.semver != 'skip' }}
-        run: |
-          echo "${{ steps.semver.outputs.version }}"
-          git ls-files . | grep 'pom.xml'  | xargs git add
-          git config --global user.email "github-bot@pagopa.it"
-          git config --global user.name "pagopa-github-bot"
-          git commit -m "Bump version [skip ci]" || exit 0
-          git push origin ${{ github.ref_name}}
-
-      - name: Create Release
-        if: ${{ needs.setup.outputs.semver != 'skip' }}
-        uses: ncipollo/release-action@v1.12.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ steps.semver.outputs.version }}
-          name: Release ${{ steps.semver.outputs.version }}
-          makeLatest: latest
-          generateReleaseNotes: true
-
+          github_token: ${{ secrets.API_TOKEN_GITHUB }}
 
   build:
     needs: [setup, release]
