@@ -147,65 +147,19 @@ jobs:
     environment:
       name: ${{ matrix.environment }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Deploy
         if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
+        uses: pagopa/github-actions-template/aks-deploy@v1
         with:
-          ref: ${{ github.ref_name}}
-
-      - name: Read terraform version
-        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
-        shell: bash
-        run: |
-          echo "TERRAFORM_VERSION=`cat .terraform-version`" >> $GITHUB_ENV
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@8feba2b913ea459066180f9cb177f58a881cf146
-        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
-        with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
-
-      - name: Set up kubelogin for non-interactive login
-        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
-        uses: azure/use-kubelogin@v1
-        with:
-          kubelogin-version: 'v0.0.24'
-
-      - name: Login
-        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
-        uses: azure/login@89d153571fe9a34ed70fcf9f1d95ab8debea7a73
-        with:
-          client-id: ${{ vars.CLIENT_ID }}
-          tenant-id: ${{ vars.TENANT_ID }}
-          subscription-id: ${{ vars.SUBSCRIPTION_ID }}
-
-      #      - name: Build image on ACR
-      #        if: ${{ (github.event.inputs.environment == null && matrix.environment == 'dev' ) || matrix.environment == github.event.inputs.environment || github.event.inputs.environment == 'all' }}
-      #        run: |
-      #          az configure --defaults acr=pagopa${{ matrix.short }}commonacr
-      #          az acr build --image ${{ env.APP_NAME }}:${{ needs.release.outputs.version }} --registry pagopa${{ matrix.short }}commonacr .
-
-      - name: Gets K8s context
-        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
-        uses: azure/aks-set-context@v3
-        with:
-          resource-group: pagopa-${{matrix.short}}-weu-dev-aks-rg
-          cluster-name: pagopa-${{matrix.short}}-weu-dev-aks
-          admin: 'false'
-          use-kubelogin: 'true'
-
-      - name: Helm Setup
-        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
-        run: |
-          helm repo add microservice-chart https://pagopa.github.io/aks-microservice-chart-blueprint
-          helm dep build helm
-
-      - name: Helm Deploy
-        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
-        run: helm upgrade --namespace ${{ env.NAMESPACE }}
-          --install --values ./helm/values-${{ matrix.environment }}.yaml
-          --set microservice-chart.image.tag=${{ needs.release.outputs.version }}
-          --wait --timeout 5m0s
-          ${{ env.APP_NAME }} ./helm
+          client_id: ${{ vars.CLIENT_ID }}
+          subscription_id: ${{ vars.SUBSCRIPTION_ID }}
+          tenant_id: ${{ vars.TENANT_ID }}
+          env: ${{ matrix.environment }}
+          namespace: ${{ env.NAMESPACE }}
+          cluster_name: pagopa-${{matrix.short}}-weu-dev-aks
+          resource_group: pagopa-${{matrix.short}}-weu-dev-aks-rg
+          version: ${{ needs.release.outputs.version }}
+          app_name: ${{ env.APP_NAME }}
 
         # TODO log deployment successful on App Insights
 
