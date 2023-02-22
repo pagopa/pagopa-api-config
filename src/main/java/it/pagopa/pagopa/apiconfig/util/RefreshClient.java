@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface RefreshClient {
-    @RequestLine("GET /jobs/trigger/{jobTrigger}")
-    String triggerJob(@Param("jobTrigger") String jobTrigger);
+  @RequestLine("GET /jobs/trigger/{jobTrigger}")
+  String triggerJob(@Param("jobTrigger") String jobTrigger);
 
-    @RequestLine("GET /config/refresh/{configDomain}")
-    String refreshConfiguration(@Param("configDomain") String configDomain);
+  @RequestLine("GET /config/refresh/{configDomain}")
+  String refreshConfiguration(@Param("configDomain") String configDomain);
 }

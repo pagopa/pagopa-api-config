@@ -17,29 +17,27 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 public class RefreshService {
 
-    private RefreshClient client;
+  private RefreshClient client;
 
-    public RefreshService(@Value("${service.nodo-monitoring.host}") String monitoringUrl) {
-        client = Feign.builder()
-            .target(RefreshClient.class, monitoringUrl);
-    }
+  public RefreshService(@Value("${service.nodo-monitoring.host}") String monitoringUrl) {
+    client = Feign.builder().target(RefreshClient.class, monitoringUrl);
+  }
 
-    public String jobTrigger(JobTrigger jobType) {
-        try {
-            return client.triggerJob(jobType.getValue());
-        } catch(FeignException e){
-            throw new AppException(AppError.INTERNAL_SERVER_ERROR);
-        }
+  public String jobTrigger(JobTrigger jobType) {
+    try {
+      return client.triggerJob(jobType.getValue());
+    } catch (FeignException e) {
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR);
     }
+  }
 
-    public String refreshConfig(ConfigurationDomain domain) {
-        try {
-            if(domain.equals(ConfigurationDomain.GLOBAL))
-              return client.triggerJob(JobTrigger.REFRESH_CONFIGURATION.getValue());
-            else
-              return client.refreshConfiguration(domain.getValue());
-        } catch(FeignException e){
-            throw new AppException(AppError.INTERNAL_SERVER_ERROR);
-        }
+  public String refreshConfig(ConfigurationDomain domain) {
+    try {
+      if (domain.equals(ConfigurationDomain.GLOBAL))
+        return client.triggerJob(JobTrigger.REFRESH_CONFIGURATION.getValue());
+      else return client.refreshConfiguration(domain.getValue());
+    } catch (FeignException e) {
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR);
     }
+  }
 }

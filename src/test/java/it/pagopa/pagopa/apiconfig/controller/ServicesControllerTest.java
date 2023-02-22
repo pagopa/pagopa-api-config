@@ -1,5 +1,13 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockServices;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.service.ServicesService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,34 +19,24 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockServices;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
 class ServicesControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+  @Autowired private MockMvc mvc;
 
-    @MockBean
-    private ServicesService servicesService;
+  @MockBean private ServicesService servicesService;
 
-    @BeforeEach
-    void setUp() {
-        when(servicesService.getServices(anyInt(), anyInt(), any())).thenReturn(getMockServices());
-    }
+  @BeforeEach
+  void setUp() {
+    when(servicesService.getServices(anyInt(), anyInt(), any())).thenReturn(getMockServices());
+  }
 
-    @Test
-    void getServices() throws Exception {
-        String url = "/services?page=0";
-        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+  @Test
+  void getServices() throws Exception {
+    String url = "/services?page=0";
+    mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
 }

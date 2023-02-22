@@ -1,7 +1,6 @@
 package it.pagopa.pagopa.apiconfig.model;
 
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class MassiveCheck {
 
-    private String fileName;
+  private String fileName;
 
-    private List<CheckItem> checkItems;
+  private List<CheckItem> checkItems;
 }

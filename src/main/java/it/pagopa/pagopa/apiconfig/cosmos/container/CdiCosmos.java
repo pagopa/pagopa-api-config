@@ -13,25 +13,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@Container(containerName = "cdis",autoCreateContainer = false)
+@Container(containerName = "cdis", autoCreateContainer = false)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CdiCosmos {
 
-    @Id
-    private String id;
-    @PartitionKey
-    private String idPsp;
-    private String idCdi;
-    private String abi;
-    private String cdiStatus;
-    private Boolean digitalStamp;
-    private LocalDateTime validityDateFrom;
-    private List<CdiDetailCosmos> details;
+  @Id private String id;
+  @PartitionKey private String idPsp;
+  private String idCdi;
+  private String abi;
+  private String cdiStatus;
+  private Boolean digitalStamp;
+  private LocalDateTime validityDateFrom;
+  private List<CdiDetailCosmos> details;
 }

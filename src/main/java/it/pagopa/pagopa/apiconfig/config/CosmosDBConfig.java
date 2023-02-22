@@ -26,47 +26,48 @@ import org.springframework.lang.Nullable;
 @Slf4j
 public class CosmosDBConfig extends AbstractCosmosConfiguration {
 
-    @Value("${azure.cosmos.uri}")
-    private String cosmosUri;
+  @Value("${azure.cosmos.uri}")
+  private String cosmosUri;
 
-    @Value("${azure.cosmos.key}")
-    private String cosmosKey;
+  @Value("${azure.cosmos.key}")
+  private String cosmosKey;
 
-    @Value("${azure.cosmos.database}")
-    private String cosmosDatabase;
+  @Value("${azure.cosmos.database}")
+  private String cosmosDatabase;
 
-    @Value("${azure.cosmos.populate-query-metrics}")
-    private Boolean cosmosQueryMetrics;
+  @Value("${azure.cosmos.populate-query-metrics}")
+  private Boolean cosmosQueryMetrics;
 
-    @Bean
-    public CosmosClientBuilder getCosmosClientBuilder() {
-        var azureKeyCredential = new AzureKeyCredential(cosmosKey);
-        var directConnectionConfig = new DirectConnectionConfig();
-        var gatewayConnectionConfig = new GatewayConnectionConfig();
-        return new CosmosClientBuilder()
-                .endpoint(cosmosUri)
-                .credential(azureKeyCredential)
-                .directMode(directConnectionConfig, gatewayConnectionConfig);
-    }
+  @Bean
+  public CosmosClientBuilder getCosmosClientBuilder() {
+    var azureKeyCredential = new AzureKeyCredential(cosmosKey);
+    var directConnectionConfig = new DirectConnectionConfig();
+    var gatewayConnectionConfig = new GatewayConnectionConfig();
+    return new CosmosClientBuilder()
+        .endpoint(cosmosUri)
+        .credential(azureKeyCredential)
+        .directMode(directConnectionConfig, gatewayConnectionConfig);
+  }
+
+  @Override
+  public CosmosConfig cosmosConfig() {
+    return CosmosConfig.builder()
+        .enableQueryMetrics(cosmosQueryMetrics)
+        .responseDiagnosticsProcessor(new ResponseDiagnosticsProcessorImplementation())
+        .build();
+  }
+
+  @Override
+  protected String getDatabaseName() {
+    return cosmosDatabase;
+  }
+
+  private static class ResponseDiagnosticsProcessorImplementation
+      implements ResponseDiagnosticsProcessor {
 
     @Override
-    public CosmosConfig cosmosConfig() {
-        return CosmosConfig.builder()
-                .enableQueryMetrics(cosmosQueryMetrics)
-                .responseDiagnosticsProcessor(new ResponseDiagnosticsProcessorImplementation())
-                .build();
+    public void processResponseDiagnostics(@Nullable ResponseDiagnostics responseDiagnostics) {
+      log.debug("Response Diagnostics {}", responseDiagnostics);
     }
-
-    @Override
-    protected String getDatabaseName() {
-        return cosmosDatabase;
-    }
-
-    private static class ResponseDiagnosticsProcessorImplementation implements ResponseDiagnosticsProcessor {
-
-        @Override
-        public void processResponseDiagnostics(@Nullable ResponseDiagnostics responseDiagnostics) {
-            log.debug("Response Diagnostics {}", responseDiagnostics);
-        }
-    }
+  }
 }

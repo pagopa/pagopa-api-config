@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TipiVersamentoRepository extends JpaRepository<TipiVersamento, Long> {
 
-    Optional<TipiVersamento> findByTipoVersamento(String tipoVersamento);
+  Optional<TipiVersamento> findByTipoVersamento(String tipoVersamento);
 }

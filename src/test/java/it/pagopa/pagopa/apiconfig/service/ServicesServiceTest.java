@@ -1,11 +1,16 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockElencoServizi;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
 import it.pagopa.pagopa.apiconfig.model.psp.Service;
 import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import it.pagopa.pagopa.apiconfig.repository.ElencoServiziRepository;
+import java.io.IOException;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -18,45 +23,35 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.io.IOException;
-
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockElencoServizi;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 @SpringBootTest(classes = ApiConfig.class)
 class ServicesServiceTest {
 
-    @MockBean
-    private ElencoServiziRepository elencoServiziRepository;
+  @MockBean private ElencoServiziRepository elencoServiziRepository;
 
-    @Autowired
-    @InjectMocks
-    private ServicesService servicesService;
+  @Autowired @InjectMocks private ServicesService servicesService;
 
+  @Test
+  void getServices() throws IOException, JSONException {
+    Page<ElencoServizi> page = TestUtil.mockPage(Lists.newArrayList(getMockElencoServizi()), 50, 0);
+    when(elencoServiziRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-    @Test
-    void getServices() throws IOException, JSONException {
-        Page<ElencoServizi> page = TestUtil.mockPage(Lists.newArrayList(getMockElencoServizi()), 50, 0);
-        when(elencoServiziRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+    Services result = servicesService.getServices(50, 0, Service.Filter.builder().build());
 
-        Services result = servicesService.getServices(50, 0, Service.Filter.builder().build());
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_services_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
 
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/get_services_ok1.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
-    }
+  @Test
+  void getServices_filter() throws IOException, JSONException {
+    Page<ElencoServizi> page = TestUtil.mockPage(Lists.newArrayList(getMockElencoServizi()), 50, 0);
+    when(elencoServiziRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-    @Test
-    void getServices_filter() throws IOException, JSONException {
-        Page<ElencoServizi> page = TestUtil.mockPage(Lists.newArrayList(getMockElencoServizi()), 50, 0);
-        when(elencoServiziRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
-
-        Services result = servicesService.getServices(50, 0, Service.Filter.builder()
-                .languageCode(Service.LanguageCode.EN)
-                .build());
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/get_services_ok2.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
-    }
+    Services result =
+        servicesService.getServices(
+            50, 0, Service.Filter.builder().languageCode(Service.LanguageCode.EN).build());
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_services_ok2.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
 }

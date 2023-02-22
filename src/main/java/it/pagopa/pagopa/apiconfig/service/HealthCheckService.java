@@ -8,14 +8,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class HealthCheckService {
 
-    @Autowired
-    HealthCheckRepository healthCheckRepository;
+  @Autowired HealthCheckRepository healthCheckRepository;
 
-    public boolean checkDatabaseConnection() {
-        try {
-            return healthCheckRepository.health().isPresent();
-        } catch (DataAccessResourceFailureException e) {
-            return false;
-        }
+  public boolean checkDatabaseConnection() {
+    try {
+      return healthCheckRepository.health().isPresent();
+    } catch (DataAccessResourceFailureException e) {
+      return false;
     }
+  }
 }
