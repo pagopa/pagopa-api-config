@@ -315,6 +315,7 @@ public class ConfigurationService {
                 throw new AppException(AppError.INTERNAL_SERVER_ERROR);
             }
         } catch (HttpClientErrorException e) {
+          if (e.getStatusCode() == null || !e.getStatusCode().equals(HttpStatus.NOT_FOUND))
             throw new AppException(AppError.INTERNAL_SERVER_ERROR);
         }
 
