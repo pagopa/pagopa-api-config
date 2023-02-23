@@ -322,39 +322,39 @@ public class ConfigurationService {
   }
 
   public void deletePaymentType(String paymentTypeCode) {
-      TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
+    TipiVersamento tipiVersamento = getTipiVersamentoIfExists(paymentTypeCode);
 
-      // check if payment type is used to create bundles (AFM Marketplace)
-      String stringUrl = String.format("%s/paymenttypes/{paymentTypeCode}", afmMarketplaceHost);
+    // check if payment type is used to create bundles (AFM Marketplace)
+    String stringUrl = String.format("%s/paymenttypes/{paymentTypeCode}", afmMarketplaceHost);
 
-      try {
-        Map<String, String> params = new HashMap<>();
-        params.put("paymentTypeCode", paymentTypeCode);
+    try {
+      Map<String, String> params = new HashMap<>();
+      params.put("paymentTypeCode", paymentTypeCode);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<AfmMarketplacePaymentType> responseE =
-            restTemplate.exchange(
-                stringUrl, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class, params);
-        AfmMarketplacePaymentType response = responseE.getBody();
-        if (responseE.getStatusCode().is2xxSuccessful() && response != null) {
-            if (response.getUsed()) {
-                throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
-            }
-        } else if (!responseE.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-            throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR);
+      HttpHeaders headers = new HttpHeaders();
+      headers.set("Ocp-Apim-Subscription-Key", afmMarketplaceSubscriptionKey);
+      HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+      ResponseEntity<AfmMarketplacePaymentType> responseE =
+          restTemplate.exchange(
+              stringUrl, HttpMethod.GET, requestEntity, AfmMarketplacePaymentType.class, params);
+      AfmMarketplacePaymentType response = responseE.getBody();
+      if (responseE.getStatusCode().is2xxSuccessful() && response != null) {
+        if (response.getUsed()) {
+          throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
         }
-      } catch (HttpClientErrorException e) {
-            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR);
-            }
-        } catch (ResourceAccessException e) {
-          throw new AppException(AppError.PAYMENT_TYPE_NO_AFM_MARKETPLACE);
+      } else if (!responseE.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+        throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR);
       }
+    } catch (HttpClientErrorException e) {
+      if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+        throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR);
+      }
+    } catch (ResourceAccessException e) {
+      throw new AppException(AppError.PAYMENT_TYPE_NO_AFM_MARKETPLACE);
+    }
 
-      paymentTypesCosmosRepository.deleteByName(paymentTypeCode);
-      tipiVersamentoRepository.delete(tipiVersamento);
+    paymentTypesCosmosRepository.deleteByName(paymentTypeCode);
+    tipiVersamentoRepository.delete(tipiVersamento);
   }
 
   public void uploadPaymentTypesHistory() {
