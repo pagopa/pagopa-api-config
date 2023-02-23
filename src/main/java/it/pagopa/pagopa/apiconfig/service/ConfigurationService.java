@@ -346,7 +346,7 @@ public class ConfigurationService {
             throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR);
         }
       } catch (HttpClientErrorException e) {
-            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+            if (e.getStatusCode() == null || !e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR);
             }
         } catch (ResourceAccessException e) {
