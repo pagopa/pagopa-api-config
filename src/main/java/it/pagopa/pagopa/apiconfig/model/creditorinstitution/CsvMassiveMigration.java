@@ -13,26 +13,24 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class CsvMassiveMigration {
 
-    @CsvBindByName(required = true, column = "cf")
-    private String creditorInstitution;
+  @CsvBindByName(required = true, column = "cf")
+  private String creditorInstitution;
 
-    @CsvBindByName(required = true, column = "idstazione_provenienza")
-    private String oldStation;
+  @CsvBindByName(required = true, column = "idstazione_provenienza")
+  private String oldStation;
 
-    @CsvBindByName(required = true, column = "idstazione_destinazione")
-    private String newStation;
+  @CsvBindByName(required = true, column = "idstazione_destinazione")
+  private String newStation;
 
-    @CsvBindByName(column = "broadcast")
-    private YesNo broadcast;
+  @CsvBindByName(column = "broadcast")
+  private YesNo broadcast;
 
+  @Getter
+  @AllArgsConstructor
+  public enum YesNo {
+    S(true),
+    N(false);
 
-    @Getter
-    @AllArgsConstructor
-    public enum YesNo {
-        S(true), N(false);
-
-        private final boolean value;
-
-    }
-
+    private final boolean value;
+  }
 }

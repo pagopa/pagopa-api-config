@@ -32,23 +32,21 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class BrokersPspService {
 
-  @Autowired
-  IntermediariPspRepository intermediariPspRepository;
+  @Autowired IntermediariPspRepository intermediariPspRepository;
 
-  @Autowired
-  PspRepository pspRepository;
+  @Autowired PspRepository pspRepository;
 
-  @Autowired
-  ModelMapper modelMapper;
+  @Autowired ModelMapper modelMapper;
 
-
-  public BrokersPsp getBrokersPsp(@NotNull Integer limit, @NotNull Integer pageNumber,
-      @Valid FilterAndOrder filterAndOrder) {
+  public BrokersPsp getBrokersPsp(
+      @NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
     Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
-    var filters = CommonUtil.getFilters(IntermediariPsp.builder()
-        .idIntermediarioPsp(filterAndOrder.getFilter().getCode())
-        .codiceIntermediario(filterAndOrder.getFilter().getName())
-        .build());
+    var filters =
+        CommonUtil.getFilters(
+            IntermediariPsp.builder()
+                .idIntermediarioPsp(filterAndOrder.getFilter().getCode())
+                .codiceIntermediario(filterAndOrder.getFilter().getName())
+                .build());
     Page<IntermediariPsp> page = intermediariPspRepository.findAll(filters, pageable);
     return BrokersPsp.builder()
         .brokerPspList(getBrokerPspList(page))
@@ -62,7 +60,8 @@ public class BrokersPspService {
   }
 
   public BrokerPspDetails createBrokerPsp(@NotNull BrokerPspDetails brokerPspDetails) {
-    if (intermediariPspRepository.findByIdIntermediarioPsp(brokerPspDetails.getBrokerPspCode())
+    if (intermediariPspRepository
+        .findByIdIntermediarioPsp(brokerPspDetails.getBrokerPspCode())
         .isPresent()) {
       throw new AppException(AppError.BROKER_CONFLICT, brokerPspDetails.getBrokerPspCode());
     }
@@ -71,14 +70,11 @@ public class BrokersPspService {
     return brokerPspDetails;
   }
 
-
-  public BrokerPspDetails updateBrokerPsp(@NotBlank String brokerPspCode,
-      @NotNull BrokerPspDetails brokerPspDetails) {
+  public BrokerPspDetails updateBrokerPsp(
+      @NotBlank String brokerPspCode, @NotNull BrokerPspDetails brokerPspDetails) {
     Long objId = getIntermediariPspIfExists(brokerPspCode).getObjId();
-    IntermediariPsp intermediariPsp = modelMapper.map(brokerPspDetails, IntermediariPsp.class)
-        .toBuilder()
-        .objId(objId)
-        .build();
+    IntermediariPsp intermediariPsp =
+        modelMapper.map(brokerPspDetails, IntermediariPsp.class).toBuilder().objId(objId).build();
     intermediariPspRepository.save(intermediariPsp);
     return brokerPspDetails;
   }
@@ -88,17 +84,20 @@ public class BrokersPspService {
     intermediariPspRepository.delete(intermediariPsp);
   }
 
-  public PaymentServiceProviders getPspBrokerPsp(@Positive Integer limit, @PositiveOrZero Integer pageNumber,
-      String brokerPspCode) {
+  public PaymentServiceProviders getPspBrokerPsp(
+      @Positive Integer limit, @PositiveOrZero Integer pageNumber, String brokerPspCode) {
 
     Pageable pageable = PageRequest.of(pageNumber, limit);
-    Page<Psp> page = pspRepository.findAllByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_fkIntermediarioPsp_idIntermediarioPsp(
-        brokerPspCode, pageable);
+    Page<Psp> page =
+        pspRepository
+            .findAllByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_fkIntermediarioPsp_idIntermediarioPsp(
+                brokerPspCode, pageable);
 
     return PaymentServiceProviders.builder()
-        .paymentServiceProviderList(page.stream()
-            .map(elem -> modelMapper.map(elem, PaymentServiceProvider.class))
-            .collect(Collectors.toList()))
+        .paymentServiceProviderList(
+            page.stream()
+                .map(elem -> modelMapper.map(elem, PaymentServiceProvider.class))
+                .collect(Collectors.toList()))
         .pageInfo(CommonUtil.buildPageInfo(page))
         .build();
   }
@@ -106,11 +105,12 @@ public class BrokersPspService {
   /**
    * @param brokerPspCode code of the broker PSP
    * @return search on DB using the {@code brokerPspCode} and return the IntermediariPSP if it is
-   * present
+   *     present
    * @throws AppException if not found
    */
   private IntermediariPsp getIntermediariPspIfExists(String brokerPspCode) {
-    return intermediariPspRepository.findByIdIntermediarioPsp(brokerPspCode)
+    return intermediariPspRepository
+        .findByIdIntermediarioPsp(brokerPspCode)
         .orElseThrow(() -> new AppException(AppError.BROKER_PSP_NOT_FOUND, brokerPspCode));
   }
 

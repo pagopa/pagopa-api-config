@@ -1,6 +1,5 @@
 package it.pagopa.pagopa.apiconfig.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,18 +15,18 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CheckItem {
 
-    String title;
-    String value;
-    Validity valid;
-    String note;
-    String action;
+  String title;
+  String value;
+  Validity valid;
+  String note;
+  String action;
 
-    @Getter
-    @AllArgsConstructor
-    public enum Validity {
-        VALID("valid"),
-        NOT_VALID("not valid");
+  @Getter
+  @AllArgsConstructor
+  public enum Validity {
+    VALID("valid"),
+    NOT_VALID("not valid");
 
-        private final String value;
-    }
+    private final String value;
+  }
 }

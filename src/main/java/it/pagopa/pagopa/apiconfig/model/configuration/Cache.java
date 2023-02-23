@@ -15,6 +15,6 @@ import lombok.ToString;
 @ToString
 public class Cache {
 
-    private String id;
-    private String version;
+  private String id;
+  private String version;
 }

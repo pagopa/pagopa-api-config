@@ -5,5 +5,4 @@ import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CdiCosmosRepository extends CosmosRepository<CdiCosmos, String> {
-}
+public interface CdiCosmosRepository extends CosmosRepository<CdiCosmos, String> {}

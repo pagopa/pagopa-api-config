@@ -7,16 +7,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -27,32 +25,30 @@ import javax.validation.constraints.Size;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditorInstitutionStationEdit {
 
-    @JsonProperty("station_code")
-    @Schema(example = "1234567890100", required = true)
-    @NotEmpty
-    @Size(max = 35)
-    private String stationCode;
+  @JsonProperty("station_code")
+  @Schema(example = "1234567890100", required = true)
+  @NotEmpty
+  @Size(max = 35)
+  private String stationCode;
 
-    @JsonProperty("aux_digit")
-    private Long auxDigit;
+  @JsonProperty("aux_digit")
+  private Long auxDigit;
 
-    @Min(0)
-    @JsonProperty("application_code")
-    private Long applicationCode;
+  @Min(0)
+  @JsonProperty("application_code")
+  private Long applicationCode;
 
-    @Min(0)
-    @JsonProperty("segregation_code")
-    private Long segregationCode;
+  @Min(0)
+  @JsonProperty("segregation_code")
+  private Long segregationCode;
 
-    @JsonProperty("mod4")
-    private Boolean mod4;
+  @JsonProperty("mod4")
+  private Boolean mod4;
 
-    @JsonProperty("broadcast")
-    private Boolean broadcast;
+  @JsonProperty("broadcast")
+  private Boolean broadcast;
 
-    @JsonIgnore
-    private Pa fkPa;
+  @JsonIgnore private Pa fkPa;
 
-    @JsonIgnore
-    private Stazioni fkStazioni;
+  @JsonIgnore private Stazioni fkStazioni;
 }

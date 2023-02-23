@@ -8,17 +8,15 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.pagopa.pagopa.apiconfig.util.Constants;
+import java.time.OffsetDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
-
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -29,35 +27,34 @@ import java.time.OffsetDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CounterpartTable {
 
-    @JsonProperty("id_counterpart_table")
-    @Schema(example = "123456789", required = true)
-    @NotBlank
-    private String idCounterpartTable;
+  @JsonProperty("id_counterpart_table")
+  @Schema(example = "123456789", required = true)
+  @NotBlank
+  private String idCounterpartTable;
 
-    @JsonProperty("business_name")
-    @Schema(required = true, example = "Comune di Lorem Ipsum")
-    @NotNull
-    private String businessName;
+  @JsonProperty("business_name")
+  @Schema(required = true, example = "Comune di Lorem Ipsum")
+  @NotNull
+  private String businessName;
 
-    @JsonProperty("creditor_institution_code")
-    @Schema(required = true, example = "1234567890100")
-    @NotBlank
-    private String creditorInstitutionCode;
+  @JsonProperty("creditor_institution_code")
+  @Schema(required = true, example = "1234567890100")
+  @NotBlank
+  private String creditorInstitutionCode;
 
-    @JsonProperty("publication_date")
-    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
-    @JsonSerialize(using = OffsetDateTimeSerializer.class)
-    @Schema(required = true)
-    @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime publicationDate;
+  @JsonProperty("publication_date")
+  @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+  @JsonSerialize(using = OffsetDateTimeSerializer.class)
+  @Schema(required = true)
+  @NotNull
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime publicationDate;
 
-    @JsonProperty("validity_date")
-    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
-    @JsonSerialize(using = OffsetDateTimeSerializer.class)
-    @Schema(required = true)
-    @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime validityDate;
-
+  @JsonProperty("validity_date")
+  @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+  @JsonSerialize(using = OffsetDateTimeSerializer.class)
+  @Schema(required = true)
+  @NotNull
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime validityDate;
 }

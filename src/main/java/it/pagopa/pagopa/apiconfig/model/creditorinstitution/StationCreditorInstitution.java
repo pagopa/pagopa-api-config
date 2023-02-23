@@ -10,11 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-
-
-/**
- * Stations
- */
+/** Stations */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder(toBuilder = true)
@@ -25,19 +21,18 @@ import lombok.experimental.SuperBuilder;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StationCreditorInstitution extends CreditorInstitution {
 
-    @JsonProperty("application_code")
-    private Long applicationCode;
+  @JsonProperty("application_code")
+  private Long applicationCode;
 
-    @JsonProperty("aux_digit")
-    private Long auxDigit;
+  @JsonProperty("aux_digit")
+  private Long auxDigit;
 
-    @JsonProperty("segregation_code")
-    private Long segregationCode;
+  @JsonProperty("segregation_code")
+  private Long segregationCode;
 
-    @JsonProperty("mod4")
-    private Boolean mod4;
+  @JsonProperty("mod4")
+  private Boolean mod4;
 
-    @JsonProperty("broadcast")
-    private Boolean broadcast;
-
+  @JsonProperty("broadcast")
+  private Boolean broadcast;
 }
