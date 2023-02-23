@@ -831,35 +831,44 @@ class ConfigurationServiceTest {
 
   @Test
   void deletePaymentType_ko_afm_null_1() {
-    when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
-    ResponseEntity<AfmMarketplacePaymentType> responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
-    when(restTemplate.exchange(any(), eq(HttpMethod.GET),
-        ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
-        ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
-        ArgumentMatchers.<Map>any()))
-    .thenReturn(responseEntity);
+    when(tipiVersamentoRepository.findByTipoVersamento("PPAL"))
+        .thenReturn(Optional.of(getMockTipoVersamento()));
+    ResponseEntity<AfmMarketplacePaymentType> responseEntity =
+        new ResponseEntity<>(null, HttpStatus.OK);
+    when(restTemplate.exchange(
+            any(),
+            eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Map>any()))
+        .thenReturn(responseEntity);
 
     try {
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
       assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void deletePaymentType_ko_afm_null_2() {
-        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
-        doThrow(ResourceAccessException.class).when(restTemplate).exchange(any(), eq(HttpMethod.GET),
+  @Test
+  void deletePaymentType_ko_afm_null_2() {
+    when(tipiVersamentoRepository.findByTipoVersamento("PPAL"))
+        .thenReturn(Optional.of(getMockTipoVersamento()));
+    doThrow(ResourceAccessException.class)
+        .when(restTemplate)
+        .exchange(
+            any(),
+            eq(HttpMethod.GET),
             ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
             ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
             ArgumentMatchers.<Map>any());
 
-        try {
-            configurationService.deletePaymentType("PPAL");
-        } catch (AppException e) {
-            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+    try {
+      configurationService.deletePaymentType("PPAL");
+    } catch (AppException e) {
+      assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
     } catch (Exception e) {
       fail();
     }
@@ -874,12 +883,12 @@ class ConfigurationServiceTest {
     ResponseEntity<AfmMarketplacePaymentType> responseEntity =
         new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     when(restTemplate.exchange(
-        any(),
-        eq(HttpMethod.GET),
-        ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
-        ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
-        ArgumentMatchers.<Map>any()))
-    .thenReturn(responseEntity);
+            any(),
+            eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Map>any()))
+        .thenReturn(responseEntity);
 
     try {
       configurationService.deletePaymentType("PPAL");
@@ -892,16 +901,13 @@ class ConfigurationServiceTest {
   void deletePaymentType_ko_connection_ko() {
     when(tipiVersamentoRepository.findByTipoVersamento("PPAL"))
         .thenReturn(Optional.of(getMockTipoVersamento()));
-    ResponseEntity<AfmMarketplacePaymentType> responseEntity =
-        new ResponseEntity<AfmMarketplacePaymentType>(
-            getMockAfmMarketplacePaymentType(), HttpStatus.INTERNAL_SERVER_ERROR);
     when(restTemplate.exchange(
-        any(),
-        eq(HttpMethod.GET),
-        ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
-        ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
-        ArgumentMatchers.<Map>any()))
-    .thenThrow(HttpClientErrorException.class);
+            any(),
+            eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Map>any()))
+        .thenThrow(HttpClientErrorException.class);
 
     try {
       configurationService.deletePaymentType("PPAL");
