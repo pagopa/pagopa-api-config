@@ -1,47 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.Pdd;
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
-import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
-import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
-import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PddRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
-import org.json.JSONException;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockAfmMarketplacePaymentType;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKey;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKeyEntity;
@@ -63,7 +21,50 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.Pdd;
+import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
+import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
+import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
+import it.pagopa.pagopa.apiconfig.repository.PddRepository;
+import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.json.JSONException;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ConfigurationServiceTest {
@@ -749,7 +750,7 @@ class ConfigurationServiceTest {
     }
 
     @Test
-    void deletePaymentType_ko_afm_not_reachable() {
+    void deletePaymentType_ko_afm_unexpected_error() {
         when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
         ResponseEntity<AfmMarketplacePaymentType> responseEntity = new ResponseEntity<AfmMarketplacePaymentType>(getMockAfmMarketplacePaymentType(), HttpStatus.INTERNAL_SERVER_ERROR);
         when(restTemplate.exchange(any(), eq(HttpMethod.GET),
@@ -760,7 +761,7 @@ class ConfigurationServiceTest {
         try {
             configurationService.deletePaymentType("PPAL");
         } catch (AppException e) {
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getHttpStatus());
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
         } catch (Exception e) {
             fail();
         }
@@ -788,19 +789,36 @@ class ConfigurationServiceTest {
     }
 
     @Test
-    void deletePaymentType_ko_afm_null() {
+    void deletePaymentType_ko_afm_null_1() {
         when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
         ResponseEntity<AfmMarketplacePaymentType> responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
         when(restTemplate.exchange(any(), eq(HttpMethod.GET),
-                ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
-                ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
-                ArgumentMatchers.<Map>any()))
-                .thenReturn(responseEntity);
+            ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Map>any()))
+            .thenReturn(responseEntity);
 
         try {
             configurationService.deletePaymentType("PPAL");
         } catch (AppException e) {
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getHttpStatus());
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void deletePaymentType_ko_afm_null_2() {
+        when(tipiVersamentoRepository.findByTipoVersamento("PPAL")).thenReturn(Optional.of(getMockTipoVersamento()));
+        doThrow(ResourceAccessException.class).when(restTemplate).exchange(any(), eq(HttpMethod.GET),
+            ArgumentMatchers.<HttpEntity<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Class<AfmMarketplacePaymentType>>any(),
+            ArgumentMatchers.<Map>any());
+
+        try {
+            configurationService.deletePaymentType("PPAL");
+        } catch (AppException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
         } catch (Exception e) {
             fail();
         }

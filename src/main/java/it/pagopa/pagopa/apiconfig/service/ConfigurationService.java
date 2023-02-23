@@ -44,6 +44,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -312,11 +313,14 @@ public class ConfigurationService {
                 }
             }
             else if (!responseE.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+                throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR);
             }
         } catch (HttpClientErrorException e) {
-          if (e.getStatusCode() == null || !e.getStatusCode().equals(HttpStatus.NOT_FOUND))
-            throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR);
+            }
+        } catch (ResourceAccessException e) {
+          throw new AppException(AppError.PAYMENT_TYPE_NO_AFM_MARKETPLACE);
         }
 
         paymentTypesCosmosRepository.deleteByName(paymentTypeCode);
