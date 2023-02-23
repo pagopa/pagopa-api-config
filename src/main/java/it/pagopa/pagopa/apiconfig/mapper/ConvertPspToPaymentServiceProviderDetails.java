@@ -13,10 +13,7 @@ public class ConvertPspToPaymentServiceProviderDetails
   public PaymentServiceProviderDetails convert(
       MappingContext<Psp, PaymentServiceProviderDetails> context) {
     Psp source = context.getSource();
-    return PaymentServiceProviderDetails.builder()
-        .pspCode(source.getIdPsp())
-        .enabled(source.getEnabled())
-        .businessName(CommonUtil.deNull(source.getRagioneSociale()))
+    var output = PaymentServiceProviderDetails.builder()
         .abi(source.getAbi())
         .bic(source.getBic())
         .transfer(source.getStornoPagamento())
@@ -26,5 +23,10 @@ public class ConvertPspToPaymentServiceProviderDetails
         .taxCode(source.getCodiceFiscale())
         .vatNumber(source.getVatNumber())
         .build();
+
+    output.setPspCode(source.getIdPsp());
+    output.setEnabled(source.getEnabled());
+    output.setBusinessName(CommonUtil.deNull(source.getRagioneSociale()));
+    return output;
   }
 }

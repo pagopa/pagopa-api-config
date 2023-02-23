@@ -15,12 +15,13 @@ public class ConvertWfespPluginConfToWfespPluginConf
               WfespPluginConf, it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf>
           mappingContext) {
     @Valid WfespPluginConf wfespPluginConf = mappingContext.getSource();
-    return it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf.builder()
-        .idBean(CommonUtil.deNull(wfespPluginConf.getIdBean()))
+    var output = it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf.builder()
         .idServPlugin(wfespPluginConf.getIdServPlugin())
-        .profiloPagConstString(CommonUtil.deNull(wfespPluginConf.getProfiloPagConstString()))
-        .profiloPagSoapRule(CommonUtil.deNull(wfespPluginConf.getProfiloPagSoapRule()))
-        .profiloPagRptXpath(CommonUtil.deNull(wfespPluginConf.getProfiloPagRptXpath()))
         .build();
+    output.setIdBean(CommonUtil.deNull(wfespPluginConf.getIdBean()));
+    output.setProfiloPagConstString(CommonUtil.deNull(wfespPluginConf.getProfiloPagConstString()));
+    output.setProfiloPagSoapRule(CommonUtil.deNull(wfespPluginConf.getProfiloPagSoapRule()));
+    output.setProfiloPagRptXpath(CommonUtil.deNull(wfespPluginConf.getProfiloPagRptXpath()));
+    return output;
   }
 }
