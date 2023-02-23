@@ -29,6 +29,7 @@ public class CdiCosmos {
     @PartitionKey
     private String idPsp;
     private String idCdi;
+    private String abi;
     private String cdiStatus;
     private Boolean digitalStamp;
     private LocalDateTime validityDateFrom;

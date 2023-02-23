@@ -1,10 +1,10 @@
 {
 	"info": {
-      "_postman_id": "46c9942c-0d39-41ae-940d-ff15fd4483d5",
-      "name": "ApiConfig",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-      "_exporter_id": "205220"
-    },
+		"_postman_id": "ff1e0608-6e6d-4a48-b077-b55f67423b98",
+		"name": "ApiConfig",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "205220"
+	},
 	"item": [
 		{
 			"name": "login",
@@ -1134,6 +1134,45 @@
 				},
 				{
 					"name": "getCreditorInstitutionsIbans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCreditorInstitutionsIbans\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/creditorinstitutions/:code/ibans",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"creditorinstitutions",
+								":code",
+								"ibans"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "{{creditor_institution_code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "geByIban",
 					"event": [
 						{
 							"listen": "test",
@@ -3858,6 +3897,51 @@
 								{
 									"key": "page",
 									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPspBrokersPsp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getBrokersPsp\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/brokerspsp/:brokerPsp/paymentserviceproviders?page=0",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"brokerspsp",
+								":brokerPsp",
+								"paymentserviceproviders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								}
+							],
+							"variable": [
+								{
+									"key": "brokerPsp",
+									"value": "17103880000"
 								}
 							]
 						}

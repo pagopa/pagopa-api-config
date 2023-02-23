@@ -52,6 +52,7 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
                     .recovery(source.getFkCanaliNodo().getRecovery())
                     .digitalStampBrand(source.getFkCanaliNodo().getMarcaBolloDigitale())
                     .agid(source.getFkCanaliNodo().getAgidChannel())
+                    .primitiveVersion(source.getFkCanaliNodo().getVersionePrimitive())
                     .flagIo(source.getFkCanaliNodo().getFlagIo());
             if (source.getFkCanaliNodo().getIdServPlugin() != null) {
                 builder.servPlugin(source.getFkCanaliNodo().getIdServPlugin().getIdServPlugin());

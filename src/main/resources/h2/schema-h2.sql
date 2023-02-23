@@ -99,9 +99,10 @@ create table NODO4_CFG.STAZIONI
     VERSIONE              numeric      not null default 1.0,
     SERVIZIO_NMP          varchar(255),
     INVIO_RT_ISTANTANEO   char         not null default 'N',
-    TARGET_HOST            varchar(100),
-    TARGET_PORT            numeric,
-    TARGET_PATH            varchar(100),
+    TARGET_HOST           varchar(100),
+    TARGET_PORT           numeric,
+    TARGET_PATH           varchar(100),
+    VERSIONE_PRIMITIVE    numeric(2)   default 1,
     constraint PK_STAZIONI
         primary key (OBJ_ID),
     constraint UQ_ID_STAZIONE
@@ -129,7 +130,9 @@ create table NODO4_CFG.PA_STAZIONE_PA
             references NODO4_CFG.PA,
     constraint FK_PA_STAZIONE_PA_STAZIONE
         foreign key (FK_STAZIONE)
-            references NODO4_CFG.STAZIONI
+            references NODO4_CFG.STAZIONI,
+    constraint UQ_PA_STAZIONE_PA
+        unique (FK_PA, FK_STAZIONE)
 );
 
 create table NODO4_CFG.CODIFICHE
@@ -362,6 +365,7 @@ create table NODO4_CFG.CANALI_NODO
     RECOVERY              char(1)      not null default 'N',
     MARCA_BOLLO_DIGITALE  char         not null,
     FLAG_IO               char                  default 'N',
+    VERSIONE_PRIMITIVE    numeric(2)            default 1,
     constraint PK_CANALI_NODO
         primary key (OBJ_ID),
     constraint FK_CANALI_SERV_PLUGIN
@@ -496,7 +500,9 @@ create table NODO4_CFG.CANALE_TIPO_VERSAMENTO
             references NODO4_CFG.CANALI,
     constraint FK_CANALE_TIPO_VERSAMENTO_TIPO_VERSAMENTO
         foreign key (FK_TIPO_VERSAMENTO)
-            references NODO4_CFG.TIPI_VERSAMENTO
+            references NODO4_CFG.TIPI_VERSAMENTO,
+    constraint UQ_CANALE_TIPO_VERSAMENTO
+        unique (FK_CANALE, FK_TIPO_VERSAMENTO)
 );
 
 create table NODO4_CFG.PSP_CANALE_TIPO_VERSAMENTO
@@ -622,4 +628,11 @@ create table NODO4_CFG.CDI_PREFERENCES
     constraint FK_INFORMATIVA_DETAIL_TO_CDI_DETAIL
         foreign key (FK_INFORMATIVA_DETAIL)
             references NODO4_CFG.CDI_DETAIL
+);
+create table NODO4_CFG.CACHE
+(
+    ID               varchar(20) not null,
+    TIME             timestamp(6),
+    VERSION          varchar(32) not null,
+    CACHE            blob    not null
 );

@@ -17,5 +17,6 @@
   "card_chart": true,
   "digital_stamp_brand": true,
   "flag_io": true,
-  "agid": false
+  "agid": false,
+  "primitive_version": 1
 }

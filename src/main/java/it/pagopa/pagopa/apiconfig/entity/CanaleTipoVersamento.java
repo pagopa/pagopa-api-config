@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "CANALE_TIPO_VERSAMENTO")
+@Table(name = "CANALE_TIPO_VERSAMENTO", schema = "NODO4_CFG", uniqueConstraints = { @UniqueConstraint(columnNames = { "FK_CANALE", "FK_TIPO_VERSAMENTO" }) })
 @Builder
 public class CanaleTipoVersamento implements Serializable {
     @Id
