@@ -114,7 +114,7 @@ public enum AppError {
       "No payment type specified in the request"),
   PAYMENT_TYPE_NON_DELETABLE(
       HttpStatus.BAD_REQUEST,
-      "Payment type bad request",
+      "Payment type not deletable",
       "Payment type is used in AFM Marketplace bundles"),
   PAYMENT_TYPE_NOT_FOUND(
       HttpStatus.NOT_FOUND, "Payment type not found", "No payment type found with code: %s"),
@@ -122,7 +122,7 @@ public enum AppError {
       HttpStatus.CONFLICT, "Payment type conflict", "Payment type with code %s already exists"),
   PAYMENT_TYPE_NO_AFM_MARKETPLACE(
       HttpStatus.BAD_REQUEST,
-      "Payment type bad request",
+      "AFM Marketplace not reachable",
       "AFM Marketplace is not reachable to check if payment type is already used"),
   PAYMENT_TYPE_AFM_MARKETPLACE_ERROR(
       HttpStatus.BAD_REQUEST,
