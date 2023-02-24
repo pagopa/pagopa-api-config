@@ -56,287 +56,297 @@ import org.springframework.http.HttpStatus;
 @SpringBootTest(classes = ApiConfig.class)
 class ChannelsServiceTest {
 
-    @MockBean
-    private CanaliRepository canaliRepository;
+  @MockBean private CanaliRepository canaliRepository;
 
-    @MockBean
-    private IntermediariPspRepository intermediariPspRepository;
+  @MockBean private IntermediariPspRepository intermediariPspRepository;
 
-    @MockBean
-    private WfespPluginConfRepository wfespPluginConfRepository;
+  @MockBean private WfespPluginConfRepository wfespPluginConfRepository;
 
-    @MockBean
-    CanaleTipoVersamentoRepository canaleTipoVersamentoRepository;
+  @MockBean CanaleTipoVersamentoRepository canaleTipoVersamentoRepository;
 
-    @MockBean
-    TipiVersamentoRepository tipiVersamentoRepository;
+  @MockBean TipiVersamentoRepository tipiVersamentoRepository;
 
-    @MockBean
-    PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
+  @MockBean PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
 
-    @Autowired
-    @InjectMocks
-    private ChannelsService channelsService;
+  @Autowired @InjectMocks private ChannelsService channelsService;
 
+  @Test
+  void getChannels() throws IOException, JSONException {
+    Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
+    when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-    @Test
-    void getChannels() throws IOException, JSONException {
-        Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
-        when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+    Channels result = channelsService.getChannels(50, 0, getMockFilterAndOrder(Order.Channel.CODE));
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
 
-        Channels result = channelsService.getChannels(50, 0, getMockFilterAndOrder(Order.Channel.CODE));
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  @Test
+  void getChannel() throws IOException, JSONException {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+
+    ChannelDetails result = channelsService.getChannel("1234");
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_channel_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @Test
+  void getChannel_notFound() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
+
+    try {
+      channelsService.getChannel("1234");
+      fail();
+    } catch (AppException e) {
+      assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void getChannel() throws IOException, JSONException {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+  @Test
+  void createChannel() throws IOException, JSONException {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
+    when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
+    when(intermediariPspRepository.findByIdIntermediarioPsp(anyString()))
+        .thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
+    when(wfespPluginConfRepository.findByIdServPlugin(anyString()))
+        .thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
 
-        ChannelDetails result = channelsService.getChannel("1234");
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/get_channel_ok1.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    ChannelDetails result = channelsService.createChannel(getMockChannelDetails());
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/create_channel_ok.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @Test
+  void createChannel_404() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
+    when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
+    when(intermediariPspRepository.findByIdIntermediarioPsp(anyString()))
+        .thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
+    AppException exception =
+        new AppException(AppError.SERV_PLUGIN_NOT_FOUND, "SERV_PLUGIN_NOT_FOUND");
+    doThrow(exception).when(wfespPluginConfRepository).findByIdServPlugin(anyString());
+
+    ChannelDetails channelDetails = getMockChannelDetails();
+    channelDetails.setServPlugin("UNKNOWN");
+    try {
+      channelsService.createChannel(channelDetails);
+      fail("no exception thrown");
+    } catch (AppException e) {
+      assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void getChannel_notFound() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
+  @Test
+  void createChannel_conflict() {
+    when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
+    when(intermediariPspRepository.findByIdIntermediarioPsp(anyString()))
+        .thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
+    when(wfespPluginConfRepository.findByIdServPlugin(anyString()))
+        .thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
 
-        try {
-            channelsService.getChannel("1234");
-            fail();
-        } catch (AppException e) {
-            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
+    ChannelDetails mockChannelDetails = getMockChannelDetails();
+    try {
+      channelsService.createChannel(mockChannelDetails);
+      fail();
+    } catch (AppException e) {
+      assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void createChannel() throws IOException, JSONException {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
-        when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
-        when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
-        when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
+  @Test
+  void updateChannel() throws IOException, JSONException {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+    when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
+    when(intermediariPspRepository.findByIdIntermediarioPsp(anyString()))
+        .thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
+    when(wfespPluginConfRepository.findByIdServPlugin(anyString()))
+        .thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
 
+    ChannelDetails result = channelsService.updateChannel("1234", getMockChannelDetails());
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/update_channel_ok.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
 
-        ChannelDetails result = channelsService.createChannel(getMockChannelDetails());
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/create_channel_ok.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  @Test
+  void updateChannel_noPlugin() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+    when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
+    when(intermediariPspRepository.findByIdIntermediarioPsp(anyString()))
+        .thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
+    when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.empty());
+
+    ChannelDetails mockChannelDetails = getMockChannelDetails();
+    try {
+      channelsService.updateChannel("1234", mockChannelDetails);
+      fail();
+    } catch (AppException e) {
+      assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void createChannel_404() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
-        when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
-        when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
-        AppException exception = new AppException(AppError.SERV_PLUGIN_NOT_FOUND, "SERV_PLUGIN_NOT_FOUND");
-        doThrow(exception).when(wfespPluginConfRepository).findByIdServPlugin(anyString());
-
-        ChannelDetails channelDetails = getMockChannelDetails();
-        channelDetails.setServPlugin("UNKNOWN");
-        try {
-            channelsService.createChannel(channelDetails);
-            fail("no exception thrown");
-        } catch (AppException e) {
-            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
+  @Test
+  void updateChannel_notFound() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
+    try {
+      channelsService.updateChannel("1234", getMockChannelDetails());
+    } catch (AppException e) {
+      assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void createChannel_conflict() {
-        when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(getMockCanali()));
-        when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
-        when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
+  @Test
+  void deleteChannel() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
 
-        ChannelDetails mockChannelDetails = getMockChannelDetails();
-        try {
-            channelsService.createChannel(mockChannelDetails);
-            fail();
-        } catch (AppException e) {
-            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
+    channelsService.deleteChannel("1234");
+    assertTrue(true);
+  }
+
+  @Test
+  void deleteChannel_notfound() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
+
+    try {
+      channelsService.deleteChannel("1234");
+    } catch (AppException e) {
+      assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void updateChannel() throws IOException, JSONException {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-        when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
-        when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
-        when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.ofNullable(getMockWfespPluginConf()));
+  @Test
+  void deleteChannel_badRequest() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+    DataIntegrityViolationException exception = Mockito.mock(DataIntegrityViolationException.class);
+    doThrow(exception).when(canaliRepository).delete(any(Canali.class));
 
-        ChannelDetails result = channelsService.updateChannel("1234", getMockChannelDetails());
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/update_channel_ok.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    try {
+      channelsService.deleteChannel("1234");
+      fail("no exception thrown");
+    } catch (AppException e) {
+      assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void updateChannel_noPlugin() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-        when(canaliRepository.save(any(Canali.class))).thenReturn(getMockCanali());
-        when(intermediariPspRepository.findByIdIntermediarioPsp(anyString())).thenReturn(Optional.ofNullable(getMockIntermediariePsp()));
-        when(wfespPluginConfRepository.findByIdServPlugin(anyString())).thenReturn(Optional.empty());
+  @Test
+  void getPaymentTypes() throws IOException, JSONException {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+    when(canaleTipoVersamentoRepository.findByFkCanale(anyLong()))
+        .thenReturn(Lists.newArrayList(getMockCanaleTipoVersamento()));
 
-        ChannelDetails mockChannelDetails = getMockChannelDetails();
-        try {
-            channelsService.updateChannel("1234", mockChannelDetails);
-            fail();
-        } catch (AppException e) {
-            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
+    var result = channelsService.getPaymentTypes("1234");
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_paymenttype_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @Test
+  void createPaymentType() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+    when(tipiVersamentoRepository.findByTipoVersamento(anyString()))
+        .thenReturn(Optional.of(getMockTipoVersamento()));
+    when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong()))
+        .thenReturn(Optional.empty());
+    try {
+      channelsService.createPaymentType("1234", getMockPspChannelPaymentTypes());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void updateChannel_notFound() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
-        try {
-            channelsService.updateChannel("1234", getMockChannelDetails());
-        } catch (AppException e) {
-            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
+  @Test
+  void createPaymentType_409() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+    when(tipiVersamentoRepository.findByTipoVersamento(anyString()))
+        .thenReturn(Optional.of(getMockTipoVersamento()));
+    when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong()))
+        .thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+    PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
+    paymentTypes.setPaymentTypeList(List.of("PO"));
+    try {
+      channelsService.createPaymentType("1234", paymentTypes);
+      fail("no exception thrown");
+    } catch (AppException e) {
+      assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void deleteChannel() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-
-        channelsService.deleteChannel("1234");
-        assertTrue(true);
+  @Test
+  void createPaymentType_400() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+    when(tipiVersamentoRepository.findByTipoVersamento(anyString()))
+        .thenReturn(Optional.of(getMockTipoVersamento()));
+    when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong()))
+        .thenReturn(Optional.empty());
+    try {
+      PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
+      paymentTypes.setPaymentTypeList(new ArrayList<>());
+      channelsService.createPaymentType("1234", paymentTypes);
+    } catch (AppException e) {
+      assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void deleteChannel_notfound() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.empty());
-
-        try {
-            channelsService.deleteChannel("1234");
-        } catch (AppException e) {
-            assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
+  @Test
+  void deletePaymentType() {
+    when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
+    when(tipiVersamentoRepository.findByTipoVersamento(anyString()))
+        .thenReturn(Optional.of(getMockTipoVersamento()));
+    when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong()))
+        .thenReturn(Optional.of(getMockCanaleTipoVersamento()));
+    try {
+      channelsService.deletePaymentType("1234", "PO");
+    } catch (Exception e) {
+      fail();
     }
+  }
 
-    @Test
-    void deleteChannel_badRequest() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-        DataIntegrityViolationException exception = Mockito.mock(DataIntegrityViolationException.class);
-        doThrow(exception).when(canaliRepository).delete(any(Canali.class));
+  @Test
+  void getChannelsPaymentServiceProviders() throws JSONException, IOException {
+    when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString()))
+        .thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
 
-        try {
-            channelsService.deleteChannel("1234");
-            fail("no exception thrown");
-        } catch (AppException e) {
-            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
-    }
+    var result = channelsService.getChannelPaymentServiceProviders("1234");
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_channelsPSP_ok.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
 
-    @Test
-    void getPaymentTypes() throws IOException, JSONException {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-        when(canaleTipoVersamentoRepository.findByFkCanale(anyLong())).thenReturn(Lists.newArrayList(getMockCanaleTipoVersamento()));
+  @Test
+  void getStationCreditorInstitutionsCsv() {
+    when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString()))
+        .thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
 
-        var result = channelsService.getPaymentTypes("1234");
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/get_paymenttype_ok1.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
-    }
+    var result = channelsService.getChannelPaymentServiceProvidersCSV("1234");
+    assertNotNull(result);
+  }
 
-    @Test
-    void createPaymentType() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
-        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.empty());
-        try {
-            channelsService.createPaymentType("1234", getMockPspChannelPaymentTypes());
-        } catch (Exception e) {
-            fail();
-        }
-    }
+  @Test
+  void getChannelsCsv() {
+    when(canaliRepository.findAll()).thenReturn(Lists.newArrayList(getMockCanali()));
 
-    @Test
-    void createPaymentType_409() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
-        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
-        PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
-        paymentTypes.setPaymentTypeList(List.of("PO"));
-        try {
-            channelsService.createPaymentType("1234", paymentTypes);
-            fail("no exception thrown");
-        } catch (AppException e) {
-            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
-    }
-
-    @Test
-    void createPaymentType_400() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
-        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.empty());
-        try {
-            PspChannelPaymentTypes paymentTypes = getMockPspChannelPaymentTypes();
-            paymentTypes.setPaymentTypeList(new ArrayList<>());
-            channelsService.createPaymentType("1234", paymentTypes);
-        } catch (AppException e) {
-            assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-        } catch (Exception e) {
-            fail();
-        }
-    }
-
-    @Test
-    void deletePaymentType() {
-        when(canaliRepository.findByIdCanale("1234")).thenReturn(Optional.of(getMockCanali()));
-        when(tipiVersamentoRepository.findByTipoVersamento(anyString())).thenReturn(Optional.of(getMockTipoVersamento()));
-        when(canaleTipoVersamentoRepository.findByFkCanaleAndFkTipoVersamento(anyLong(), anyLong())).thenReturn(Optional.of(getMockCanaleTipoVersamento()));
-        try {
-            channelsService.deletePaymentType("1234", "PO");
-        } catch (Exception e) {
-            fail();
-        }
-    }
-
-    @Test
-    void getChannelsPaymentServiceProviders() throws JSONException, IOException {
-        when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString())).thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
-
-        var result = channelsService.getChannelPaymentServiceProviders("1234");
-        String actual = TestUtil.toJson(result);
-        String expected = TestUtil.readJsonFromFile("response/get_channelsPSP_ok.json");
-        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
-    }
-
-    @Test
-    void getStationCreditorInstitutionsCsv() {
-        when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString())).thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
-
-        var result = channelsService.getChannelPaymentServiceProvidersCSV("1234");
-        assertNotNull(result);
-    }
-
-    @Test
-    void getChannelsCsv() {
-        when(canaliRepository.findAll()).thenReturn(Lists.newArrayList(getMockCanali()));
-
-        String result = new String(channelsService.getChannelsCSV());
-        assertTrue(result.contains("Regione Lazio"));
-        assertTrue(result.contains("1234"));
-    }
+    String result = new String(channelsService.getChannelsCSV());
+    assertTrue(result.contains("Regione Lazio"));
+    assertTrue(result.contains("1234"));
+  }
 }

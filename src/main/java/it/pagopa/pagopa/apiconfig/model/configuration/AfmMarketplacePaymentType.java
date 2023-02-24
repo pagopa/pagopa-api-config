@@ -8,9 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-/**
- * PaymentType
- */
+/** PaymentType */
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
@@ -19,8 +17,8 @@ import lombok.experimental.SuperBuilder;
 @ToString
 public class AfmMarketplacePaymentType {
 
-    @JsonProperty("paymentType")
-    private String name;
-    private Boolean used;
+  @JsonProperty("paymentType")
+  private String name;
 
+  private Boolean used;
 }

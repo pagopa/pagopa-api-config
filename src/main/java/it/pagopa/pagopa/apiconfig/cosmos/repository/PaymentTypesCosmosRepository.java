@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PaymentTypesCosmosRepository extends CosmosRepository<PaymentTypesCosmos, String> {
-    void deleteByName(String paymentTypeName);
+  void deleteByName(String paymentTypeName);
 }
