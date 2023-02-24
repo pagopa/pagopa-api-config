@@ -13,16 +13,17 @@ public class ConvertPspToPaymentServiceProviderDetails
   public PaymentServiceProviderDetails convert(
       MappingContext<Psp, PaymentServiceProviderDetails> context) {
     Psp source = context.getSource();
-    var output = PaymentServiceProviderDetails.builder()
-        .abi(source.getAbi())
-        .bic(source.getBic())
-        .transfer(source.getStornoPagamento())
-        .myBankCode(source.getCodiceMybank())
-        .stamp(source.getMarcaBolloDigitale())
-        .agidPsp(source.getAgidPsp())
-        .taxCode(source.getCodiceFiscale())
-        .vatNumber(source.getVatNumber())
-        .build();
+    var output =
+        PaymentServiceProviderDetails.builder()
+            .abi(source.getAbi())
+            .bic(source.getBic())
+            .transfer(source.getStornoPagamento())
+            .myBankCode(source.getCodiceMybank())
+            .stamp(source.getMarcaBolloDigitale())
+            .agidPsp(source.getAgidPsp())
+            .taxCode(source.getCodiceFiscale())
+            .vatNumber(source.getVatNumber())
+            .build();
 
     output.setPspCode(source.getIdPsp());
     output.setEnabled(source.getEnabled());
