@@ -1,5 +1,5 @@
 oa3_spec: ./openapi/openapi.json # If start with http the file would be downloaded from the internet
-name: opex_pagopa-apiconfig-core
+name: opex_pagopa_apiconfig_core
 location: West Europe
 timespan: 5m # Default, a number or a timespan https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/timespan
 data_source: /subscriptions/26abc801-0d8f-4a6e-ac5f-8e81bcc09112/resourceGroups/pagopa-u-vnet-rg/providers/Microsoft.Network/applicationGateways/pagopa-u-app-gw

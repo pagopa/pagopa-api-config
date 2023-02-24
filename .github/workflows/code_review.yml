@@ -29,12 +29,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-
-      - name: Dump GitHub context
-        run: echo $JSON
-        env:
-          JSON: ${{ toJSON(github) }}
-
       - name: Code Review
         uses: pagopa/github-actions-template/maven-code-review@main
         with:

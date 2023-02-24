@@ -34,9 +34,27 @@ microservice-chart:
       - 8080
   ingress:
     create: true
-    host: "weudev.apiconfig-core.internal.dev.platform.pagopa.it"
-    path: /pagopa-apiconfig-core-service/(.*)
+    host: "weudev.apiconfig.internal.dev.platform.pagopa.it"
+    path: /pagopa-api-config-service/p/(.*)
     servicePort: 8080
+  canaryDelivery:
+    create: true
+    ingress:
+      canary:
+        type: header
+        headerName: X-Pod-Version
+        headerValue: canary
+        weightPercent: 0
+    service:
+      create: true
+    deployment:
+      create: true
+      image:
+        repository: ghcr.io/pagopa/pagopa-api-config
+        tag: "0.29.1-28-aks"
+        pullPolicy: Always
+      envConfig: { }
+      envSecret: { }
   serviceAccount:
     create: false
   podAnnotations: {}

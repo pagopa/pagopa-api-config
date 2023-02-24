@@ -37,6 +37,7 @@ fi
 
 # Helm
 export HELM_DEBUG=1
+export TF_VAR_github_token="${GITHUB_TOKEN}"
 
 #
 # 🌎 Terraform
