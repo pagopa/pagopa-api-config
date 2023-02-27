@@ -49,26 +49,19 @@ import org.springframework.validation.annotation.Validated;
 public class CreditorInstitutionsService {
 
   public static final String BAD_RELATION_INFO = "Bad Relation info";
-  @Autowired
-  private PaRepository paRepository;
+  @Autowired private PaRepository paRepository;
 
-  @Autowired
-  private StazioniRepository stazioniRepository;
+  @Autowired private StazioniRepository stazioniRepository;
 
-  @Autowired
-  private PaStazionePaRepository paStazionePaRepository;
+  @Autowired private PaStazionePaRepository paStazionePaRepository;
 
-  @Autowired
-  private IbanValidiPerPaRepository ibanValidiPerPaRepository;
+  @Autowired private IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
-  @Autowired
-  private CodifichePaRepository codifichePaRepository;
+  @Autowired private CodifichePaRepository codifichePaRepository;
 
-  @Autowired
-  private CodificheRepository codificheRepository;
+  @Autowired private CodificheRepository codificheRepository;
 
-  @Autowired
-  private ModelMapper modelMapper;
+  @Autowired private ModelMapper modelMapper;
 
   public CreditorInstitutions getCreditorInstitutions(
       @NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
@@ -145,10 +138,11 @@ public class CreditorInstitutionsService {
   /**
    * If aux-digit is 1 or 2 then application code and segregation code must be blank
    *
-   * @param creditorInstitutionCode        EC id
+   * @param creditorInstitutionCode EC id
    * @param creditorInstitutionStationEdit body request
    */
-  private static void checkAuxDigit1or2(String creditorInstitutionCode,
+  private static void checkAuxDigit1or2(
+      String creditorInstitutionCode,
       CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
     if (creditorInstitutionStationEdit.getApplicationCode() != null) {
       String message = "Application code error: length must be blank";
@@ -370,9 +364,9 @@ public class CreditorInstitutionsService {
 
   /**
    * @param encodingCode value of the encoding
-   * @param codeType     encoding type (see: {@link Encoding.CodeTypeEnum})
+   * @param codeType encoding type (see: {@link Encoding.CodeTypeEnum})
    * @return the list of EC with the encoding equals to {@code encodingCode} and type equals to
-   * {@code codeType}
+   *     {@code codeType}
    */
   private CreditorInstitutionList getCreditorInstitutionByEncoding(
       String encodingCode, String codeType) {
@@ -387,7 +381,7 @@ public class CreditorInstitutionsService {
    * Check segregation code and application code based on aux-digit
    *
    * @param creditorInstitutionStationEdit body request
-   * @param pa                             Creditor Institution
+   * @param pa Creditor Institution
    */
   private void checkAuxDigit(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
     if (creditorInstitutionStationEdit.getAuxDigit() == 0) {
@@ -410,7 +404,6 @@ public class CreditorInstitutionsService {
       // check uniqueness rules
       checkUniqueApplicationCode(creditorInstitutionStationEdit, pa);
       checkUniqueSegregationCode(creditorInstitutionStationEdit, pa);
-
     }
   }
 
@@ -418,7 +411,7 @@ public class CreditorInstitutionsService {
    * If aux-digit is 0 then application code must be 2 ciphers and segregation code should be blank
    * or 2 ciphers
    *
-   * @param creditorInstitutionCode        EC id
+   * @param creditorInstitutionCode EC id
    * @param creditorInstitutionStationEdit body request
    */
   private void checkAuxDigit0(
@@ -430,7 +423,7 @@ public class CreditorInstitutionsService {
     // however they have Long type, so we can check if they have at most 2 cipher
     if (creditorInstitutionStationEdit.getApplicationCode() == null
         || (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1
-        || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
+            || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
       String message = "Application code error: length must be 2 ciphers";
       throw new AppException(
           AppError.RELATION_STATION_BAD_REQUEST,
@@ -441,7 +434,7 @@ public class CreditorInstitutionsService {
 
     if (creditorInstitutionStationEdit.getSegregationCode() != null
         && (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1
-        || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
+            || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
       String message = "Segregation code error: length must be 2 ciphers or blank";
       throw new AppException(
           AppError.RELATION_STATION_BAD_REQUEST,
@@ -455,7 +448,7 @@ public class CreditorInstitutionsService {
    * If aux-digit is 3 then application code must be 2 ciphers or blank and segregation code should
    * 2 ciphers
    *
-   * @param creditorInstitutionCode        EC id
+   * @param creditorInstitutionCode EC id
    * @param creditorInstitutionStationEdit body request
    */
   private void checkAuxDigit3(
@@ -467,7 +460,7 @@ public class CreditorInstitutionsService {
     // however they have Long type, so we can check if they have at most 2 cipher
     if (creditorInstitutionStationEdit.getApplicationCode() != null
         && (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1
-        || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
+            || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
       String message = "Application code error: length must be 2 ciphers or blank";
       throw new AppException(
           AppError.RELATION_STATION_BAD_REQUEST,
@@ -478,7 +471,7 @@ public class CreditorInstitutionsService {
 
     if (creditorInstitutionStationEdit.getSegregationCode() == null
         || (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1
-        || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
+            || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
       String message = "Segregation code error: length must be 2 ciphers";
       throw new AppException(
           AppError.RELATION_STATION_BAD_REQUEST,
@@ -492,7 +485,7 @@ public class CreditorInstitutionsService {
    * Segregation Code must not be used by other stations
    *
    * @param creditorInstitutionStationEdit body request
-   * @param pa                             Creditor Institution
+   * @param pa Creditor Institution
    */
   private void checkUniqueSegregationCode(
       CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
@@ -503,8 +496,8 @@ public class CreditorInstitutionsService {
               creditorInstitutionStationEdit.getSegregationCode(),
               creditorInstitutionStationEdit.getStationCode());
       if (!allByPaAndSegregazioneAndStazione.isEmpty()) {
-        throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO,
-            "ApplicationCode already exists");
+        throw new AppException(
+            HttpStatus.CONFLICT, BAD_RELATION_INFO, "ApplicationCode already exists");
       }
     }
   }
@@ -513,7 +506,7 @@ public class CreditorInstitutionsService {
    * Application Code must not be used by other stations
    *
    * @param creditorInstitutionStationEdit body request
-   * @param pa                             Creditor Institution
+   * @param pa Creditor Institution
    */
   private void checkUniqueApplicationCode(
       CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
@@ -524,10 +517,9 @@ public class CreditorInstitutionsService {
               creditorInstitutionStationEdit.getSegregationCode(),
               creditorInstitutionStationEdit.getStationCode());
       if (!allByPaAndSegregazioneAndStazione.isEmpty()) {
-        throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO,
-            "SegregationCode already exists");
+        throw new AppException(
+            HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
       }
     }
   }
-
 }

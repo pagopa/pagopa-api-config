@@ -63,27 +63,19 @@ import org.springframework.http.HttpStatus;
 @SpringBootTest(classes = ApiConfig.class)
 class CreditorInstitutionsServiceTest {
 
-  @MockBean
-  private PaRepository paRepository;
+  @MockBean private PaRepository paRepository;
 
-  @MockBean
-  private PaStazionePaRepository paStazionePaRepository;
+  @MockBean private PaStazionePaRepository paStazionePaRepository;
 
-  @MockBean
-  private IbanValidiPerPaRepository ibanValidiPerPaRepository;
+  @MockBean private IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
-  @MockBean
-  private StazioniRepository stazioniRepository;
+  @MockBean private StazioniRepository stazioniRepository;
 
-  @Autowired
-  @InjectMocks
-  private CreditorInstitutionsService creditorInstitutionsService;
+  @Autowired @InjectMocks private CreditorInstitutionsService creditorInstitutionsService;
 
-  @MockBean
-  private CodificheRepository codificheRepository;
+  @MockBean private CodificheRepository codificheRepository;
 
-  @MockBean
-  private CodifichePaRepository codifichePaRepository;
+  @MockBean private CodifichePaRepository codifichePaRepository;
 
   @Test
   void getECs_empty() throws IOException, JSONException {
@@ -476,19 +468,20 @@ class CreditorInstitutionsServiceTest {
     mock.setAuxDigit(1L);
     mock.setProgressivo(null);
     mock.setSegregazione(null);
-    when(paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(anyLong(),
-        anyLong(), anyString()))
+    when(paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(
+            anyLong(), anyLong(), anyString()))
         .thenReturn(Lists.newArrayList(mock));
 
-    CreditorInstitutionStationEdit creditorInstitutionStationEdit = getCreditorInstitutionStationEdit();
+    CreditorInstitutionStationEdit creditorInstitutionStationEdit =
+        getCreditorInstitutionStationEdit();
     creditorInstitutionStationEdit.setApplicationCode(null);
     creditorInstitutionStationEdit.setSegregationCode(null);
     creditorInstitutionStationEdit.setAuxDigit(1L);
-    var result = creditorInstitutionsService.createCreditorInstitutionStation(
-        "1234", creditorInstitutionStationEdit);
+    var result =
+        creditorInstitutionsService.createCreditorInstitutionStation(
+            "1234", creditorInstitutionStationEdit);
     String actual = TestUtil.toJson(result);
-    String expected =
-        TestUtil.readJsonFromFile("response/create_creditorinstitution_ok_2.json");
+    String expected = TestUtil.readJsonFromFile("response/create_creditorinstitution_ok_2.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
