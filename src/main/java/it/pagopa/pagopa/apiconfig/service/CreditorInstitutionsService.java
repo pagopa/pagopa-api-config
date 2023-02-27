@@ -27,7 +27,6 @@ import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,19 +49,26 @@ import org.springframework.validation.annotation.Validated;
 public class CreditorInstitutionsService {
 
   public static final String BAD_RELATION_INFO = "Bad Relation info";
-  @Autowired private PaRepository paRepository;
+  @Autowired
+  private PaRepository paRepository;
 
-  @Autowired private StazioniRepository stazioniRepository;
+  @Autowired
+  private StazioniRepository stazioniRepository;
 
-  @Autowired private PaStazionePaRepository paStazionePaRepository;
+  @Autowired
+  private PaStazionePaRepository paStazionePaRepository;
 
-  @Autowired private IbanValidiPerPaRepository ibanValidiPerPaRepository;
+  @Autowired
+  private IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
-  @Autowired private CodifichePaRepository codifichePaRepository;
+  @Autowired
+  private CodifichePaRepository codifichePaRepository;
 
-  @Autowired private CodificheRepository codificheRepository;
+  @Autowired
+  private CodificheRepository codificheRepository;
 
-  @Autowired private ModelMapper modelMapper;
+  @Autowired
+  private ModelMapper modelMapper;
 
   public CreditorInstitutions getCreditorInstitutions(
       @NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
@@ -136,37 +142,31 @@ public class CreditorInstitutionsService {
     }
   }
 
-  @Transactional
-  public CreditorInstitutionStationEdit createCreditorInstitutionStation(
-      String creditorInstitutionCode,
+  /**
+   * If aux-digit is 1 or 2 then application code and segregation code must be blank
+   *
+   * @param creditorInstitutionCode        EC id
+   * @param creditorInstitutionStationEdit body request
+   */
+  private static void checkAuxDigit1or2(String creditorInstitutionCode,
       CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
-    // check aux-digit, application and segregation codes are configured properly
-    checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
-    // check if the relation already exists
-    Pa pa = getPaIfExists(creditorInstitutionCode);
-    Stazioni stazioni = getStazioniIfExists(creditorInstitutionStationEdit.getStationCode());
-    if (paStazionePaRepository
-        .findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
-        .isPresent()) {
+    if (creditorInstitutionStationEdit.getApplicationCode() != null) {
+      String message = "Application code error: length must be blank";
       throw new AppException(
-          AppError.RELATION_STATION_CONFLICT,
+          AppError.RELATION_STATION_BAD_REQUEST,
           creditorInstitutionCode,
-          creditorInstitutionStationEdit.getStationCode());
+          creditorInstitutionStationEdit.getStationCode(),
+          message);
     }
 
-    // check uniqueness rules
-    checkSegregationCodePresent(creditorInstitutionStationEdit, pa, null, false);
-    checkApplicationCodePresent(creditorInstitutionStationEdit, pa, null, false);
-
-    // add info into object for model mapper
-    setAuxDigitNull(creditorInstitutionStationEdit);
-    creditorInstitutionStationEdit.setFkPa(pa);
-    creditorInstitutionStationEdit.setFkStazioni(stazioni);
-
-    // convert and save
-    PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class);
-    paStazionePaRepository.save(entity);
-    return creditorInstitutionStationEdit;
+    if (creditorInstitutionStationEdit.getSegregationCode() != null) {
+      String message = "Segregation code error: length must be blank";
+      throw new AppException(
+          AppError.RELATION_STATION_BAD_REQUEST,
+          creditorInstitutionCode,
+          creditorInstitutionStationEdit.getStationCode(),
+          message);
+    }
   }
 
   @Transactional
@@ -210,123 +210,71 @@ public class CreditorInstitutionsService {
         encodingCode, Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue());
   }
 
-  /**
-   * @param encodingCode value of the encoding
-   * @param codeType encoding type (see: {@link Encoding.CodeTypeEnum})
-   * @return the list of EC with the encoding equals to {@code encodingCode} and type equals to
-   *     {@code codeType}
-   */
-  private CreditorInstitutionList getCreditorInstitutionByEncoding(
-      String encodingCode, String codeType) {
-    List<CodifichePa> codifichePa =
-        codifichePaRepository.findAllByCodicePaAndFkCodifica_IdCodifica(encodingCode, codeType);
-    return CreditorInstitutionList.builder()
-        .creditorInstitutions(getCreditorInstitutions(codifichePa))
-        .build();
+  @Transactional
+  public CreditorInstitutionStationEdit createCreditorInstitutionStation(
+      String creditorInstitutionCode,
+      @Validated CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+
+    // check if the relation already exists
+    Pa pa = getPaIfExists(creditorInstitutionCode);
+    Stazioni stazioni = getStazioniIfExists(creditorInstitutionStationEdit.getStationCode());
+    if (paStazionePaRepository
+        .findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
+        .isPresent()) {
+      throw new AppException(
+          AppError.RELATION_STATION_CONFLICT,
+          creditorInstitutionCode,
+          creditorInstitutionStationEdit.getStationCode());
+    }
+
+    // check aux-digit
+    checkAuxDigit(creditorInstitutionStationEdit, pa);
+
+    // add info into object for model mapper
+    setAuxDigitNull(creditorInstitutionStationEdit);
+    creditorInstitutionStationEdit.setFkPa(pa);
+    creditorInstitutionStationEdit.setFkStazioni(stazioni);
+
+    // convert and save
+    PaStazionePa entity = modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class);
+    paStazionePaRepository.save(entity);
+    return creditorInstitutionStationEdit;
   }
 
-  /**
-   * Check application and segregation code according to aux-digit
-   *
-   * @param creditorInstitutionCode creditor institution code
-   * @param creditorInstitutionStationEdit relation info
-   */
-  private void checkAuxDigit(
+  @Transactional
+  public CreditorInstitutionStationEdit updateCreditorInstitutionStation(
       String creditorInstitutionCode,
-      CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
-    if (!Arrays.asList(0L, 1L, 2L, 3L).contains(creditorInstitutionStationEdit.getAuxDigit())) {
-      String message = "AugDigit code error: accepted values are 0, 1, 2, 3";
-      throw new AppException(
-          AppError.RELATION_STATION_BAD_REQUEST,
-          creditorInstitutionCode,
-          creditorInstitutionStationEdit.getStationCode(),
-          message);
-    }
+      String stationCode,
+      @Validated CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+    // check if the relation exists
+    Pa pa = getPaIfExists(creditorInstitutionCode);
+    Stazioni stazioni = getStazioniIfExists(stationCode);
 
-    if (creditorInstitutionStationEdit.getAuxDigit().equals(0L)) {
-      checkAuxDigit0(creditorInstitutionCode, creditorInstitutionStationEdit);
-    } else if (creditorInstitutionStationEdit.getAuxDigit().equals(1L)
-        || creditorInstitutionStationEdit.getAuxDigit().equals(2L)) {
-      if (creditorInstitutionStationEdit.getApplicationCode() != null) {
-        String message = "Application code error: length must be blank";
-        throw new AppException(
-            AppError.RELATION_STATION_BAD_REQUEST,
-            creditorInstitutionCode,
-            creditorInstitutionStationEdit.getStationCode(),
-            message);
-      }
+    creditorInstitutionStationEdit.setFkPa(pa);
+    creditorInstitutionStationEdit.setFkStazioni(stazioni);
+    creditorInstitutionStationEdit.setStationCode(stationCode);
 
-      if (creditorInstitutionStationEdit.getSegregationCode() != null) {
-        String message = "Segregation code error: length must be blank";
-        throw new AppException(
-            AppError.RELATION_STATION_BAD_REQUEST,
-            creditorInstitutionCode,
-            creditorInstitutionStationEdit.getStationCode(),
-            message);
-      }
-    } else if (creditorInstitutionStationEdit.getAuxDigit().equals(3L)) {
-      checkAuxDigit3(creditorInstitutionCode, creditorInstitutionStationEdit);
-    }
-  }
+    PaStazionePa paStazionePa =
+        paStazionePaRepository
+            .findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
+            .orElseThrow(
+                () ->
+                    new AppException(
+                        AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
 
-  private void checkAuxDigit0(
-      String creditorInstitutionCode,
-      CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
-    // if aux digit is equal to 0,
-    // application code must be 2 ciphers
-    // segregation code should be blank or 2 ciphers
-    // however they have Long type, so we can check if they have at most 2 cipher
-    if (creditorInstitutionStationEdit.getApplicationCode() == null
-        || (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1
-            || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
-      String message = "Application code error: length must be 2 ciphers";
-      throw new AppException(
-          AppError.RELATION_STATION_BAD_REQUEST,
-          creditorInstitutionCode,
-          creditorInstitutionStationEdit.getStationCode(),
-          message);
-    }
+    // check aux-digit, application and segregation codes are configured properly
+    checkAuxDigit(creditorInstitutionStationEdit, pa);
 
-    if (creditorInstitutionStationEdit.getSegregationCode() != null
-        && (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1
-            || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
-      String message = "Segregation code error: length must be 2 ciphers or blank";
-      throw new AppException(
-          AppError.RELATION_STATION_BAD_REQUEST,
-          creditorInstitutionCode,
-          creditorInstitutionStationEdit.getStationCode(),
-          message);
-    }
-  }
+    // add info into object for model mapper
+    setAuxDigitNull(creditorInstitutionStationEdit);
 
-  private void checkAuxDigit3(
-      String creditorInstitutionCode,
-      CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
-    // if aux digit is equal to 3,
-    // application code should be 2 ciphers or blank
-    // segregation code must be 2 ciphers
-    // however they have Long type, so we can check if they have at most 2 cipher
-    if (creditorInstitutionStationEdit.getApplicationCode() != null
-        && (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1
-            || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
-      String message = "Application code error: length must be 2 ciphers or blank";
-      throw new AppException(
-          AppError.RELATION_STATION_BAD_REQUEST,
-          creditorInstitutionCode,
-          creditorInstitutionStationEdit.getStationCode(),
-          message);
-    }
-
-    if (creditorInstitutionStationEdit.getSegregationCode() == null
-        || (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1
-            || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
-      String message = "Segregation code error: length must be 2 ciphers";
-      throw new AppException(
-          AppError.RELATION_STATION_BAD_REQUEST,
-          creditorInstitutionCode,
-          creditorInstitutionStationEdit.getStationCode(),
-          message);
-    }
+    // convert and save
+    PaStazionePa entity =
+        modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class).toBuilder()
+            .objId(paStazionePa.getObjId())
+            .build();
+    paStazionePaRepository.save(entity);
+    return creditorInstitutionStationEdit;
   }
 
   /**
@@ -389,122 +337,6 @@ public class CreditorInstitutionsService {
         .collect(Collectors.toList());
   }
 
-  private void checkApplicationCodePresent(
-      CreditorInstitutionStationEdit creditorInstitutionStationEdit,
-      Pa pa,
-      PaStazionePa paStazionePa,
-      boolean edit) {
-    String msg = "ApplicationCode already exists";
-    List<PaStazionePa> allByPaAndProgressivo =
-        paStazionePaRepository.findAllByFkPaAndProgressivo(
-            pa.getObjId(), creditorInstitutionStationEdit.getApplicationCode());
-    List<PaStazionePa> allByPaAndProgressivoAndStazione =
-        paStazionePaRepository.findAllByFkPaAndProgressivoAndFkStazione_IdStazioneIsNot(
-            pa.getObjId(),
-            creditorInstitutionStationEdit.getApplicationCode(),
-            creditorInstitutionStationEdit.getStationCode());
-    if (creditorInstitutionStationEdit.getAuxDigit() == 3L) {
-      // update
-      if (edit
-          && paStazionePa != null
-          && creditorInstitutionStationEdit.getApplicationCode() != null
-          && (allByPaAndProgressivo.size() > 1
-              || (allByPaAndProgressivo.size() == 1
-                  && allByPaAndProgressivo.stream()
-                      .noneMatch(ti -> ti.getObjId().equals(paStazionePa.getObjId()))))) {
-        throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-      }
-      // create
-      if (!edit
-          && creditorInstitutionStationEdit.getApplicationCode() != null
-          && !allByPaAndProgressivo.isEmpty()) {
-        throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-      }
-    } else if (edit && !allByPaAndProgressivoAndStazione.isEmpty()) {
-      throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-    } else if (!edit && !allByPaAndProgressivo.isEmpty()) {
-      throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-    }
-  }
-
-  private void checkSegregationCodePresent(
-      CreditorInstitutionStationEdit creditorInstitutionStationEdit,
-      Pa pa,
-      PaStazionePa paStazionePa,
-      boolean edit) {
-    String msg = "SegregationCode already exists";
-    List<PaStazionePa> allByPaAndSegregazione =
-        paStazionePaRepository.findAllByFkPaAndSegregazione(
-            pa.getObjId(), creditorInstitutionStationEdit.getSegregationCode());
-    List<PaStazionePa> allByPaAndSegregazioneAndStazione =
-        paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(
-            pa.getObjId(),
-            creditorInstitutionStationEdit.getSegregationCode(),
-            creditorInstitutionStationEdit.getStationCode());
-    if (creditorInstitutionStationEdit.getAuxDigit() == 0L) {
-      // update
-      if (edit
-          && paStazionePa != null
-          && creditorInstitutionStationEdit.getSegregationCode() != null
-          && (allByPaAndSegregazione.size() > 1
-              || (allByPaAndSegregazione.size() == 1
-                  && allByPaAndSegregazione.stream()
-                      .noneMatch(ti -> ti.getObjId().equals(paStazionePa.getObjId()))))) {
-        throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-      }
-      // create
-      if (!edit
-          && creditorInstitutionStationEdit.getSegregationCode() != null
-          && !allByPaAndSegregazione.isEmpty()) {
-        throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-      }
-    } else if (edit && !allByPaAndSegregazioneAndStazione.isEmpty()) {
-      throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-    } else if (!edit && !allByPaAndSegregazione.isEmpty()) {
-      throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO, msg);
-    }
-  }
-
-  @Transactional
-  public CreditorInstitutionStationEdit updateCreditorInstitutionStation(
-      String creditorInstitutionCode,
-      String stationCode,
-      CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
-    // check if the relation exists
-    Pa pa = getPaIfExists(creditorInstitutionCode);
-    Stazioni stazioni = getStazioniIfExists(stationCode);
-
-    creditorInstitutionStationEdit.setFkPa(pa);
-    creditorInstitutionStationEdit.setFkStazioni(stazioni);
-    creditorInstitutionStationEdit.setStationCode(stationCode);
-
-    PaStazionePa paStazionePa =
-        paStazionePaRepository
-            .findAllByFkPaAndFkStazione_ObjId(pa.getObjId(), stazioni.getObjId())
-            .orElseThrow(
-                () ->
-                    new AppException(
-                        AppError.RELATION_STATION_NOT_FOUND, creditorInstitutionCode, stationCode));
-
-    // check aux-digit, application and segregation codes are configured properly
-    checkAuxDigit(creditorInstitutionCode, creditorInstitutionStationEdit);
-
-    // check uniqueness rules
-    checkSegregationCodePresent(creditorInstitutionStationEdit, pa, paStazionePa, true);
-    checkApplicationCodePresent(creditorInstitutionStationEdit, pa, paStazionePa, true);
-
-    // add info into object for model mapper
-    setAuxDigitNull(creditorInstitutionStationEdit);
-
-    // convert and save
-    PaStazionePa entity =
-        modelMapper.map(creditorInstitutionStationEdit, PaStazionePa.class).toBuilder()
-            .objId(paStazionePa.getObjId())
-            .build();
-    paStazionePaRepository.save(entity);
-    return creditorInstitutionStationEdit;
-  }
-
   private void addQrEncoding(Pa pa) {
     Codifiche codifiche =
         codificheRepository
@@ -535,4 +367,167 @@ public class CreditorInstitutionsService {
         .map(pa -> modelMapper.map(pa, CreditorInstitution.class))
         .collect(Collectors.toList());
   }
+
+  /**
+   * @param encodingCode value of the encoding
+   * @param codeType     encoding type (see: {@link Encoding.CodeTypeEnum})
+   * @return the list of EC with the encoding equals to {@code encodingCode} and type equals to
+   * {@code codeType}
+   */
+  private CreditorInstitutionList getCreditorInstitutionByEncoding(
+      String encodingCode, String codeType) {
+    List<CodifichePa> codifichePa =
+        codifichePaRepository.findAllByCodicePaAndFkCodifica_IdCodifica(encodingCode, codeType);
+    return CreditorInstitutionList.builder()
+        .creditorInstitutions(getCreditorInstitutions(codifichePa))
+        .build();
+  }
+
+  /**
+   * Check segregation code and application code based on aux-digit
+   *
+   * @param creditorInstitutionStationEdit body request
+   * @param pa                             Creditor Institution
+   */
+  private void checkAuxDigit(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
+    if (creditorInstitutionStationEdit.getAuxDigit() == 0) {
+      // check aux-digit, application and segregation codes are configured properly
+      checkAuxDigit0(pa.getIdDominio(), creditorInstitutionStationEdit);
+
+      // check uniqueness rules
+      checkUniqueApplicationCode(creditorInstitutionStationEdit, pa);
+      checkUniqueSegregationCode(creditorInstitutionStationEdit, pa);
+
+    } else if (creditorInstitutionStationEdit.getAuxDigit() == 1
+        || creditorInstitutionStationEdit.getAuxDigit() == 2) {
+      // check aux-digit, application and segregation codes are configured properly
+      checkAuxDigit1or2(pa.getIdDominio(), creditorInstitutionStationEdit);
+
+    } else if (creditorInstitutionStationEdit.getAuxDigit() == 3) {
+      // check aux-digit, application and segregation codes are configured properly
+      checkAuxDigit3(pa.getIdDominio(), creditorInstitutionStationEdit);
+
+      // check uniqueness rules
+      checkUniqueApplicationCode(creditorInstitutionStationEdit, pa);
+      checkUniqueSegregationCode(creditorInstitutionStationEdit, pa);
+
+    }
+  }
+
+  /**
+   * If aux-digit is 0 then application code must be 2 ciphers and segregation code should be blank
+   * or 2 ciphers
+   *
+   * @param creditorInstitutionCode        EC id
+   * @param creditorInstitutionStationEdit body request
+   */
+  private void checkAuxDigit0(
+      String creditorInstitutionCode,
+      CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+    // if aux digit is equal to 0,
+    // application code must be 2 ciphers
+    // segregation code should be blank or 2 ciphers
+    // however they have Long type, so we can check if they have at most 2 cipher
+    if (creditorInstitutionStationEdit.getApplicationCode() == null
+        || (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1
+        || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
+      String message = "Application code error: length must be 2 ciphers";
+      throw new AppException(
+          AppError.RELATION_STATION_BAD_REQUEST,
+          creditorInstitutionCode,
+          creditorInstitutionStationEdit.getStationCode(),
+          message);
+    }
+
+    if (creditorInstitutionStationEdit.getSegregationCode() != null
+        && (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1
+        || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
+      String message = "Segregation code error: length must be 2 ciphers or blank";
+      throw new AppException(
+          AppError.RELATION_STATION_BAD_REQUEST,
+          creditorInstitutionCode,
+          creditorInstitutionStationEdit.getStationCode(),
+          message);
+    }
+  }
+
+  /**
+   * If aux-digit is 3 then application code must be 2 ciphers or blank and segregation code should
+   * 2 ciphers
+   *
+   * @param creditorInstitutionCode        EC id
+   * @param creditorInstitutionStationEdit body request
+   */
+  private void checkAuxDigit3(
+      String creditorInstitutionCode,
+      CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+    // if aux digit is equal to 3,
+    // application code should be 2 ciphers or blank
+    // segregation code must be 2 ciphers
+    // however they have Long type, so we can check if they have at most 2 cipher
+    if (creditorInstitutionStationEdit.getApplicationCode() != null
+        && (creditorInstitutionStationEdit.getApplicationCode().toString().length() < 1
+        || creditorInstitutionStationEdit.getApplicationCode().toString().length() > 2)) {
+      String message = "Application code error: length must be 2 ciphers or blank";
+      throw new AppException(
+          AppError.RELATION_STATION_BAD_REQUEST,
+          creditorInstitutionCode,
+          creditorInstitutionStationEdit.getStationCode(),
+          message);
+    }
+
+    if (creditorInstitutionStationEdit.getSegregationCode() == null
+        || (creditorInstitutionStationEdit.getSegregationCode().toString().length() < 1
+        || creditorInstitutionStationEdit.getSegregationCode().toString().length() > 2)) {
+      String message = "Segregation code error: length must be 2 ciphers";
+      throw new AppException(
+          AppError.RELATION_STATION_BAD_REQUEST,
+          creditorInstitutionCode,
+          creditorInstitutionStationEdit.getStationCode(),
+          message);
+    }
+  }
+
+  /**
+   * Segregation Code must not be used by other stations
+   *
+   * @param creditorInstitutionStationEdit body request
+   * @param pa                             Creditor Institution
+   */
+  private void checkUniqueSegregationCode(
+      CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
+    if (creditorInstitutionStationEdit.getApplicationCode() != null) {
+      var allByPaAndSegregazioneAndStazione =
+          paStazionePaRepository.findAllByFkPaAndProgressivoAndFkStazione_IdStazioneIsNot(
+              pa.getObjId(),
+              creditorInstitutionStationEdit.getSegregationCode(),
+              creditorInstitutionStationEdit.getStationCode());
+      if (!allByPaAndSegregazioneAndStazione.isEmpty()) {
+        throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO,
+            "ApplicationCode already exists");
+      }
+    }
+  }
+
+  /**
+   * Application Code must not be used by other stations
+   *
+   * @param creditorInstitutionStationEdit body request
+   * @param pa                             Creditor Institution
+   */
+  private void checkUniqueApplicationCode(
+      CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
+    if (creditorInstitutionStationEdit.getSegregationCode() != null) {
+      var allByPaAndSegregazioneAndStazione =
+          paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(
+              pa.getObjId(),
+              creditorInstitutionStationEdit.getSegregationCode(),
+              creditorInstitutionStationEdit.getStationCode());
+      if (!allByPaAndSegregazioneAndStazione.isEmpty()) {
+        throw new AppException(HttpStatus.CONFLICT, BAD_RELATION_INFO,
+            "SegregationCode already exists");
+      }
+    }
+  }
+
 }

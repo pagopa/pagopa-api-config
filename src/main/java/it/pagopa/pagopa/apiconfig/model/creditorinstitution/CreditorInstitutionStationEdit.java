@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
 import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -32,6 +33,9 @@ public class CreditorInstitutionStationEdit {
   private String stationCode;
 
   @JsonProperty("aux_digit")
+  @Schema(example = "1", allowableValues = {"0", "1", "2", "3"})
+  @Min(0)
+  @Max(3)
   private Long auxDigit;
 
   @Min(0)
@@ -48,7 +52,9 @@ public class CreditorInstitutionStationEdit {
   @JsonProperty("broadcast")
   private Boolean broadcast;
 
-  @JsonIgnore private Pa fkPa;
+  @JsonIgnore
+  private Pa fkPa;
 
-  @JsonIgnore private Stazioni fkStazioni;
+  @JsonIgnore
+  private Stazioni fkStazioni;
 }
