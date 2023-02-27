@@ -45,4 +45,4 @@ k6-script.js
 /src/main/resources/application-sia.properties
 **/*.crt
 **/.terraform/
-/helm/charts
+/helm/postgresql/charts

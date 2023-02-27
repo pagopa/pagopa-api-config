@@ -24,6 +24,13 @@ parameters:
       - buildNumber
       - skip
     default: skip
+  - name: DB
+    displayName: "Database version"
+    type: string
+    values:
+      - oracle
+      - postgresql
+    default: oracle
   - name: "FORCE_REPLACE_DOCKER_IMAGE"
     displayName: "Force the existing docker image to be replaced"
     type: boolean
@@ -201,6 +208,8 @@ stages:
                     DEPLOY_VERSION: $(deploy_version)
                     APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                     APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
+                    ARGUMENTS: >-
+                      --set microservice-chart.envConfig.SPRING_DATASOURCE_URL="oracle"
 
 
   # Run Tests

@@ -78,6 +78,7 @@ microservice-chart:
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
+    TEST: "postgres"
   envSecret:
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
