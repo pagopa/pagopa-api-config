@@ -27,29 +27,31 @@ import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.RedisConnectionFailureException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Slf4j
 public class CreditorInstitutionsService {
 
     public static final String BAD_RELATION_INFO = "Bad Relation info";
@@ -430,7 +432,11 @@ public class CreditorInstitutionsService {
       List cis = paStazionePaList.stream().map(p -> p.getPa().getIdDominio()).collect(Collectors.toList());
 
       // store data on redis
-      redisRepository.save(String.format("%s_verifier", redisDomain), cis, redisTtl);
+      try {
+        redisRepository.save(String.format("%s_verifier", redisDomain), cis, redisTtl);
+      } catch (RedisConnectionFailureException e) {
+        log.error("Problem to connect to Redis", e);
+      }
       return cis;
     }
 
