@@ -1,6 +1,14 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifiche;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCodifichePa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,19 +63,27 @@ import org.springframework.http.HttpStatus;
 @SpringBootTest(classes = ApiConfig.class)
 class CreditorInstitutionsServiceTest {
 
-  @MockBean private PaRepository paRepository;
+  @MockBean
+  private PaRepository paRepository;
 
-  @MockBean private PaStazionePaRepository paStazionePaRepository;
+  @MockBean
+  private PaStazionePaRepository paStazionePaRepository;
 
-  @MockBean private IbanValidiPerPaRepository ibanValidiPerPaRepository;
+  @MockBean
+  private IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
-  @MockBean private StazioniRepository stazioniRepository;
+  @MockBean
+  private StazioniRepository stazioniRepository;
 
-  @Autowired @InjectMocks private CreditorInstitutionsService creditorInstitutionsService;
+  @Autowired
+  @InjectMocks
+  private CreditorInstitutionsService creditorInstitutionsService;
 
-  @MockBean private CodificheRepository codificheRepository;
+  @MockBean
+  private CodificheRepository codificheRepository;
 
-  @MockBean private CodifichePaRepository codifichePaRepository;
+  @MockBean
+  private CodifichePaRepository codifichePaRepository;
 
   @Test
   void getECs_empty() throws IOException, JSONException {
@@ -429,29 +445,6 @@ class CreditorInstitutionsServiceTest {
     }
   }
 
-  @ParameterizedTest
-  @NullSource
-  @ValueSource(longs = {4L})
-  void createStationsCI_4_null_badrequest(Long auxDigit) {
-    when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
-    when(stazioniRepository.findByIdStazione("80007580279_01"))
-        .thenReturn(Optional.of(getMockStazioni()));
-    when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong()))
-        .thenReturn(Optional.empty());
-
-    CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
-    mock.setAuxDigit(auxDigit);
-    mock.setApplicationCode(12L);
-    mock.setSegregationCode(12L);
-    try {
-      creditorInstitutionsService.createCreditorInstitutionStation("1234", mock);
-    } catch (AppException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-    } catch (Exception e) {
-      fail();
-    }
-  }
-
   @Test
   void createStationsCI_conflict() {
     when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
@@ -468,6 +461,35 @@ class CreditorInstitutionsServiceTest {
     } catch (Exception e) {
       fail();
     }
+  }
+
+  @Test
+  void createStationsCI_2() throws IOException, JSONException {
+    when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+    when(stazioniRepository.findByIdStazione("80007580279_01"))
+        .thenReturn(Optional.of(getMockStazioni()));
+
+    when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong()))
+        .thenReturn(Optional.empty());
+
+    PaStazionePa mock = getMockPaStazionePa();
+    mock.setAuxDigit(1L);
+    mock.setProgressivo(null);
+    mock.setSegregazione(null);
+    when(paStazionePaRepository.findAllByFkPaAndSegregazioneAndFkStazione_IdStazioneIsNot(anyLong(),
+        anyLong(), anyString()))
+        .thenReturn(Lists.newArrayList(mock));
+
+    CreditorInstitutionStationEdit creditorInstitutionStationEdit = getCreditorInstitutionStationEdit();
+    creditorInstitutionStationEdit.setApplicationCode(null);
+    creditorInstitutionStationEdit.setSegregationCode(null);
+    creditorInstitutionStationEdit.setAuxDigit(1L);
+    var result = creditorInstitutionsService.createCreditorInstitutionStation(
+        "1234", creditorInstitutionStationEdit);
+    String actual = TestUtil.toJson(result);
+    String expected =
+        TestUtil.readJsonFromFile("response/create_creditorinstitution_ok_2.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
   @Test
@@ -608,7 +630,7 @@ class CreditorInstitutionsServiceTest {
 
   @ParameterizedTest
   @ValueSource(longs = {0L, 3L})
-  void updateStationsCI_0_3_conflict(Long auxDigit) throws IOException, JSONException {
+  void updateStationsCI_0_3_conflict(Long auxDigit) {
     when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
     when(stazioniRepository.findByIdStazione("80007580279_01"))
         .thenReturn(Optional.of(getMockStazioni()));

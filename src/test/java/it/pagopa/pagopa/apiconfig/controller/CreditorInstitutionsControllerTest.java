@@ -146,6 +146,18 @@ class CreditorInstitutionsControllerTest {
   }
 
   @Test
+  void createCreditorInstitutionStation_BadRequest() throws Exception {
+    var request = getCreditorInstitutionStationEdit();
+    request.setAuxDigit(4L);
+    mvc.perform(
+            post("/creditorinstitutions/123/stations")
+                .content(TestUtil.toJson(request))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
   void updateCreditorInstitutionStation() throws Exception {
     mvc.perform(
             put("/creditorinstitutions/1234/stations/21")
