@@ -36,7 +36,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Verify PR Labels
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'breaking-change') && !contains(github.event.pull_request.labels.*.name, 'enhancement') && !contains(github.event.pull_request.labels.*.name, 'bug') && !contains(github.event.pull_request.labels.*.name, 'ignore-for-release') }}
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'major') && !contains(github.event.pull_request.labels.*.name, 'minor') && !contains(github.event.pull_request.labels.*.name, 'patch') && !contains(github.event.pull_request.labels.*.name, 'skip') }}
         uses: actions/github-script@v6.3.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -60,7 +60,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'This pull request does not contain a valid label. Please add one of the following labels: `[bug, enhancement, breaking-change, ignore-for-release]`'
+              body: 'This pull request does not contain a valid label. Please add one of the following labels: `[patch, minor, major, skip]`'
             })
             core.setFailed('Missing required labels')
 

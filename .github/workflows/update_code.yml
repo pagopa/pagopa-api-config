@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.API_TOKEN_GITHUB }}
+          token: ${{ secrets.BOT_TOKEN_GITHUB }}
 
       - name: Checkout Pull Request
         run: hub pr checkout ${{ github.event.issue.number }}
@@ -39,7 +39,7 @@ jobs:
         uses: axel-op/googlejavaformat-action@v3
         with:
           args: "--replace"
-          commit-message: "Google Java format [skip ci]"
+          commit-message: "Google Java format"
 
   notify:
     needs: [ update ]
@@ -73,5 +73,4 @@ jobs:
               repo: context.repo.repo,
               body: 'Update Code is failed. Please retry.'
             })
-            core.setFailed('Missing required labels')
 
