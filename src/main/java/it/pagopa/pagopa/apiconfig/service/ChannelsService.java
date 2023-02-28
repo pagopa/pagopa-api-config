@@ -157,7 +157,7 @@ public class ChannelsService {
     Pageable pageable = PageRequest.of(pageNumber, limit);
     Page<Psp> page = pspRepository.findDistinctByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_idCanale(channelCode, pageable);
     return ChannelPspList.builder()
-        .psp(getPspList(page))
+        .psp(getPspList(page, channelCode))
         .pageInfo(CommonUtil.buildPageInfo(page))
         .build();
   }
@@ -175,7 +175,7 @@ public class ChannelsService {
     pspList.forEach(
         (key, value) -> {
           // map relation entity to list of strings
-          var tipiVersamento = mapPaymentType(value);
+          var tipiVersamento = mapPaymentType(value, channelCode);
 
           // map PSP to ChannelPsp and add to result
           var channelPsp = mapChannelPsp(key, tipiVersamento);
@@ -254,9 +254,10 @@ public class ChannelsService {
    * @param list of entities
    * @return list of string
    */
-  private List<String> mapPaymentType(List<PspCanaleTipoVersamento> list) {
+  private List<String> mapPaymentType(List<PspCanaleTipoVersamento> list, String channelCode) {
     return list.stream()
-        .map(PspCanaleTipoVersamento::getCanaleTipoVersamento)
+            .map(PspCanaleTipoVersamento::getCanaleTipoVersamento)
+        .filter(canaleTipoVersamento -> canaleTipoVersamento.getCanale().getIdCanale().equals(channelCode))
         .map(elem -> elem.getTipoVersamento().getTipoVersamento())
         .distinct()
         .collect(Collectors.toList());
@@ -355,10 +356,11 @@ public class ChannelsService {
   /**
    * Maps PSP objects stored in the DB in a List of PaymentServiceProvider
    *
-   * @param page page of PSP returned from the database
+   * @param page        page of PSP returned from the database
+   * @param channelCode id of the channel
    * @return a list of {@link PaymentServiceProvider}.
    */
-  private List<ChannelPsp> getPspList(Page<Psp> page) {
+  private List<ChannelPsp> getPspList(Page<Psp> page, String channelCode) {
     return page.stream()
             .map(elem -> {
               var psp = modelMapper.map(elem, PaymentServiceProvider.class);
@@ -366,7 +368,7 @@ public class ChannelsService {
                       .pspCode(psp.getPspCode())
                       .enabled(psp.getEnabled())
                       .businessName(psp.getBusinessName())
-                      .paymentTypeList(mapPaymentType(elem.getPspCanaleTipoVersamentoList()))
+                      .paymentTypeList(mapPaymentType(elem.getPspCanaleTipoVersamentoList(), channelCode))
                       .build();
 
             } )
