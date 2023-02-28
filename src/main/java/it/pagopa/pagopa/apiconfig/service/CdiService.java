@@ -4,12 +4,11 @@ import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 
-import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
-import it.pagopa.pagopa.apiconfig.cosmos.container.CdiDetailCosmos;
-import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
+import it.pagopa.pagopa.apiconfig.cosmos.container.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
@@ -25,6 +24,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
 import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
@@ -217,6 +217,7 @@ public class CdiService {
         return CdiCosmos.builder()
                 .id(master.getId().toString())
                 .idPsp(master.getFkPsp().getIdPsp())
+                .abi(master.getFkPsp().getAbi())
                 .idCdi(master.getIdInformativaPsp())
                 .cdiStatus("NEW")
                 .digitalStamp(master.getMarcaBolloDigitale())

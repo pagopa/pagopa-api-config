@@ -1,0 +1,79 @@
+name: Continuous Delivery on dev core
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        description: Select the Environment
+        options:
+          - dev
+          - uat
+          - prod
+          - all
+      beta:
+        required: false
+        type: boolean
+        description: deploy beta version on AKS
+        default: false
+
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        description: Select the Environment
+        options:
+          - dev
+          - uat
+          - prod
+          - all
+      beta:
+        required: false
+        type: boolean
+        description: deploy beta version on AKS
+        default: false
+
+env:
+  NAMESPACE: apiconfig
+  APP_NAME: pagopaapiconfig
+
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    needs: [create_runner]
+    runs-on: [self-hosted, "${{ needs.create_runner.outputs.runner_name }}"]
+    name: Deploy on AKS
+    strategy:
+      matrix:
+        environment: [ dev, uat, prod ]
+        include:
+          - environment : dev
+            short: d
+          - environment : uat
+            short: u
+          - environment : prod
+            short: p
+    environment:
+      name: ${{ matrix.environment }}
+    steps:
+      - name: Deploy
+        if: ${{ matrix.environment == inputs.environment || inputs.environment == 'all' }}
+        uses: pagopa/github-actions-template/aks-deploy@deploy_aks_beta
+        with:
+          branch: ${{ github.ref_name }}
+          client_id: ${{ vars.CLIENT_ID }}
+          subscription_id: ${{ vars.SUBSCRIPTION_ID }}
+          tenant_id: ${{ vars.TENANT_ID }}
+          env: ${{ matrix.environment }}
+          namespace: ${{ env.NAMESPACE }}
+          cluster_name: pagopa-${{matrix.short}}-weu-dev-aks
+          resource_group: pagopa-${{matrix.short}}-weu-dev-aks-rg
+          app_name: ${{ env.APP_NAME }}
+          helm_upgrade_options: ${{env.OPTIONS}}
+

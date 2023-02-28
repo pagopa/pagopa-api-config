@@ -1,0 +1,78 @@
+name: Deploy
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    inputs:
+      semver:
+        required: true
+        type: choice
+        description: Select the new Semantic Version
+        options:
+          - major
+          - minor
+          - patch
+          - buildNumber
+          - skip
+      force_push_image:
+        required: false
+        type: boolean
+        description: To Re-build and push the docker image
+        default: false
+
+  workflow_call:
+    inputs:
+      semver:
+        required: true
+        type: choice
+        description: Select the new Semantic Version
+        options:
+          - major
+          - minor
+          - patch
+          - buildNumber
+          - skip
+      force_push_image:
+        required: false
+        type: boolean
+        description: To Re-build and push the docker image
+        default: false
+
+
+permissions:
+  packages: write
+  contents: write
+  issues: write
+  id-token: write
+  actions: read
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  release:
+    name: Create a New Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Make Release
+        id: release
+        uses: pagopa/github-actions-template/release@main
+        with:
+          semver: ${{inputs.semver}}
+          github_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+
+  image:
+    needs: [release]
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    if: ${{ !(inputs.semver == 'skip') || (github.event.inputs.force_push_image == 'true') }}
+    steps:
+      - name: Build and Push
+        id: semver
+        uses: pagopa/github-actions-template/ghcr-build-push@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name}}
+          tag: ${{ needs.release.outputs.version }}

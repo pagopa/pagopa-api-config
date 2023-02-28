@@ -20,8 +20,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-@Table(name = "PA_STAZIONE_PA")
+@Table(name = "PA_STAZIONE_PA", schema = "NODO4_CFG", uniqueConstraints = { @UniqueConstraint(columnNames = { "FK_PA", "FK_STAZIONE" }) })
 @Entity
 @Getter
 @Setter

@@ -1,0 +1,124 @@
+name: Continuous Delivery
+
+on:
+   workflow_call:
+    inputs:
+      client_id:
+        required: true
+        description: Azure Client ID
+        type: string
+      subscription_id:
+        required: true
+        description: Azure Subscription ID
+        type: string
+      tenant_id:
+        required: true
+        description: Azure Tenant ID
+        type: string
+      container_app_env:
+        required: true
+        description: Container App Environment Name
+        type: string
+      container_resource_group:
+        required: true
+        description: The resource group of the Container App
+        type: string
+      env:
+        required: true
+        description: The name of the environment where to deploy
+        type: choice
+        options:
+          - dev
+          - uat
+          - prod
+      namespace:
+        required: true
+        description: The namespace on AKS
+        type: string
+      cluster_name:
+        required: true
+        description: The name of the cluster
+        type: string
+      cluster_resource_group:
+        required: true
+        description: The resource group of the cluster
+        type: string
+      app_name:
+        required: true
+        description: The name of the application
+        type: string
+      helm_upgrade_options:
+        required: false
+        description: options you can pass to helm upgrade command
+        type: string
+        default: ''
+      github_token:
+        required: true
+        type: string
+        description: Github Token
+
+env:
+  NAMESPACE: apiconfig
+  APP_NAME: pagopaapiconfig
+
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  create_runner:
+    name: Create Runner
+    runs-on: ubuntu-22.04
+    outputs:
+      runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
+    steps:
+      - name: Create GitHub Runner
+        id: create_github_runner
+        # from https://github.com/pagopa/github-self-hosted-runner-azure-create-action/commits/main
+        uses: pagopa/github-self-hosted-runner-azure-create-action@b4590e069e753daee6bc9809d484523cc7026035
+        with:
+          client_id: ${{ inputs.client_id }}
+          tenant_id: ${{ inputs.tenant_id }}
+          subscription_id: ${{ inputs.subscription_id }}
+          container_app_environment_name: ${{ inputs.container_app_env }}
+          resource_group_name: ${{ inputs.container_resource_group }}
+          pat_token: ${{ inputs.github_token }}
+
+  deploy:
+    needs: [create_runner]
+    runs-on: [self-hosted, "${{ needs.create_runner.outputs.runner_name }}"]
+    name: Deploy on AKS
+    steps:
+      - name: Deploy
+        uses: pagopa/github-actions-template/aks-deploy@deploy_aks_beta
+        with:
+          branch: ${{ github.ref_name }}
+          client_id: ${{ inputs.client_id }}
+          tenant_id: ${{ inputs.tenant_id }}
+          subscription_id: ${{ inputs.subscription_id }}
+          env: ${{ inputs.env }}
+          namespace: ${{ env.NAMESPACE }}
+          cluster_name: pagopa-${{matrix.short}}-weu-dev-aks
+          resource_group: pagopa-${{matrix.short}}-weu-dev-aks-rg
+          app_name: ${{ env.APP_NAME }}
+          helm_upgrade_options: ${{inputs.helm_upgrade_options}}
+
+  cleanup_runner:
+    name: Cleanup Runner
+    if: always()
+    runs-on: ubuntu-22.04
+    environment: dev-runner
+    needs: [create_runner, deploy]
+    steps:
+      - name: Cleanup GitHub Runner
+        id: cleanup_github_runner
+        # from https://github.com/pagopa/github-self-hosted-runner-azure-cleanup-action/commits/main
+        uses: pagopa/github-self-hosted-runner-azure-cleanup-action@97731a35e6ffc79b66c4dfd2aae5e4fd04e3ebb5
+        with:
+          client_id: ${{ inputs.client_id }}
+          tenant_id: ${{ inputs.tenant_id }}
+          subscription_id: ${{ inputs.subscription_id }}
+          resource_group_name: ${{ inputs.resource_group }}
+          runner_name: ${{ needs.create_runner.outputs.runner_name }}
+          pat_token: ${{ inputs.github_token }}

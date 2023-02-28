@@ -5,6 +5,7 @@ import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Codifiche;
 import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
 import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionList;
@@ -538,6 +539,34 @@ class CreditorInstitutionsServiceTest {
             creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", mock);
         } catch (AppException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+    
+    @ParameterizedTest
+    @ValueSource(longs = {0L, 3L})
+    void updateStationsCI_0_3_conflict(Long auxDigit) throws IOException, JSONException {
+        when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+        when(stazioniRepository.findByIdStazione("80007580279_01")).thenReturn(Optional.of(getMockStazioni()));
+        PaStazionePa paStazionePa = getMockPaStazionePa();
+        paStazionePa.setObjId(333L);
+        when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(anyLong(), anyLong())).thenReturn(Optional.of(paStazionePa));
+        paStazionePa = getMockPaStazionePa();
+        paStazionePa.setObjId(555L);
+        when(paStazionePaRepository.findAllByFkPaAndSegregazione(anyLong(), anyLong())).thenReturn(Lists.newArrayList(paStazionePa));
+        when(paStazionePaRepository.findAllByFkPaAndProgressivo(anyLong(), anyLong())).thenReturn(Lists.newArrayList(paStazionePa));
+        
+        
+
+        CreditorInstitutionStationEdit mock = getCreditorInstitutionStationEdit();
+        mock.setAuxDigit(auxDigit);
+        mock.setApplicationCode(1L);
+        mock.setSegregationCode(5L);
+        try {
+            creditorInstitutionsService.updateCreditorInstitutionStation("1234", "80007580279_01", mock);
+        } catch (AppException e) {
+            assertEquals(HttpStatus.CONFLICT, e.getHttpStatus());
         } catch (Exception e) {
             fail();
         }
