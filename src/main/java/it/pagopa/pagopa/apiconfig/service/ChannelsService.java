@@ -1,38 +1,13 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
-
-import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.model.psp.Channel;
-import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.ChannelPsp;
-import it.pagopa.pagopa.apiconfig.model.psp.ChannelPspList;
-import it.pagopa.pagopa.apiconfig.model.psp.Channels;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
-import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
-import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
+import it.pagopa.pagopa.apiconfig.model.psp.*;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +18,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 @Service
 @Validated
@@ -64,6 +53,8 @@ public class ChannelsService {
 
   @Value("${properties.environment}")
   private String env;
+  @Autowired
+  private PspRepository pspRepository;
 
   public Channels getChannels(
       @NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
@@ -162,7 +153,16 @@ public class ChannelsService {
     canaleTipoVersamentoRepository.delete(result);
   }
 
-  public ChannelPspList getChannelPaymentServiceProviders(String channelCode) {
+  public ChannelPspList getChannelPaymentServiceProviders(@Positive Integer limit, @PositiveOrZero Integer pageNumber, String channelCode) {
+    Pageable pageable = PageRequest.of(pageNumber, limit);
+    Page<Psp> page = pspRepository.findDistinctByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_idCanale(channelCode, pageable);
+    return ChannelPspList.builder()
+        .psp(getPspList(page))
+        .pageInfo(CommonUtil.buildPageInfo(page))
+        .build();
+  }
+
+  public byte[] getChannelPaymentServiceProvidersCSV(String channelCode) {
     // get all the PSPs of the channel with relative payment types
     Map<Psp, List<PspCanaleTipoVersamento>> pspList =
         pspCanaleTipoVersamentoRepository
@@ -182,14 +182,10 @@ public class ChannelsService {
           result.add(channelPsp);
         });
 
-    return ChannelPspList.builder().psp(result).build();
-  }
-
-  public byte[] getChannelPaymentServiceProvidersCSV(String channelCode) {
-    var pspList = getChannelPaymentServiceProviders(channelCode);
+    var psps = ChannelPspList.builder().psp(result).build();
 
     List<String> headers = Arrays.asList("PSP", "Codice", "Abilitato", "Tipo Versamento");
-    List<List<String>> rows = mapPspToCsv(pspList.getPsp());
+    List<List<String>> rows = mapPspToCsv(psps.getPsp());
     return CommonUtil.createCsv(headers, rows);
   }
 
@@ -354,5 +350,26 @@ public class ChannelsService {
         .map(elem -> modelMapper.map(elem, PaymentType.class))
         .map(elem -> modelMapper.map(elem, String.class))
         .collect(Collectors.toList());
+  }
+
+  /**
+   * Maps PSP objects stored in the DB in a List of PaymentServiceProvider
+   *
+   * @param page page of PSP returned from the database
+   * @return a list of {@link PaymentServiceProvider}.
+   */
+  private List<ChannelPsp> getPspList(Page<Psp> page) {
+    return page.stream()
+            .map(elem -> {
+              var psp = modelMapper.map(elem, PaymentServiceProvider.class);
+              return ChannelPsp.builder()
+                      .pspCode(psp.getPspCode())
+                      .enabled(psp.getEnabled())
+                      .businessName(psp.getBusinessName())
+                      .paymentTypeList(mapPaymentType(elem.getPspCanaleTipoVersamentoList()))
+                      .build();
+
+            } )
+            .collect(Collectors.toList());
   }
 }

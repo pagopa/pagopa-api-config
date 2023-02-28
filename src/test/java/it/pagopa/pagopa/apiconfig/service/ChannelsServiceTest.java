@@ -1,24 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanaleTipoVersamento;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIntermediariePsp;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockTipoVersamento;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockWfespPluginConf;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
@@ -28,16 +9,7 @@ import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.Channels;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
-import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
-import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -52,6 +24,17 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ChannelsServiceTest {
@@ -326,7 +309,7 @@ class ChannelsServiceTest {
     when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString()))
         .thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
 
-    var result = channelsService.getChannelPaymentServiceProviders("1234");
+    var result = channelsService.getChannelPaymentServiceProviders(10, 0, "1234");
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_channelsPSP_ok.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
