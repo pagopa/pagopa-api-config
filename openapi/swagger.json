@@ -3969,6 +3969,24 @@
         ],
         "parameters": [
           {
+            "default": 50,
+            "description": "Number of elements on one page. Default = 50",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "format": "int32",
+            "in": "query",
+            "minimum": 0,
+            "name": "page",
+            "required": true,
+            "type": "integer"
+          },
+          {
             "description": "Channel code",
             "in": "path",
             "maxLength": 50,
@@ -15967,6 +15985,9 @@
     },
     "ChannelPspList": {
       "properties": {
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
         "payment_service_providers": {
           "items": {
             "$ref": "#/definitions/ChannelPsp"
@@ -15975,6 +15996,7 @@
         }
       },
       "required": [
+        "page_info",
         "payment_service_providers"
       ],
       "type": "object"

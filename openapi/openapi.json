@@ -5181,6 +5181,28 @@
         "operationId": "getChannelPaymentServiceProviders",
         "parameters": [
           {
+            "description": "Number of elements on one page. Default = 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
             "description": "Channel code",
             "in": "path",
             "name": "channelcode",
@@ -20679,10 +20701,14 @@
       },
       "ChannelPspList": {
         "required": [
+          "page_info",
           "payment_service_providers"
         ],
         "type": "object",
         "properties": {
+          "page_info": {
+            "$ref": "#/components/schemas/PageInfo"
+          },
           "payment_service_providers": {
             "type": "array",
             "items": {
