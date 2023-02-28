@@ -54,6 +54,7 @@ variables:
     poolImage: 'pagopa-dev-linux'
     appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_DEV)"
     appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_DEV)"
+    springDatasourceUrl: "jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
   ${{ if eq(parameters['ENV'], 'uat') }}:
     dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY_SERVICE_CONN)
     dockerRegistryFqdn: $(UAT_CONTAINER_NAMESPACE)
@@ -61,6 +62,7 @@ variables:
     poolImage: 'pagopa-uat-linux'
     appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_UAT)"
     appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_UAT)"
+    springDatasourceUrl: "jdbc:postgresql://pagopa-u-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
   ${{ if eq(parameters['ENV'], 'prod') }}:
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY_SERVICE_CONN)
     dockerRegistryFqdn: $(PROD_CONTAINER_NAMESPACE)
@@ -68,6 +70,7 @@ variables:
     poolImage: 'pagopa-prod-linux'
     appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_PROD)"
     appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_PROD)"
+    springDatasourceUrl: "jdbc:postgresql://pagopa-p-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
 
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
     sourceBranch: "main" # force to main branch
@@ -198,6 +201,20 @@ stages:
                     DEPLOY_VERSION: $(deploy_version)
 
                 - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
+                  condition: eq('${{ parameters.DB }}', 'oracle'))
+                  parameters:
+                    DO_DEPLOY: true
+                    ENV: ${{ parameters['ENV'] }}
+                    KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
+                    NAMESPACE: $(nameSpace)
+                    APP_NAME: $(imageRepository)
+                    VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
+                    DEPLOY_VERSION: $(deploy_version)
+                    APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
+                    APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
+
+                - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
+                  condition: eq('${{ parameters.DB }}', 'postgresql'))
                   parameters:
                     DO_DEPLOY: true
                     ENV: ${{ parameters['ENV'] }}
@@ -209,7 +226,10 @@ stages:
                     APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                     APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
                     ARGUMENTS: >-
-                      --set microservice-chart.envConfig.SPRING_DATASOURCE_URL="oracle"
+                      --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
+                      --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
+                      --set microservice-chart.envConfig.SPRING_DATASOURCE_USERNAME="cfg"
+                      --set microservice-chart.envSecret.SPRING_DATASOURCE_PASSWORD="postgresql-db-cfg-password"
 
 
   # Run Tests
