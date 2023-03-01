@@ -91,7 +91,7 @@ jobs:
           github_token: ${{ secrets.BOT_TOKEN_GITHUB }}
 
   image:
-    needs: [ release ]
+    needs: [ setup, release ]
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     steps:
@@ -106,7 +106,7 @@ jobs:
   create_runner:
     name: Create Runner
     runs-on: ubuntu-22.04
-    needs: [setup, image]
+    needs: [ setup, release, image ]
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
@@ -130,7 +130,7 @@ jobs:
 
   deploy:
     name: Deploy on AKS
-    needs: [ create_runner ]
+    needs: [ setup, release, image, create_runner ]
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
     strategy:
       matrix:
@@ -155,7 +155,7 @@ jobs:
 
   cleanup_runner:
     name: Cleanup Runner
-    needs: [ create_runner, deploy ]
+    needs: [ setup, release, image, create_runner, deploy ]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
