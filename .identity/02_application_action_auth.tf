@@ -34,17 +34,17 @@ resource "azurerm_role_assignment" "key_vault" {
   principal_id         = azuread_service_principal.action.object_id
 }
 
-resource "azuread_directory_role_assignment" "environment_cd_directory_readers" {
-  role_id             = azuread_directory_role.directory_readers.template_id
-  principal_object_id = azuread_service_principal.action.object_id
-}
+#resource "azuread_directory_role_assignment" "environment_cd_directory_readers" {
+#  role_id             = azuread_directory_role.directory_readers.template_id
+#  principal_object_id = azuread_service_principal.action.object_id
+#}
 
-resource "azurerm_role_assignment" "environment_cd_subscription" {
-  for_each             = toset(var.environment_cd_roles.subscription)
-  scope                = data.azurerm_subscription.current.id
-  role_definition_name = each.key
-  principal_id         = azuread_service_principal.action.object_id
-}
+#resource "azurerm_role_assignment" "environment_cd_subscription" {
+#  for_each             = toset(var.environment_cd_roles.subscription)
+#  scope                = data.azurerm_subscription.current.id
+#  role_definition_name = each.key
+#  principal_id         = azuread_service_principal.action.object_id
+#}
 
 #resource "azurerm_role_assignment" "environment_cd_tfstate_inf" {
 #  scope                = data.azurerm_storage_account.tfstate_inf.id

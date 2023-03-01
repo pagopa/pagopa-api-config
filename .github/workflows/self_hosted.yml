@@ -7,10 +7,6 @@ on:
         required: true
         description: The name of the environment where to deploy
         type: string
-      env_short:
-        required: true
-        description: The short name of the environment (d, u or p)
-        type: string
       matrix:
         required: true
         description: The environment of the job
@@ -48,11 +44,11 @@ jobs:
         # from https://github.com/pagopa/github-self-hosted-runner-azure-create-action/commits/main
         uses: pagopa/github-self-hosted-runner-azure-create-action@b4590e069e753daee6bc9809d484523cc7026035
         with:
-          client_id: ${{ vars.client_id }}
-          tenant_id: ${{ vars.tenant_id }}
-          subscription_id: ${{ vars.subscription_id }}
-          container_app_environment_name: pagopa-${{ inputs.env_short }}-github-runner-cae
-          resource_group_name: pagopa-${{ inputs.env_short }}-github-runner-rg
+          client_id: ${{ vars.CLIENT_ID }}
+          tenant_id: ${{ vars.TENANT_ID }}
+          subscription_id: ${{ vars.SUBSCRIPTION_ID }}
+          container_app_environment_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_NAME }}
+          resource_group_name: ${{ vars.RESOURCE_GROUP_NAME }} # RG of the runner
           pat_token: ${{ inputs.token }}
 
   deploy:
@@ -66,13 +62,13 @@ jobs:
         uses: pagopa/github-actions-template/aks-deploy@main
         with:
           branch: ${{ github.ref_name }}
-          client_id: ${{ vars.client_id }}
-          tenant_id: ${{ vars.tenant_id }}
-          subscription_id: ${{ vars.subscription_id }}
+          client_id: ${{ vars.CLIENT_ID }}
+          tenant_id: ${{ vars.TENANT_ID }}
+          subscription_id: ${{ vars.SUBSCRIPTION_ID }}
           env: ${{ inputs.environment }}
           namespace: ${{ env.NAMESPACE }}
-          cluster_name: pagopa-${{ inputs.env_short }}-weu-${{ inputs.environment }}-aks
-          resource_group: pagopa-${{ inputs.env_short }}-weu-${{ inputs.environment }}-aks-rg
+          cluster_name: ${{ vars.CLUSTER_NAME }}
+          resource_group: ${{ vars.CLUSTER_RESOURCE_GROUP_NAME }}
           app_name: ${{ env.APP_NAME }}
           helm_upgrade_options: ${{( inputs.beta && '--set microservice-chart.deployment.create=false') || '' }}
 
@@ -88,9 +84,9 @@ jobs:
         # from https://github.com/pagopa/github-self-hosted-runner-azure-cleanup-action/commits/main
         uses: pagopa/github-self-hosted-runner-azure-cleanup-action@97731a35e6ffc79b66c4dfd2aae5e4fd04e3ebb5
         with:
-          client_id: ${{ vars.client_id }}
-          tenant_id: ${{ vars.tenant_id }}
-          subscription_id: ${{ vars.subscription_id }}
-          resource_group_name: pagopa-${{ inputs.env_short }}-github-runner-rg
+          client_id: ${{ vars.CLIENT_ID }}
+          tenant_id: ${{ vars.TENANT_ID }}
+          subscription_id: ${{ vars.SUBSCRIPTION_ID }}
+          resource_group_name: ${{ vars.RESOURCE_GROUP_NAME }}
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
           pat_token: ${{ inputs.token }}

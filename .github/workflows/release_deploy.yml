@@ -110,18 +110,10 @@ jobs:
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
-        include:
-          - environment : dev
-            short: d
-          - environment : uat
-            short: u
-          - environment : prod
-            short: p
     uses: ./.github/workflows/self_hosted.yml
     with:
       matrix: ${{ matrix.environment }}
       environment: ${{ needs.setup.outputs.environment }}
-      env_short: ${{ matrix.short }}
       beta: ${{ inputs.beta }}
     secrets:
       token: ${{secrets.BOT_TOKEN_GITHUB}}
