@@ -56,7 +56,7 @@ jobs:
     steps:
       - name: Get semver
         id: get_semver
-        uses: pagopa/github-actions-template/semver-setup@v1
+        uses: pagopa/github-actions-template/semver-setup@1.3.0
 
       - if: ${{ github.event.inputs.environment == null || github.event.inputs.environment == 'dev' }}
         run: echo "ENVIRNOMENT=dev" >> $GITHUB_ENV
