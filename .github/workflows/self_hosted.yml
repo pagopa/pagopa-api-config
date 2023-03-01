@@ -34,7 +34,8 @@ jobs:
   create_runner:
     name: Create Runner
     runs-on: ubuntu-22.04
-    environment: ${{ inputs.environment }}
+    environment:
+      name: ${{ inputs.environment }}
     if: ${{ inputs.matrix == inputs.environment || inputs.environment == 'all' }}
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
