@@ -121,6 +121,7 @@ jobs:
     with:
       matrix: ${{ matrix.environment }}
       environment: ${{ needs.setup.outputs.environment }}
+      env_short: ${{ matrix.short }}
       beta: ${{ inputs.beta }}
     secrets:
       token: ${{secrets.BOT_TOKEN_GITHUB}}

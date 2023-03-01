@@ -90,6 +90,6 @@ jobs:
           client_id: ${{ vars.client_id }}
           tenant_id: ${{ vars.tenant_id }}
           subscription_id: ${{ vars.subscription_id }}
-          resource_group_name: runner-rg
+          resource_group_name: pagopa-${{ inputs.env_short }}-github-runner-rg
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
           pat_token: ${{ inputs.token }}
