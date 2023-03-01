@@ -79,6 +79,7 @@ jobs:
   release:
     name: Create a New Release
     runs-on: ubuntu-latest
+    needs: [setup]
     outputs:
       version: ${{ steps.release.outputs.version }}
     steps:
@@ -105,6 +106,7 @@ jobs:
 
   deploy:
     name: Deploy on AKS
+    needs: [ image ]
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
