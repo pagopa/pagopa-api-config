@@ -7,9 +7,9 @@ on:
         required: true
         description: The name of the environment where to deploy
         type: string
-      matrix:
+      target:
         required: true
-        description: The environment of the job
+        description: The environment target of the job
         type: string
       beta:
         required: false
@@ -46,26 +46,16 @@ jobs:
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
-      - name: Dump GitHub context
-        run: |
-          echo $CONTEXT
-          echo $VARIABLES
-          echo $IN
-        env:
-          CONTEXT: ${{ toJSON(github) }}
-          VARIABLES: ${{ toJSON(vars) }}
-          IN: ${{ toJSON(inputs) }}
-
       - name: Create GitHub Runner
         id: create_github_runner
         # from https://github.com/pagopa/github-self-hosted-runner-azure-create-action/commits/main
         uses: pagopa/github-self-hosted-runner-azure-create-action@b4590e069e753daee6bc9809d484523cc7026035
         with:
-          client_id: ${{ vars.CLIENT_ID }}
-          tenant_id: ${{ vars.TENANT_ID }}
-          subscription_id: ${{ vars.SUBSCRIPTION_ID }}
-          container_app_environment_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_NAME }}
-          resource_group_name: ${{ vars.RESOURCE_GROUP_NAME }} # RG of the runner
+          client_id: ${{ secrets.CLIENT_ID }}
+          tenant_id: ${{ secrets.TENANT_ID }}
+          subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+          container_app_environment_name: ${{ secrets.CONTAINER_APP_ENVIRONMENT_NAME }}
+          resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }} # RG of the runner
           pat_token: ${{ inputs.token }}
 
   deploy:
@@ -79,13 +69,13 @@ jobs:
         uses: pagopa/github-actions-template/aks-deploy@main
         with:
           branch: ${{ github.ref_name }}
-          client_id: ${{ vars.CLIENT_ID }}
-          tenant_id: ${{ vars.TENANT_ID }}
-          subscription_id: ${{ vars.SUBSCRIPTION_ID }}
+          client_id: ${{ secrets.CLIENT_ID }}
+          tenant_id: ${{ secrets.TENANT_ID }}
+          subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
           env: ${{ inputs.environment }}
           namespace: ${{ env.NAMESPACE }}
-          cluster_name: ${{ vars.CLUSTER_NAME }}
-          resource_group: ${{ vars.CLUSTER_RESOURCE_GROUP_NAME }}
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          resource_group: ${{ secrets.CLUSTER_RESOURCE_GROUP_NAME }}
           app_name: ${{ env.APP_NAME }}
           helm_upgrade_options: ${{( inputs.beta && '--set microservice-chart.deployment.create=false') || '' }}
 
@@ -101,9 +91,9 @@ jobs:
         # from https://github.com/pagopa/github-self-hosted-runner-azure-cleanup-action/commits/main
         uses: pagopa/github-self-hosted-runner-azure-cleanup-action@97731a35e6ffc79b66c4dfd2aae5e4fd04e3ebb5
         with:
-          client_id: ${{ vars.CLIENT_ID }}
-          tenant_id: ${{ vars.TENANT_ID }}
-          subscription_id: ${{ vars.SUBSCRIPTION_ID }}
-          resource_group_name: ${{ vars.RESOURCE_GROUP_NAME }}
+          client_id: ${{ secrets.CLIENT_ID }}
+          tenant_id: ${{ secrets.TENANT_ID }}
+          subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+          resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
           pat_token: ${{ inputs.token }}
