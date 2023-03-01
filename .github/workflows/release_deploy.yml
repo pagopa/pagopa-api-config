@@ -87,7 +87,7 @@ jobs:
         id: release
         uses: pagopa/github-actions-template/maven-release@main
         with:
-          semver: ${{ steps.setup.outputs.semver }}
+          semver: ${{ needs.setup.outputs.semver }}
           github_token: ${{ secrets.BOT_TOKEN_GITHUB }}
 
   image:
