@@ -20,12 +20,6 @@ on:
       token:
         required: true
         description: Github Token
-      client_id:
-        required: true
-      tenant_id:
-        required: true
-      subscription_id:
-        required: true
 
 env:
   NAMESPACE: apiconfig
