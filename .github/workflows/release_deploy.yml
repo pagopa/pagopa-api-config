@@ -115,6 +115,16 @@ jobs:
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
+      - name: Dump GitHub context
+        run: |
+          echo $CONTEXT
+          echo $VARIABLES
+          echo $IN
+        env:
+          CONTEXT: ${{ toJSON(github) }}
+          VARIABLES: ${{ toJSON(vars) }}
+          IN: ${{ toJSON(inputs) }}
+
       - name: Create GitHub Runner
         if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         id: create_github_runner
