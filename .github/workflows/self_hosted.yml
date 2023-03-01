@@ -55,7 +55,7 @@ jobs:
           tenant_id: ${{ secrets.TENANT_ID }}
           subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
           container_app_environment_name: ${{ secrets.CONTAINER_APP_ENVIRONMENT_NAME }}
-          resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }} # RG of the runner
+          resource_group_name: ${{ secrets.RUNNER_RESOURCE_GROUP_NAME }} # RG of the runner
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
 
   deploy:
