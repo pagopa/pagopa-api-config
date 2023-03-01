@@ -99,3 +99,7 @@ microservice-chart:
                 operator: In
                 values:
                   - user
+  canaryDelivery:
+    deployment:
+      image:
+        tag: ""

@@ -2,7 +2,7 @@ apiVersion: v2
 name: pagopa-api-config
 description: APIs to manage configuration for CI and PSP of the Nodo dei Pagamenti
 type: application
-version: 1.0.0
+version: 0.29.1-28-aks
 appVersion: 0.29.1-28-aks
 dependencies:
   - name: microservice-chart
