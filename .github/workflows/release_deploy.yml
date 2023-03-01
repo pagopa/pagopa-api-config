@@ -1,0 +1,143 @@
+name: Release And Deploy
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        description: Select the Environment
+        options:
+          - dev
+          - uat
+          - prod
+          - all
+      semver:
+        required: true
+        type: choice
+        description: Select the new Semantic Version
+        options:
+          - major
+          - minor
+          - patch
+          - buildNumber
+          - skip
+        default: skip
+      beta:
+        required: false
+        type: boolean
+        description: deploy beta version on AKS
+        default: false
+
+permissions:
+  packages: write
+  contents: write
+  issues: write
+  id-token: write
+  actions: read
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      semver: ${{ steps.get_semver.outputs.semver }}
+      environment: ${{ steps.output.outputs.environment }}
+    steps:
+      - name: Get semver
+        id: get_semver
+        uses: pagopa/github-actions-template/semver-setup@v1
+
+      - if: ${{ github.event.inputs.environment == null || github.event.inputs.environment == 'dev' }}
+        run: echo "ENVIRNOMENT=dev" >> $GITHUB_ENV
+
+      - if: ${{ github.event.inputs.environment == 'uat' }}
+        run: echo "ENVIRNOMENT=uat" >> $GITHUB_ENV
+
+      - if: ${{ github.event.inputs.environment == 'prod' }}
+        run: echo "ENVIRNOMENT=prod" >> $GITHUB_ENV
+
+      - if: ${{ github.event.inputs.environment == 'all' }}
+        run: echo "ENVIRNOMENT=all" >> $GITHUB_ENV
+
+      - id: output
+        name: Set Output
+        run: |
+          echo "environment=${{env.ENVIRNOMENT}}" >> $GITHUB_OUTPUT
+
+
+  release:
+    name: Create a New Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Make Release
+        id: release
+        uses: pagopa/github-actions-template/maven-release@main
+        with:
+          semver: ${{ steps.setup.outputs.semver }}
+          github_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+
+  image:
+    needs: [ release ]
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    if: ${{ !(inputs.semver == 'skip') }}
+    steps:
+      - name: Build and Push
+        id: semver
+        uses: pagopa/github-actions-template/ghcr-build-push@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name}}
+          tag: ${{ needs.release.outputs.version }}
+
+  deploy:
+    name: Deploy on AKS
+    strategy:
+      matrix:
+        environment: [ dev, uat, prod ]
+        include:
+          - environment : dev
+            short: d
+          - environment : uat
+            short: u
+          - environment : prod
+            short: p
+    uses: ./.github/workflows/self_hosted.yml
+    with:
+      matrix: ${{ matrix.environment }}
+      environment: ${{ env.environment }}
+      beta: ${{ inputs.beta }}
+    secrets:
+      token: ${{secrets.BOT_TOKEN_GITHUB}}
+
+  notify:
+    needs: [ deploy ]
+    runs-on: ubuntu-latest
+    name: Notify
+    if: always()
+    steps:
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@v2
+        with:
+          status: ${{ needs.deploy.result }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          notify_when: 'failure,skipped'
+          notification_title: '{workflow} has {status_message}'
+          message_format: '{emoji} <{workflow_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
+          footer: 'Linked to Repo <{repo_url}|{repo}>'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
