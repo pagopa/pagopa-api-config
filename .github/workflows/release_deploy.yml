@@ -94,7 +94,6 @@ jobs:
     needs: [ release ]
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: ${{ !(inputs.semver == 'skip') }}
     steps:
       - name: Build and Push
         id: semver
@@ -107,7 +106,6 @@ jobs:
   deploy:
     name: Deploy on AKS
     needs: [ setup, image ]
-    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
