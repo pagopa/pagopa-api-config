@@ -94,6 +94,7 @@ jobs:
     needs: [ setup, release ]
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
+    if: ${{ inputs.semver != 'skip' }}
     steps:
       - name: Build and Push
         id: semver
@@ -107,7 +108,8 @@ jobs:
     name: Create Runner
     runs-on: ubuntu-22.04
     needs: [ setup, release, image ]
-#    strategy:
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
+    #    strategy:
 #      matrix:
 #        environment: [ dev, uat, prod ]
     environment:
@@ -122,7 +124,7 @@ jobs:
           echo $IN
         env:
           CONTEXT: ${{ toJSON(github) }}
-          VARIABLES: ${{ toJSON(vars) }}
+          VARIABLES: ${{ vars.CLIENT_ID }}
           IN: ${{ toJSON(inputs) }}
 
       - name: Create GitHub Runner
