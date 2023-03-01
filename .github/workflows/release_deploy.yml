@@ -120,7 +120,7 @@ jobs:
     uses: ./.github/workflows/self_hosted.yml
     with:
       matrix: ${{ matrix.environment }}
-      environment: ${{ need.setup.outputs.environment }}
+      environment: ${{ needs.setup.outputs.environment }}
       beta: ${{ inputs.beta }}
     secrets:
       token: ${{secrets.BOT_TOKEN_GITHUB}}
