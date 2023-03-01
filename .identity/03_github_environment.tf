@@ -1,5 +1,5 @@
 resource "github_repository_environment" "github_repository_environment" {
-  environment = "${var.env}"
+  environment = var.env
   repository  = local.github.repository
   # filter teams reviewers from github_organization_teams
   # if reviewers_teams is null no reviewers will be configured for environment
@@ -22,7 +22,7 @@ resource "github_repository_environment" "github_repository_environment" {
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_tenant_id" {
   repository      = local.github.repository
-  environment     = "${var.env}"
+  environment     = var.env
   secret_name     = "TENANT_ID"
   plaintext_value = data.azurerm_client_config.current.tenant_id
 }
@@ -30,7 +30,7 @@ resource "github_actions_environment_secret" "azure_tenant_id" {
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_subscription_id" {
   repository      = local.github.repository
-  environment     = "${var.env}"
+  environment     = var.env
   secret_name     = "SUBSCRIPTION_ID"
   plaintext_value = data.azurerm_subscription.current.subscription_id
 }
@@ -38,7 +38,7 @@ resource "github_actions_environment_secret" "azure_subscription_id" {
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_client_id" {
   repository      = local.github.repository
-  environment     = "${var.env}"
+  environment     = var.env
   secret_name     = "CLIENT_ID"
   plaintext_value = azuread_service_principal.action.application_id
 }
@@ -46,7 +46,7 @@ resource "github_actions_environment_secret" "azure_client_id" {
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_container_app_environment_name" {
   repository      = local.github.repository
-  environment     = "${var.env}"
+  environment     = var.env
   secret_name     = "CONTAINER_APP_ENVIRONMENT_NAME"
   plaintext_value = "${local.project}-github-runner-cae"
 }
@@ -54,7 +54,7 @@ resource "github_actions_environment_secret" "azure_container_app_environment_na
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "azure_resource_group_name" {
   repository      = local.github.repository
-  environment     = "${var.env}"
+  environment     = var.env
   secret_name     = "RUNNER_RESOURCE_GROUP_NAME"
   plaintext_value = "${local.project}-github-runner-rg"
 }
@@ -62,7 +62,7 @@ resource "github_actions_environment_secret" "azure_resource_group_name" {
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "cluster_resource_group_name" {
   repository      = local.github.repository
-  environment     = "${var.env}"
+  environment     = var.env
   secret_name     = "CLUSTER_RESOURCE_GROUP_NAME"
   plaintext_value = local.aks_resource_group_name
 }

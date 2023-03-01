@@ -111,6 +111,8 @@ jobs:
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
+    environment:
+      name: ${{ matrix.environment }}
     uses: ./.github/workflows/self_hosted.yml
     with:
       matrix: ${{ matrix.environment }}
