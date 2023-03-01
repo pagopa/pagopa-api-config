@@ -41,10 +41,10 @@ resource "azurerm_role_assignment" "key_vault" {
 }
 
 
-resource "azuread_directory_role_assignment" "action_directory_readers" {
-  role_id             = azuread_directory_role.directory_readers.template_id
-  principal_object_id = azuread_service_principal.action.object_id
-}
+#resource "azuread_directory_role_assignment" "action_directory_readers" {
+#  role_id             = azuread_directory_role.directory_readers.template_id
+#  principal_object_id = azuread_service_principal.action.object_id
+#}
 
 resource "azurerm_role_assignment" "action_subscription" {
   for_each             = toset(var.action_roles.subscription)
