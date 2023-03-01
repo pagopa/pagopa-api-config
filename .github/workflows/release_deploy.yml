@@ -203,8 +203,7 @@ jobs:
       target: ${{ matrix.environment }}
       environment: ${{ needs.setup.outputs.environment }}
       beta: ${{ inputs.beta }}
-    secrets:
-      token: ${{secrets.BOT_TOKEN_GITHUB}}
+    secrets: inherit
 
 #  notify:
 #    needs: [ deploy ]

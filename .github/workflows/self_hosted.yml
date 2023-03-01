@@ -16,10 +16,6 @@ on:
         type: boolean
         description: deploy beta version on AKS
         default: false
-    secrets:
-      token:
-        required: true
-        description: Github Token
 
 env:
   NAMESPACE: apiconfig
@@ -50,7 +46,7 @@ jobs:
           subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
           container_app_environment_name: ${{ secrets.CONTAINER_APP_ENVIRONMENT_NAME }}
           resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }} # RG of the runner
-          pat_token: ${{ inputs.token }}
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
 
   deploy:
     needs: [ create_runner ]
@@ -90,4 +86,4 @@ jobs:
           subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
           resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
-          pat_token: ${{ inputs.token }}
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
