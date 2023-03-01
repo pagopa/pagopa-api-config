@@ -39,6 +39,16 @@ jobs:
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
+      - name: Dump GitHub context
+        run: |
+          echo $CONTEXT
+          echo $VARIABLES
+          echo $IN
+        env:
+          CONTEXT: ${{ toJSON(github) }}
+          VARIABLES: ${{ toJSON(vars) }}
+          IN: ${{ toJSON(inputs) }}
+
       - name: Create GitHub Runner
         id: create_github_runner
         # from https://github.com/pagopa/github-self-hosted-runner-azure-create-action/commits/main
