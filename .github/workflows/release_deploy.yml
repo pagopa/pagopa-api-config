@@ -107,7 +107,6 @@ jobs:
     name: Create Runner
     runs-on: ubuntu-22.04
     needs: [setup, image]
-    if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
@@ -117,6 +116,7 @@ jobs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
       - name: Create GitHub Runner
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         id: create_github_runner
         # from https://github.com/pagopa/github-self-hosted-runner-azure-create-action/commits/main
         uses: pagopa/github-self-hosted-runner-azure-create-action@b4590e069e753daee6bc9809d484523cc7026035
@@ -132,7 +132,6 @@ jobs:
     name: Deploy on AKS
     needs: [ create_runner ]
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
-    if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
@@ -140,6 +139,7 @@ jobs:
       name: ${{ matrix.environment }}
     steps:
       - name: Deploy
+        if: ${{ matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all' }}
         uses: pagopa/github-actions-template/aks-deploy@main
         with:
           branch: ${{ github.ref_name }}
@@ -157,7 +157,6 @@ jobs:
     name: Cleanup Runner
     needs: [ create_runner, deploy ]
     runs-on: ubuntu-22.04
-    if: ${{ (success() || failure()) && (matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all') }}
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
@@ -165,6 +164,7 @@ jobs:
       name: ${{ matrix.environment }}
     steps:
       - name: Cleanup GitHub Runner
+        if: ${{ (success() || failure()) && (matrix.environment == needs.setup.outputs.environment || needs.setup.outputs.environment == 'all') }}
         id: cleanup_github_runner
         # from https://github.com/pagopa/github-self-hosted-runner-azure-cleanup-action/commits/main
         uses: pagopa/github-self-hosted-runner-azure-cleanup-action@97731a35e6ffc79b66c4dfd2aae5e4fd04e3ebb5
