@@ -11,7 +11,7 @@ tags = {
 }
 
 
-environment_cd_roles = {
+action_roles = {
   subscription = [
     "Contributor",
     "Storage Account Contributor",

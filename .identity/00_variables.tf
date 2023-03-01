@@ -17,7 +17,7 @@ variable "prefix" {
   }
 }
 
-variable "environment_cd_roles" {
+variable "action_roles" {
   type = object({
     subscription = list(string)
   })

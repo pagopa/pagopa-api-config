@@ -28,10 +28,6 @@ data "azurerm_key_vault" "key_vault" {
   resource_group_name = "${local.product}-${local.domain}-sec-rg"
 }
 
-resource "azuread_directory_role" "directory_readers" {
-  display_name = "Directory Readers"
-}
-
 data "azurerm_resource_group" "github_runner_rg" {
   name = "${local.project}-github-runner-rg"
 }
@@ -39,4 +35,8 @@ data "azurerm_resource_group" "github_runner_rg" {
 data "github_organization_teams" "all" {
   root_teams_only = true
   summary_only    = true
+}
+
+resource "azuread_directory_role" "directory_readers" {
+  display_name = "Directory Readers"
 }
