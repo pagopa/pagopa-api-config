@@ -60,15 +60,16 @@ jobs:
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
     if: ${{ inputs.matrix == inputs.environment || inputs.environment == 'all' }}
     name: Deploy on AKS
+    environment: ${{ inputs.environment }}
     steps:
       - name: Deploy
         uses: pagopa/github-actions-template/aks-deploy@main
         with:
           branch: ${{ github.ref_name }}
-          client_id: ${{ inputs.client_id }}
-          tenant_id: ${{ inputs.tenant_id }}
-          subscription_id: ${{ inputs.subscription_id }}
-          env: ${{ inputs.env }}
+          client_id: ${{ vars.client_id }}
+          tenant_id: ${{ vars.tenant_id }}
+          subscription_id: ${{ vars.subscription_id }}
+          env: ${{ inputs.environment }}
           namespace: ${{ env.NAMESPACE }}
           cluster_name: pagopa-${{ inputs.env_short }}-weu-${{ inputs.environment }}-aks
           resource_group: pagopa-${{ inputs.env_short }}-weu-${{ inputs.environment }}-aks-rg
@@ -77,10 +78,10 @@ jobs:
 
   cleanup_runner:
     name: Cleanup Runner
-    if: always()
-    runs-on: ubuntu-22.04
-    environment: dev-runner
     needs: [ create_runner, deploy ]
+    if: ${{ success() || failure() && inputs.matrix == inputs.environment || inputs.environment == 'all' }}
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
     steps:
       - name: Cleanup GitHub Runner
         id: cleanup_github_runner
