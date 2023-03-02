@@ -40,7 +40,3 @@ data "github_organization_teams" "all" {
 resource "azuread_directory_role" "directory_readers" {
   display_name = "Directory Readers"
 }
-
-data "azuread_group" "developers_group"{
-  display_name = "pagopa-d-adgroup-developers"
-}

@@ -30,12 +30,6 @@ resource "azurerm_key_vault_access_policy" "adgroup_action_policy" {
   ]
 }
 
-# Assign user to a group
-resource "azuread_group_member" "member" {
-  group_object_id  = data.azuread_group.developers_group.id
-  member_object_id = azuread_service_principal.action.object_id
-}
-
 output "azure_action_client_id" {
   value = azuread_service_principal.action.application_id
 }
