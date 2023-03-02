@@ -104,7 +104,7 @@ jobs:
           branch: ${{ github.ref_name}}
           tag: ${{ needs.release.outputs.version }}
 
-  deploy:
+  deploy_aks:
     name: Deploy on AKS
     needs: [ setup, release, image ]
     if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
@@ -119,7 +119,7 @@ jobs:
     secrets: inherit
 
   notify:
-    needs: [ deploy ]
+    needs: [ deploy_aks ]
     runs-on: ubuntu-latest
     name: Notify
     if: always()
@@ -128,7 +128,7 @@ jobs:
         if: always()
         uses: ravsamhq/notify-slack-action@v2
         with:
-          status: ${{ needs.deploy.result }}
+          status: ${{ needs.deploy_aks.result }}
           token: ${{ secrets.GITHUB_TOKEN }}
           notify_when: 'failure,skipped'
           notification_title: '{workflow} has {status_message}'
