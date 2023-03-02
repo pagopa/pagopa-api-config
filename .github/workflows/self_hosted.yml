@@ -113,7 +113,7 @@ jobs:
       - name: Cleanup GitHub Runner
         id: cleanup_github_runner
         # from https://github.com/pagopa/github-self-hosted-runner-azure-cleanup-action/commits/main
-        uses: pagopa/github-self-hosted-runner-azure-cleanup-action@v1.0.3
+        uses: pagopa/github-self-hosted-runner-azure-cleanup-action@main
         with:
           client_id: ${{ secrets.CLIENT_ID }}
           tenant_id: ${{ secrets.TENANT_ID }}
