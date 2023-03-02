@@ -89,10 +89,10 @@ microservice-chart:
     AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
     COSMOS_URI: 'https://pagopa-d-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
-    DATABASE_SCHEMA: 'NODO4_CFG'
+    DATABASE_SCHEMA: 'cfg'
     APP_LOGGING_LEVEL: "DEBUG"
-    SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@db-nodo-pagamenti.d.db-nodo-pagamenti.com:1522/NDPSPCT_PP_NODO4_CFG'
-    SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
+    SPRING_DATASOURCE_USERNAME: 'cfg'
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
