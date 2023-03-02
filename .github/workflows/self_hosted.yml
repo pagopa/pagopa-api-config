@@ -85,6 +85,6 @@ jobs:
           client_id: ${{ secrets.CLIENT_ID }}
           tenant_id: ${{ secrets.TENANT_ID }}
           subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
-          resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
+          resource_group_name: ${{ secrets.RUNNER_RESOURCE_GROUP_NAME }}
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}

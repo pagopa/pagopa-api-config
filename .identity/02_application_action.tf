@@ -16,8 +16,6 @@ resource "azuread_application_federated_identity_credential" "environment" {
 }
 
 resource "azurerm_key_vault_access_policy" "adgroup_action_policy" {
-  count = var.env_short != "p" ? 1 : 0
-
   key_vault_id = data.azurerm_key_vault.key_vault.id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
@@ -30,6 +28,12 @@ resource "azurerm_key_vault_access_policy" "adgroup_action_policy" {
     "Get", "List", "Update", "Create", "Import",
     "Delete", "Restore", "Purge", "Recover"
   ]
+}
+
+# Assign user to a group
+resource "azuread_group_member" "member" {
+  group_object_id  = data.azuread_group.developers_group.id
+  member_object_id = azuread_service_principal.action.object_id
 }
 
 output "azure_action_client_id" {
