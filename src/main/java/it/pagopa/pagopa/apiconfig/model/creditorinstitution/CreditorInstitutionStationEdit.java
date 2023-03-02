@@ -33,7 +33,9 @@ public class CreditorInstitutionStationEdit {
   private String stationCode;
 
   @JsonProperty("aux_digit")
-  @Schema(example = "1", allowableValues = {"0", "1", "2", "3"})
+  @Schema(
+      example = "1",
+      allowableValues = {"0", "1", "2", "3"})
   @Min(0)
   @Max(3)
   private Long auxDigit;
@@ -52,9 +54,7 @@ public class CreditorInstitutionStationEdit {
   @JsonProperty("broadcast")
   private Boolean broadcast;
 
-  @JsonIgnore
-  private Pa fkPa;
+  @JsonIgnore private Pa fkPa;
 
-  @JsonIgnore
-  private Stazioni fkStazioni;
+  @JsonIgnore private Stazioni fkStazioni;
 }

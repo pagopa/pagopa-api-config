@@ -1,5 +1,8 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
+
 import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
@@ -8,6 +11,16 @@ import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
 import it.pagopa.pagopa.apiconfig.model.psp.*;
 import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,20 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 @Service
 @Validated
@@ -53,8 +52,8 @@ public class ChannelsService {
 
   @Value("${properties.environment}")
   private String env;
-  @Autowired
-  private PspRepository pspRepository;
+
+  @Autowired private PspRepository pspRepository;
 
   public Channels getChannels(
       @NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
@@ -153,9 +152,13 @@ public class ChannelsService {
     canaleTipoVersamentoRepository.delete(result);
   }
 
-  public ChannelPspList getChannelPaymentServiceProviders(@Positive Integer limit, @PositiveOrZero Integer pageNumber, String channelCode) {
+  public ChannelPspList getChannelPaymentServiceProviders(
+      @Positive Integer limit, @PositiveOrZero Integer pageNumber, String channelCode) {
     Pageable pageable = PageRequest.of(pageNumber, limit);
-    Page<Psp> page = pspRepository.findDistinctByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_idCanale(channelCode, pageable);
+    Page<Psp> page =
+        pspRepository
+            .findDistinctByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_idCanale(
+                channelCode, pageable);
     return ChannelPspList.builder()
         .psp(getPspList(page, channelCode))
         .pageInfo(CommonUtil.buildPageInfo(page))
@@ -256,8 +259,10 @@ public class ChannelsService {
    */
   private List<String> mapPaymentType(List<PspCanaleTipoVersamento> list, String channelCode) {
     return list.stream()
-            .map(PspCanaleTipoVersamento::getCanaleTipoVersamento)
-        .filter(canaleTipoVersamento -> canaleTipoVersamento.getCanale().getIdCanale().equals(channelCode))
+        .map(PspCanaleTipoVersamento::getCanaleTipoVersamento)
+        .filter(
+            canaleTipoVersamento ->
+                canaleTipoVersamento.getCanale().getIdCanale().equals(channelCode))
         .map(elem -> elem.getTipoVersamento().getTipoVersamento())
         .distinct()
         .collect(Collectors.toList());
@@ -356,22 +361,23 @@ public class ChannelsService {
   /**
    * Maps PSP objects stored in the DB in a List of PaymentServiceProvider
    *
-   * @param page        page of PSP returned from the database
+   * @param page page of PSP returned from the database
    * @param channelCode id of the channel
    * @return a list of {@link PaymentServiceProvider}.
    */
   private List<ChannelPsp> getPspList(Page<Psp> page, String channelCode) {
     return page.stream()
-            .map(elem -> {
+        .map(
+            elem -> {
               var psp = modelMapper.map(elem, PaymentServiceProvider.class);
               return ChannelPsp.builder()
-                      .pspCode(psp.getPspCode())
-                      .enabled(psp.getEnabled())
-                      .businessName(psp.getBusinessName())
-                      .paymentTypeList(mapPaymentType(elem.getPspCanaleTipoVersamentoList(), channelCode))
-                      .build();
-
-            } )
-            .collect(Collectors.toList());
+                  .pspCode(psp.getPspCode())
+                  .enabled(psp.getEnabled())
+                  .businessName(psp.getBusinessName())
+                  .paymentTypeList(
+                      mapPaymentType(elem.getPspCanaleTipoVersamentoList(), channelCode))
+                  .build();
+            })
+        .collect(Collectors.toList());
   }
 }
