@@ -56,19 +56,51 @@ jobs:
     name: Deploy on AKS
     environment: ${{ inputs.environment }}
     steps:
-      - name: Deploy
-        uses: pagopa/github-actions-template/aks-deploy@main
+#      - name: Deploy
+#        uses: pagopa/github-actions-template/aks-deploy@main
+#        with:
+#          branch: ${{ github.ref_name }}
+#          client_id: ${{ secrets.CLIENT_ID }}
+#          tenant_id: ${{ secrets.TENANT_ID }}
+#          subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+#          env: ${{ inputs.environment }}
+#          namespace: ${{ env.NAMESPACE }}
+#          cluster_name: ${{ secrets.CLUSTER_NAME }}
+#          resource_group: ${{ secrets.CLUSTER_RESOURCE_GROUP_NAME }}
+#          app_name: ${{ env.APP_NAME }}
+#          helm_upgrade_options: ${{( inputs.beta && '--set microservice-chart.deployment.create=false') || '' }}
+
+      - uses: actions/checkout@v3
         with:
-          branch: ${{ github.ref_name }}
-          client_id: ${{ secrets.CLIENT_ID }}
-          tenant_id: ${{ secrets.TENANT_ID }}
-          subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
-          env: ${{ inputs.environment }}
-          namespace: ${{ env.NAMESPACE }}
-          cluster_name: ${{ secrets.CLUSTER_NAME }}
-          resource_group: ${{ secrets.CLUSTER_RESOURCE_GROUP_NAME }}
-          app_name: ${{ env.APP_NAME }}
-          helm_upgrade_options: ${{( inputs.beta && '--set microservice-chart.deployment.create=false') || '' }}
+          ref: ${{ github.ref_name}}
+
+      - name: Azure Login
+        uses: azure/login@89d153571fe9a34ed70fcf9f1d95ab8debea7a73
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Gets K8s context
+        id: login
+        uses: azure/aks-set-context@4e5aec273183a197b181314721843e047123d9fa
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_NAME }}
+          cluster-name: ${{ secrets.CLUSTER_NAME }}
+          cluster-type: arc
+          method: service-principal
+
+      - name: Helm Setup
+        run: |
+          helm repo add microservice-chart https://pagopa.github.io/aks-microservice-chart-blueprint
+          helm dep build helm  
+
+      - name: Helm Deploy
+        run: helm upgrade --namespace ${{ env.NAMESPACE }}
+          --install --values ./helm/values-${{ inputs.environment }}.yaml
+          ${{( inputs.beta && '--set microservice-chart.deployment.create=false') || '' }}
+          --wait --timeout 5m0s
+          ${{ env.APP_NAME }} ./helm
+
 
   cleanup_runner:
     name: Cleanup Runner
