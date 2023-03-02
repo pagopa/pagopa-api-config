@@ -4,7 +4,7 @@
     "title": "PagoPA API configuration",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.29.1-29-aks"
+    "version": "0.29.1-30-aks"
   },
   "servers": [
     {
