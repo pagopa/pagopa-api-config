@@ -32,3 +32,9 @@ variable "github_repository_environment" {
   })
   description = "GitHub Continuous Integration roles"
 }
+
+
+variable "k8s_kube_config_path_prefix" {
+  type    = string
+  default = "~/.kube"
+}

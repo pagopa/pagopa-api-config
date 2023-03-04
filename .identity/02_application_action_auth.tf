@@ -58,3 +58,112 @@ resource "azurerm_role_assignment" "action_tfstate_inf" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azuread_service_principal.action.object_id
 }
+
+
+
+
+
+resource "kubernetes_cluster_role_binding" "action_view_extra_binding" {
+  metadata {
+    name = "action-view-extra-binding"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "view-extra"
+  }
+
+  subject {
+    kind      = "Group"
+    name      = azuread_service_principal.action.object_id
+    namespace = "kube-system"
+  }
+
+  subject {
+    kind      = "Group"
+    name      = azuread_service_principal.action.object_id
+    namespace = "kube-system"
+  }
+
+  subject {
+    kind      = "Group"
+    name      = azuread_service_principal.action.object_id
+    namespace = "kube-system"
+  }
+
+  subject {
+    kind      = "Group"
+    name      = azuread_service_principal.action.object_id
+    namespace = "kube-system"
+  }
+
+  depends_on = [
+    data.azurerm_kubernetes_cluster.aks
+  ]
+}
+
+resource "kubernetes_cluster_role_binding" "action_edit_extra_binding" {
+  metadata {
+    name = "action-edit-extra-binding"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "view-extra"
+  }
+
+  subject {
+    kind      = "Group"
+    name      = azuread_service_principal.action.object_id
+    namespace = "kube-system"
+  }
+
+  depends_on = [
+    data.azurerm_kubernetes_cluster.aks
+  ]
+}
+
+resource "kubernetes_cluster_role_binding" "action_edit_binding" {
+  metadata {
+    name = "action-edit-binding"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "edit"
+  }
+
+  subject {
+    kind      = "Group"
+    name      = azuread_service_principal.action.object_id
+    namespace = "kube-system"
+  }
+
+  depends_on = [
+    data.azurerm_kubernetes_cluster.aks
+  ]
+}
+
+resource "kubernetes_cluster_role_binding" "action_view_binding" {
+  metadata {
+    name = "action-view-binding"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "view"
+  }
+  subject {
+    kind      = "Group"
+    name      = azuread_service_principal.action.object_id
+    namespace = "kube-system"
+  }
+
+  depends_on = [
+    data.azurerm_kubernetes_cluster.aks
+  ]
+}
