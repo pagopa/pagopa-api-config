@@ -200,36 +200,36 @@ stages:
                   parameters:
                     DEPLOY_VERSION: $(deploy_version)
 
-                - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
-                  condition: eq('${{ parameters.DB }}', 'oracle'))
-                  parameters:
-                    DO_DEPLOY: true
-                    ENV: ${{ parameters['ENV'] }}
-                    KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
-                    NAMESPACE: $(nameSpace)
-                    APP_NAME: $(imageRepository)
-                    VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
-                    DEPLOY_VERSION: $(deploy_version)
-                    APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
-                    APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
+                - ${{ eq('${{ parameters.DB }}', 'oracle')) }}:
+                  - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
+                    parameters:
+                      DO_DEPLOY: true
+                      ENV: ${{ parameters['ENV'] }}
+                      KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
+                      NAMESPACE: $(nameSpace)
+                      APP_NAME: $(imageRepository)
+                      VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
+                      DEPLOY_VERSION: $(deploy_version)
+                      APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
+                      APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
 
-                - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
-                  condition: eq('${{ parameters.DB }}', 'postgresql'))
-                  parameters:
-                    DO_DEPLOY: true
-                    ENV: ${{ parameters['ENV'] }}
-                    KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
-                    NAMESPACE: $(nameSpace)
-                    APP_NAME: $(imageRepository)
-                    VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
-                    DEPLOY_VERSION: $(deploy_version)
-                    APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
-                    APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
-                    ARGUMENTS: >-
-                      --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
-                      --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
-                      --set microservice-chart.envConfig.SPRING_DATASOURCE_USERNAME="cfg"
-                      --set microservice-chart.envSecret.SPRING_DATASOURCE_PASSWORD="postgresql-db-cfg-password"
+                - ${{ eq('${{ parameters.DB }}', 'postgresql')) }}:
+                  - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
+                    parameters:
+                      DO_DEPLOY: true
+                      ENV: ${{ parameters['ENV'] }}
+                      KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
+                      NAMESPACE: $(nameSpace)
+                      APP_NAME: $(imageRepository)
+                      VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
+                      DEPLOY_VERSION: $(deploy_version)
+                      APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
+                      APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
+                      ARGUMENTS: >-
+                        --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
+                        --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
+                        --set microservice-chart.envConfig.SPRING_DATASOURCE_USERNAME="cfg"
+                        --set microservice-chart.envSecret.SPRING_DATASOURCE_PASSWORD="postgresql-db-cfg-password"
 
 
   # Run Tests
