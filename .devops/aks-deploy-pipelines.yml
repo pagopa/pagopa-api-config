@@ -200,7 +200,7 @@ stages:
                   parameters:
                     DEPLOY_VERSION: $(deploy_version)
 
-                - ${{ eq('${{ parameters.DB }}', 'oracle')) }}:
+                - ${{ eq('${{ parameters.DB }}', 'oracle') }}:
                   - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
                     parameters:
                       DO_DEPLOY: true
@@ -213,7 +213,7 @@ stages:
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
 
-                - ${{ eq('${{ parameters.DB }}', 'postgresql')) }}:
+                - ${{ eq('${{ parameters.DB }}', 'postgresql') }}:
                   - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
                     parameters:
                       DO_DEPLOY: true
