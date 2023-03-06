@@ -202,7 +202,6 @@ stages:
 
                 - ${{ if eq(parameters['DB'], 'oracle') }}:
                   - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
-                    displayName: Deploy Oracle version
                     parameters:
                       DO_DEPLOY: true
                       ENV: ${{ parameters['ENV'] }}
@@ -216,7 +215,6 @@ stages:
 
                 - ${{ if eq(parameters['DB'], 'postgresql') }}:
                   - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
-                    displayName: Deploy PostgreSQL version
                     parameters:
                       DO_DEPLOY: true
                       ENV: ${{ parameters['ENV'] }}
