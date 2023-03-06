@@ -1,17 +1,9 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getChannelPspList;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannels;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,7 +46,7 @@ class ChannelsControllerTest {
     when(channelsService.getPaymentTypes(anyString())).thenReturn(getMockPspChannelPaymentTypes());
     when(channelsService.createPaymentType(anyString(), any(PspChannelPaymentTypes.class)))
         .thenReturn(getMockPspChannelPaymentTypes());
-    when(channelsService.getChannelPaymentServiceProviders(anyString()))
+    when(channelsService.getChannelPaymentServiceProviders(anyInt(), anyInt(), anyString()))
         .thenReturn(getChannelPspList());
     when(channelsService.getChannelPaymentServiceProvidersCSV(anyString())).thenReturn(new byte[0]);
     when(channelsService.getChannelsCSV()).thenReturn(new byte[0]);
@@ -65,7 +57,7 @@ class ChannelsControllerTest {
     "/channels?page=0",
     "/channels/1234",
     "/channels/1234/paymenttypes",
-    "/channels/1234/paymentserviceproviders"
+    "/channels/1234/paymentserviceproviders?page=0"
   })
   void getChannels(String url) throws Exception {
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
