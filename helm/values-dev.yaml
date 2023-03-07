@@ -9,7 +9,7 @@ microservice-chart:
       maxSurge: 1
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.29.1-38-aks"
+    tag: "0.29.1-39"
     pullPolicy: Always
   livenessProbe:
     httpGet:
