@@ -51,7 +51,7 @@ microservice-chart:
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.29.1-36-aks"
+        tag: "0.29.1-39-aks"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
