@@ -41,10 +41,10 @@ parameters:
   - name: "CANARY"
     displayName: "Deploy on Canary"
     type: boolean
-    default: False
+    default: false
     values:
-      - False
-      - True
+      - false
+      - true
   - name: TEST
     displayName: Run integration/smoke tests
     type: boolean
@@ -84,10 +84,10 @@ variables:
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     sourceBranch: ${{ variables['Build.SourceBranchName'] }}
 
-  ${{ if eq(parameters['CANARY'], 'True') }}:
+  ${{ if eq(parameters['CANARY'], true) }}:
     deployOnStable: false
     deployOnCanary: true
-  ${{ if eq(parameters['CANARY'], 'False') }}:
+  ${{ if eq(parameters['CANARY'], false) }}:
     deployOnStable: true
     deployOnCanary: false
 
