@@ -93,8 +93,8 @@ microservice-chart:
     APP_LOGGING_LEVEL: 'DEBUG'
     SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@db-nodo-pagamenti.d.db-nodo-pagamenti.com:1522/NDPSPCT_PP_NODO4_CFG'
     SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
-    SPRING_DATASOURCE_DRIVER: oracle.jdbc.OracleDriver
-    SPRING_JPA_DATABASE: org.hibernate.dialect.Oracle12cDialect
+    SPRING_DATASOURCE_DRIVER: 'oracle.jdbc.OracleDriver'
+    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
