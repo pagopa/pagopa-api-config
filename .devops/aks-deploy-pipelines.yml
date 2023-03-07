@@ -38,6 +38,13 @@ parameters:
     values:
       - False
       - True
+  - name: "CANARY"
+    displayName: "Deploy on Canary"
+    type: boolean
+    default: False
+    values:
+      - False
+      - True
   - name: TEST
     displayName: Run integration/smoke tests
     type: boolean
@@ -77,7 +84,12 @@ variables:
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     sourceBranch: ${{ variables['Build.SourceBranchName'] }}
 
-
+  ${{ if eq(parameters['CANARY'], 'True') }}:
+    deployOnStable: false
+    deployOnCanary: true
+  ${{ if eq(parameters['CANARY'], 'False') }}:
+    deployOnStable: true
+    deployOnCanary: false
 
 resources:
   repositories:
@@ -212,6 +224,9 @@ stages:
                       DEPLOY_VERSION: $(deploy_version)
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
+                      ARGUMENTS: >-
+                        --set microservice-chart.deployment.create=${{ variables.deployOnStable }}
+                        --set microservice-chart.canaryDelivery.create=${{ variables.deployOnCanary }}
 
                 - ${{ if eq(parameters['DB'], 'postgresql') }}:
                   - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
@@ -226,6 +241,8 @@ stages:
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
                       ARGUMENTS: >-
+                        --set microservice-chart.deployment.create=${{ variables.deployOnStable }}
+                        --set microservice-chart.canaryDelivery.create=${{ variables.deployOnCanary }}
                         --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_USERNAME="cfg"

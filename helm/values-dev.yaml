@@ -38,7 +38,7 @@ microservice-chart:
     path: /pagopa-api-config-service/p/(.*)
     servicePort: 8080
   canaryDelivery:
-    create: true
+    create: false
     ingress:
       canary:
         type: header
