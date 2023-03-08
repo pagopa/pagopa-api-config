@@ -38,7 +38,7 @@ microservice-chart:
     path: /pagopa-api-config-service/p/(.*)
     servicePort: 8080
   canaryDelivery:
-    create: false
+    create: true
     ingress:
       canary:
         type: header
@@ -51,7 +51,7 @@ microservice-chart:
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.29.1-39-aks"
+        tag: "0.29.1-38-aks"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}

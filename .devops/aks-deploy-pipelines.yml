@@ -96,7 +96,8 @@ resources:
     - repository: pagopaCommons
       type: github
       name: pagopa/azure-pipeline-templates
-      ref: refs/tags/v3.1.0
+#      ref: refs/tags/v3.1.0
+      ref: refs/branches/customize-maven-github-release
       endpoint: 'io-azure-devops-github-ro'
 
 stages:
@@ -110,13 +111,30 @@ stages:
             clean: true
             persistCredentials: true
 
-          - template: templates/maven-github-release/template.yaml@pagopaCommons
-            parameters:
-              release_branch: $(sourceBranch)
-              gitEmail: $(GIT_EMAIL)
-              gitUsername: $(GIT_USERNAME)
-              gitHubConnection: $(GITHUB_CONNECTION)
-              semver: '${{ parameters.SEMVER }}'
+          - ${{ if eq(variables.deployOnStable, true) }}:
+            - template: templates/maven-github-release/template.yaml@pagopaCommons
+              parameters:
+                release_branch: $(sourceBranch)
+                gitEmail: $(GIT_EMAIL)
+                gitUsername: $(GIT_USERNAME)
+                gitHubConnection: $(GITHUB_CONNECTION)
+                semver: '${{ parameters.SEMVER }}'
+
+          - ${{ if eq(variables.deployOnCanary, true) }}:
+            - template: templates/maven-github-release/template.yaml@pagopaCommons
+              parameters:
+                release_branch: $(sourceBranch)
+                gitEmail: $(GIT_EMAIL)
+                gitUsername: $(GIT_USERNAME)
+                gitHubConnection: $(GITHUB_CONNECTION)
+                semver: '${{ parameters.SEMVER }}'
+                customHelmStep: |
+                  VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
+                  if [[ -f "$VALUES_FILE" ]]; then
+                    yq ".microservice-chart.canaryDelivery.deployment.image.tag = \"$(next_version.value)\"" "$VALUES_FILE"
+                    git add $VALUES_FILE
+                  fi
+                              
 
           - template: templates/maven-github-current-version/template.yaml@pagopaCommons
 
@@ -134,6 +152,7 @@ stages:
           - script: |
               git checkout $(sourceBranch)
             displayName: Checkout and update branch
+
           - template: templates/docker-release/template.yaml@pagopaCommons
             parameters:
               CONTAINER_REGISTRY_SERVICE_CONN: $(dockerRegistryServiceConnection)
@@ -208,6 +227,8 @@ stages:
                 - script: |
                     git checkout $(sourceBranch)
                   displayName: Checkout and update branch
+
+                # Set deploy version in Chart.yaml
                 - template: templates/helm-microservice-chart-setup/template.yaml@pagopaCommons
                   parameters:
                     DEPLOY_VERSION: $(deploy_version)
@@ -224,9 +245,6 @@ stages:
                       DEPLOY_VERSION: $(deploy_version)
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
-                      ARGUMENTS: >-
-                        --set microservice-chart.deployment.create=${{ variables.deployOnStable }}
-                        --set microservice-chart.canaryDelivery.create=${{ variables.deployOnCanary }}
 
                 - ${{ if eq(parameters['DB'], 'postgresql') }}:
                   - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
@@ -241,8 +259,6 @@ stages:
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
                       ARGUMENTS: >-
-                        --set microservice-chart.deployment.create=${{ variables.deployOnStable }}
-                        --set microservice-chart.canaryDelivery.create=${{ variables.deployOnCanary }}
                         --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_USERNAME="cfg"
