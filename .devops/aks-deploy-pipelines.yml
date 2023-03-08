@@ -128,7 +128,7 @@ stages:
                   # otherwise update stableVersion to appVersion
                   appVersion=$(yq -r ".appVersion" "$CHART_FILE")
                   stableVersion=$(yq -r ".microservice-chart.image.tag" "$VALUES_FILE")
-                  if [ appVersion != stableVersion ]
+                  if [ appVersion != stableVersion ]; then
                     yq -i ".microservice-chart.image.tag = \"$(currentVersion)\"" "$VALUES_FILE"
                     git add "$VALUES_FILE"
                     git commit -m "Bump version [skip ci]"
