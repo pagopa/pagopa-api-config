@@ -228,14 +228,18 @@ stages:
                     git checkout $(sourceBranch)
                   displayName: Checkout and update branch
 
-                - script: |
-                    VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
-                    CURRENT_STABLE_RELEASE="none"
-                    if [[ -f "$VALUES_FILE" ]]; then
-                      CURRENT_STABLE_RELEASE=$(yq -r ".microservice-chart.image.tag" "$VALUES_FILE")
-                    fi
-                    echo "##vso[task.setvariable variable=currentStableRelease;isOutput=true;]$CURRENT_STABLE_RELEASE"
+                - task: Bash@3
                   displayName: "Retrieve current stable release"
+                  name: "currentStableReleaseStep"
+                  inputs:
+                    targetType: "inline"
+                    script: |
+                      VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
+                      CURRENT_STABLE_RELEASE="none"
+                      if [[ -f "$VALUES_FILE" ]]; then
+                        CURRENT_STABLE_RELEASE=$(yq -r ".microservice-chart.image.tag" "$VALUES_FILE")
+                      fi
+                      echo "##vso[task.setvariable variable=currentStableRelease;isOutput=true;]$CURRENT_STABLE_RELEASE"
                   failOnStderr: true
 
                 # Set deploy version in Chart.yaml
@@ -255,7 +259,7 @@ stages:
                       DEPLOY_VERSION: $(deploy_version)
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
-                      OVERRIDE_EXTENDS: "microservice-chart.image.tag=\"$(currentStableRelease)\""
+                      OVERRIDE_EXTENDS: ",microservice-chart.image.tag=\"$(currentStableReleaseStep.currentStableRelease)\""
 
                 - ${{ if eq(parameters['DB'], 'postgresql') }}:
                   - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
@@ -269,7 +273,7 @@ stages:
                       DEPLOY_VERSION: $(deploy_version)
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
-                      OVERRIDE_EXTENDS: ",microservice-chart.image.tag=\"$(currentStableRelease)\""
+                      OVERRIDE_EXTENDS: ",microservice-chart.image.tag=\"$(currentStableReleaseStep.currentStableRelease)\""
                       ARGUMENTS: >-
                         --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
