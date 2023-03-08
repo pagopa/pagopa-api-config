@@ -132,7 +132,7 @@ stages:
                   VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
                   if [[ -f "$VALUES_FILE" ]]; then
                     yq ".microservice-chart.canaryDelivery.deployment.image.tag = \"$(next_version.value)\"" "$VALUES_FILE"
-                    git add $VALUES_FILE
+                    git add "$VALUES_FILE"
                   fi
                               
 
@@ -228,6 +228,15 @@ stages:
                     git checkout $(sourceBranch)
                   displayName: Checkout and update branch
 
+                - script: |
+                    VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
+                    CURRENT_STABLE_RELEASE="none"
+                    if [[ -f "$VALUES_FILE" ]]; then
+                      CURRENT_STABLE_RELEASE=yq -r ".microservice-chart.image.tag" "$VALUES_FILE"
+                    fi
+                    echo "##vso[task.setvariable variable=currentStableRelease;isOutput=true;]$CURRENT_STABLE_RELEASE"
+                  displayName: "Retrieve current stable release"
+
                 # Set deploy version in Chart.yaml
                 - template: templates/helm-microservice-chart-setup/template.yaml@pagopaCommons
                   parameters:
@@ -245,6 +254,8 @@ stages:
                       DEPLOY_VERSION: $(deploy_version)
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
+                      ARGUMENTS: >-
+                        --set microservice-chart.image.tag=$(currentStableRelease)
 
                 - ${{ if eq(parameters['DB'], 'postgresql') }}:
                   - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
@@ -259,6 +270,7 @@ stages:
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
                       ARGUMENTS: >-
+                        --set microservice-chart.image.tag=$(currentStableRelease)
                         --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_USERNAME="cfg"

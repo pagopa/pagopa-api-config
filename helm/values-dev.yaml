@@ -7,6 +7,24 @@ microservice-chart:
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
+  canaryDelivery:
+    create: true
+    ingress:
+      canary:
+        type: header
+        headerName: X-Pod-Version
+        headerValue: canary
+        weightPercent: 0
+    service:
+      create: true
+    deployment:
+      create: true
+      image:
+        repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
+        tag: "0.29.1-38-aks"
+        pullPolicy: Always
+      envConfig: { }
+      envSecret: { }
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
     tag: "0.29.1-41-aks"
@@ -37,24 +55,6 @@ microservice-chart:
     host: "weudev.apiconfig.internal.dev.platform.pagopa.it"
     path: /pagopa-api-config-service/p/(.*)
     servicePort: 8080
-  canaryDelivery:
-    create: true
-    ingress:
-      canary:
-        type: header
-        headerName: X-Pod-Version
-        headerValue: canary
-        weightPercent: 0
-    service:
-      create: true
-    deployment:
-      create: true
-      image:
-        repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.29.1-38-aks"
-        pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
   serviceAccount:
     create: false
   podAnnotations: {}
