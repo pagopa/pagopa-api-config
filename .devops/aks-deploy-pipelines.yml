@@ -97,7 +97,7 @@ resources:
       type: github
       name: pagopa/azure-pipeline-templates
 #      ref: refs/tags/v3.1.0
-      ref: refs/branches/customize-maven-github-release
+      ref: customize-maven-github-release
       endpoint: 'io-azure-devops-github-ro'
 
 stages:
