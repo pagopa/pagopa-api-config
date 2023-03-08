@@ -136,7 +136,7 @@ stages:
                   fi
                 fi
               displayName: Checkout and update branch
-              condition: eq("${{ parameters.SEMVER }}", "skip")
+              condition: and(succeeded(), eq("${{ parameters.SEMVER }}", "skip"))
 
           - ${{ if eq(variables.deployOnCanary, true) }}:
             - template: templates/maven-github-release/template.yaml@pagopaCommons
