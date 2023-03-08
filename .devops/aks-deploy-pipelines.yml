@@ -132,7 +132,7 @@ stages:
                     yq -i ".microservice-chart.image.tag = \"$(currentVersion)\"" "$VALUES_FILE"
                     git add "$VALUES_FILE"
                     git commit -m "Bump version [skip ci]"
-                    git push origin ${{ parameters.release_branch }}
+                    git push origin $(sourceBranch)
                   fi
                 fi
               displayName: Checkout and update branch
