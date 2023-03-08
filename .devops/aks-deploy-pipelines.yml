@@ -240,7 +240,6 @@ stages:
                         CURRENT_STABLE_RELEASE=$(yq -r ".microservice-chart.image.tag" "$VALUES_FILE")
                       fi
                       echo "##vso[task.setvariable variable=currentStableRelease;isOutput=true;]$CURRENT_STABLE_RELEASE"
-                  failOnStderr: true
 
                 # Set deploy version in Chart.yaml
                 - template: templates/helm-microservice-chart-setup/template.yaml@pagopaCommons
