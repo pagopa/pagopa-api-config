@@ -269,7 +269,7 @@ stages:
                       DEPLOY_VERSION: $(deploy_version)
                       APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
                       APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
-                      OVERRIDE_EXTENDS: "microservice-chart.image.tag=\"$(currentStableRelease)\""
+                      OVERRIDE_EXTENDS: " microservice-chart.image.tag=\"$(currentStableRelease)\""
                       ARGUMENTS: >-
                         --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
