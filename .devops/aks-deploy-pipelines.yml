@@ -131,7 +131,7 @@ stages:
                 customHelmStep: |
                   VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
                   if [[ -f "$VALUES_FILE" ]]; then
-                    yq ".microservice-chart.canaryDelivery.deployment.image.tag = \"$(next_version.value)\"" "$VALUES_FILE"
+                    yq -i ".microservice-chart.canaryDelivery.deployment.image.tag = \"$(next_version.value)\"" "$VALUES_FILE"
                     git add "$VALUES_FILE"
                   fi
                               
