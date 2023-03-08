@@ -235,8 +235,8 @@ stages:
                     targetType: "inline"
                     script: |
                       VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
-                      CURRENT_STABLE_RELEASE="none"
-                      if [[ -f "$VALUES_FILE" ]]; then
+                      CURRENT_STABLE_RELEASE=$(deploy_version)
+                      if [ -f "$VALUES_FILE" &&  "$(variables.deployOnCanary)" == true ]; then
                         CURRENT_STABLE_RELEASE=$(yq -r ".microservice-chart.image.tag" "$VALUES_FILE")
                       fi
                       echo "##vso[task.setvariable variable=currentStableRelease;isOutput=true;]$CURRENT_STABLE_RELEASE"
