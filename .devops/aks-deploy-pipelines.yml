@@ -120,6 +120,24 @@ stages:
                 gitHubConnection: $(GITHUB_CONNECTION)
                 semver: '${{ parameters.SEMVER }}'
 
+            - script: |
+                CHART_FILE="helm/Chart.yaml"
+                VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
+                if [[ -f "$CHART_FILE" && -f "$VALUES_FILE" ]]; then
+                  # check if appVersion and stableVersion are the same
+                  # otherwise update stableVersion to appVersion
+                  appVersion=$(yq -r ".appVersion" "$CHART_FILE")
+                  stableVersion=$(yq -r ".microservice-chart.image.tag" "$VALUES_FILE")
+                  if [ appVersion != stableVersion ]
+                    yq -i ".microservice-chart.image.tag = \"$(currentVersion)\"" "$VALUES_FILE"
+                    git add "$VALUES_FILE"
+                    git commit -m "Bump version [skip ci]"
+                    git push origin ${{ parameters.release_branch }}
+                  fi
+                fi
+              displayName: Checkout and update branch
+              condition: eq(${{ parameters.SEMVER }}, "skip)
+
           - ${{ if eq(variables.deployOnCanary, true) }}:
             - template: templates/maven-github-release/template.yaml@pagopaCommons
               parameters:
@@ -134,7 +152,13 @@ stages:
                     yq -i ".microservice-chart.canaryDelivery.deployment.image.tag = \"$(next_version.value)\"" "$VALUES_FILE"
                     git add "$VALUES_FILE"
                   fi
-                              
+                  
+                  CHART_FILE="helm/Chart.yaml"
+                  if [[ -f "$CHART_FILE" ]]; then
+                    yq -i ".version = \"$(next_version.value)\"" "$CHART_FILE"
+                    yq -i ".appVersion = \"$(next_version.value)\"" "$CHART_FILE"
+                    git add "$CHART_FILE"
+                  fi                              
 
           - template: templates/maven-github-current-version/template.yaml@pagopaCommons
 

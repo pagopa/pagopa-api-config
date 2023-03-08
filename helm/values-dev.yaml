@@ -27,7 +27,7 @@ microservice-chart:
       envSecret: {}
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.29.1-43-aks"
+    tag: "0.29.1-41-aks"
     pullPolicy: Always
   livenessProbe:
     httpGet:
