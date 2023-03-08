@@ -120,26 +120,6 @@ stages:
                 gitHubConnection: $(GITHUB_CONNECTION)
                 semver: '${{ parameters.SEMVER }}'
 
-            - script: |
-                CHART_FILE="helm/Chart.yaml"
-                VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
-                if [[ -f "$CHART_FILE" && -f "$VALUES_FILE" ]]; then
-                  # check if appVersion and stableVersion are the same
-                  # otherwise update stableVersion to appVersion
-                  appVersion=$(yq -r ".appVersion" "$CHART_FILE")
-                  stableVersion=$(yq -r ".microservice-chart.image.tag" "$VALUES_FILE")
-                  echo "APP VERSION $appVersion"
-                  echo "STABLE VERSION $stableVersion"
-                  if [[ "$appVersion" != "$stableVersion" ]]; then
-                    yq -i ".microservice-chart.image.tag = \"$(appVersion)\"" "$VALUES_FILE"
-                    git add "$VALUES_FILE"
-                    git commit -m "Set stable release version [skip]"
-                    git push origin $(sourceBranch)
-                  fi
-                fi
-              displayName: Check and update stable release
-              condition: and(succeeded(), eq('${{ parameters.SEMVER }}', 'skip'))
-
           - ${{ if eq(variables.deployOnCanary, true) }}:
             - template: templates/maven-github-release/template.yaml@pagopaCommons
               parameters:
