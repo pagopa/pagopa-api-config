@@ -117,7 +117,7 @@ postgresql:
   !!merge <<: *basecache
   ingress:
     !!merge <<: *ingress
-    path: /pagopa-api-config-service/p/(.*)
+    path: /pagopa-api-config-core-service/p/(.*)
   envConfig:
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
@@ -135,7 +135,7 @@ oracle:
   !!merge <<: *basecache
   ingress:
     !!merge <<: *ingress
-    path: /pagopa-api-config-service/o/(.*)
+    path: /pagopa-api-config-core-service/o/(.*)
   envConfig:
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-oracle'
