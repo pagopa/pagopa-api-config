@@ -90,6 +90,7 @@ stages:
               gitEmail: $(GIT_EMAIL)
               gitUsername: $(GIT_USERNAME)
               gitHubConnection: $(GITHUB_CONNECTION)
+              skipHelmStep: true
               ${{ if eq(parameters.SEMVER, 'skip') }}:
                 semver: 'buildNumber'
               ${{ if ne(parameters.SEMVER, 'skip') }}:
