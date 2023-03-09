@@ -1,11 +1,10 @@
 package it.pagopa.pagopa.apiconfig.repository;
 
+import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import java.util.Optional;
 
 @Repository
 public class HealthCheckRepository {
