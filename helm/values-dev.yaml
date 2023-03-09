@@ -130,6 +130,7 @@ postgresql:
     SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
     DATABASE_SCHEMA: 'cfg'
+    HEALTHCHECK_QUERY: "select 1"
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
