@@ -94,7 +94,7 @@ stages:
               skipHelmStep: true
               ${{ if eq(parameters.SEMVER, 'skip') }}:
                 semver: 'buildNumber'
-              ${{ if ne(parameters.SEMVER, 'skip') }}:
+              ${{ else }}:
                 semver: '${{ parameters.SEMVER }}'
 
 
