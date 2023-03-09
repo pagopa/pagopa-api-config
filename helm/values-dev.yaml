@@ -21,7 +21,7 @@ basecache: &basecache
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.29.1-44-aks"
+        tag: "0.29.1-45"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
@@ -112,6 +112,9 @@ basecache: &basecache
                 operator: In
                 values:
                   - user
+# Configuration used to update image tag (stable or canary) by pipeline
+microservice-chart:
+  !!merge <<: *basecache
 # Configuration for PostgreSQL
 postgresql:
   !!merge <<: *basecache
@@ -130,6 +133,7 @@ postgresql:
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
+
 # Configuration for Oracle
 oracle:
   !!merge <<: *basecache
@@ -148,8 +152,3 @@ oracle:
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
-microservice-chart:
-  canaryDelivery:
-    deployment:
-      image:
-        tag: 0.29.1-45-aks
