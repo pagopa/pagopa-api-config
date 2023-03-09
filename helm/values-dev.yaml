@@ -27,7 +27,7 @@ basecache: &basecache
       envSecret: {}
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.29.1-43-aks"
+    tag: "0.29.1-45-aks"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -133,7 +133,6 @@ postgresql:
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
-
 # Configuration for Oracle
 oracle:
   !!merge <<: *basecache
