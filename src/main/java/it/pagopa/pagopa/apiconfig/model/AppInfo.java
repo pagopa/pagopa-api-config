@@ -3,14 +3,13 @@ package it.pagopa.pagopa.apiconfig.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder(toBuilder = true)
@@ -23,11 +22,8 @@ import javax.validation.constraints.NotNull;
 @NotNull
 public class AppInfo {
 
-    @NotNull
-    private String name;
-    @NotNull
-    private String version;
-    @NotNull
-    private String environment;
-    private String dbConnection;
+  @NotNull private String name;
+  @NotNull private String version;
+  @NotNull private String environment;
+  private String dbConnection;
 }

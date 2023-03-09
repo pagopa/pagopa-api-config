@@ -62,7 +62,8 @@ public class CosmosDBConfig extends AbstractCosmosConfiguration {
     return cosmosDatabase;
   }
 
-  private static class ResponseDiagnosticsProcessorImplementation implements ResponseDiagnosticsProcessor {
+  private static class ResponseDiagnosticsProcessorImplementation
+      implements ResponseDiagnosticsProcessor {
 
     @Override
     public void processResponseDiagnostics(@Nullable ResponseDiagnostics responseDiagnostics) {

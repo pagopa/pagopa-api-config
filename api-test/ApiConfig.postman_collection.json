@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ff1e0608-6e6d-4a48-b077-b55f67423b98",
+		"_postman_id": "fcffa13c-1c90-4498-902d-9bf4b1b82182",
 		"name": "ApiConfig",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "205220"
@@ -3230,7 +3230,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"enabled\": true,\n    \"description\": \"\",\n    \"password\": \"FakePay\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": false,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"serv_plugin\": \"idPsp1\",\n    \"agid\": true\n}",
+							"raw": "{\n    \"channel_code\": \"{{channel_code}}\",\n    \"enabled\": true,\n    \"description\": \"\",\n    \"password\": \"FakePay\",\n    \"primitive_version\": \"1\",\n    \"protocol\": \"HTTPS\",\n    \"ip\": \"1.1.1.1\",\n    \"port\": 443,\n    \"service\": \"basepath/services/fake\",\n    \"broker_psp_code\": \"{{broker_psp_code}}\",\n    \"proxy_enabled\": true,\n    \"proxy_host\": \"2.2.2.2\",\n    \"proxy_port\": 8080,\n    \"thread_number\": 2,\n    \"timeout_a\": 15,\n    \"timeout_b\": 30,\n    \"timeout_c\": 120,\n    \"new_fault_code\": true,\n    \"redirect_protocol\": \"HTTP\",\n    \"payment_model\": \"ACTIVATED_AT_PSP\",\n    \"rt_push\": true,\n    \"on_us\": false,\n    \"card_chart\": false,\n    \"recovery\": true,\n    \"digital_stamp_brand\": false,\n    \"flag_io\": false,\n    \"serv_plugin\": \"idPsp1\",\n    \"agid\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4118,7 +4118,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymentserviceproviders",
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/channels/:code/paymentserviceproviders?page=0&limit=10",
 							"host": [
 								"{{api-config-host}}"
 							],
@@ -4127,6 +4127,16 @@
 								"channels",
 								":code",
 								"paymentserviceproviders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
 							],
 							"variable": [
 								{

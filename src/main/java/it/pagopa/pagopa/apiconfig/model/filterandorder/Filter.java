@@ -9,9 +9,7 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 @Builder
 public class Filter {
-    @Nullable
-    private String code;
+  @Nullable private String code;
 
-    @Nullable
-    private String name;
+  @Nullable private String name;
 }

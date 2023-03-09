@@ -9,13 +9,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HealthCheckRepository {
 
-    @Autowired
-    EntityManager entityManager;
+  @Autowired EntityManager entityManager;
 
-    @Value("${healthcheck.query}")
-    private String query;
+  @Value("${healthcheck.query}")
+  private String query;
 
-    public Optional<Object> health() {
-        return Optional.of(entityManager.createNativeQuery(query).getSingleResult());
-    }
+  public Optional<Object> health() {
+    return Optional.of(entityManager.createNativeQuery(query).getSingleResult());
+  }
 }

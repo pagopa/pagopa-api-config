@@ -1,12 +1,9 @@
 {
-  "payment_service_providers": [
-    {
-      "psp_code": "50",
-      "business_name": "Poste Italiane",
-      "enabled": true,
-      "payment_types": [
-        "PPAL"
-      ]
-    }
-  ]
+  "payment_service_providers": [],
+  "page_info": {
+    "page": 0,
+    "limit": 10,
+    "items_found": 0,
+    "total_pages": 0
+  }
 }

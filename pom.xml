@@ -13,7 +13,7 @@
 
     <groupId>it.pagopa.pagopa.api-config</groupId>
     <artifactId>api-config</artifactId>
-    <version>0.29.1-48-aks</version>
+    <version>0.33.1-2</version>
     <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti</description>
 
     <properties>
@@ -76,11 +76,11 @@
             <version>42.5.1</version>
         </dependency>
 
-      <dependency>
-        <groupId>com.oracle.database.jdbc</groupId>
-        <artifactId>ojdbc8</artifactId>
-        <version>21.4.0.0</version>
-      </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>${ojdbc8-version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.azure</groupId>

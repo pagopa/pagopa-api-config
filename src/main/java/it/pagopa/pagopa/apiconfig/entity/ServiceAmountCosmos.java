@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @Container(containerName = "serviceamount")
 public class ServiceAmountCosmos {
 
-    private Integer paymentAmount;
-    private Integer minPaymentAmount;
-    private Integer maxPaymentAmount;
+  private Integer paymentAmount;
+  private Integer minPaymentAmount;
+  private Integer maxPaymentAmount;
 }
