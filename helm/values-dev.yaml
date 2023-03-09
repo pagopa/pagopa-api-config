@@ -112,7 +112,6 @@ basecache: &basecache
                 operator: In
                 values:
                   - user
-
 # Configuration for PostgreSQL
 postgresql:
   !!merge <<: *basecache
@@ -131,7 +130,6 @@ postgresql:
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
-
 # Configuration for Oracle
 oracle:
   !!merge <<: *basecache
@@ -150,3 +148,8 @@ oracle:
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
+microservice-chart:
+  canaryDelivery:
+    deployment:
+      image:
+        tag: 0.29.1-45-aks
