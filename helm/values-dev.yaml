@@ -1,4 +1,4 @@
-microservice-chart:
+basecache: &basecache
   namespace: "apiconfig"
   nameOverride: ""
   fullnameOverride: ""
@@ -50,10 +50,9 @@ microservice-chart:
     type: ClusterIP
     ports:
       - 8080
-  ingress:
+  ingress: &ingress
     create: true
     host: "weudev.apiconfig.internal.dev.platform.pagopa.it"
-    path: /pagopa-api-config-service/p/(.*)
     servicePort: 8080
   serviceAccount:
     create: false
@@ -82,30 +81,23 @@ microservice-chart:
           # Required
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "75"
-  envConfig:
-    WEBSITE_SITE_NAME: 'pagopaapiconfig'
+  envConfig: &envConfig
     ENV: "dev"
     AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
     AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
     COSMOS_URI: 'https://pagopa-d-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
-    DATABASE_SCHEMA: 'NODO4_CFG'
     APP_LOGGING_LEVEL: 'DEBUG'
-    SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@db-nodo-pagamenti.d.db-nodo-pagamenti.com:1522/NDPSPCT_PP_NODO4_CFG'
-    SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
-    SPRING_DATASOURCE_DRIVER: 'oracle.jdbc.OracleDriver'
-    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
     NODO_MONITORING_HOST: 'https://api.dev.platform.pagopa.it/nodo/monitoring/v1'
-  envSecret:
+  envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
     AFM_MARKETPLACE_SUBSCRIPTION_KEY: 'afm-marketplace-subscription-key'
     AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
-    SPRING_DATASOURCE_PASSWORD: 'oracle-db-cfg-password'
   keyvault:
     name: "pagopa-d-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
@@ -120,3 +112,41 @@ microservice-chart:
                 operator: In
                 values:
                   - user
+
+# Configuration for PostgreSQL
+postgresql:
+  !!merge <<: *basecache
+  ingress:
+    !!merge <<: *ingress
+    path: /pagopa-api-config-service/p/(.*)
+  envConfig:
+    !!merge <<: *envConfig
+    WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
+    APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:6432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
+    SPRING_DATASOURCE_USERNAME: 'cfg'
+    SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
+    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
+    DATABASE_SCHEMA: 'cfg'
+  envSecret:
+    !!merge <<: *envSecret
+    SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
+
+# Configuration for Oracle
+oracle:
+  !!merge <<: *basecache
+  ingress:
+    !!merge <<: *ingress
+    path: /pagopa-api-config-service/o/(.*)
+  envConfig:
+    !!merge <<: *envConfig
+    WEBSITE_SITE_NAME: 'pagopaapiconfig-oracle'
+    APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-oracle"
+    SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@db-nodo-pagamenti.d.db-nodo-pagamenti.com:1522/NDPSPCT_PP_NODO4_CFG'
+    SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
+    SPRING_DATASOURCE_DRIVER: 'oracle.jdbc.OracleDriver'
+    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
+    DATABASE_SCHEMA: 'NODO4_CFG'
+  envSecret:
+    !!merge <<: *envSecret
+    SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'

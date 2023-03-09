@@ -84,12 +84,11 @@ variables:
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     sourceBranch: ${{ variables['Build.SourceBranchName'] }}
 
-  ${{ if eq(parameters['CANARY'], true) }}:
-    deployOnStable: false
-    deployOnCanary: true
-  ${{ if eq(parameters['CANARY'], false) }}:
-    deployOnStable: true
-    deployOnCanary: false
+  usePostgresql: ${{ eq( parameters.DB, 'postgresql') }}
+  useOracle: ${{ eq( parameters.DB, 'oracle') }}
+  deployOnStable: ${{ eq(parameters['CANARY'], false) }}
+  deployOnCanary: ${{ eq(parameters['CANARY'], true) }}
+
 
 resources:
   repositories:
@@ -119,6 +118,19 @@ stages:
                 gitUsername: $(GIT_USERNAME)
                 gitHubConnection: $(GITHUB_CONNECTION)
                 semver: '${{ parameters.SEMVER }}'
+                customHelmStep: |
+                  VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
+                  if [[ -f "$VALUES_FILE" ]]; then
+                    yq -i ".microservice-chart.image.tag = \"$(next_version.value)\"" "$VALUES_FILE"
+                    git add "$VALUES_FILE"
+                  fi
+                  
+                  CHART_FILE="helm/Chart.yaml"
+                  if [[ -f "$CHART_FILE" ]]; then
+                    yq -i ".version = \"$(next_version.value)\"" "$CHART_FILE"
+                    yq -i ".appVersion = \"$(next_version.value)\"" "$CHART_FILE"
+                    git add "$CHART_FILE"
+                  fi
 
           - ${{ if eq(variables.deployOnCanary, true) }}:
             - template: templates/maven-github-release/template.yaml@pagopaCommons
@@ -252,40 +264,22 @@ stages:
                   parameters:
                     DEPLOY_VERSION: $(deploy_version)
 
-                - ${{ if eq(parameters['DB'], 'oracle') }}:
-                  - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
-                    parameters:
-                      DO_DEPLOY: true
-                      ENV: ${{ parameters['ENV'] }}
-                      KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
-                      NAMESPACE: $(nameSpace)
-                      APP_NAME: $(imageRepository)
-                      VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
-                      DEPLOY_VERSION: $(deploy_version)
-                      APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
-                      APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
-                      OVERRIDE_EXTENDS: ",microservice-chart.image.tag=\"$(currentStableReleaseStep.currentStableRelease)\""
+                - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
+                  parameters:
+                    DO_DEPLOY: true
+                    ENV: ${{ parameters['ENV'] }}
+                    KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
+                    NAMESPACE: $(nameSpace)
+                    APP_NAME: $(imageRepository)
+                    VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
+                    DEPLOY_VERSION: $(deploy_version)
+                    APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
+                    APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
+                    OVERRIDE_EXTENDS: ",microservice-chart.image.tag=\"$(currentStableReleaseStep.currentStableRelease)\""
+                    ARGUMENTS: >-
+                      --set postgresql.enabled="$(usePostgresql)"
+                      --set oracle.enabled="$(useOracle)"
 
-                - ${{ if eq(parameters['DB'], 'postgresql') }}:
-                  - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
-                    parameters:
-                      DO_DEPLOY: true
-                      ENV: ${{ parameters['ENV'] }}
-                      KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
-                      NAMESPACE: $(nameSpace)
-                      APP_NAME: $(imageRepository)
-                      VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
-                      DEPLOY_VERSION: $(deploy_version)
-                      APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
-                      APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
-                      OVERRIDE_EXTENDS: ",microservice-chart.image.tag=\"$(currentStableReleaseStep.currentStableRelease)\""
-                      ARGUMENTS: >-
-                        --set microservice-chart.envConfig.DATABASE_SCHEMA="cfg"
-                        --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
-                        --set microservice-chart.envConfig.SPRING_DATASOURCE_USERNAME="cfg"
-                        --set microservice-chart.envConfig.SPRING_DATASOURCE_DRIVER="org.postgresql.Driver"
-                        --set microservice-chart.envConfig.SPRING_JPA_DB_PLATFORM="org.hibernate.dialect.PostgreSQLDialect"
-                        --set microservice-chart.envSecret.SPRING_DATASOURCE_PASSWORD="postgresql-db-cfg-password"
 
   # Run Tests
 #  - stage: Integration_Test
