@@ -284,7 +284,7 @@ stages:
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_URL=$(springDatasourceUrl)
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_USERNAME="cfg"
                         --set microservice-chart.envConfig.SPRING_DATASOURCE_DRIVER="org.postgresql.Driver"
-                        --set microservice-chart.envConfig.SPRING_JPA_DATABASE="org.hibernate.dialect.PostgreSQLDialect"
+                        --set microservice-chart.envConfig.SPRING_JPA_DB_PLATFORM="org.hibernate.dialect.PostgreSQLDialect"
                         --set microservice-chart.envSecret.SPRING_DATASOURCE_PASSWORD="postgresql-db-cfg-password"
 
   # Run Tests
