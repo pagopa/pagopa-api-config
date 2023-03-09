@@ -118,14 +118,14 @@ stages:
           - script: |
               git checkout $(SOURCE_BRANCH)
 
-          - task: Bash@3
-            name: application_properties
-            inputs:
-              targetType: "inline"
-              script: |
-                cp src/main/resources/application-azure-$(STAGE).properties src/main/resources/application.properties
-                cat src/main/resources/application.properties
-              failOnStderr: true
+#          - task: Bash@3
+#            name: application_properties
+#            inputs:
+#              targetType: "inline"
+#              script: |
+#                cp src/main/resources/application-azure-$(STAGE).properties src/main/resources/application.properties
+#                cat src/main/resources/application.properties
+#              failOnStderr: true
 
           - task: Cache@2
             inputs:
