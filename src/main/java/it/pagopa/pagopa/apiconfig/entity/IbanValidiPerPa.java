@@ -14,12 +14,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Immutable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.sql.Timestamp;
-
 @Table(name = "IBAN_VALIDI_PER_PA")
 @Entity
 @Immutable
