@@ -52,7 +52,7 @@ public class LoggingAspect {
   /** Log essential info of application during the startup. */
   @PostConstruct
   public void logStartup() {
-    log.info("-> Starting {} version {} - environment {}", name, version, environment);
+    log.info("-> Starting {} version {} - environment {}", artifactId, version, environment);
   }
 
   /**
