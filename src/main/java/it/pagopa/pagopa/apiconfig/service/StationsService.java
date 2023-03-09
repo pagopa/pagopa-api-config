@@ -52,8 +52,8 @@ public class StationsService {
 
   @Autowired private PaRepository paRepository;
 
-    @Value("${info.properties.environment}")
-    private String env;
+  @Value("${info.properties.environment}")
+  private String env;
 
   @Transactional(readOnly = true)
   public Stations getStations(

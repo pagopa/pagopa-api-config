@@ -50,8 +50,8 @@ public class ChannelsService {
 
   @Autowired private ModelMapper modelMapper;
 
-    @Value("${info.properties.environment}")
-    private String env;
+  @Value("${info.properties.environment}")
+  private String env;
 
   @Autowired private PspRepository pspRepository;
 
