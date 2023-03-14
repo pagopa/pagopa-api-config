@@ -33,8 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Valid
 public class MassiveLoadingService {
 
-    @Value("${info.properties.environment}")
-    private String environment;
+  @Value("${info.properties.environment}")
+  private String environment;
 
   @Autowired private PaRepository paRepository;
 
