@@ -4,7 +4,7 @@
     "title" : "PagoPA API configuration",
     "description" : "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService" : "https://www.pagopa.gov.it/",
-    "version" : "0.33.1-1"
+    "version" : "0.33.1-2"
   },
   "servers" : [ {
     "url" : "http://127.0.0.1:8080/apiconfig/api/v1",
@@ -20788,10 +20788,20 @@
           "target_host" : {
             "type" : "string"
           },
+          "target_host_pof" : {
+            "type" : "string"
+          },
           "target_path" : {
             "type" : "string"
           },
+          "target_path_pof" : {
+            "type" : "string"
+          },
           "target_port" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "target_port_pof" : {
             "type" : "integer",
             "format" : "int64"
           },

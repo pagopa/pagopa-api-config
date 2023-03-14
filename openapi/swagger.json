@@ -17294,10 +17294,20 @@
         "target_host": {
           "type": "string"
         },
+        "target_host_pof": {
+          "type": "string"
+        },
         "target_path": {
           "type": "string"
         },
+        "target_path_pof": {
+          "type": "string"
+        },
         "target_port": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "target_port_pof": {
           "format": "int64",
           "type": "integer"
         },

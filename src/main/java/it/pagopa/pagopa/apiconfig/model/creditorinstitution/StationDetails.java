@@ -148,6 +148,15 @@ public class StationDetails extends Station {
   @JsonProperty("target_path")
   private String targetPath;
 
+  @JsonProperty("target_host_pof")
+  private String targetHostPof;
+
+  @JsonProperty("target_port_pof")
+  private Long targetPortPof;
+
+  @JsonProperty("target_path_pof")
+  private String targetPathPof;
+
   @Min(1)
   @Max(2)
   @NotNull
