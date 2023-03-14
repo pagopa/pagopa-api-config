@@ -15815,7 +15815,7 @@
         "new_password": {
           "type": "string"
         },
-        "npm_service": {
+        "nmp_service": {
           "type": "string"
         },
         "on_us": {
@@ -15908,10 +15908,20 @@
         "target_host": {
           "type": "string"
         },
+        "target_host_nmp": {
+          "type": "string"
+        },
         "target_path": {
           "type": "string"
         },
+        "target_path_nmp": {
+          "type": "string"
+        },
         "target_port": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "target_port_nmp": {
           "format": "int64",
           "type": "integer"
         },

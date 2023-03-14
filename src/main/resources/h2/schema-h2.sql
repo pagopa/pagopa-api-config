@@ -404,9 +404,12 @@ create table NODO4_CFG.CANALI
                                   TIMEOUT_B numeric(19) not null,
                                   TIMEOUT_C numeric(19) not null,
                                   SERVIZIO_NMP varchar(255),
-                                  TARGET_HOST            varchar(100),
-                                  TARGET_PORT            numeric,
-                                  TARGET_PATH            varchar(100),
+    TARGET_HOST            varchar(100),
+    TARGET_PORT            numeric,
+    TARGET_PATH            varchar(100),
+    TARGET_HOST_NMP            varchar(100),
+    TARGET_PORT_NMP            numeric,
+    TARGET_PATH_NMP            varchar(100),
                                   constraint PK_CANALI
                                       primary key (OBJ_ID),
                                   constraint UQ_ID_CANALE

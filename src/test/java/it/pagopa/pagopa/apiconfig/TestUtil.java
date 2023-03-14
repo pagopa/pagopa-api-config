@@ -446,6 +446,12 @@ public class TestUtil {
         .timeoutA(10L)
         .useNewFaultCode(true)
         .servizioNmp("NPM")
+        .targetHost("localhost")
+        .targetPort(443L)
+        .targetPath("/")
+        .targetHostNmp("localhost")
+        .targetPortNmp(443L)
+        .targetPathNmp("/")
         .build();
   }
 
