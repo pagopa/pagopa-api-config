@@ -35,6 +35,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Service
@@ -51,9 +52,10 @@ public class StationsService {
 
   @Autowired private PaRepository paRepository;
 
-  @Value("${properties.environment}")
+  @Value("${info.properties.environment}")
   private String env;
 
+  @Transactional(readOnly = true)
   public Stations getStations(
       @NotNull Integer limit,
       @NotNull Integer pageNumber,
@@ -78,6 +80,7 @@ public class StationsService {
         .build();
   }
 
+  @Transactional(readOnly = true)
   public StationDetails getStation(@NotNull String stationCode) {
     Stazioni stazione = getStationIfExists(stationCode);
     return modelMapper.map(stazione, StationDetails.class);
@@ -108,6 +111,7 @@ public class StationsService {
     stazioniRepository.delete(stazioni);
   }
 
+  @Transactional(readOnly = true)
   public StationCreditorInstitutions getStationCreditorInstitutions(
       @NotNull String stationCode, @NotNull Integer limit, @NotNull Integer pageNumber) {
     Stazioni stazioni = getStationIfExists(stationCode);

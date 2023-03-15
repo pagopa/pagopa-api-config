@@ -16,6 +16,7 @@ public class YesNoConverter implements AttributeConverter<Boolean, String> {
 
   @Override
   public Boolean convertToEntityAttribute(final String value) {
-    return value.equals(YES);
+    // don't remove null check to avoid NullPointerException
+    return value != null && value.equals(YES);
   }
 }

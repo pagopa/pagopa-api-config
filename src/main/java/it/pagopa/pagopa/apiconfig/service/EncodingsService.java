@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Service
@@ -31,6 +32,7 @@ public class EncodingsService {
 
   @Autowired private ModelMapper modelMapper;
 
+  @Transactional(readOnly = true)
   public CreditorInstitutionEncodings getCreditorInstitutionEncodings(
       @NotNull String creditorInstitutionCode) {
     Pa pa = getPaIfExists(creditorInstitutionCode);

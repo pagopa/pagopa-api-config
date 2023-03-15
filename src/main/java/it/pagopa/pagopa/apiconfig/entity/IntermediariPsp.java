@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Table(name = "INTERMEDIARI_PSP", schema = "NODO4_CFG")
+@Table(name = "INTERMEDIARI_PSP")
 @Entity
 @Getter
 @Setter

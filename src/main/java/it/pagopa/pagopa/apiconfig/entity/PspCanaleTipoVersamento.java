@@ -20,7 +20,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "PSP_CANALE_TIPO_VERSAMENTO", schema = "NODO4_CFG")
+@Table(name = "PSP_CANALE_TIPO_VERSAMENTO")
 @Setter
 @Getter
 @ToString

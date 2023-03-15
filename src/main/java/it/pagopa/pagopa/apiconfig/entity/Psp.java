@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Table(name = "PSP", schema = "NODO4_CFG")
+@Table(name = "PSP")
 @Entity
 @Getter
 @Setter

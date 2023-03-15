@@ -29,7 +29,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "CANALI", schema = "NODO4_CFG")
+@Table(name = "CANALI")
 @Builder(toBuilder = true)
 public class Canali implements Serializable {
   @Id

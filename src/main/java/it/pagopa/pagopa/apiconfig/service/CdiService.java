@@ -111,6 +111,7 @@ public class CdiService {
   @Value("${service.utils.subscriptionKey}")
   private String afmUtilsSubscriptionKey;
 
+  @Transactional(readOnly = true)
   public Cdis getCdis(
       @NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
     Pageable pageable =

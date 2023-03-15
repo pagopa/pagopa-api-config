@@ -50,7 +50,7 @@ public class ChannelsService {
 
   @Autowired private ModelMapper modelMapper;
 
-  @Value("${properties.environment}")
+  @Value("${info.properties.environment}")
   private String env;
 
   @Autowired private PspRepository pspRepository;
@@ -68,6 +68,7 @@ public class ChannelsService {
         .build();
   }
 
+  @Transactional(readOnly = true)
   public ChannelDetails getChannel(@NotBlank String channelCode) {
     Canali canali = getCanaliIfExists(channelCode);
     return modelMapper.map(canali, ChannelDetails.class);
@@ -107,6 +108,7 @@ public class ChannelsService {
     }
   }
 
+  @Transactional(readOnly = true)
   public PspChannelPaymentTypes getPaymentTypes(@NotBlank String channelCode) {
     var channel = getCanaliIfExists(channelCode);
     var type = canaleTipoVersamentoRepository.findByFkCanale(channel.getId());
@@ -152,6 +154,7 @@ public class ChannelsService {
     canaleTipoVersamentoRepository.delete(result);
   }
 
+  @Transactional(readOnly = true)
   public ChannelPspList getChannelPaymentServiceProviders(
       @Positive Integer limit, @PositiveOrZero Integer pageNumber, String channelCode) {
     Pageable pageable = PageRequest.of(pageNumber, limit);

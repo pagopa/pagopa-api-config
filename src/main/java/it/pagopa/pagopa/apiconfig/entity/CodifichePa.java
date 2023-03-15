@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Table(name = "CODIFICHE_PA", schema = "NODO4_CFG")
+@Table(name = "CODIFICHE_PA")
 @Entity
 @Getter
 @Setter

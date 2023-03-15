@@ -98,6 +98,7 @@ public class IcaService {
   @Value("${zip.size}")
   private int thresholdSize; // Max size of zip file content
 
+  @Transactional(readOnly = true)
   public Icas getIcas(
       @NotNull Integer limit,
       @NotNull Integer pageNumber,

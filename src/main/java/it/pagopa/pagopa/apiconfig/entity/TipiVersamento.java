@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "TIPI_VERSAMENTO", schema = "NODO4_CFG")
+@Table(name = "TIPI_VERSAMENTO")
 @Setter
 @Getter
 @ToString

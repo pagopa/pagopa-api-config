@@ -105,6 +105,7 @@ public class PspService {
     pspRepository.delete(psp);
   }
 
+  @Transactional(readOnly = true)
   public PspChannelList getPaymentServiceProvidersChannels(@NotBlank String pspCode) {
     Psp psp = getPspIfExists(pspCode);
     List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList =

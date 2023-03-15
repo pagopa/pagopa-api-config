@@ -1,0 +1,304 @@
+# Only manual triggers
+trigger: none
+pr: none
+
+pool:
+  vmImage: 'ubuntu-22.04'
+
+parameters:
+  - name: ENV
+    displayName: Target Environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - uat
+      - prod
+  - name: SEMVER
+    displayName: "When packing a release, define the version bump to apply. Use only buildNumber or skip for manual deployment"
+    type: string
+    values:
+      - major
+      - minor
+      - patch
+      - buildNumber
+      - skip
+    default: skip
+  - name: DB
+    displayName: "Database version"
+    type: string
+    values:
+      - oracle
+      - postgresql
+    default: oracle
+  - name: "FORCE_REPLACE_DOCKER_IMAGE"
+    displayName: "Force the existing docker image to be replaced"
+    type: boolean
+    default: False
+    values:
+      - False
+      - True
+  - name: "CANARY"
+    displayName: "Deploy on Canary"
+    type: boolean
+    default: false
+    values:
+      - false
+      - true
+  - name: TEST
+    displayName: Run integration/smoke tests
+    type: boolean
+    default: false
+
+variables:
+  imageRepository: '$(IMAGE_REPOSITORY_NAME)'
+  nameSpace: '$(K8S_NAMESPACE)'
+
+  ${{ if eq(parameters['ENV'], 'dev') }}:
+    dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY_SERVICE_CONN)
+    dockerRegistryFqdn: $(DEV_CONTAINER_NAMESPACE)
+    kubernetesServiceConnection: '$(DEV_KUBERNETES_SERVICE_CONN)'
+    poolImage: 'pagopa-dev-linux'
+    appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_DEV)"
+    appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_DEV)"
+    springDatasourceUrl: "jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
+  ${{ if eq(parameters['ENV'], 'uat') }}:
+    dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY_SERVICE_CONN)
+    dockerRegistryFqdn: $(UAT_CONTAINER_NAMESPACE)
+    kubernetesServiceConnection: '$(UAT_KUBERNETES_SERVICE_CONN)'
+    poolImage: 'pagopa-uat-linux'
+    appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_UAT)"
+    appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_UAT)"
+    springDatasourceUrl: "jdbc:postgresql://pagopa-u-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
+  ${{ if eq(parameters['ENV'], 'prod') }}:
+    dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY_SERVICE_CONN)
+    dockerRegistryFqdn: $(PROD_CONTAINER_NAMESPACE)
+    kubernetesServiceConnection: '$(PROD_KUBERNETES_SERVICE_CONN)'
+    poolImage: 'pagopa-prod-linux'
+    appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_PROD)"
+    appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_PROD)"
+    springDatasourceUrl: "jdbc:postgresql://pagopa-p-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
+
+  ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
+    sourceBranch: "main" # force to main branch
+  ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
+    sourceBranch: ${{ variables['Build.SourceBranchName'] }}
+
+  usePostgresql: ${{ eq( parameters.DB, 'postgresql') }}
+  useOracle: ${{ eq( parameters.DB, 'oracle') }}
+  deployOnStable: ${{ eq(parameters['CANARY'], false) }}
+  deployOnCanary: ${{ eq(parameters['CANARY'], true) }}
+
+
+resources:
+  repositories:
+    - repository: pagopaCommons
+      type: github
+      name: pagopa/azure-pipeline-templates
+      ref: refs/tags/v3.8.0
+      endpoint: 'io-azure-devops-github-ro'
+
+stages:
+
+  # Create a release on GitHub
+  - stage: Release
+    jobs:
+      - job: make_release
+        steps:
+          - checkout: self
+            clean: true
+            persistCredentials: true
+
+          - ${{ if eq(variables.deployOnStable, true) }}:
+            - template: templates/maven-github-release/template.yaml@pagopaCommons
+              parameters:
+                release_branch: $(sourceBranch)
+                gitEmail: $(GIT_EMAIL)
+                gitUsername: $(GIT_USERNAME)
+                gitHubConnection: $(GITHUB_CONNECTION)
+                semver: '${{ parameters.SEMVER }}'
+                customHelmStep: |
+                  VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
+                  if [[ -f "$VALUES_FILE" ]]; then
+                    yq -i ".microservice-chart.image.tag = \"$(next_version.value)\"" "$VALUES_FILE"
+                    git add "$VALUES_FILE"
+                  fi
+                  
+                  CHART_FILE="helm/Chart.yaml"
+                  if [[ -f "$CHART_FILE" ]]; then
+                    yq -i ".version = \"$(next_version.value)\"" "$CHART_FILE"
+                    yq -i ".appVersion = \"$(next_version.value)\"" "$CHART_FILE"
+                    git add "$CHART_FILE"
+                  fi
+
+          - ${{ if eq(variables.deployOnCanary, true) }}:
+            - template: templates/maven-github-release/template.yaml@pagopaCommons
+              parameters:
+                release_branch: $(sourceBranch)
+                gitEmail: $(GIT_EMAIL)
+                gitUsername: $(GIT_USERNAME)
+                gitHubConnection: $(GITHUB_CONNECTION)
+                semver: '${{ parameters.SEMVER }}'
+                customHelmStep: |
+                  VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
+                  if [[ -f "$VALUES_FILE" ]]; then
+                    yq -i ".microservice-chart.canaryDelivery.deployment.image.tag = \"$(next_version.value)\"" "$VALUES_FILE"
+                    git add "$VALUES_FILE"
+                  fi
+                  
+                  CHART_FILE="helm/Chart.yaml"
+                  if [[ -f "$CHART_FILE" ]]; then
+                    yq -i ".version = \"$(next_version.value)\"" "$CHART_FILE"
+                    yq -i ".appVersion = \"$(next_version.value)\"" "$CHART_FILE"
+                    git add "$CHART_FILE"
+                  fi                              
+
+          - template: templates/maven-github-current-version/template.yaml@pagopaCommons
+
+  # Build and Push Docker Image
+  - stage: Build
+    dependsOn: Release
+    variables:
+      current_version: $[ stageDependencies.Release.make_release.outputs['current_version.value'] ]
+    jobs:
+      - job: "build"
+        steps:
+          - checkout: self
+            persistCredentials: true
+
+          - script: |
+              git checkout $(sourceBranch)
+            displayName: Checkout and update branch
+
+          - template: templates/docker-release/template.yaml@pagopaCommons
+            parameters:
+              CONTAINER_REGISTRY_SERVICE_CONN: $(dockerRegistryServiceConnection)
+              CONTAINER_REGISTRY_FQDN: $(dockerRegistryFqdn)
+              DOCKER_IMAGE_NAME: $(imageRepository)
+              DOCKER_IMAGE_TAG: $(current_version)
+              FORCE_REPLACE_DOCKER_IMAGE: ${{ parameters.FORCE_REPLACE_DOCKER_IMAGE }}
+
+  # Testing the docker image
+#  - stage: Smoke_Test
+#    dependsOn:
+#      - Build
+#    condition: and(succeeded(), eq('${{ parameters.TEST }}', 'true'))
+#    jobs:
+#      - job: smoke_tests
+#        steps:
+#          - checkout: self
+#            clean: true
+#            persistCredentials: true
+#            submodules: true
+#
+#          - script: |
+#              git checkout $(SOURCE_BRANCH)
+#            displayName: Checkout and update branch
+#
+#          - task: Bash@3
+#            name: application_properties
+#            inputs:
+#              targetType: "inline"
+#              script: |
+#                cp src/main/resources/application-azure-$(STAGE).properties src/main/resources/application.properties
+#                cat src/main/resources/application.properties
+#              failOnStderr: true
+#
+#          - task: Docker@2
+#            displayName: "Docker login"
+#            inputs:
+#              containerRegistry: "$(dockerRegistryServiceConnection)"
+#              command: "login"
+#
+#          - task: Bash@3
+#            displayName: 'Run Smoke Tests'
+#            inputs:
+#              targetType: 'inline'
+#              script: |
+#                cd ./integration-test
+#                sh run_integration_test.sh local
+#            env:
+#              containerRegistry: $(dockerRegistryFqdn)
+
+  # Deploy on K8s with Helm
+  - stage: Deploy
+    condition: and(succeeded('Build'), not(failed('Smoke_Test')))
+    dependsOn:
+      - Release
+      - Build
+#      - Smoke_Test
+    variables:
+      deploy_version: $[ stageDependencies.Release.make_release.outputs['current_version.value'] ]
+    jobs:
+      - deployment: "deploy"
+        pool:
+          name: $(poolImage)
+        environment: ${{ parameters['ENV'] }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  persistCredentials: true
+
+                - script: |
+                    git checkout $(sourceBranch)
+                  displayName: Checkout and update branch
+
+                - task: Bash@3
+                  displayName: "Retrieve current stable release"
+                  name: "currentStableReleaseStep"
+                  inputs:
+                    targetType: "inline"
+                    script: |
+                      VALUES_FILE="helm/values-${{ parameters['ENV'] }}.yaml"
+                      CURRENT_STABLE_RELEASE=$(deploy_version)
+                      if [ -f "$VALUES_FILE" &&  "$(variables.deployOnCanary)" == true ]; then
+                        CURRENT_STABLE_RELEASE=$(yq -r ".microservice-chart.image.tag" "$VALUES_FILE")
+                      fi
+                      echo "##vso[task.setvariable variable=currentStableRelease;isOutput=true;]$CURRENT_STABLE_RELEASE"
+
+                # Set deploy version in Chart.yaml
+                - template: templates/helm-microservice-chart-setup/template.yaml@pagopaCommons
+                  parameters:
+                    DEPLOY_VERSION: $(deploy_version)
+
+                - template: templates/helm-microservice-chart-deploy/template.yaml@pagopaCommons
+                  parameters:
+                    DO_DEPLOY: true
+                    ENV: ${{ parameters['ENV'] }}
+                    KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
+                    NAMESPACE: $(nameSpace)
+                    APP_NAME: $(imageRepository)
+                    VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
+                    DEPLOY_VERSION: $(deploy_version)
+                    APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
+                    APPINSIGHTS_RESOURCE_ID: ${{ variables.appInsightsResourceId }}
+                    OVERRIDE_EXTENDS: ",microservice-chart.image.tag=\"$(currentStableReleaseStep.currentStableRelease)\""
+                    ARGUMENTS: >-
+                      --set postgresql.enabled="$(usePostgresql)"
+                      --set oracle.enabled="$(useOracle)"
+
+
+  # Run Tests
+#  - stage: Integration_Test
+#    dependsOn:
+#      - Deploy
+#    condition: and(and(succeeded(), eq('${{ parameters.TEST }}', 'true')), ne('${{ parameters.ENV }}', 'prod'))
+#    jobs:
+#      - job: integration_tests
+#        steps:
+#          - checkout: self
+#            persistCredentials: true
+#
+#          - script: |
+#              git checkout $(sourceBranch)
+#            displayName: Checkout and update branch
+#          - task: Bash@3
+#            displayName: 'Run Integration Tests'
+#            inputs:
+#              targetType: 'inline'
+#              script: |
+#                cd ./integration-test/src
+#                yarn install
+#                yarn test:${{ parameters.ENV }}

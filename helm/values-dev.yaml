@@ -1,0 +1,154 @@
+basecache: &basecache
+  namespace: "apiconfig"
+  nameOverride: ""
+  fullnameOverride: ""
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  canaryDelivery:
+    create: true
+    ingress:
+      canary:
+        type: header
+        headerName: X-Pod-Version
+        headerValue: canary
+        weightPercent: 0
+    service:
+      create: true
+    deployment:
+      create: true
+      image:
+        repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
+        tag: "0.29.1-45"
+        pullPolicy: Always
+      envConfig: {}
+      envSecret: {}
+  image:
+    repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
+    tag: "0.29.1-47-aks"
+    pullPolicy: Always
+  livenessProbe:
+    httpGet:
+      path: /actuator/health/liveness
+      port: 8080
+    initialDelaySeconds: 90
+    failureThreshold: 6
+    periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /actuator/health/readiness
+      port: 8080
+    initialDelaySeconds: 90
+    failureThreshold: 6
+    periodSeconds: 10
+  deployment:
+    create: true
+  service:
+    create: true
+    type: ClusterIP
+    ports:
+      - 8080
+  ingress: &ingress
+    create: true
+    host: "weudev.apiconfig.internal.dev.platform.pagopa.it"
+    servicePort: 8080
+  serviceAccount:
+    create: false
+  podAnnotations: {}
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "0.40"
+    limits:
+      memory: "1Gi"
+      cpu: "0.5"
+  autoscaling:
+    enable: true
+    minReplica: 1
+    maxReplica: 5
+    pollingInterval: 10 # seconds
+    cooldownPeriod: 50 # seconds
+    triggers:
+      - type: cpu
+        metadata:
+          # Required
+          type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+          value: "75"
+  envConfig: &envConfig
+    ENV: "dev"
+    AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
+    AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
+    CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
+    COSMOS_URI: 'https://pagopa-d-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
+    APP_LOGGING_LEVEL: 'DEBUG'
+    XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
+    XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
+    XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
+    NODO_MONITORING_HOST: 'https://api.dev.platform.pagopa.it/nodo/monitoring/v1'
+  envSecret: &envSecret
+    # required
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
+    AFM_MARKETPLACE_SUBSCRIPTION_KEY: 'afm-marketplace-subscription-key'
+    AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
+    COSMOS_KEY: 'afm-cosmos-key'
+  keyvault:
+    name: "pagopa-d-apiconfig-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
+  nodeSelector: {}
+  tolerations: []
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node_type
+                operator: In
+                values:
+                  - user
+# Configuration used to update image tag (stable or canary) by pipeline
+microservice-chart:
+  !!merge <<: *basecache
+# Configuration for PostgreSQL
+postgresql:
+  !!merge <<: *basecache
+  ingress:
+    !!merge <<: *ingress
+    path: /pagopa-api-config-core-service/p/(.*)
+  envConfig:
+    !!merge <<: *envConfig
+    WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
+    APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:6432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
+    SPRING_DATASOURCE_USERNAME: 'cfg'
+    SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
+    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
+    DATABASE_SCHEMA: 'cfg'
+    HEALTHCHECK_QUERY: "select 1"
+  envSecret:
+    !!merge <<: *envSecret
+    SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
+# Configuration for Oracle
+oracle:
+  !!merge <<: *basecache
+  ingress:
+    !!merge <<: *ingress
+    path: /pagopa-api-config-core-service/o/(.*)
+  envConfig:
+    !!merge <<: *envConfig
+    WEBSITE_SITE_NAME: 'pagopaapiconfig-oracle'
+    APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-oracle"
+    SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@db-nodo-pagamenti.d.db-nodo-pagamenti.com:1522/NDPSPCT_PP_NODO4_CFG'
+    SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
+    SPRING_DATASOURCE_DRIVER: 'oracle.jdbc.OracleDriver'
+    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
+    DATABASE_SCHEMA: 'NODO4_CFG'
+  envSecret:
+    !!merge <<: *envSecret
+    SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'

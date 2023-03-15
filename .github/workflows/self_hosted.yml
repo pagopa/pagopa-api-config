@@ -7,23 +7,15 @@ on:
         required: true
         description: The name of the environment where to deploy
         type: string
-      env_short:
+      target:
         required: true
-        description: The short name of the environment (d, u or p)
-        type: string
-      matrix:
-        required: true
-        description: The name of the environment where to deploy
+        description: The environment target of the job
         type: string
       beta:
         required: false
         type: boolean
         description: deploy beta version on AKS
         default: false
-    secrets:
-      token:
-        required: true
-        description: Github Token
 
 env:
   NAMESPACE: apiconfig
@@ -38,8 +30,9 @@ jobs:
   create_runner:
     name: Create Runner
     runs-on: ubuntu-22.04
-    environment: ${{ inputs.environment }}
-    if: ${{ inputs.matrix == inputs.environment || inputs.environment == 'all' }}
+    environment:
+      name: ${{ inputs.environment }}
+    if: ${{ inputs.target == inputs.environment || inputs.environment == 'all' }}
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
@@ -48,48 +41,83 @@ jobs:
         # from https://github.com/pagopa/github-self-hosted-runner-azure-create-action/commits/main
         uses: pagopa/github-self-hosted-runner-azure-create-action@b4590e069e753daee6bc9809d484523cc7026035
         with:
-          client_id: ${{ vars.client_id }}
-          tenant_id: ${{ vars.tenant_id }}
-          subscription_id: ${{ vars.subscription_id }}
-          container_app_environment_name: pagopa-${{ inputs.env_short }}-github-runner-cae
-          resource_group_name: pagopa-${{ inputs.env_short }}-github-runner-rg
-          pat_token: ${{ inputs.token }}
+          client_id: ${{ secrets.CLIENT_ID }}
+          tenant_id: ${{ secrets.TENANT_ID }}
+          subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+          container_app_environment_name: ${{ secrets.CONTAINER_APP_ENVIRONMENT_NAME }}
+          resource_group_name: ${{ secrets.RUNNER_RESOURCE_GROUP_NAME }} # RG of the runner
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          self_hosted_runner_image_tag: "v1.4.0"
 
   deploy:
     needs: [ create_runner ]
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
-    if: ${{ inputs.matrix == inputs.environment || inputs.environment == 'all' }}
+    if: ${{ inputs.target == inputs.environment || inputs.environment == 'all' }}
     name: Deploy on AKS
+    environment: ${{ inputs.environment }}
     steps:
       - name: Deploy
         uses: pagopa/github-actions-template/aks-deploy@main
         with:
           branch: ${{ github.ref_name }}
-          client_id: ${{ inputs.client_id }}
-          tenant_id: ${{ inputs.tenant_id }}
-          subscription_id: ${{ inputs.subscription_id }}
-          env: ${{ inputs.env }}
+          client_id: ${{ secrets.CLIENT_ID }}
+          tenant_id: ${{ secrets.TENANT_ID }}
+          subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+          env: ${{ inputs.environment }}
           namespace: ${{ env.NAMESPACE }}
-          cluster_name: pagopa-${{ inputs.env_short }}-weu-${{ inputs.environment }}-aks
-          resource_group: pagopa-${{ inputs.env_short }}-weu-${{ inputs.environment }}-aks-rg
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          resource_group: ${{ secrets.CLUSTER_RESOURCE_GROUP_NAME }}
           app_name: ${{ env.APP_NAME }}
           helm_upgrade_options: ${{( inputs.beta && '--set microservice-chart.deployment.create=false') || '' }}
 
+#      - uses: actions/checkout@v3
+#        with:
+#          ref: ${{ github.ref_name}}
+#
+#      - name: Azure Login
+#        uses: azure/login@89d153571fe9a34ed70fcf9f1d95ab8debea7a73
+#        with:
+#          creds: ${{ secrets.AZURE_CREDENTIALS }}
+#        # TODO:  az ad sp create-for-rbac --name github-action-dev --role contributor --scopes /subscriptions/<sub-id> --sdk-auth
+#
+#      - name: Gets K8s context
+#        id: login
+#        uses: azure/aks-set-context@4e5aec273183a197b181314721843e047123d9fa
+#        with:
+#          creds: ${{ secrets.AZURE_CREDENTIALS }}
+#          resource-group: ${{ secrets.CLUSTER_RESOURCE_GROUP_NAME }}
+#          cluster-name: ${{ secrets.CLUSTER_NAME }}
+#          cluster-type: arc
+#          method: service-principal
+#
+#      - name: Helm Setup
+#        run: |
+#          helm repo add microservice-chart https://pagopa.github.io/aks-microservice-chart-blueprint
+#          helm dep build helm
+#
+#      - name: Helm Deploy
+#        run: helm upgrade --namespace ${{ env.NAMESPACE }}
+#          --install --values ./helm/values-${{ inputs.environment }}.yaml
+#          ${{( inputs.beta && '--set microservice-chart.deployment.create=false') || '' }}
+#          --wait --timeout 5m0s
+#          ${{ env.APP_NAME }} ./helm
+
+
   cleanup_runner:
     name: Cleanup Runner
-    if: always()
-    runs-on: ubuntu-22.04
-    environment: dev-runner
     needs: [ create_runner, deploy ]
+    if: ${{ success() || failure() && inputs.target == inputs.environment || inputs.environment == 'all' }}
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
     steps:
       - name: Cleanup GitHub Runner
         id: cleanup_github_runner
         # from https://github.com/pagopa/github-self-hosted-runner-azure-cleanup-action/commits/main
-        uses: pagopa/github-self-hosted-runner-azure-cleanup-action@97731a35e6ffc79b66c4dfd2aae5e4fd04e3ebb5
+        uses: pagopa/github-self-hosted-runner-azure-cleanup-action@main
         with:
-          client_id: ${{ vars.client_id }}
-          tenant_id: ${{ vars.tenant_id }}
-          subscription_id: ${{ vars.subscription_id }}
-          resource_group_name: runner-rg
+          client_id: ${{ secrets.CLIENT_ID }}
+          tenant_id: ${{ secrets.TENANT_ID }}
+          subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+          resource_group_name: ${{ secrets.RUNNER_RESOURCE_GROUP_NAME }}
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
-          pat_token: ${{ inputs.token }}
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
