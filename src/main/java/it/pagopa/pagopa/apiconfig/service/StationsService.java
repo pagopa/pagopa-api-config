@@ -150,6 +150,7 @@ public class StationsService {
     return CommonUtil.createCsv(headers, csvRows);
   }
 
+  @Transactional(readOnly = true)
   public StationCreditorInstitution getStationCreditorInstitutionRelation(
       @NotNull String stationCode, @NotNull String creditorInstitutionCode) {
     // verify creditor institution
