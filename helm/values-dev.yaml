@@ -21,7 +21,7 @@ basecache: &basecache
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.34.2-2-PAGOPA-731-cosmos"
+        tag: "0.34.2-3-PAGOPA-731-cosmos"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
