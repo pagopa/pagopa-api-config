@@ -49,6 +49,11 @@ public class LoggingAspect {
     // all service methods
   }
 
+  @Pointcut("execution(* it.pagopa.pagopa.apiconfig.util..*.*(..))")
+  public void util() {
+    // all util methods
+  }
+
   /** Log essential info of application during the startup. */
   @PostConstruct
   public void logStartup() {
@@ -112,7 +117,7 @@ public class LoggingAspect {
     return result;
   }
 
-  @Around(value = "repository() || service()")
+  @Around(value = "repository() || service() || util()")
   public Object logTrace(ProceedingJoinPoint joinPoint) throws Throwable {
     log.debug(
         "Call method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
