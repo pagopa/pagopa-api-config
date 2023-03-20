@@ -205,6 +205,7 @@ public class CdiService {
     cdiMasterRepository.delete(cdiMaster);
   }
 
+  @Transactional(readOnly = true)
   public void uploadHistory() {
     var result =
         cdiMasterValidRepository.findAll().stream()
