@@ -97,8 +97,9 @@ public class CdiService {
 
   @Autowired private ModelMapper modelMapper;
 
-  @Autowired(required = false)
   private CdiCosmosRepository cdiCosmosRepository;
+
+  private boolean cosmosDbEnabled;
 
   @Value("${xsd.cdi}")
   private String xsdCdi;
@@ -110,6 +111,15 @@ public class CdiService {
 
   @Value("${service.utils.subscriptionKey}")
   private String afmUtilsSubscriptionKey;
+
+  public CdiService(
+      @Value("${cosmosdb.enable}") Optional<Boolean> cosmosDbEnabled,
+      Optional<CdiCosmosRepository> optCdiCosmosRepository) {
+    this.cosmosDbEnabled = cosmosDbEnabled.orElse(false);
+    if (this.cosmosDbEnabled && optCdiCosmosRepository.isPresent()) {
+      this.cdiCosmosRepository = optCdiCosmosRepository.get();
+    }
+  }
 
   @Transactional(readOnly = true)
   public Cdis getCdis(
@@ -169,8 +179,11 @@ public class CdiService {
       saveCdiFasciaCostiServizio(xmlDetail, detail);
       saveCdiPreferences(xml, xmlDetail, detail);
     }
+
     // save CDI to Cosmos DB
-    cdiCosmosRepository.save(mapToCosmosEntity(master));
+    if (cosmosDbEnabled) {
+      cdiCosmosRepository.save(mapToCosmosEntity(master));
+    }
 
     // trigger AFM Utils
     afmUtilsTrigger();
@@ -199,8 +212,9 @@ public class CdiService {
             .map(elem -> modelMapper.map(elem, CdiMaster.class))
             .map(this::mapToCosmosEntity)
             .collect(Collectors.toList());
-    cdiCosmosRepository.saveAll(result);
-
+    if (cosmosDbEnabled) {
+      cdiCosmosRepository.saveAll(result);
+    }
     // trigger AFM Utils
     afmUtilsTrigger();
   }

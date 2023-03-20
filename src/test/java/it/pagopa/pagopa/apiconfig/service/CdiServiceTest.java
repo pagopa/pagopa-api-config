@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
@@ -90,7 +89,7 @@ class CdiServiceTest {
   @MockBean private CdiInformazioniServizioRepository cdiInformazioniServizioRepository;
   @MockBean private CdiFasciaCostoServizioRepository cdiFasciaCostoServizioRepository;
 
-  @Autowired @InjectMocks private CdiService cdiService;
+  @Autowired @InjectMocks private CdiService cdiService = new CdiService(Optional.of(false), Optional.empty());
   @Autowired private CdiCosmosRepository cdiCosmosRepository;
 
   @MockBean private RestTemplate restTemplate;
@@ -179,7 +178,7 @@ class CdiServiceTest {
     verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
     assertEquals("MYBANK11", cdiPreference.getValue().getSeller());
     assertEquals(1.00, cdiPreference.getValue().getCostoConvenzione());
-    verify(cdiCosmosRepository, times(1)).save(any());
+    verify(cdiCosmosRepository, times(0)).save(any());
   }
 
   @Test
@@ -387,9 +386,6 @@ class CdiServiceTest {
 
     cdiService.uploadHistory();
 
-    ArgumentCaptor<List<CdiCosmos>> cdiCosmos = ArgumentCaptor.forClass(List.class);
-    verify(cdiCosmosRepository, times(1)).saveAll(cdiCosmos.capture());
-    assertEquals(1, cdiCosmos.getValue().size());
-    assertEquals("50", cdiCosmos.getValue().get(0).getIdPsp());
+    verify(cdiMasterValidRepository, times(1)).findAll();
   }
 }

@@ -65,14 +65,24 @@ public class ConfigurationService {
 
   @Autowired private RestTemplate restTemplate;
 
-  @Autowired(required = false)
   private PaymentTypesCosmosRepository paymentTypesCosmosRepository;
+
+  private boolean cosmosDbEnabled;
 
   @Value("${service.marketplace.host}")
   private String afmMarketplaceHost;
 
   @Value("${service.marketplace.subscriptionKey}")
   private String afmMarketplaceSubscriptionKey;
+
+  public ConfigurationService(
+      @Value("${cosmosdb.enable}") Optional<Boolean> cosmosDbEnabled,
+      Optional<PaymentTypesCosmosRepository> optPaymentTypesCosmosRepository) {
+    this.cosmosDbEnabled = cosmosDbEnabled.orElse(false);
+    if (this.cosmosDbEnabled && optPaymentTypesCosmosRepository.isPresent()) {
+      this.paymentTypesCosmosRepository = optPaymentTypesCosmosRepository.get();
+    }
+  }
 
   public ConfigurationKeys getConfigurationKeys() {
     List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKeyList =
@@ -353,8 +363,10 @@ public class ConfigurationService {
       throw new AppException(AppError.PAYMENT_TYPE_NO_AFM_MARKETPLACE);
     }
 
-    paymentTypesCosmosRepository.deleteByName(paymentTypeCode);
-    tipiVersamentoRepository.delete(tipiVersamento);
+    if (cosmosDbEnabled) {
+      paymentTypesCosmosRepository.deleteByName(paymentTypeCode);
+      tipiVersamentoRepository.delete(tipiVersamento);
+    }
   }
 
   public void uploadPaymentTypesHistory() {
@@ -368,18 +380,22 @@ public class ConfigurationService {
                         .description(tipiVersamento.getDescrizione())
                         .build())
             .collect(Collectors.toList());
-    paymentTypesCosmosRepository.deleteAll();
-    paymentTypesCosmosRepository.saveAll(paymentTypes);
+    if (cosmosDbEnabled) {
+      paymentTypesCosmosRepository.deleteAll();
+      paymentTypesCosmosRepository.saveAll(paymentTypes);
+    }
   }
 
   private void savePaymentTypeOnCosmos(TipiVersamento tipiVersamento) {
     // save on cosmos
+    if (cosmosDbEnabled) {
     paymentTypesCosmosRepository.save(
         PaymentTypesCosmos.builder()
             .id(deNull(tipiVersamento.getId()))
             .name(tipiVersamento.getTipoVersamento())
             .description(tipiVersamento.getDescrizione())
             .build());
+    }
   }
 
   /**

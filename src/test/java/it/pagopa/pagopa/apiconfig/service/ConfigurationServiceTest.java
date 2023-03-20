@@ -79,7 +79,9 @@ class ConfigurationServiceTest {
 
   @MockBean private TipiVersamentoRepository tipiVersamentoRepository;
 
-  @Autowired @InjectMocks private ConfigurationService configurationService;
+  @Autowired
+  @InjectMocks
+  private ConfigurationService configurationService = new ConfigurationService(Optional.of(false), Optional.empty());
 
   @MockBean private RestTemplate restTemplate;
 
