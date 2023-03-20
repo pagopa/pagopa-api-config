@@ -3,7 +3,6 @@ package it.pagopa.pagopa.apiconfig.cosmos.container;
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -29,6 +28,6 @@ public class CdiCosmos {
   private String abi;
   private String cdiStatus;
   private Boolean digitalStamp;
-  private LocalDateTime validityDateFrom;
+  private String validityDateFrom;
   private List<CdiDetailCosmos> details;
 }

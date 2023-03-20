@@ -50,6 +50,7 @@ import java.util.stream.Stream;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,12 +66,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 @Service
 @Validated
+@Slf4j
 public class CdiService {
 
   @Autowired private CdiMasterRepository cdiMasterRepository;
@@ -238,7 +241,7 @@ public class CdiService {
         .digitalStamp(master.getMarcaBolloDigitale())
         .validityDateFrom(
             master.getDataInizioValidita() != null
-                ? master.getDataInizioValidita().toLocalDateTime()
+                ? master.getDataInizioValidita().toLocalDateTime().toString()
                 : null)
         .details(cdiDetails)
         .build();
@@ -792,10 +795,14 @@ public class CdiService {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Ocp-Apim-Subscription-Key", afmUtilsSubscriptionKey);
     HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-    ResponseEntity<Object> response =
-        restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, Object.class);
+    try {
+      ResponseEntity<Object> response =
+          restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, Object.class);
 
-    if (!response.getStatusCode().is2xxSuccessful()) {
+      if (!response.getStatusCode().is2xxSuccessful()) {
+        throw new AppException(AppError.CDI_SYNC_ERROR);
+      }
+    } catch (ResourceAccessException e) {
       throw new AppException(AppError.CDI_SYNC_ERROR);
     }
   }

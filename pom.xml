@@ -35,7 +35,7 @@
     <hibernate-version>5.6.5.Final</hibernate-version>
     <opencsv.version>5.6</opencsv.version>
     <commons.validator>1.7</commons.validator>
-    <azure-spring-cosmos-version>3.33.0</azure-spring-cosmos-version>
+    <azure-spring-cosmos-version>3.30.0</azure-spring-cosmos-version>
     <feign-version>12.1</feign-version>
   </properties>
 
@@ -43,32 +43,32 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>${spring-version}</version>
+<!--      <version>${spring-version}</version>-->
     </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>${spring-version}</version>
+<!--      <version>${spring-version}</version>-->
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <version>${spring-version}</version>
+<!--      <version>${spring-version}</version>-->
     </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-aop</artifactId>
-      <version>${spring-version}</version>
+<!--      <version>${spring-version}</version>-->
     </dependency>
 
     <dependency>
       <groupId>org.springframework.retry</groupId>
       <artifactId>spring-retry</artifactId>
-      <version>${spring-retry-version}</version>
+<!--      <version>${spring-retry-version}</version>-->
     </dependency>
 
     <dependency>
@@ -92,7 +92,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>${lombok-version}</version>
+<!--      <version>${lombok-version}</version>-->
     </dependency>
 
     <dependency>
@@ -104,7 +104,7 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
-      <version>${spring-version}</version>
+<!--      <version>${spring-version}</version>-->
     </dependency>
 
     <dependency>
@@ -134,14 +134,14 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-configuration-processor</artifactId>
-      <version>${spring-version}</version>
+<!--      <version>${spring-version}</version>-->
       <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
-      <version>${spring-version}</version>
+<!--      <version>${spring-version}</version>-->
     </dependency>
 
     <dependency>
@@ -177,7 +177,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring-version}</version>
+<!--        <version>${spring-version}</version>-->
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
