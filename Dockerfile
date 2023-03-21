@@ -21,5 +21,5 @@ COPY --chown=spring:spring  --from=builder application/ ./
 
 EXPOSE 8080
 
-COPY --chown=spring:spring docker/run.sh ./run.sh
-ENTRYPOINT ["./run.sh"]
+#COPY --chown=spring:spring docker/run.sh ./run.sh
+#ENTRYPOINT ["./run.sh"]
