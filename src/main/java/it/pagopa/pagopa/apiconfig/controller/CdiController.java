@@ -13,13 +13,6 @@ import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.service.CdiService;
-import java.util.List;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -35,6 +28,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/cdis")
@@ -383,7 +384,7 @@ public class CdiController {
     return ResponseEntity.ok(cdiService.verifyCdi(file));
   }
 
-  @GetMapping("/uploadhistory")
+  @GetMapping("/history")
   public ResponseEntity<Void> uploadHistory() {
     cdiService.uploadHistory();
     return ResponseEntity.ok().build();

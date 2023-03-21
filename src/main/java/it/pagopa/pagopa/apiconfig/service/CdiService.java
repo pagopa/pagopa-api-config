@@ -1,12 +1,10 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
-
+import feign.Feign;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.cosmos.container.CdiDetailCosmos;
-import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
@@ -34,7 +32,27 @@ import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.util.AFMUtilsClient;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
@@ -47,29 +65,10 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.xml.stream.XMLStreamException;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 
 @Service
 @Validated
@@ -100,28 +99,19 @@ public class CdiService {
 
   @Autowired private ModelMapper modelMapper;
 
-  private CdiCosmosRepository cdiCosmosRepository;
-
-  private boolean cosmosDbEnabled;
-
   @Value("${xsd.cdi}")
   private String xsdCdi;
-
-  @Autowired private RestTemplate restTemplate;
-
-  @Value("${service.utils.host}")
-  private String afmUtilsHost;
 
   @Value("${service.utils.subscriptionKey}")
   private String afmUtilsSubscriptionKey;
 
-  public CdiService(
-      @Value("${cosmosdb.enable}") Optional<Boolean> cosmosDbEnabled,
-      Optional<CdiCosmosRepository> optCdiCosmosRepository) {
-    this.cosmosDbEnabled = cosmosDbEnabled.orElse(false);
-    if (this.cosmosDbEnabled && optCdiCosmosRepository.isPresent()) {
-      this.cdiCosmosRepository = optCdiCosmosRepository.get();
-    }
+  private AFMUtilsClient afmUtilsClient;
+
+  public CdiService(@Value("${service.utils.host}") Optional<String> optAfmUtilsHost) {
+    this.afmUtilsClient = Feign.builder()
+            .encoder(new JacksonEncoder())
+            .decoder(new JacksonDecoder())
+            .target(AFMUtilsClient.class, optAfmUtilsHost.get());
   }
 
   @Transactional(readOnly = true)
@@ -183,14 +173,11 @@ public class CdiService {
       saveCdiPreferences(xml, xmlDetail, detail);
     }
 
-    // save CDI to Cosmos DB
-    if (cosmosDbEnabled) {
-      cdiCosmosRepository.save(mapToCosmosEntity(master));
-    }
-
-    // trigger AFM Utils
-    afmUtilsTrigger();
+    // send CDI to AFM Utils
+    afmUtilsTrigger(List.of(mapToCosmosEntity(master)));
   }
+
+
 
   public void deleteCdi(String idCdi, String pspCode) {
     CdiMaster cdiMaster =
@@ -216,11 +203,8 @@ public class CdiService {
             .map(elem -> modelMapper.map(elem, CdiMaster.class))
             .map(this::mapToCosmosEntity)
             .collect(Collectors.toList());
-    if (cosmosDbEnabled) {
-      cdiCosmosRepository.saveAll(result);
-    }
-    // trigger AFM Utils
-    afmUtilsTrigger();
+
+    afmUtilsTrigger(result);
   }
 
   private CdiCosmos mapToCosmosEntity(CdiMaster master) {
@@ -790,20 +774,22 @@ public class CdiService {
   }
 
   /** Trigger AFM Utils to analyze uploaded CDIs */
-  private void afmUtilsTrigger() {
-    String stringUrl = String.format("%s/cdis/sync", afmUtilsHost);
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("Ocp-Apim-Subscription-Key", afmUtilsSubscriptionKey);
-    HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-    try {
-      ResponseEntity<Object> response =
-          restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, Object.class);
-
-      if (!response.getStatusCode().is2xxSuccessful()) {
-        throw new AppException(AppError.CDI_SYNC_ERROR);
-      }
-    } catch (ResourceAccessException e) {
-      throw new AppException(AppError.CDI_SYNC_ERROR);
-    }
+  private void afmUtilsTrigger(List<CdiCosmos> cdis) {
+    // TODO manage exception
+//    String stringUrl = String.format("%s/cdis/sync", afmUtilsHost);
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.set("Ocp-Apim-Subscription-Key", afmUtilsSubscriptionKey);
+//    HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+//    try {
+//      ResponseEntity<Object> response =
+//          restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, Object.class);
+//
+//      if (!response.getStatusCode().is2xxSuccessful()) {
+//        throw new AppException(AppError.CDI_SYNC_ERROR);
+//      }
+//    } catch (ResourceAccessException e) {
+//      throw new AppException(AppError.CDI_SYNC_ERROR);
+//    }
+    afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, cdis);
   }
 }
