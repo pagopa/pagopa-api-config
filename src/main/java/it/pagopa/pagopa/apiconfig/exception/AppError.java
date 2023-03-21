@@ -127,7 +127,7 @@ public enum AppError {
   PAYMENT_TYPE_AFM_MARKETPLACE_ERROR(
       HttpStatus.BAD_REQUEST,
       "Payment type bad request",
-      "Problem with status check on AFM Marketplace"),
+      "Problem with status check on AFM Marketplace: %s"),
 
   CHANNEL_PAYMENT_TYPE_FOUND(
       HttpStatus.BAD_REQUEST,

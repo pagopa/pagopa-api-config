@@ -1,5 +1,48 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.Pdd;
+import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
+import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
+import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
+import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
+import it.pagopa.pagopa.apiconfig.repository.PddRepository;
+import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
+import org.json.JSONException;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockAfmMarketplacePaymentType;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKey;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKeyEntity;
@@ -24,48 +67,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.Pdd;
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
-import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
-import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
-import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PddRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import org.json.JSONException;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
-
 @SpringBootTest(classes = ApiConfig.class)
 class ConfigurationServiceTest {
 
@@ -81,7 +82,7 @@ class ConfigurationServiceTest {
 
   @Autowired
   @InjectMocks
-  private ConfigurationService configurationService = new ConfigurationService(Optional.of(false), Optional.empty());
+  private ConfigurationService configurationService = new ConfigurationService(Optional.of("https://marketplace"));
 
   @MockBean private RestTemplate restTemplate;
 
@@ -925,7 +926,7 @@ class ConfigurationServiceTest {
     when(tipiVersamentoRepository.findAll()).thenReturn(new ArrayList<>());
 
     try {
-      configurationService.uploadPaymentTypesHistory();
+      configurationService.syncPaymentTypesHistory();
     } catch (Exception e) {
       fail();
     }
@@ -936,7 +937,7 @@ class ConfigurationServiceTest {
     when(tipiVersamentoRepository.findAll()).thenReturn(getMockTipiVersamento());
 
     try {
-      configurationService.uploadPaymentTypesHistory();
+      configurationService.syncPaymentTypesHistory();
     } catch (Exception e) {
       fail();
     }
