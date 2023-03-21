@@ -48,6 +48,10 @@ public class LoggingAspect {
   public void service() {
     // all service methods
   }
+  @Pointcut("execution(* it.pagopa.pagopa.apiconfig.mapper..*.*(..))")
+  public void mapper() {
+    // all mapper methods
+  }
 
   @Pointcut("execution(* it.pagopa.pagopa.apiconfig.util..*.*(..))")
   public void util() {
@@ -117,7 +121,7 @@ public class LoggingAspect {
     return result;
   }
 
-  @Around(value = "repository() || service() || util()")
+  @Around(value = "repository() || service() || mapper() || util()")
   public Object logTrace(ProceedingJoinPoint joinPoint) throws Throwable {
     log.debug(
         "Call method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());

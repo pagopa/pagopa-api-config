@@ -55,6 +55,7 @@ public class ChannelsService {
 
   @Autowired private PspRepository pspRepository;
 
+  @Transactional(readOnly = true)
   public Channels getChannels(
       @NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
     Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
