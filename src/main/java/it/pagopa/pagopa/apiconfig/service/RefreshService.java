@@ -27,7 +27,7 @@ public class RefreshService {
     try {
       return client.triggerJob(jobType.getValue());
     } catch (FeignException e) {
-      throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -35,9 +35,11 @@ public class RefreshService {
     try {
       if (domain.equals(ConfigurationDomain.GLOBAL))
         return client.triggerJob(JobTrigger.REFRESH_CONFIGURATION.getValue());
-      else return client.refreshConfiguration(domain.getValue());
+      else {
+        return client.refreshConfiguration(domain.getValue());
+      }
     } catch (FeignException e) {
-      throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
     }
   }
 }
