@@ -186,6 +186,9 @@ public enum AppError {
 
   CACHE_NOT_FOUND(HttpStatus.NOT_FOUND, "Cache not found", "No version found with code: %s"),
 
+  REFRESH_CONFIG_EXCEPTION(
+      HttpStatus.INTERNAL_SERVER_ERROR, "Node Monitoring Error", "Refresh configuration failure"),
+
   UNKNOWN(null, null, null);
 
   public final HttpStatus httpStatus;
