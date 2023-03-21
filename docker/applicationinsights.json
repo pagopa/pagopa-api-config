@@ -1,28 +1,6 @@
 {
   "selfDiagnostics": {
     "destination": "console",
-    "level": "OFF"
-  },
-  "instrumentation": {
-    "azureSdk": {
-      "enabled": false
-    }
-  },
-  "preview": {
-    "sampling": {
-      "overrides": [
-        {
-          "telemetryType": "request",
-          "attributes": [
-            {
-              "key": "http.url",
-              "value": "https?://[^/]+/health-check",
-              "matchType": "regexp"
-            }
-          ],
-          "percentage": 0
-        }
-      ]
-    }
+    "level": "DEBUG"
   }
 }
