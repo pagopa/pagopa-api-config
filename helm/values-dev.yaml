@@ -21,13 +21,13 @@ basecache: &basecache
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.34.3"
+        tag: "0.35.0"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.34.3"
+    tag: "0.35.0"
     pullPolicy: Always
   livenessProbe:
     httpGet:
