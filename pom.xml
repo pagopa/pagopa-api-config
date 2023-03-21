@@ -35,7 +35,7 @@
     <hibernate-version>5.6.5.Final</hibernate-version>
     <opencsv.version>5.6</opencsv.version>
     <commons.validator>1.7</commons.validator>
-    <azure-spring-cosmos-version>3.30.0</azure-spring-cosmos-version>
+    <azure-spring-cosmos-version>3.31.0</azure-spring-cosmos-version>
     <feign-version>12.1</feign-version>
   </properties>
 
