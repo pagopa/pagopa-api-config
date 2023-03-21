@@ -55,7 +55,7 @@ public class RefreshService {
     log.debug("RefreshService job trigger: {}", response);
     try {
       JsonNode responseJson = new ObjectMapper().readValue(response, JsonNode.class);
-      if(!responseJson.get("success").asBoolean()) {
+      if (!responseJson.get("success").asBoolean()) {
         throw new AppException(AppError.REFRESH_CONFIG_EXCEPTION);
       }
     } catch (JsonProcessingException e) {
@@ -74,7 +74,7 @@ public class RefreshService {
       throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
     }
     log.debug("RefreshService refresh domain configuration: {}", response);
-    if(!response.equalsIgnoreCase(SUCCESS)) {
+    if (!response.equalsIgnoreCase(SUCCESS)) {
       throw new AppException(AppError.REFRESH_CONFIG_EXCEPTION);
     }
 

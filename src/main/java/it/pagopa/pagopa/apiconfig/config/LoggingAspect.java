@@ -48,6 +48,7 @@ public class LoggingAspect {
   public void service() {
     // all service methods
   }
+
   @Pointcut("execution(* it.pagopa.pagopa.apiconfig.mapper..*.*(..))")
   public void mapper() {
     // all mapper methods

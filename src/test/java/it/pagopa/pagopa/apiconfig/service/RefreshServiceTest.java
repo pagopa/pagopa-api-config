@@ -20,8 +20,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = ApiConfig.class)
 class RefreshServiceTest {
 
-  public static final String JSON_SUCCESS_PA_INVIA_RT_JOB_TRIGGER = "{\"success\":true,\"action\":\"Trigger job paInviaRt\",\"description\":\"Job triggered\"}";
-  public static final String JSON_SUCCESS_REFRESH_CONFIGURATION_JOB_TRIGGER = "{\"success\":true,\"action\":\"Trigger job refreshConfiguration\",\"description\":\"Job triggered\"}";
+  public static final String JSON_SUCCESS_PA_INVIA_RT_JOB_TRIGGER =
+      "{\"success\":true,\"action\":\"Trigger job paInviaRt\",\"description\":\"Job triggered\"}";
+  public static final String JSON_SUCCESS_REFRESH_CONFIGURATION_JOB_TRIGGER =
+      "{\"success\":true,\"action\":\"Trigger job refreshConfiguration\",\"description\":\"Job"
+          + " triggered\"}";
   @Autowired private RefreshService refreshService;
   private MockClient mockClient;
 
@@ -29,10 +32,14 @@ class RefreshServiceTest {
   void setUp() {
     mockClient =
         new MockClient()
-            .ok(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.PA_INVIA_RT.getValue(), JSON_SUCCESS_PA_INVIA_RT_JOB_TRIGGER)
             .ok(
                 HttpMethod.GET,
-                "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue(), JSON_SUCCESS_REFRESH_CONFIGURATION_JOB_TRIGGER)
+                "/jobs/trigger/" + JobTrigger.PA_INVIA_RT.getValue(),
+                JSON_SUCCESS_PA_INVIA_RT_JOB_TRIGGER)
+            .ok(
+                HttpMethod.GET,
+                "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue(),
+                JSON_SUCCESS_REFRESH_CONFIGURATION_JOB_TRIGGER)
             .ok(
                 HttpMethod.GET,
                 "/config/refresh/" + ConfigurationDomain.FTP_SERVER.getValue(),
@@ -65,7 +72,10 @@ class RefreshServiceTest {
     String response = refreshService.refreshConfig(ConfigurationDomain.GLOBAL);
     mockClient.verifyOne(
         HttpMethod.GET, "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue());
-    assertEquals("{\"success\":true,\"action\":\"Trigger job refreshConfiguration\",\"description\":\"Job triggered\"}", response);
+    assertEquals(
+        "{\"success\":true,\"action\":\"Trigger job refreshConfiguration\",\"description\":\"Job"
+            + " triggered\"}",
+        response);
   }
 
   @Test
@@ -73,7 +83,9 @@ class RefreshServiceTest {
     // valid param case: picking one among JobTrigger values
     String response = refreshService.jobTrigger(JobTrigger.PA_INVIA_RT);
     mockClient.verifyOne(HttpMethod.GET, "/jobs/trigger/" + JobTrigger.PA_INVIA_RT.getValue());
-    assertEquals("{\"success\":true,\"action\":\"Trigger job paInviaRt\",\"description\":\"Job triggered\"}", response);
+    assertEquals(
+        "{\"success\":true,\"action\":\"Trigger job paInviaRt\",\"description\":\"Job triggered\"}",
+        response);
   }
 
   @Test
