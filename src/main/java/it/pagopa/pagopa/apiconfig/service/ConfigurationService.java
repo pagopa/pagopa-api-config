@@ -360,13 +360,11 @@ public class ConfigurationService {
 
     try {
       afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, paymentTypes);
-    } catch (FeignException e) {
-      if (e instanceof FeignException.BadRequest) {
-        throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
-      }
-      else {
-        throw new AppException(AppError.PAYMENT_TYPE_BAD_REQUEST);
-      }
+    } catch (FeignException.BadRequest e) {
+      throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
+    }
+    catch (FeignException e) {
+      throw new AppException(AppError.PAYMENT_TYPE_BAD_REQUEST);
     }
   }
 

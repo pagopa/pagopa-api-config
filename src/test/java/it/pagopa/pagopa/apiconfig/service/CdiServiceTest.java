@@ -1,5 +1,24 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiDetail;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMaster;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMasterValid;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
@@ -23,8 +42,16 @@ import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
 import it.pagopa.pagopa.apiconfig.util.AFMUtilsAsyncTask;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -38,33 +65,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockBinaryFile;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCanali;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiDetail;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMaster;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMasterValid;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CdiServiceTest {
@@ -87,6 +87,11 @@ class CdiServiceTest {
   @Autowired @InjectMocks private CdiService cdiService;
   @MockBean
   private AFMUtilsAsyncTask afmUtilsAsyncTask;
+
+  @BeforeEach
+  void setUp() {
+    ReflectionTestUtils.setField(cdiService, "afmUtilsAsyncTask", afmUtilsAsyncTask);
+  }
 
   @Test
   void getCdis() throws IOException, JSONException {
@@ -362,7 +367,6 @@ class CdiServiceTest {
   void uploadHistory() {
     CdiMasterValid mockCdiMasterValid = getMockCdiMasterValid();
     mockCdiMasterValid.setCdiDetail(List.of(getMockCdiDetail()));
-    ReflectionTestUtils.setField(cdiService, "afmUtilsAsyncTask", afmUtilsAsyncTask);
     when(afmUtilsAsyncTask.executeSync()).thenReturn(true);
 
     cdiService.uploadHistory();

@@ -13,6 +13,7 @@ import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
 import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest(classes = ApiConfig.class)
-public class AFMUtilsAsyncTaskTest {
+class AFMUtilsAsyncTaskTest {
   @MockBean
   private CdiMasterValidRepository cdiMasterValidRepository;
 
@@ -35,12 +36,15 @@ public class AFMUtilsAsyncTaskTest {
   @Autowired
   private AFMUtilsAsyncTask afmUtilsAsyncTask;
 
-
+  @BeforeEach
+  void setUp() {
+    ReflectionTestUtils.setField(afmUtilsAsyncTask, "afmUtilsClient", afmUtilsClient);
+  }
   @Test
   void executeSync() {
     Page<CdiMasterValid> page = TestUtil.mockPage(Lists.newArrayList(getMockCdiMasterValid()), 1, 0);
     when(cdiMasterValidRepository.findAll(any(PageRequest.class))).thenReturn(page);
-    ReflectionTestUtils.setField(afmUtilsAsyncTask, "afmUtilsClient", afmUtilsClient);
+
     doNothing().when(afmUtilsClient).syncPaymentTypes(anyString(), any());
 
     assertTrue(afmUtilsAsyncTask.executeSync());
@@ -50,7 +54,7 @@ public class AFMUtilsAsyncTaskTest {
   void executeSync2() {
     Page<CdiMasterValid> page = TestUtil.mockPage(Lists.newArrayList(getMockCdiMasterValid()), 1, 0);
     when(cdiMasterValidRepository.findAll(any(PageRequest.class))).thenReturn(page);
-    ReflectionTestUtils.setField(afmUtilsAsyncTask, "afmUtilsClient", afmUtilsClient);
+
     doNothing().when(afmUtilsClient).syncPaymentTypes(anyString(), any());
 
     assertTrue(afmUtilsAsyncTask.executeSync(getMockCdiMaster()));
