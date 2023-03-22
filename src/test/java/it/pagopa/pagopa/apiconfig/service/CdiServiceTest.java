@@ -23,11 +23,11 @@ import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
 import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.util.AFMUtilsAsyncTask;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -36,11 +36,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.client.RestTemplate;
 
@@ -67,7 +63,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -93,6 +88,8 @@ class CdiServiceTest {
   @Autowired @InjectMocks private CdiService cdiService;
   @Autowired private CdiCosmosRepository cdiCosmosRepository;
 
+  @MockBean
+  private AFMUtilsAsyncTask afmUtilsAsyncTask;
   @MockBean private RestTemplate restTemplate;
 
   @Test
@@ -152,13 +149,7 @@ class CdiServiceTest {
                 anyLong(), anyString(), anyString()))
         .thenReturn(Optional.of(getMockPspCanaleTipoVersamento()));
 
-    ResponseEntity<Object> responseEntity = new ResponseEntity<Object>(new Object(), HttpStatus.OK);
-    when(restTemplate.exchange(
-            anyString(),
-            eq(HttpMethod.GET),
-            ArgumentMatchers.<HttpEntity<Void>>any(),
-            ArgumentMatchers.<Class<Object>>any()))
-        .thenReturn(responseEntity);
+    when(afmUtilsAsyncTask.executeSync(any())).thenReturn(true);
 
     cdiService.createCdi(file);
 
@@ -179,7 +170,7 @@ class CdiServiceTest {
     verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
     assertEquals("MYBANK11", cdiPreference.getValue().getSeller());
     assertEquals(1.00, cdiPreference.getValue().getCostoConvenzione());
-    verify(cdiCosmosRepository, times(0)).save(any());
+    verify(afmUtilsAsyncTask, times(1)).executeSync(mockCdiMaster);
   }
 
   @Test
@@ -375,18 +366,10 @@ class CdiServiceTest {
   void uploadHistory() {
     CdiMasterValid mockCdiMasterValid = getMockCdiMasterValid();
     mockCdiMasterValid.setCdiDetail(List.of(getMockCdiDetail()));
-    when(cdiMasterValidRepository.findAll()).thenReturn(List.of(mockCdiMasterValid));
-
-    ResponseEntity<Object> responseEntity = new ResponseEntity<Object>(new Object(), HttpStatus.OK);
-    when(restTemplate.exchange(
-            anyString(),
-            eq(HttpMethod.GET),
-            ArgumentMatchers.<HttpEntity<Void>>any(),
-            ArgumentMatchers.<Class<Object>>any()))
-        .thenReturn(responseEntity);
+    when(afmUtilsAsyncTask.executeSync()).thenReturn(true);
 
     cdiService.uploadHistory();
 
-    verify(cdiMasterValidRepository, times(1)).findAll();
+    verify(afmUtilsAsyncTask, times(1)).executeSync();
   }
 }

@@ -70,8 +70,9 @@ public class AFMUtilsAsyncTask {
         return true;
     }
 
-    public void executeSync(CdiMaster master) {
+    public boolean executeSync(CdiMaster master) {
         afmUtilsTrigger(List.of(mapToCosmosEntity(master)));
+        return true;
     }
 
     private CdiCosmos mapToCosmosEntity(CdiMaster master) {
@@ -137,7 +138,7 @@ public class AFMUtilsAsyncTask {
                 .orElse("");
     }
 
-    public void afmUtilsTrigger(List<CdiCosmos> cdis) {
+    private void afmUtilsTrigger(List<CdiCosmos> cdis) {
         try {
             afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, cdis);
         } catch (Exception e) {
