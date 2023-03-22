@@ -16,21 +16,23 @@ import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import it.pagopa.pagopa.apiconfig.util.CreditorInstitutionStationVerifier;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Valid
+@Transactional
 public class MassiveLoadingService {
 
   @Value("${info.properties.environment}")
@@ -44,7 +46,6 @@ public class MassiveLoadingService {
 
   @Autowired CreditorInstitutionsService creditorInstitutionsService;
 
-  @Transactional
   public void manageCIStation(MultipartFile file) {
     try {
       addOrDelete(file);
@@ -53,7 +54,6 @@ public class MassiveLoadingService {
     }
   }
 
-  @Transactional
   public void massiveMigration(MultipartFile file) {
     // read CSV
     Reader reader;

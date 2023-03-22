@@ -1,39 +1,12 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.Codifiche;
-import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitution;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionList;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.CodificheRepository;
-import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,8 +17,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @Validated
+@Transactional
 public class CreditorInstitutionsService {
 
   public static final String BAD_RELATION_INFO = "Bad Relation info";
@@ -85,7 +68,6 @@ public class CreditorInstitutionsService {
     return modelMapper.map(pa, CreditorInstitutionDetails.class);
   }
 
-  @Transactional
   public CreditorInstitutionDetails createCreditorInstitution(
       @NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
     if (paRepository
@@ -115,7 +97,6 @@ public class CreditorInstitutionsService {
     paRepository.delete(pa);
   }
 
-  @Transactional(readOnly = true)
   public CreditorInstitutionStationList getCreditorInstitutionStations(
       @NotNull String creditorInstitutionCode) {
     Pa pa = getPaIfExists(creditorInstitutionCode);
@@ -164,7 +145,6 @@ public class CreditorInstitutionsService {
     }
   }
 
-  @Transactional
   public void deleteCreditorInstitutionStation(String creditorInstitutionCode, String stationCode) {
     Pa pa = getPaIfExists(creditorInstitutionCode);
     Stazioni stazioni = getStazioniIfExists(stationCode);
@@ -205,7 +185,6 @@ public class CreditorInstitutionsService {
         encodingCode, Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue());
   }
 
-  @Transactional
   public CreditorInstitutionStationEdit createCreditorInstitutionStation(
       String creditorInstitutionCode,
       @Validated CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
@@ -236,7 +215,6 @@ public class CreditorInstitutionsService {
     return creditorInstitutionStationEdit;
   }
 
-  @Transactional
   public CreditorInstitutionStationEdit updateCreditorInstitutionStation(
       String creditorInstitutionCode,
       String stationCode,

@@ -10,18 +10,20 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
 import it.pagopa.pagopa.apiconfig.repository.CodificheRepository;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Service
 @Validated
+@Transactional
 public class EncodingsService {
 
   @Autowired private PaRepository paRepository;
@@ -32,7 +34,6 @@ public class EncodingsService {
 
   @Autowired private ModelMapper modelMapper;
 
-  @Transactional(readOnly = true)
   public CreditorInstitutionEncodings getCreditorInstitutionEncodings(
       @NotNull String creditorInstitutionCode) {
     Pa pa = getPaIfExists(creditorInstitutionCode);

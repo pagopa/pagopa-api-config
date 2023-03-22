@@ -1,47 +1,31 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
-
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannel;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
-import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.model.psp.*;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import javax.validation.ValidationException;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import javax.validation.ValidationException;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
 @Service
 @Validated
@@ -105,7 +89,6 @@ public class PspService {
     pspRepository.delete(psp);
   }
 
-  @Transactional(readOnly = true)
   public PspChannelList getPaymentServiceProvidersChannels(@NotBlank String pspCode) {
     Psp psp = getPspIfExists(pspCode);
     List<PspCanaleTipoVersamento> pspCanaleTipoVersamentoList =
@@ -118,7 +101,6 @@ public class PspService {
         .build();
   }
 
-  @Transactional
   public PspChannelCode createPaymentServiceProvidersChannels(
       String pspCode, PspChannelCode pspChannelCode) {
     var psp = getPspIfExists(pspCode);
@@ -136,7 +118,6 @@ public class PspService {
     return pspChannelCode;
   }
 
-  @Transactional
   public PspChannelPaymentTypes updatePaymentServiceProvidersChannels(
       String pspCode, String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
     var psp = getPspIfExists(pspCode);
@@ -157,7 +138,6 @@ public class PspService {
     return pspChannelPaymentTypes;
   }
 
-  @Transactional
   public void deletePaymentServiceProvidersChannels(String pspCode, String channelCode) {
     var psp = getPspIfExists(pspCode);
     var canale = getChannelIfExists(channelCode);
