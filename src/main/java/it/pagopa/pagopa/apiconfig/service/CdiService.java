@@ -1,5 +1,7 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
+
 import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.cosmos.container.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
@@ -12,6 +14,17 @@ import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
 import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.xml.stream.XMLStreamException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,20 +39,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
 
 @Service
 @Validated

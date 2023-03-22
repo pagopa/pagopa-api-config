@@ -9,6 +9,13 @@ import it.pagopa.pagopa.apiconfig.model.psp.*;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,14 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Validated
