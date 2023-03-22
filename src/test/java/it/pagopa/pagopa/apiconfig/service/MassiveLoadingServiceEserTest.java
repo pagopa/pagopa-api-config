@@ -1,5 +1,26 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
+import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Optional;
+
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockStazioni;
@@ -14,27 +35,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Optional;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-
 @SpringBootTest(
     classes = ApiConfig.class,
     properties = {"properties.environment=PROD"})
@@ -45,8 +45,6 @@ class MassiveLoadingServiceEserTest {
   @MockBean private StazioniRepository stazioniRepository;
 
   @MockBean private PaStazionePaRepository paStazionePaRepository;
-
-  @MockBean private CdiCosmosRepository cdiCosmosRepository;
 
   @Autowired @InjectMocks private MassiveLoadingService massiveLoadingService;
 

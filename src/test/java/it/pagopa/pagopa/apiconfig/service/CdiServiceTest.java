@@ -2,7 +2,6 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
 import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
@@ -39,7 +38,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -87,11 +85,8 @@ class CdiServiceTest {
   @MockBean private CdiFasciaCostoServizioRepository cdiFasciaCostoServizioRepository;
 
   @Autowired @InjectMocks private CdiService cdiService;
-  @Autowired private CdiCosmosRepository cdiCosmosRepository;
-
   @MockBean
   private AFMUtilsAsyncTask afmUtilsAsyncTask;
-  @MockBean private RestTemplate restTemplate;
 
   @Test
   void getCdis() throws IOException, JSONException {

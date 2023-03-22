@@ -4,7 +4,7 @@ import feign.Feign;
 import feign.FeignException;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import it.pagopa.pagopa.apiconfig.cosmos.container.PaymentTypesCosmos;
+import it.pagopa.pagopa.apiconfig.model.afm.PaymentTypesCosmos;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
