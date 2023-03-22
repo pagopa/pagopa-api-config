@@ -48,7 +48,7 @@ public class AFMUtilsAsyncTask {
         this.afmUtilsClient = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
-                .target(AFMUtilsClient.class, optAfmUtilsHost.get());
+                .target(AFMUtilsClient.class, optAfmUtilsHost.orElse(""));
     }
 
     @Transactional(readOnly = true)

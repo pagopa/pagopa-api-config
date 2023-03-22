@@ -1,13 +1,15 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
+
 import feign.Feign;
 import feign.FeignException;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import it.pagopa.pagopa.apiconfig.model.afm.PaymentTypesCosmos;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.afm.PaymentTypesCosmos;
 import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeyBase;
@@ -29,19 +31,16 @@ import it.pagopa.pagopa.apiconfig.repository.PddRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.AFMMarketplaceClient;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
 @Service
 @Validated
@@ -71,7 +70,7 @@ public class ConfigurationService {
     this.afmMarketplaceClient = Feign.builder()
             .encoder(new JacksonEncoder())
             .decoder(new JacksonDecoder())
-            .target(AFMMarketplaceClient.class, optAfmMarketplaceHost.get());
+            .target(AFMMarketplaceClient.class, optAfmMarketplaceHost.orElse(""));
   }
 
   public ConfigurationKeys getConfigurationKeys() {
@@ -336,7 +335,7 @@ public class ConfigurationService {
         removeFromMarketplace = true;
       }
     } catch (FeignException e) {
-      if (!e.getClass().getName().equals("feign.FeignException$NotFound")) {
+      if (!(e instanceof FeignException.NotFound)) {
         throw new AppException(AppError.PAYMENT_TYPE_NO_AFM_MARKETPLACE);
       }
     }
@@ -362,7 +361,7 @@ public class ConfigurationService {
     try {
       afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, paymentTypes);
     } catch (FeignException e) {
-      if (e.getClass().getName().equals("feign.FeignException$BadRequest")) {
+      if (e instanceof FeignException.BadRequest) {
         throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
       }
       else {
