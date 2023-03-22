@@ -38,6 +38,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -366,6 +367,7 @@ class CdiServiceTest {
   void uploadHistory() {
     CdiMasterValid mockCdiMasterValid = getMockCdiMasterValid();
     mockCdiMasterValid.setCdiDetail(List.of(getMockCdiDetail()));
+    ReflectionTestUtils.setField(cdiService, "afmUtilsAsyncTask", afmUtilsAsyncTask);
     when(afmUtilsAsyncTask.executeSync()).thenReturn(true);
 
     cdiService.uploadHistory();
