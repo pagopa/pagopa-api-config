@@ -42,6 +42,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -49,6 +50,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @Validated
+@Transactional
 public class ConfigurationService {
 
   @Autowired private ConfigurationKeysRepository configurationKeysRepository;

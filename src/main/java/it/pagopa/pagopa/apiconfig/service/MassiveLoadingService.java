@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Valid
+@Transactional
 public class MassiveLoadingService {
 
   @Value("${info.properties.environment}")
@@ -44,7 +45,6 @@ public class MassiveLoadingService {
 
   @Autowired CreditorInstitutionsService creditorInstitutionsService;
 
-  @Transactional
   public void manageCIStation(MultipartFile file) {
     try {
       addOrDelete(file);
@@ -53,7 +53,6 @@ public class MassiveLoadingService {
     }
   }
 
-  @Transactional
   public void massiveMigration(MultipartFile file) {
     // read CSV
     Reader reader;
