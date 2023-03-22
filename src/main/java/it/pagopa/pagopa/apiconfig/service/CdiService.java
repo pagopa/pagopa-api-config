@@ -1,10 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import feign.Feign;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
-import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
-import it.pagopa.pagopa.apiconfig.cosmos.container.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
@@ -14,7 +9,6 @@ import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
 import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
 import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.ServiceAmountCosmos;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
@@ -32,7 +26,7 @@ import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
 import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
-import it.pagopa.pagopa.apiconfig.util.AFMUtilsClient;
+import it.pagopa.pagopa.apiconfig.util.AFMUtilsAsyncTask;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -44,9 +38,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
@@ -62,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -98,21 +93,10 @@ public class CdiService {
   @Autowired CdiPreferenceRepository cdiPreferenceRepository;
 
   @Autowired private ModelMapper modelMapper;
+  @Autowired private AFMUtilsAsyncTask afmUtilsAsyncTask;
 
   @Value("${xsd.cdi}")
   private String xsdCdi;
-
-  @Value("${service.utils.subscriptionKey}")
-  private String afmUtilsSubscriptionKey;
-
-  private AFMUtilsClient afmUtilsClient;
-
-  public CdiService(@Value("${service.utils.host}") Optional<String> optAfmUtilsHost) {
-    this.afmUtilsClient = Feign.builder()
-            .encoder(new JacksonEncoder())
-            .decoder(new JacksonDecoder())
-            .target(AFMUtilsClient.class, optAfmUtilsHost.get());
-  }
 
   @Transactional(readOnly = true)
   public Cdis getCdis(
@@ -174,10 +158,8 @@ public class CdiService {
     }
 
     // send CDI to AFM Utils
-    afmUtilsTrigger(List.of(mapToCosmosEntity(master)));
+    afmUtilsAsyncTask.executeSync(master);
   }
-
-
 
   public void deleteCdi(String idCdi, String pspCode) {
     CdiMaster cdiMaster =
@@ -195,78 +177,10 @@ public class CdiService {
     cdiMasterRepository.delete(cdiMaster);
   }
 
-  @Transactional(readOnly = true)
+
+  @Transactional(readOnly = true, propagation= Propagation.NESTED)
   public void uploadHistory() {
-    var result =
-        cdiMasterValidRepository.findAll().stream()
-            .filter(Objects::nonNull)
-            .map(elem -> modelMapper.map(elem, CdiMaster.class))
-            .map(this::mapToCosmosEntity)
-            .collect(Collectors.toList());
-
-    afmUtilsTrigger(result);
-  }
-
-  private CdiCosmos mapToCosmosEntity(CdiMaster master) {
-    if (master.getCdiDetail() == null) {
-      throw new AppException(AppError.CDI_DETAILS_NOT_FOUND, master.getIdInformativaPsp());
-    }
-    var cdiDetails =
-        master.getCdiDetail().stream()
-            .filter(Objects::nonNull)
-            .map(this::mapDetails)
-            .collect(Collectors.toList());
-    return CdiCosmos.builder()
-        .id(master.getId().toString())
-        .idPsp(master.getFkPsp().getIdPsp())
-        .abi(master.getFkPsp().getAbi())
-        .idCdi(master.getIdInformativaPsp())
-        .cdiStatus("NEW")
-        .digitalStamp(master.getMarcaBolloDigitale())
-        .validityDateFrom(
-            master.getDataInizioValidita() != null
-                ? master.getDataInizioValidita().toLocalDateTime().toString()
-                : null)
-        .details(cdiDetails)
-        .build();
-  }
-
-  private CdiDetailCosmos mapDetails(@NotNull CdiDetail detail) {
-    @NotNull
-    Canali canale = detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale();
-    return CdiDetailCosmos.builder()
-        .idChannel(canale.getIdCanale())
-        .name(detail.getNomeServizio())
-        .description(getDescription(detail))
-        .channelApp(detail.getCanaleApp() == 1L)
-        .paymentType(
-            detail
-                .getFkPspCanaleTipoVersamento()
-                .getCanaleTipoVersamento()
-                .getTipoVersamento()
-                .getTipoVersamento())
-        .idBrokerPsp(canale.getFkIntermediarioPsp().getIdIntermediarioPsp())
-        .channelCardsCart(
-            canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getCarrelloCarte() : null)
-        .serviceAmount(
-            detail.getCdiFasciaCostoServizio().stream()
-                .map(
-                    elem ->
-                        ServiceAmountCosmos.builder()
-                            .minPaymentAmount((int) (elem.getImportoMinimo() * 100))
-                            .maxPaymentAmount((int) (elem.getImportoMassimo() * 100))
-                            .paymentAmount((int) (elem.getCostoFisso() * 100))
-                            .build())
-                .collect(Collectors.toList()))
-        .build();
-  }
-
-  private static String getDescription(@NotNull CdiDetail detail) {
-    return detail.getCdiInformazioniServizio().stream()
-        .filter(item -> "IT".equals(item.getCodiceLingua()))
-        .findFirst()
-        .map(CdiInformazioniServizio::getDescrizioneServizio)
-        .orElse("");
+    CompletableFuture.runAsync(() -> afmUtilsAsyncTask.executeSync());
   }
 
   public List<CheckItem> verifyCdi(MultipartFile file) {
@@ -774,22 +688,26 @@ public class CdiService {
   }
 
   /** Trigger AFM Utils to analyze uploaded CDIs */
-  private void afmUtilsTrigger(List<CdiCosmos> cdis) {
-    // TODO manage exception
-//    String stringUrl = String.format("%s/cdis/sync", afmUtilsHost);
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.set("Ocp-Apim-Subscription-Key", afmUtilsSubscriptionKey);
-//    HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+//  private void afmUtilsTrigger(List<CdiCosmos> cdis) {
+//    // TODO manage exception
+////    String stringUrl = String.format("%s/cdis/sync", afmUtilsHost);
+////    HttpHeaders headers = new HttpHeaders();
+////    headers.set("Ocp-Apim-Subscription-Key", afmUtilsSubscriptionKey);
+////    HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+////    try {
+////      ResponseEntity<Object> response =
+////          restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, Object.class);
+////
+////      if (!response.getStatusCode().is2xxSuccessful()) {
+////        throw new AppException(AppError.CDI_SYNC_ERROR);
+////      }
+////    } catch (ResourceAccessException e) {
+////      throw new AppException(AppError.CDI_SYNC_ERROR);
+////    }
 //    try {
-//      ResponseEntity<Object> response =
-//          restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, Object.class);
-//
-//      if (!response.getStatusCode().is2xxSuccessful()) {
-//        throw new AppException(AppError.CDI_SYNC_ERROR);
-//      }
-//    } catch (ResourceAccessException e) {
-//      throw new AppException(AppError.CDI_SYNC_ERROR);
+//      afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, cdis);
+//    } catch (Exception e) {
+//      log.error("AAAA");
 //    }
-    afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, cdis);
-  }
+//  }
 }

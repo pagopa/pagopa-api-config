@@ -90,7 +90,7 @@ class CdiServiceTest {
   @MockBean private CdiInformazioniServizioRepository cdiInformazioniServizioRepository;
   @MockBean private CdiFasciaCostoServizioRepository cdiFasciaCostoServizioRepository;
 
-  @Autowired @InjectMocks private CdiService cdiService = new CdiService(Optional.of("http://utils"));
+  @Autowired @InjectMocks private CdiService cdiService;
   @Autowired private CdiCosmosRepository cdiCosmosRepository;
 
   @MockBean private RestTemplate restTemplate;
