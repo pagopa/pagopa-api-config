@@ -6,15 +6,14 @@ import it.pagopa.pagopa.apiconfig.model.psp.Services;
 import it.pagopa.pagopa.apiconfig.repository.ElencoServiziRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 @Validated
