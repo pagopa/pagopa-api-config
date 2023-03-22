@@ -142,7 +142,7 @@ public class AFMUtilsAsyncTask {
         try {
             afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, cdis);
         } catch (Exception e) {
-          String cdiList = cdis.stream().map(cdi -> cdi.getIdCdi())
+          String cdiList = cdis.stream().map(CdiCosmos::getIdCdi)
               .collect(Collectors.joining(", ", "{", "}"));
           log.error("Problem to sync cdis: " + cdiList, e);
         }
