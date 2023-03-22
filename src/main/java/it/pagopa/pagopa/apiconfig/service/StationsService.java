@@ -40,6 +40,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Transactional
 public class StationsService {
 
   @Autowired IntermediariPaRepository intermediariPaRepository;
@@ -55,7 +56,6 @@ public class StationsService {
   @Value("${info.properties.environment}")
   private String env;
 
-  @Transactional(readOnly = true)
   public Stations getStations(
       @NotNull Integer limit,
       @NotNull Integer pageNumber,
@@ -80,7 +80,6 @@ public class StationsService {
         .build();
   }
 
-  @Transactional(readOnly = true)
   public StationDetails getStation(@NotNull String stationCode) {
     Stazioni stazione = getStationIfExists(stationCode);
     return modelMapper.map(stazione, StationDetails.class);
@@ -111,7 +110,6 @@ public class StationsService {
     stazioniRepository.delete(stazioni);
   }
 
-  @Transactional(readOnly = true)
   public StationCreditorInstitutions getStationCreditorInstitutions(
       @NotNull String stationCode, @NotNull Integer limit, @NotNull Integer pageNumber) {
     Stazioni stazioni = getStationIfExists(stationCode);
@@ -150,7 +148,6 @@ public class StationsService {
     return CommonUtil.createCsv(headers, csvRows);
   }
 
-  @Transactional(readOnly = true)
   public StationCreditorInstitution getStationCreditorInstitutionRelation(
       @NotNull String stationCode, @NotNull String creditorInstitutionCode) {
     // verify creditor institution

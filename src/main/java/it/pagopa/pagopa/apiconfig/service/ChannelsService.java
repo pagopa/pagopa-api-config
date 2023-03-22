@@ -34,6 +34,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Transactional
 public class ChannelsService {
 
   @Autowired CanaliRepository canaliRepository;
@@ -68,7 +69,6 @@ public class ChannelsService {
         .build();
   }
 
-  @Transactional(readOnly = true)
   public ChannelDetails getChannel(@NotBlank String channelCode) {
     Canali canali = getCanaliIfExists(channelCode);
     return modelMapper.map(canali, ChannelDetails.class);
@@ -108,14 +108,12 @@ public class ChannelsService {
     }
   }
 
-  @Transactional(readOnly = true)
   public PspChannelPaymentTypes getPaymentTypes(@NotBlank String channelCode) {
     var channel = getCanaliIfExists(channelCode);
     var type = canaleTipoVersamentoRepository.findByFkCanale(channel.getId());
     return PspChannelPaymentTypes.builder().paymentTypeList(getPaymentTypeList(type)).build();
   }
 
-  @Transactional
   public PspChannelPaymentTypes createPaymentType(
       @NotBlank String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
     // necessary to prevent 201 status code without at least one payment type specified
@@ -146,7 +144,6 @@ public class ChannelsService {
     return getPaymentTypes(channelCode);
   }
 
-  @Transactional
   public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {
     var channel = getCanaliIfExists(channelCode);
     var paymentType = getPaymentTypeIfExists(paymentTypeCode);
@@ -154,7 +151,6 @@ public class ChannelsService {
     canaleTipoVersamentoRepository.delete(result);
   }
 
-  @Transactional(readOnly = true)
   public ChannelPspList getChannelPaymentServiceProviders(
       @Positive Integer limit, @PositiveOrZero Integer pageNumber, String channelCode) {
     Pageable pageable = PageRequest.of(pageNumber, limit);

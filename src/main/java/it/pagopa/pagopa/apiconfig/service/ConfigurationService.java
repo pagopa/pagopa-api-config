@@ -33,6 +33,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
@@ -44,6 +45,7 @@ import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
 @Service
 @Validated
+@Transactional
 public class ConfigurationService {
 
   @Autowired private ConfigurationKeysRepository configurationKeysRepository;

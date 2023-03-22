@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Transactional
 public class EncodingsService {
 
   @Autowired private PaRepository paRepository;
@@ -32,7 +33,6 @@ public class EncodingsService {
 
   @Autowired private ModelMapper modelMapper;
 
-  @Transactional(readOnly = true)
   public CreditorInstitutionEncodings getCreditorInstitutionEncodings(
       @NotNull String creditorInstitutionCode) {
     Pa pa = getPaIfExists(creditorInstitutionCode);
