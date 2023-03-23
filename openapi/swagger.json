@@ -3,7 +3,7 @@
   "info": {
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "title": "@project.name@",
+    "title": "ApiConfig",
     "version": "0.36.1"
   },
   "host": "127.0.0.1:8080",
