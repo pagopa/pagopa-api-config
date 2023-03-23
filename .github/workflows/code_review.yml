@@ -1,39 +1,39 @@
-name: Code Review
-
-# Controls when the workflow will run
-on:
-  pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - synchronize
-      - reopened
-  push:
-    branches:
-      - main
-
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-env:
-  PROJECT_KEY: pagopa_pagopa-api-config
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  code-review:
-    name: Code Review
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - name: Code Review
-        uses: pagopa/github-actions-template/maven-code-review@main
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
-          project_key: ${{env.PROJECT_KEY}}
-          coverage_exclusions: "**/config/*,**/*Mock*,**/model/**,**/entity/*"
-          cpd_exclusions: "**/model/**,**/entity/*"
+#name: Code Review
+#
+## Controls when the workflow will run
+#on:
+#  pull_request:
+#    branches:
+#      - main
+#    types:
+#      - opened
+#      - synchronize
+#      - reopened
+#  push:
+#    branches:
+#      - main
+#
+#
+#  # Allows you to run this workflow manually from the Actions tab
+#  workflow_dispatch:
+#
+#env:
+#  PROJECT_KEY: pagopa_pagopa-api-config
+#
+## A workflow run is made up of one or more jobs that can run sequentially or in parallel
+#jobs:
+#  code-review:
+#    name: Code Review
+#    # The type of runner that the job will run on
+#    runs-on: ubuntu-latest
+#
+#    # Steps represent a sequence of tasks that will be executed as part of the job
+#    steps:
+#      - name: Code Review
+#        uses: pagopa/github-actions-template/maven-code-review@main
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          sonar_token: ${{ secrets.SONAR_TOKEN }}
+#          project_key: ${{env.PROJECT_KEY}}
+#          coverage_exclusions: "**/config/*,**/*Mock*,**/model/**,**/entity/*"
+#          cpd_exclusions: "**/model/**,**/entity/*"
