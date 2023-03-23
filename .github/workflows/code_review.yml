@@ -35,5 +35,5 @@
 #          github_token: ${{ secrets.GITHUB_TOKEN }}
 #          sonar_token: ${{ secrets.SONAR_TOKEN }}
 #          project_key: ${{env.PROJECT_KEY}}
-#          coverage_exclusions: "**/config/*,**/*Mock*,**/model/**,**/entity/*,**/util/Constants"
-#          cpd_exclusions: "**/model/**,**/entity/*,**/util/Constants"
+#          coverage_exclusions: "**/config/*,**/*Mock*,**/model/**,**/entity/*"
+#          cpd_exclusions: "**/model/**,**/entity/*"
