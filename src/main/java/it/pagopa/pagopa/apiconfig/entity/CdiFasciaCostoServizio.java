@@ -25,7 +25,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "CDI_FASCIA_COSTO_SERVIZIO", schema = "NODO4_CFG")
+@Table(name = "CDI_FASCIA_COSTO_SERVIZIO")
 public class CdiFasciaCostoServizio {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")

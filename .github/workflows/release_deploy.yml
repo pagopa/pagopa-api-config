@@ -56,7 +56,7 @@ jobs:
     steps:
       - name: Get semver
         id: get_semver
-        uses: pagopa/github-actions-template/semver-setup@v1
+        uses: pagopa/github-actions-template/semver-setup@1.3.0
 
       - if: ${{ github.event.inputs.environment == null || github.event.inputs.environment == 'dev' }}
         run: echo "ENVIRNOMENT=dev" >> $GITHUB_ENV
@@ -79,6 +79,7 @@ jobs:
   release:
     name: Create a New Release
     runs-on: ubuntu-latest
+    needs: [setup]
     outputs:
       version: ${{ steps.release.outputs.version }}
     steps:
@@ -86,14 +87,14 @@ jobs:
         id: release
         uses: pagopa/github-actions-template/maven-release@main
         with:
-          semver: ${{ steps.setup.outputs.semver }}
+          semver: ${{ needs.setup.outputs.semver }}
           github_token: ${{ secrets.BOT_TOKEN_GITHUB }}
 
   image:
-    needs: [ release ]
+    needs: [ setup, release ]
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: ${{ !(inputs.semver == 'skip') }}
+    if: ${{ inputs.semver != 'skip' }}
     steps:
       - name: Build and Push
         id: semver
@@ -103,28 +104,22 @@ jobs:
           branch: ${{ github.ref_name}}
           tag: ${{ needs.release.outputs.version }}
 
-  deploy:
+  deploy_aks:
     name: Deploy on AKS
+    needs: [ setup, release, image ]
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
-        include:
-          - environment : dev
-            short: d
-          - environment : uat
-            short: u
-          - environment : prod
-            short: p
     uses: ./.github/workflows/self_hosted.yml
     with:
-      matrix: ${{ matrix.environment }}
-      environment: ${{ env.environment }}
+      target: ${{ matrix.environment }}
+      environment: ${{ needs.setup.outputs.environment }}
       beta: ${{ inputs.beta }}
-    secrets:
-      token: ${{secrets.BOT_TOKEN_GITHUB}}
+    secrets: inherit
 
   notify:
-    needs: [ deploy ]
+    needs: [ deploy_aks ]
     runs-on: ubuntu-latest
     name: Notify
     if: always()
@@ -133,7 +128,7 @@ jobs:
         if: always()
         uses: ravsamhq/notify-slack-action@v2
         with:
-          status: ${{ needs.deploy.result }}
+          status: ${{ needs.deploy_aks.result }}
           token: ${{ secrets.GITHUB_TOKEN }}
           notify_when: 'failure,skipped'
           notification_title: '{workflow} has {status_message}'

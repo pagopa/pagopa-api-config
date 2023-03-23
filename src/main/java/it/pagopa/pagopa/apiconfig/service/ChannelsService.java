@@ -34,6 +34,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Transactional
 public class ChannelsService {
 
   @Autowired CanaliRepository canaliRepository;
@@ -50,7 +51,7 @@ public class ChannelsService {
 
   @Autowired private ModelMapper modelMapper;
 
-  @Value("${properties.environment}")
+  @Value("${info.properties.environment}")
   private String env;
 
   @Autowired private PspRepository pspRepository;
@@ -113,7 +114,6 @@ public class ChannelsService {
     return PspChannelPaymentTypes.builder().paymentTypeList(getPaymentTypeList(type)).build();
   }
 
-  @Transactional
   public PspChannelPaymentTypes createPaymentType(
       @NotBlank String channelCode, PspChannelPaymentTypes pspChannelPaymentTypes) {
     // necessary to prevent 201 status code without at least one payment type specified
@@ -144,7 +144,6 @@ public class ChannelsService {
     return getPaymentTypes(channelCode);
   }
 
-  @Transactional
   public void deletePaymentType(@NotBlank String channelCode, @NotBlank String paymentTypeCode) {
     var channel = getCanaliIfExists(channelCode);
     var paymentType = getPaymentTypeIfExists(paymentTypeCode);

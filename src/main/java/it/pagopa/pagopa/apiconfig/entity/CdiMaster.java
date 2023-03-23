@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Table(name = "CDI_MASTER", schema = "NODO4_CFG")
+@Table(name = "CDI_MASTER")
 @Entity
 @Getter
 @Setter

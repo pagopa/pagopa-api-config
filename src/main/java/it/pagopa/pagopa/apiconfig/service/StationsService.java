@@ -35,10 +35,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Transactional
 public class StationsService {
 
   @Autowired IntermediariPaRepository intermediariPaRepository;
@@ -51,7 +53,7 @@ public class StationsService {
 
   @Autowired private PaRepository paRepository;
 
-  @Value("${properties.environment}")
+  @Value("${info.properties.environment}")
   private String env;
 
   public Stations getStations(

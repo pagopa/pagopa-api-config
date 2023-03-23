@@ -1,45 +1,21 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
 
-import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
-import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoDetail;
-import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.MassiveCheck;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.IcaXml;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CodifichePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.IbanValidiPerPaRepository;
-import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.InformativeContoAccreditoMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,6 +41,7 @@ import org.xml.sax.SAXException;
 
 @Service
 @Validated
+@Transactional
 public class IcaService {
 
   public static final String ABI_IBAN_POSTALI = "07601";
@@ -156,7 +133,6 @@ public class IcaService {
     return response;
   }
 
-  @Transactional
   public void createIca(@NotNull MultipartFile file, Boolean force) {
     try {
       createIca(new ByteArrayInputStream(file.getInputStream().readAllBytes()), force);
@@ -166,7 +142,6 @@ public class IcaService {
     }
   }
 
-  @Transactional
   public void createMassiveIcas(@NotNull MultipartFile file) {
     BiFunction<InputStream, Boolean, List<CheckItem>> func =
         (inputStream, k) -> {

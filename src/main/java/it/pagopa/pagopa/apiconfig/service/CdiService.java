@@ -1,49 +1,24 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
 
 import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.cosmos.container.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
-import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.ServiceAmountCosmos;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
-import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,11 +32,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -71,6 +42,7 @@ import org.xml.sax.SAXException;
 
 @Service
 @Validated
+@Transactional
 public class CdiService {
 
   @Autowired private CdiMasterRepository cdiMasterRepository;
@@ -137,7 +109,6 @@ public class CdiService {
     return cdiMaster.getFkBinaryFile().getFileContent();
   }
 
-  @Transactional
   public void createCdi(MultipartFile file) {
     List<CheckItem> checks = verifyCdi(file);
 

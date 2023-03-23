@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Table(name = "CDI_DETAIL", schema = "NODO4_CFG")
+@Table(name = "CDI_DETAIL")
 @Entity
 @Getter
 @Setter

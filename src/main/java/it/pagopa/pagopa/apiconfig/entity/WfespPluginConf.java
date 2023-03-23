@@ -22,7 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @Entity
-@Table(name = "WFESP_PLUGIN_CONF", schema = "NODO4_CFG")
+@Table(name = "WFESP_PLUGIN_CONF")
 @Builder(toBuilder = true)
 public class WfespPluginConf implements Serializable {
 
