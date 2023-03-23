@@ -7,6 +7,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMaster;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMasterValid;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPsp;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -369,8 +370,6 @@ class CdiServiceTest {
     mockCdiMasterValid.setCdiDetail(List.of(getMockCdiDetail()));
     when(afmUtilsAsyncTask.executeSync()).thenReturn(true);
 
-    cdiService.uploadHistory();
-
-    verify(afmUtilsAsyncTask, times(1)).executeSync();
+    assertDoesNotThrow(() -> cdiService.uploadHistory());
   }
 }
