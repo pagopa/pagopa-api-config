@@ -93,7 +93,7 @@ public class AFMUtilsAsyncTask {
                 .digitalStamp(master.getMarcaBolloDigitale())
                 .validityDateFrom(
                         master.getDataInizioValidita() != null
-                                ? master.getDataInizioValidita().toLocalDateTime().toString()
+                                ? master.getDataInizioValidita().toLocalDateTime().toLocalDate().toString()
                                 : null)
                 .details(cdiDetails)
                 .build();

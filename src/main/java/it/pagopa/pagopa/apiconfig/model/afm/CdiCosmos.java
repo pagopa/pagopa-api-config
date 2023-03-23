@@ -24,6 +24,6 @@ public class CdiCosmos {
   private String abi;
   private String cdiStatus;
   private Boolean digitalStamp;
-  private String validityDateFrom;
+  private String validityDateFrom; // LocalDate
   private List<CdiDetailCosmos> details;
 }
