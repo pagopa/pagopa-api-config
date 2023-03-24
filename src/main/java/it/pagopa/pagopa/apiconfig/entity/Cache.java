@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Table(name = "CACHE", schema = "NODO4_CFG")
+@Table(name = "CACHE")
 @Entity
 @Getter
 @Setter

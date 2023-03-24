@@ -23,7 +23,6 @@ import lombok.ToString;
 
 @Table(
     name = "PA_STAZIONE_PA",
-    schema = "NODO4_CFG",
     uniqueConstraints = {@UniqueConstraint(columnNames = {"FK_PA", "FK_STAZIONE"})})
 @Entity
 @Getter
