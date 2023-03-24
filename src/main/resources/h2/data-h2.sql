@@ -26,11 +26,11 @@ INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, NEW_PASSWORD, 
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP, INVIO_RT_ISTANTANEO,
-                                TARGET_HOST, TARGET_PORT, TARGET_PATH, VERSIONE_PRIMITIVE)
+                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE)
 VALUES (2, '80007580279_01', 'Y', 'NodoDeiPagamentiDellaPATest.sia.eu', null, 'password', 80, 'HTTP',
         'paygov.collaudo.regione.veneto.it', 'nodo-regionale-fesp/paaInviaRispostaPagamento.html', 443, null,
         'openspcoop/PD/RT6TPDREGVENETO', 'Y', 'openspcoop/PD/CCP6TPDREGVENETO', 2, 'HTTPS', 'HTTP', null, null, null,
-        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 1);
+        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 1);
 
 INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO,
                                 REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING, SERVIZIO, RT_ENABLED,
@@ -38,11 +38,11 @@ INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, NEW_PASSWORD, 
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP, INVIO_RT_ISTANTANEO,
-                                TARGET_HOST, TARGET_PORT, TARGET_PATH, VERSIONE_PRIMITIVE)
+                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE)
 VALUES (3, '1123', 'Y', 'site.eu', null, 'password', 80, 'HTTP',
         'site.it', 'page.html', 443, null,
         'service/', 'Y', 'service/', 2, 'HTTPS', 'HTTP', null, null, null,
-        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 2);
+        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 2);
 
 INSERT INTO NODO4_CFG.PA_STAZIONE_PA (OBJ_ID, PROGRESSIVO, FK_PA, FK_STAZIONE, AUX_DIGIT, SEGREGAZIONE, QUARTO_MODELLO,
                                       STAZIONE_NODO, STAZIONE_AVV, BROADCAST)
@@ -114,9 +114,10 @@ values (1, null, null, null, null, 'ATTIVATO_PRESSO_PSP', 'N', null, 'N', null, 
 insert into NODO4_CFG.CANALI (OBJ_ID, ID_CANALE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO, SERVIZIO,
                               DESCRIZIONE, FK_INTERMEDIARIO_PSP, PROXY_ENABLED, PROXY_HOST, PROXY_PASSWORD, PROXY_PORT,
                               PROXY_USERNAME, CANALE_NODO, CANALE_AVV, FK_CANALI_NODO, TIMEOUT, NUM_THREAD,
-                              USE_NEW_FAULT_CODE, TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, SERVIZIO_NMP, TARGET_HOST, TARGET_PORT, TARGET_PATH)
+                              USE_NEW_FAULT_CODE, TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, SERVIZIO_NMP, TARGET_HOST, TARGET_PORT, TARGET_PATH,
+                              TARGET_HOST_NMP, TARGET_PORT_NMP, TARGET_PATH_NMP)
 values (1, '00001060966_01', 'Y', '1.1.1.1', null, 'FakePay', 443, 'HTTPS', 'basepath/services/fake', null, 6, 'Y',
-        '2.2.2.2', null, 8080, null, 'Y', 'N', 1, 120, 2, 'Y', 15, 30, 120, null, 'localhost', 443, '/');
+        '2.2.2.2', null, 8080, null, 'Y', 'N', 1, 120, 2, 'Y', 15, 30, 120, null, 'localhost', 443, '/', 'localhost', 443, '/');
 
 insert into NODO4_CFG.ELENCO_SERVIZI (OBJ_ID, PSP_ID, FLUSSO_ID, PSP_RAG_SOC, PSP_FLAG_STORNO, PSP_FLAG_BOLLO, INTM_ID,
                                       CANALE_ID, NOME_SERVIZIO, CANALE_MOD_PAG, TIPO_VERS_COD, CODICE_LINGUA,

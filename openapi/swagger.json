@@ -3,8 +3,8 @@
   "info": {
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "title": "@project.name@",
-    "version": "0.34.2-12-PAGOPA-731-cosmos"
+    "title": "ApiConfig",
+    "version": "0.36.1"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -2278,7 +2278,7 @@
         "summary": "Verify a XML file containing the details of an CDI"
       }
     },
-    "/cdis/history": {
+    "/cdis/uploadhistory": {
       "parameters": [
         {
           "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
@@ -2288,9 +2288,6 @@
         }
       ],
       "get": {
-        "produces": [
-          "application/json"
-        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -2301,51 +2298,12 @@
                 "type": "string"
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          },
-          "500": {
-            "description": "Service unavailable",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
           }
         },
-        "security": [
-          {
-            "ApiKey": []
-          },
-          {
-            "Authorization": []
-          }
-        ],
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "uploadHistory_1",
-        "summary": "Sync CDI history"
+        "operationId": "uploadHistory_1"
       }
     },
     "/cdis/{idcdi}": {
@@ -12917,7 +12875,7 @@
         "new_password": {
           "type": "string"
         },
-        "npm_service": {
+        "nmp_service": {
           "type": "string"
         },
         "on_us": {
@@ -13010,10 +12968,20 @@
         "target_host": {
           "type": "string"
         },
+        "target_host_nmp": {
+          "type": "string"
+        },
         "target_path": {
           "type": "string"
         },
+        "target_path_nmp": {
+          "type": "string"
+        },
         "target_port": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "target_port_nmp": {
           "format": "int64",
           "type": "integer"
         },
@@ -14396,10 +14364,20 @@
         "target_host": {
           "type": "string"
         },
+        "target_host_pof": {
+          "type": "string"
+        },
         "target_path": {
           "type": "string"
         },
+        "target_path_pof": {
+          "type": "string"
+        },
         "target_port": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "target_port_pof": {
           "format": "int64",
           "type": "integer"
         },
@@ -14583,6 +14561,12 @@
       "description": "The API key to access this function app.",
       "in": "header",
       "name": "Ocp-Apim-Subscription-Key",
+      "type": "apiKey"
+    },
+    "Authorization": {
+      "description": "JWT token get after Azure Login",
+      "in": "header",
+      "name": "Authorization",
       "type": "apiKey"
     }
   },

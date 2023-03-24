@@ -32,5 +32,8 @@
   "target_host":"localhost",
   "target_port":443,
   "target_path":"/",
+  "target_host_pof":"localhost",
+  "target_port_pof":443,
+  "target_path_pof":"/",
   "primitive_version": 1
 }

@@ -32,12 +32,15 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
             .targetHost(source.getTargetHost())
             .targetPort(source.getTargetPort())
             .targetPath(source.getTargetPath())
+            .targetHostNmp(source.getTargetHostNmp())
+            .targetPortNmp(source.getTargetPortNmp())
+            .targetPathNmp(source.getTargetPathNmp())
             .threadNumber(source.getNumThread())
             .timeoutA(source.getTimeoutA())
             .timeoutB(source.getTimeoutB())
             .timeoutC(source.getTimeoutC())
             .newFaultCode(source.getUseNewFaultCode())
-            .npmService(source.getServizioNmp());
+            .nmpService(source.getServizioNmp());
     if (source.getFkCanaliNodo() != null) {
       builder
           .redirectIp(source.getFkCanaliNodo().getRedirectIp())

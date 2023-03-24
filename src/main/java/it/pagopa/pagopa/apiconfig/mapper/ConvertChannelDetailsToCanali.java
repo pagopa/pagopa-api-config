@@ -31,6 +31,9 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
         .targetHost(source.getTargetHost())
         .targetPort(source.getTargetPort())
         .targetPath(source.getTargetPath())
+        .targetHostNmp(source.getTargetHostNmp())
+        .targetPortNmp(source.getTargetPortNmp())
+        .targetPathNmp(source.getTargetPathNmp())
         .canaleNodo(true)
         .canaleAvv(false)
         .fkCanaliNodo(buildCanaliNodo(source))
@@ -40,7 +43,7 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
         .timeoutA(source.getTimeoutA())
         .timeoutB(source.getTimeoutB())
         .timeoutC(source.getTimeoutC())
-        .servizioNmp(source.getNpmService())
+        .servizioNmp(source.getNmpService())
         .build();
   }
 

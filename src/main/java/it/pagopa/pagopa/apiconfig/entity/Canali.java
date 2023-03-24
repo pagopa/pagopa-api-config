@@ -137,4 +137,13 @@ public class Canali implements Serializable {
 
   @Column(name = "SERVIZIO_NMP")
   private String servizioNmp;
+
+  @Column(name = "TARGET_HOST_NMP")
+  private String targetHostNmp;
+
+  @Column(name = "TARGET_PORT_NMP")
+  private Long targetPortNmp;
+
+  @Column(name = "TARGET_PATH_NMP")
+  private String targetPathNmp;
 }

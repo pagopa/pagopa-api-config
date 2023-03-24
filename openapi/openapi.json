@@ -1,10 +1,10 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "@project.name@",
+    "title" : "ApiConfig",
     "description" : "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService" : "https://www.pagopa.gov.it/",
-    "version" : "0.34.2-12-PAGOPA-731-cosmos"
+    "version" : "0.36.1"
   },
   "servers" : [ {
     "url" : "http://127.0.0.1:8080/apiconfig/api/v1",
@@ -2708,55 +2708,12 @@
         "tags" : [ "Payment Service Providers" ]
       }
     },
-    "/cdis/history" : {
+    "/cdis/uploadhistory" : {
       "get" : {
         "operationId" : "uploadHistory_1",
         "responses" : {
           "200" : {
-            "content" : {
-              "application/json" : { }
-            },
             "description" : "OK",
-            "headers" : {
-              "X-Request-Id" : {
-                "description" : "This header identifies the call",
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Unauthorized",
-            "headers" : {
-              "X-Request-Id" : {
-                "description" : "This header identifies the call",
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          },
-          "429" : {
-            "description" : "Too many requests",
-            "headers" : {
-              "X-Request-Id" : {
-                "description" : "This header identifies the call",
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            }
-          },
-          "500" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ProblemJson"
-                }
-              }
-            },
-            "description" : "Service unavailable",
             "headers" : {
               "X-Request-Id" : {
                 "description" : "This header identifies the call",
@@ -2767,12 +2724,6 @@
             }
           }
         },
-        "security" : [ {
-          "ApiKey" : [ ]
-        }, {
-          "Authorization" : [ ]
-        } ],
-        "summary" : "Sync CDI history",
         "tags" : [ "Payment Service Providers" ]
       },
       "parameters" : [ {
@@ -15144,7 +15095,7 @@
           "new_password" : {
             "type" : "string"
           },
-          "npm_service" : {
+          "nmp_service" : {
             "type" : "string"
           },
           "on_us" : {
@@ -15226,10 +15177,20 @@
           "target_host" : {
             "type" : "string"
           },
+          "target_host_nmp" : {
+            "type" : "string"
+          },
           "target_path" : {
             "type" : "string"
           },
+          "target_path_nmp" : {
+            "type" : "string"
+          },
           "target_port" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "target_port_nmp" : {
             "type" : "integer",
             "format" : "int64"
           },
@@ -16427,10 +16388,20 @@
           "target_host" : {
             "type" : "string"
           },
+          "target_host_pof" : {
+            "type" : "string"
+          },
           "target_path" : {
             "type" : "string"
           },
+          "target_path_pof" : {
+            "type" : "string"
+          },
           "target_port" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "target_port_pof" : {
             "type" : "integer",
             "format" : "int64"
           },
@@ -16581,6 +16552,12 @@
         "description" : "The API key to access this function app.",
         "name" : "Ocp-Apim-Subscription-Key",
         "in" : "header"
+      },
+      "Authorization" : {
+        "type" : "http",
+        "description" : "JWT token get after Azure Login",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
       }
     }
   }
