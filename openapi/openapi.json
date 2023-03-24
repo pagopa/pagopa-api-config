@@ -2708,12 +2708,55 @@
         "tags" : [ "Payment Service Providers" ]
       }
     },
-    "/cdis/uploadhistory" : {
+    "/cdis/history" : {
       "get" : {
         "operationId" : "uploadHistory_1",
         "responses" : {
           "200" : {
+            "content" : {
+              "application/json" : { }
+            },
             "description" : "OK",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemJson"
+                }
+              }
+            },
+            "description" : "Service unavailable",
             "headers" : {
               "X-Request-Id" : {
                 "description" : "This header identifies the call",
@@ -2724,6 +2767,12 @@
             }
           }
         },
+        "security" : [ {
+          "ApiKey" : [ ]
+        }, {
+          "Authorization" : [ ]
+        } ],
+        "summary" : "Sync CDI history",
         "tags" : [ "Payment Service Providers" ]
       },
       "parameters" : [ {
