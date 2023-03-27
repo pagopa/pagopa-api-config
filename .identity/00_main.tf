@@ -14,10 +14,6 @@ terraform {
       source  = "integrations/github"
       version = "5.12.0"
     }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "= 2.18.1"
-    }
   }
 
   backend "azurerm" {}
@@ -37,6 +33,3 @@ data "azurerm_subscription" "current" {}
 
 data "azurerm_client_config" "current" {}
 
-provider "kubernetes" {
-  config_path = "${var.k8s_kube_config_path_prefix}/config-${local.aks_name}"
-}

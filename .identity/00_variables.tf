@@ -6,23 +6,6 @@ variable "env_short" {
   type = string
 }
 
-variable "prefix" {
-  type    = string
-  default = "pagopa"
-  validation {
-    condition = (
-    length(var.prefix) <= 6
-    )
-    error_message = "Max length is 6 chars."
-  }
-}
-
-variable "action_roles" {
-  type = object({
-    subscription = list(string)
-  })
-  description = "GitHub Continuous Delivery roles"
-}
 
 variable "github_repository_environment" {
   type = object({
@@ -31,6 +14,12 @@ variable "github_repository_environment" {
     reviewers_teams        = list(string)
   })
   description = "GitHub Continuous Integration roles"
+  default     = {
+    protected_branches     = false
+    custom_branch_policies = true
+    reviewers_teams        = ["pagopa-tech"]
+  }
+
 }
 
 
