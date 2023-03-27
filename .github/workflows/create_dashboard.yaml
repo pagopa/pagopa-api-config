@@ -8,13 +8,12 @@ on:
     paths:
       - 'openapi/openapi.json'
       - '.github/workflows/create_dashboard.yaml'
-      - '.opex/product/**'
+      - '.opex/**'
 
   workflow_dispatch:
 
-
 env:
-  API_NAME: product
+  TEMPLATE_DIR: azure-dashboard
 
 permissions:
   id-token: write
@@ -22,13 +21,13 @@ permissions:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+  dashboard:
     # The type of runner that the job will run on
     runs-on: ubuntu-22.04
 
     strategy:
       matrix:
-        environment: [prod, uat, dev]
+        environment: [prod]
     environment:
       name: ${{ matrix.environment }}
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -39,16 +38,44 @@ jobs:
         uses: actions/checkout@1f9a0c22da41e6ebfa534300ef656657ea2c6707
         with:
           persist-credentials: false
-          fetch-depth: 0
 
-      # from https://github.com/pagopa/opex-dashboard-azure-action/
-      - uses: pagopa/opex-dashboard-azure-action@v1.0.4
+      - name: Read terraform version
+        id: read-version
+        shell: bash
+        run: |
+          echo "TERRAFORM_VERSION=`cat .terraform-version`" >> $GITHUB_ENV
+      - name: Setup Terraform
+        # from https://github.com/hashicorp/setup-terraform/commits/main
+        uses: hashicorp/setup-terraform@8feba2b913ea459066180f9cb177f58a881cf146
         with:
-          environment: ${{ matrix.environment }}
-          api-name: ${{ env.API_NAME }}
-          config: .opex/${{ env.API_NAME }}/env/${{ matrix.environment }}/config.yaml
-          client-id: ${{ vars.CLIENT_ID }}
-          tenant-id: ${{ vars.TENANT_ID }}
-          subscription-id: ${{ vars.SUBSCRIPTION_ID }}
-          # from https://github.com/pagopa/opex-dashboard-azure-action/pkgs/container/opex-dashboard-azure-action
-          docker-version: sha256:0325a741969c4a2dda30bb72767df1f939120cdbc934f3a7c4ee4334a6da701f
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: Login
+        id: login
+        # from https://github.com/Azure/login/commits/master
+        uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+      # this action create a folder named /azure-dashboard
+      - uses: pagopa/opex-dashboard-action@main
+        with:
+          template: ${{ env.TEMPLATE_DIR }}
+          config: .opex/env/${{ matrix.environment }}/config.yaml
+
+      # we need to set env variables in the folder /azure-dashboard
+      - name: Copy Environments
+        run: |
+          cp -R .opex/env ./${TEMPLATE_DIR}
+      # now is possible to launch the command: terraform apply
+      - name: Terraform Apply
+        shell: bash
+        run: |
+          cd ./${TEMPLATE_DIR}
+          export ARM_CLIENT_ID="${{ secrets.CLIENT_ID }}"
+          export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+          export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
+          export ARM_USE_OIDC=true
+          bash ./terraform.sh apply ${{ matrix.environment }} -auto-approve
