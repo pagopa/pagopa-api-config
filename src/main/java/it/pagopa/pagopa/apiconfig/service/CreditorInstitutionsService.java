@@ -103,6 +103,15 @@ public class CreditorInstitutionsService {
     return CreditorInstitutionStationList.builder().stationsList(getStationsList(result)).build();
   }
 
+  public List<StationDetails> getStationsDetailsFromCreditorInstitution(@NotNull String creditorInstitutionCode){
+    Pa pa = getPaIfExists(creditorInstitutionCode);
+    List<PaStazionePa> queryResult = paStazionePaRepository.findAllByFkPa(pa.getObjId());
+    List<StationDetails> stations = queryResult.stream()
+        .map(paStazionePa -> modelMapper.map(paStazionePa.getFkStazione(), StationDetails.class))
+        .collect(Collectors.toList());
+    return stations;
+  }
+
   /**
    * Set the aux-digit to null if it is equals to 0 or 3
    *

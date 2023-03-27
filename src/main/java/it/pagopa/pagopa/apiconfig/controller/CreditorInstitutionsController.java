@@ -14,6 +14,8 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionS
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController()
 @RequestMapping(path = "/creditorinstitutions")
@@ -664,6 +667,73 @@ public class CreditorInstitutionsController {
     creditorInstitutionsService.deleteCreditorInstitutionStation(
         creditorInstitutionCode, stationCode);
     return ResponseEntity.ok().build();
+  }
+
+  /**
+   * GET /{creditorInstitutionCode}/stationsss : Get creditor institution station
+   *
+   * @param creditorInstitutionCode station code. (required)
+   * @return OK. (status code 200) or Not Found (status code 404) or Service unavailable (status
+   *     code 500)
+   */
+  @Operation(
+      summary = "Get creditor institution station list",
+      security = {
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
+      },
+      tags = {
+          "Creditor Institutions",
+      })
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = StationCreditorInstitutions.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @GetMapping(
+      value = "/{creditorInstitutionCode}/stationsss", // TODO temporary path
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<List<StationDetails>> getStationsDetailsFromCreditorInstitution(
+      @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true)
+      @PathVariable("creditorInstitutionCode")
+      String creditorInstitutionCode) {
+    return ResponseEntity.ok(
+        creditorInstitutionsService.getStationsDetailsFromCreditorInstitution(creditorInstitutionCode));
   }
 
   /**
