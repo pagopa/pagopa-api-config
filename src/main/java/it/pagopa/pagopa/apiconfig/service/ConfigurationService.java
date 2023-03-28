@@ -328,7 +328,7 @@ public class ConfigurationService {
     try {
       // check if payment type is used to create bundles (AFM Marketplace)
       AfmMarketplacePaymentType response = afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, paymentTypeCode);
-      if (response.getUsed()) {
+      if (Boolean.TRUE.equals(response.getUsed())) {
         throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
       }
       else {

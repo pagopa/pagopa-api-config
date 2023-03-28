@@ -158,11 +158,7 @@ public class ChannelsService {
     
     Pageable pageable = PageRequest.of(pageNumber, limit);
     String enabled = pspEnabled != null ? new YesNoConverter().convertToDatabaseColumn(pspEnabled) : null;
-    /*Page<Psp> page =
-        pspRepository
-            .findDistinctByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_idCanale(
-                channelCode, pageable);*/
-    Page<Psp> page = pspRepository.findDistinctPspByChannel(channelCode, pspCode, pspName, enabled, pageable);
+    Page<Psp> page = pspRepository.findDistinctPspByChannelIdAndOptionalFilter(channelCode, pspCode, pspName, enabled, pageable);
     return ChannelPspList.builder()
         .psp(getPspList(page, channelCode))
         .pageInfo(CommonUtil.buildPageInfo(page))

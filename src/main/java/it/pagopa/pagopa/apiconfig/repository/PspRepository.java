@@ -21,17 +21,14 @@ public interface PspRepository extends JpaRepository<Psp, Long> {
   Page<Psp> findAllByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_fkIntermediarioPsp_idIntermediarioPsp(
       String brokerCode, Pageable pageable);
 
-  Page<Psp> findDistinctByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_idCanale(String channelCode,
-      Pageable pageable);
-
-  @Query(value = "SELECT "+PSP_FIELDS+" FROM NODO4_CFG.Psp psp0_ "
-      + "LEFT OUTER JOIN NODO4_CFG.Psp_Canale_Tipo_Versamento pspcanalet1_ on psp0_.obj_id=pspcanalet1_.fk_psp "
-      + "LEFT OUTER JOIN NODO4_CFG.Canale_Tipo_Versamento canaletipo2_     on pspcanalet1_.fk_canale_tipo_versamento=canaletipo2_.obj_id "
-      + "LEFT OUTER JOIN NODO4_CFG.Canali canali3_                         on canaletipo2_.fk_canale=canali3_.obj_id "
+  @Query(value = "SELECT "+PSP_FIELDS+" FROM {h-schema}Psp psp0_ "
+      + "LEFT OUTER JOIN {h-schema}Psp_Canale_Tipo_Versamento pspcanalet1_ on psp0_.obj_id=pspcanalet1_.fk_psp "
+      + "LEFT OUTER JOIN {h-schema}Canale_Tipo_Versamento canaletipo2_     on pspcanalet1_.fk_canale_tipo_versamento=canaletipo2_.obj_id "
+      + "LEFT OUTER JOIN {h-schema}Canali canali3_                         on canaletipo2_.fk_canale=canali3_.obj_id "
       + "WHERE (canali3_.id_canale = :channelCode) "
       + "AND   (:pspCode is null OR psp0_.id_psp = :pspCode) "
       + "AND   (:pspName is null OR LOWER(psp0_.ragione_sociale) LIKE LOWER(CONCAT('%',:pspName,'%'))) "
       + "AND   (:pspEnabled is null OR psp0_.enabled = :pspEnabled)"
       , nativeQuery = true)
-  Page<Psp> findDistinctPspByChannel(String channelCode, String pspCode, String pspName, String pspEnabled,Pageable pageable);
+  Page<Psp> findDistinctPspByChannelIdAndOptionalFilter(String channelCode, String pspCode, String pspName, String pspEnabled,Pageable pageable);
 }
