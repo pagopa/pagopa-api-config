@@ -83,6 +83,8 @@ jobs:
           export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
           export ARM_USE_OIDC=true
           bash ./terraform.sh apply ${{ matrix.environment }} -auto-approve
+          cd ..
+          rm -r ./${TEMPLATE_DIR}
 
       # this action create a folder named /azure-dashboard
       - uses: pagopa/opex-dashboard-action@main
