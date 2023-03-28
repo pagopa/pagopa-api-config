@@ -308,7 +308,18 @@ class ChannelsServiceTest {
     when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString()))
         .thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
 
-    var result = channelsService.getChannelPaymentServiceProviders(10, 0, "1234");
+    var result = channelsService.getChannelPaymentServiceProviders(10, 0, "1234",null,null,null);
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_channelsPSP_ok.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+  
+  @Test
+  void getChannelsPaymentServiceProvidersWithFilters() throws JSONException, IOException {
+    when(pspCanaleTipoVersamentoRepository.findByCanaleTipoVersamento_Canale_IdCanale(anyString()))
+        .thenReturn(Lists.newArrayList(getMockPspCanaleTipoVersamento()));
+
+    var result = channelsService.getChannelPaymentServiceProviders(10, 0, "1234",null,"Regione Lazio",Boolean.TRUE);
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_channelsPSP_ok.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
