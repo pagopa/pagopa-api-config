@@ -9,13 +9,15 @@ import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static it.pagopa.pagopa.apiconfig.util.Constants.HEADER_REQUEST_ID;
 
@@ -27,16 +29,7 @@ public class OpenApiConfig {
             @Value("${info.application.artifactId}") String appName,
             @Value("${info.application.description}") String appDescription,
             @Value("${info.application.version}") String appVersion) {
-
-        List<Server> servers = new ArrayList<>();
-        servers.add(new Server()
-                .url("http://localhost:8080/apiconfig/api/v1")
-                .description("for Node"));
-        servers.add(new Server()
-                .url("http://localhost:8080/apiconfig/auth/api/v1")
-                .description("for Auth"));
         return new OpenAPI()
-                .servers(servers)
                 .components(
                         new Components()
                                 .addSecuritySchemes(
