@@ -10,12 +10,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.pagopa.pagopa.apiconfig.model.ProblemJson;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationDetailsList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ibans;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
 import it.pagopa.pagopa.apiconfig.service.CreditorInstitutionsService;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 @RestController()
 @RequestMapping(path = "/creditorinstitutions")
@@ -670,7 +669,7 @@ public class CreditorInstitutionsController {
   }
 
   /**
-   * GET /{creditorInstitutionCode}/stationsss : Get creditor institution station
+   * GET /{creditorInstitutionCode}/stationsDetails : Get creditor institution station
    *
    * @param creditorInstitutionCode station code. (required)
    * @return OK. (status code 200) or Not Found (status code 404) or Service unavailable (status
@@ -726,9 +725,9 @@ public class CreditorInstitutionsController {
                   schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
-      value = "/{creditorInstitutionCode}/stationsss", // TODO temporary path
+      value = "/{creditorInstitutionCode}/stationsDetails",
       produces = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<List<StationDetails>> getStationsDetailsFromCreditorInstitution(
+  public ResponseEntity<CreditorInstitutionStationDetailsList> getStationsDetailsFromCreditorInstitution(
       @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.", required = true)
       @PathVariable("creditorInstitutionCode")
       String creditorInstitutionCode) {

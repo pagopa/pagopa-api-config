@@ -103,13 +103,13 @@ public class CreditorInstitutionsService {
     return CreditorInstitutionStationList.builder().stationsList(getStationsList(result)).build();
   }
 
-  public List<StationDetails> getStationsDetailsFromCreditorInstitution(@NotNull String creditorInstitutionCode){
+  public CreditorInstitutionStationDetailsList getStationsDetailsFromCreditorInstitution(@NotNull String creditorInstitutionCode){
     Pa pa = getPaIfExists(creditorInstitutionCode);
     List<PaStazionePa> queryResult = paStazionePaRepository.findAllByFkPa(pa.getObjId());
     List<StationDetails> stations = queryResult.stream()
         .map(paStazionePa -> modelMapper.map(paStazionePa.getFkStazione(), StationDetails.class))
         .collect(Collectors.toList());
-    return stations;
+    return CreditorInstitutionStationDetailsList.builder().stationsDetailsList(stations).build();
   }
 
   /**
