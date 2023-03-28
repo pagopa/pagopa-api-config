@@ -32,6 +32,7 @@ jobs:
     strategy:
       matrix:
         environment: [prod]
+        product: [node, auth]
     environment:
       name: ${{ matrix.environment }}
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -67,35 +68,12 @@ jobs:
       - uses: pagopa/opex-dashboard-action@main
         with:
           template: ${{ env.TEMPLATE_DIR }}
-          config: .opex/node/env/${{ matrix.environment }}/config.yaml
+          config: .opex/${{ matrix.product }}/env/${{ matrix.environment }}/config.yaml
 
       # we need to set env variables in the folder /azure-dashboard
       - name: Copy Environments
         run: |
-          cp -R .opex/node/env ./${TEMPLATE_DIR}
-      # now is possible to launch the command: terraform apply
-      - name: Terraform Apply
-        shell: bash
-        run: |
-          cd ./${TEMPLATE_DIR}
-          export ARM_CLIENT_ID="${{ secrets.CLIENT_ID }}"
-          export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-          export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
-          export ARM_USE_OIDC=true
-          bash ./terraform.sh apply ${{ matrix.environment }} -auto-approve
-          cd ..
-          rm -r ./${TEMPLATE_DIR}
-
-      # this action create a folder named /azure-dashboard
-      - uses: pagopa/opex-dashboard-action@main
-        with:
-          template: ${{ env.TEMPLATE_DIR }}
-          config: .opex/auth/env/${{ matrix.environment }}/config.yaml
-
-      # we need to set env variables in the folder /azure-dashboard
-      - name: Copy Environments
-        run: |
-          cp -R .opex/auth/env ./${TEMPLATE_DIR}
+          cp -R .opex/${{ matrix.product }}/env ./${TEMPLATE_DIR}
       # now is possible to launch the command: terraform apply
       - name: Terraform Apply
         shell: bash
