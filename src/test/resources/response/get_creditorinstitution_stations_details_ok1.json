@@ -1,0 +1,43 @@
+{
+  "stations": [
+    {
+      "station_code": "80007580279_01",
+      "enabled": true,
+      "version": 1,
+      "ip": "NodoDeiPagamentiDellaPATest.sia.eu",
+      "new_password": "",
+      "password": "password",
+      "port": 80,
+      "protocol": "HTTPS",
+      "redirect_ip": "paygov.collaudo.regione.veneto.it",
+      "redirect_path": "nodo-regionale-fesp/paaInviaRispostaPagamento.html",
+      "redirect_port": 443,
+      "redirect_query_string": "",
+      "redirect_protocol": "HTTPS",
+      "service": "openspcoop/PD/RT6TPDREGVENETO",
+      "pof_service": "openspcoop/PD/CCP6TPDREGVENETO",
+      "broker_code": "1234",
+      "protocol_4mod": "HTTPS",
+      "ip_4mod": "",
+      "service_4mod": "",
+      "proxy_enabled": true,
+      "proxy_host": "10.101.1.95",
+      "proxy_port": 8080,
+      "proxy_username": "",
+      "proxy_password": "",
+      "thread_number": 2,
+      "timeout_a": 15,
+      "timeout_b": 30,
+      "timeout_c": 120,
+      "flag_online": true,
+      "invio_rt_istantaneo": false,
+      "target_host": "localhost",
+      "target_port": 443,
+      "target_path": "/",
+      "target_host_pof": "localhost",
+      "target_port_pof": 443,
+      "target_path_pof": "/",
+      "primitive_version": 1
+    }
+  ]
+}

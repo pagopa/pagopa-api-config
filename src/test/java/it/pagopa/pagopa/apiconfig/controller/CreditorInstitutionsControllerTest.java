@@ -4,6 +4,7 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationE
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationEdit;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationList;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationDetailsList;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCreditorInstitutions;
 import static it.pagopa.pagopa.apiconfig.TestUtil.getMockIbans;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,6 +53,8 @@ class CreditorInstitutionsControllerTest {
         .thenReturn(getMockCreditorInstitutionDetails());
     when(creditorInstitutionsService.getCreditorInstitutionStations("1234"))
         .thenReturn(getMockCreditorInstitutionStationList());
+    when(creditorInstitutionsService.getStationsDetailsFromCreditorInstitution("1234"))
+        .thenReturn(getMockCreditorInstitutionStationDetailsList());
     when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234"))
         .thenReturn(getMockIbans());
     when(creditorInstitutionsService.createCreditorInstitution(
@@ -73,6 +76,7 @@ class CreditorInstitutionsControllerTest {
     "/creditorinstitutions?page=0",
     "/creditorinstitutions/1234",
     "/creditorinstitutions/1234/stations",
+    "/creditorinstitutions/1234/stationsDetails",
     "/creditorinstitutions/1234/ibans",
   })
   void testGets(String url) throws Exception {

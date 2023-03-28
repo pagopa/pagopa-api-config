@@ -51,6 +51,7 @@ import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionA
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionEncodings;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStation;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationDetailsList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
@@ -612,6 +613,12 @@ public class TestUtil {
   public static CreditorInstitutionStationList getMockCreditorInstitutionStationList() {
     return CreditorInstitutionStationList.builder()
         .stationsList(List.of(getMockCreditorInstitutionStation()))
+        .build();
+  }
+
+  public static CreditorInstitutionStationDetailsList getMockCreditorInstitutionStationDetailsList() {
+    return CreditorInstitutionStationDetailsList.builder()
+        .stationsDetailsList(List.of(getMockStationDetails()))
         .build();
   }
 

@@ -27,6 +27,7 @@ import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionDetails;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionList;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationDetailsList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutionStationList;
 import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CreditorInstitutions;
@@ -247,6 +248,21 @@ class CreditorInstitutionsServiceTest {
     String actual = TestUtil.toJson(result);
     String expected =
         TestUtil.readJsonFromFile("response/get_creditorinstitution_stations_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @Test
+  void getStationsDetailsCI() throws IOException, JSONException {
+    when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
+    when(paStazionePaRepository.findAllByFkPa(anyLong()))
+        .thenReturn(Lists.newArrayList(getMockPaStazionePa()));
+
+    CreditorInstitutionStationDetailsList result =
+        creditorInstitutionsService.getStationsDetailsFromCreditorInstitution("1234");
+    String actual = TestUtil.toJson(result);
+    System.out.println(actual);
+    String expected =
+        TestUtil.readJsonFromFile("response/get_creditorinstitution_stations_details_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
