@@ -12,7 +12,7 @@ basecache: &basecache
     ingress:
       canary:
         type: header
-        headerName: X-Pod-Version
+        headerName: X-Canary
         headerValue: canary
         weightPercent: 0
     service:

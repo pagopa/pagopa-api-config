@@ -269,7 +269,7 @@ stages:
                     ENV: ${{ parameters['ENV'] }}
                     KUBERNETES_SERVICE_CONN: ${{ variables.kubernetesServiceConnection }}
                     NAMESPACE: $(nameSpace)
-                    APP_NAME: $(imageRepository)
+                    APP_NAME: "core"
                     VALUE_FILE: "helm/values-${{ parameters['ENV'] }}.yaml"
                     DEPLOY_VERSION: $(deploy_version)
                     APPINSIGHTS_SERVICE_CONN: ${{ variables.appInsightsServiceConn }}
