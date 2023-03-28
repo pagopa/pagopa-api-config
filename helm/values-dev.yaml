@@ -151,4 +151,4 @@ oracle:
     DATABASE_SCHEMA: 'NODO4_CFG'
   envSecret:
     !!merge <<: *envSecret
-    SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
+    SPRING_DATASOURCE_PASSWORD: 'oracle-db-cfg-password'
