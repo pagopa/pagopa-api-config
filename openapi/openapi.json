@@ -1,14 +1,17 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "ApiConfig",
+    "title" : "api-config",
     "description" : "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService" : "https://www.pagopa.gov.it/",
     "version" : "0.36.1"
   },
   "servers" : [ {
-    "url" : "http://127.0.0.1:8080/apiconfig/api/v1",
-    "description" : "Generated server url"
+    "url" : "http://localhost:8080/apiconfig/api/v1",
+    "description" : "for Node"
+  }, {
+    "url" : "http://localhost:8080/apiconfig/auth/api/v1",
+    "description" : "for Auth"
   } ],
   "tags" : [ {
     "description" : "Everything about Payment Service Providers",
