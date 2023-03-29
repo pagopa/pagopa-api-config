@@ -174,7 +174,7 @@ public class CdiService {
     cdiMasterRepository.delete(cdiMaster);
   }
 
-  @Transactional(readOnly = true, propagation= Propagation.NESTED)
+  @Transactional(readOnly = true, propagation = Propagation.NESTED)
   public void uploadHistory() {
     CompletableFuture.runAsync(() -> afmUtilsAsyncTask.executeSync());
   }
@@ -683,5 +683,4 @@ public class CdiService {
     }
     return binaryFileRepository.save(binaryFile);
   }
-
 }
