@@ -12,7 +12,6 @@ import it.pagopa.pagopa.apiconfig.model.psp.*;
 import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import it.pagopa.pagopa.apiconfig.util.YesNoConverter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -154,11 +153,19 @@ public class ChannelsService {
   }
 
   public ChannelPspList getChannelPaymentServiceProviders(
-      @Positive Integer limit, @PositiveOrZero Integer pageNumber, String channelCode, String pspCode, String pspName, Boolean pspEnabled) {
-    
+      @Positive Integer limit,
+      @PositiveOrZero Integer pageNumber,
+      String channelCode,
+      String pspCode,
+      String pspName,
+      Boolean pspEnabled) {
+
     Pageable pageable = PageRequest.of(pageNumber, limit);
-    String enabled = pspEnabled != null ? new YesNoConverter().convertToDatabaseColumn(pspEnabled) : null;
-    Page<Psp> page = pspRepository.findDistinctPspByChannelIdAndOptionalFilter(channelCode, pspCode, pspName, enabled, pageable);
+    String enabled =
+        pspEnabled != null ? new YesNoConverter().convertToDatabaseColumn(pspEnabled) : null;
+    Page<Psp> page =
+        pspRepository.findDistinctPspByChannelIdAndOptionalFilter(
+            channelCode, pspCode, pspName, enabled, pageable);
     return ChannelPspList.builder()
         .psp(getPspList(page, channelCode))
         .pageInfo(CommonUtil.buildPageInfo(page))
