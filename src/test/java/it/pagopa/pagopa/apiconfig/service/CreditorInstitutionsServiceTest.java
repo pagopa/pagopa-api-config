@@ -260,7 +260,6 @@ class CreditorInstitutionsServiceTest {
     CreditorInstitutionStationDetailsList result =
         creditorInstitutionsService.getStationsDetailsFromCreditorInstitution("1234");
     String actual = TestUtil.toJson(result);
-    System.out.println(actual);
     String expected =
         TestUtil.readJsonFromFile("response/get_creditorinstitution_stations_details_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
