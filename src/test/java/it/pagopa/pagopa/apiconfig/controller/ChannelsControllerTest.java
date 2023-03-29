@@ -46,7 +46,8 @@ class ChannelsControllerTest {
     when(channelsService.getPaymentTypes(anyString())).thenReturn(getMockPspChannelPaymentTypes());
     when(channelsService.createPaymentType(anyString(), any(PspChannelPaymentTypes.class)))
         .thenReturn(getMockPspChannelPaymentTypes());
-    when(channelsService.getChannelPaymentServiceProviders(anyInt(), anyInt(), anyString(), any(), any(), any()))
+    when(channelsService.getChannelPaymentServiceProviders(
+            anyInt(), anyInt(), anyString(), any(), any(), any()))
         .thenReturn(getChannelPspList());
     when(channelsService.getChannelPaymentServiceProvidersCSV(anyString())).thenReturn(new byte[0]);
     when(channelsService.getChannelsCSV()).thenReturn(new byte[0]);

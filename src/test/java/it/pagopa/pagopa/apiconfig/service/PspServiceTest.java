@@ -17,6 +17,23 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
+
+import org.assertj.core.util.Lists;
+import org.json.JSONException;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
@@ -32,21 +49,6 @@ import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.PspRepository;
 import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
-import org.assertj.core.util.Lists;
-import org.json.JSONException;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 
 @SpringBootTest(classes = ApiConfig.class)
 class PspServiceTest {
@@ -68,7 +70,7 @@ class PspServiceTest {
   @Test
   void getPaymentServiceProviders() throws IOException, JSONException {
     Page<Psp> page = TestUtil.mockPage(Lists.newArrayList(getMockPsp()), 50, 0);
-    when(pspRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+    when(pspRepository.findAll(any(org.springframework.data.domain.Example.class), any(Pageable.class))).thenReturn(page);
 
     PaymentServiceProviders result =
         pspService.getPaymentServiceProviders(50, 0, getMockFilterAndOrder(Order.Psp.CODE));
