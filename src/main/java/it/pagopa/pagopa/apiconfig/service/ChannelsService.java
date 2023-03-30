@@ -3,29 +3,6 @@ package it.pagopa.pagopa.apiconfig.service;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.entity.Canali;
 import it.pagopa.pagopa.apiconfig.entity.Psp;
@@ -51,6 +28,26 @@ import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
 import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.specification.PspSpecification;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
@@ -172,11 +169,20 @@ public class ChannelsService {
   }
 
   public ChannelPspList getChannelPaymentServiceProviders(
-      @Positive Integer limit, @PositiveOrZero Integer pageNumber, String channelCode, String pspCode, String pspName, Boolean pspEnabled) {
-    
+      @Positive Integer limit,
+      @PositiveOrZero Integer pageNumber,
+      String channelCode,
+      String pspCode,
+      String pspName,
+      Boolean pspEnabled) {
+
     Pageable pageable = PageRequest.of(pageNumber, limit);
-    Page<Psp> page = pspRepository.findAll(PspSpecification.filterPspByChannelIdAndOptionalFilters(channelCode, pspCode, pspName, pspEnabled), pageable);
-    
+    Page<Psp> page =
+        pspRepository.findAll(
+            PspSpecification.filterPspByChannelIdAndOptionalFilters(
+                channelCode, pspCode, pspName, pspEnabled),
+            pageable);
+
     return ChannelPspList.builder()
         .psp(getPspList(page, channelCode))
         .pageInfo(CommonUtil.buildPageInfo(page))
