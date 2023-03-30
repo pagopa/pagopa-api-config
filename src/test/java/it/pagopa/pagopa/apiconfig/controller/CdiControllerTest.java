@@ -86,7 +86,7 @@ class CdiControllerTest {
 
   @Test
   void uploadHistory() throws Exception {
-    String url = "/cdis/uploadhistory";
+    String url = "/cdis/history";
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
   }
 }

@@ -1476,7 +1476,7 @@ public class ConfigurationController {
       })
   @GetMapping("/paymenttypes/history")
   public ResponseEntity<Void> uploadHistory() {
-    configurationService.uploadPaymentTypesHistory();
+    configurationService.syncPaymentTypesHistory();
     return ResponseEntity.ok().build();
   }
 

@@ -1,30 +1,53 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 
-import it.pagopa.pagopa.apiconfig.cosmos.container.CdiCosmos;
-import it.pagopa.pagopa.apiconfig.cosmos.container.CdiDetailCosmos;
-import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
-import it.pagopa.pagopa.apiconfig.entity.*;
+import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
+import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
+import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
+import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
+import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
+import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.*;
+import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
+import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
+import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.util.AFMUtilsAsyncTask;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,23 +55,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 @Service
 @Validated
-@Transactional
+@Slf4j
 public class CdiService {
 
   @Autowired private CdiMasterRepository cdiMasterRepository;
-
-  @Autowired private CdiMasterValidRepository cdiMasterValidRepository;
-
   @Autowired PspCanaleTipoVersamentoRepository pspCanaleTipoVersamentoRepository;
 
   @Autowired PspRepository pspRepository;
@@ -68,21 +88,12 @@ public class CdiService {
   @Autowired CdiPreferenceRepository cdiPreferenceRepository;
 
   @Autowired private ModelMapper modelMapper;
-
-  @Autowired(required = false)
-  private CdiCosmosRepository cdiCosmosRepository;
+  @Autowired private AFMUtilsAsyncTask afmUtilsAsyncTask;
 
   @Value("${xsd.cdi}")
   private String xsdCdi;
 
-  @Autowired private RestTemplate restTemplate;
-
-  @Value("${service.utils.host}")
-  private String afmUtilsHost;
-
-  @Value("${service.utils.subscriptionKey}")
-  private String afmUtilsSubscriptionKey;
-
+  @Transactional(readOnly = true)
   public Cdis getCdis(
       @NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
     Pageable pageable =
@@ -100,6 +111,7 @@ public class CdiService {
         .build();
   }
 
+  @Transactional(readOnly = true)
   public byte[] getCdi(@NotBlank String idCdi, @NotBlank String pspCode) {
     CdiMaster cdiMaster =
         cdiMasterRepository
@@ -109,6 +121,7 @@ public class CdiService {
     return cdiMaster.getFkBinaryFile().getFileContent();
   }
 
+  @Transactional
   public void createCdi(MultipartFile file) {
     List<CheckItem> checks = verifyCdi(file);
 
@@ -139,13 +152,12 @@ public class CdiService {
       saveCdiFasciaCostiServizio(xmlDetail, detail);
       saveCdiPreferences(xml, xmlDetail, detail);
     }
-    // save CDI to Cosmos DB
-    cdiCosmosRepository.save(mapToCosmosEntity(master));
 
-    // trigger AFM Utils
-    afmUtilsTrigger();
+    // send CDI to AFM Utils
+    afmUtilsAsyncTask.executeSync(master);
   }
 
+  @Transactional
   public void deleteCdi(String idCdi, String pspCode) {
     CdiMaster cdiMaster =
         cdiMasterRepository
@@ -162,81 +174,12 @@ public class CdiService {
     cdiMasterRepository.delete(cdiMaster);
   }
 
+  @Transactional(readOnly = true, propagation = Propagation.NESTED)
   public void uploadHistory() {
-    var result =
-        cdiMasterValidRepository.findAll().stream()
-            .filter(Objects::nonNull)
-            .map(elem -> modelMapper.map(elem, CdiMaster.class))
-            .map(this::mapToCosmosEntity)
-            .collect(Collectors.toList());
-    cdiCosmosRepository.saveAll(result);
-
-    // trigger AFM Utils
-    afmUtilsTrigger();
+    CompletableFuture.runAsync(() -> afmUtilsAsyncTask.executeSync());
   }
 
-  private CdiCosmos mapToCosmosEntity(CdiMaster master) {
-    if (master.getCdiDetail() == null) {
-      throw new AppException(AppError.CDI_DETAILS_NOT_FOUND, master.getIdInformativaPsp());
-    }
-    var cdiDetails =
-        master.getCdiDetail().stream()
-            .filter(Objects::nonNull)
-            .map(this::mapDetails)
-            .collect(Collectors.toList());
-    return CdiCosmos.builder()
-        .id(master.getId().toString())
-        .idPsp(master.getFkPsp().getIdPsp())
-        .abi(master.getFkPsp().getAbi())
-        .idCdi(master.getIdInformativaPsp())
-        .cdiStatus("NEW")
-        .digitalStamp(master.getMarcaBolloDigitale())
-        .validityDateFrom(
-            master.getDataInizioValidita() != null
-                ? master.getDataInizioValidita().toLocalDateTime()
-                : null)
-        .details(cdiDetails)
-        .build();
-  }
-
-  private CdiDetailCosmos mapDetails(@NotNull CdiDetail detail) {
-    @NotNull
-    Canali canale = detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale();
-    return CdiDetailCosmos.builder()
-        .idChannel(canale.getIdCanale())
-        .name(detail.getNomeServizio())
-        .description(getDescription(detail))
-        .channelApp(detail.getCanaleApp() == 1L)
-        .paymentType(
-            detail
-                .getFkPspCanaleTipoVersamento()
-                .getCanaleTipoVersamento()
-                .getTipoVersamento()
-                .getTipoVersamento())
-        .idBrokerPsp(canale.getFkIntermediarioPsp().getIdIntermediarioPsp())
-        .channelCardsCart(
-            canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getCarrelloCarte() : null)
-        .serviceAmount(
-            detail.getCdiFasciaCostoServizio().stream()
-                .map(
-                    elem ->
-                        ServiceAmountCosmos.builder()
-                            .minPaymentAmount((int) (elem.getImportoMinimo() * 100))
-                            .maxPaymentAmount((int) (elem.getImportoMassimo() * 100))
-                            .paymentAmount((int) (elem.getCostoFisso() * 100))
-                            .build())
-                .collect(Collectors.toList()))
-        .build();
-  }
-
-  private static String getDescription(@NotNull CdiDetail detail) {
-    return detail.getCdiInformazioniServizio().stream()
-        .filter(item -> "IT".equals(item.getCodiceLingua()))
-        .findFirst()
-        .map(CdiInformazioniServizio::getDescrizioneServizio)
-        .orElse("");
-  }
-
+  @Transactional(readOnly = true)
   public List<CheckItem> verifyCdi(MultipartFile file) {
     // checks are described here
     // https://pagopa.atlassian.net/wiki/spaces/ACN/pages/467435579/Verifica+CDI
@@ -739,19 +682,5 @@ public class CdiService {
       throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
     }
     return binaryFileRepository.save(binaryFile);
-  }
-
-  /** Trigger AFM Utils to analyze uploaded CDIs */
-  private void afmUtilsTrigger() {
-    String stringUrl = String.format("%s/cdis/sync", afmUtilsHost);
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("Ocp-Apim-Subscription-Key", afmUtilsSubscriptionKey);
-    HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-    ResponseEntity<Object> response =
-        restTemplate.exchange(stringUrl, HttpMethod.GET, requestEntity, Object.class);
-
-    if (!response.getStatusCode().is2xxSuccessful()) {
-      throw new AppException(AppError.CDI_SYNC_ERROR);
-    }
   }
 }

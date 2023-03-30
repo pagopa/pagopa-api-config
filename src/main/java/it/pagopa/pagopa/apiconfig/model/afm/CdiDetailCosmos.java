@@ -1,6 +1,5 @@
-package it.pagopa.pagopa.apiconfig.cosmos.container;
+package it.pagopa.pagopa.apiconfig.model.afm;
 
-import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import it.pagopa.pagopa.apiconfig.entity.ServiceAmountCosmos;
 import java.util.List;
@@ -17,7 +16,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-@Container(containerName = "cdidetail", autoCreateContainer = false)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CdiDetailCosmos {
   private String idBrokerPsp;

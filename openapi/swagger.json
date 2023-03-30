@@ -3,8 +3,8 @@
   "info": {
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "title": "api-config",
-    "version": "0.36.1"
+    "title": "ApiConfig",
+    "version": "0.37.1"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -2278,7 +2278,7 @@
         "summary": "Verify a XML file containing the details of an CDI"
       }
     },
-    "/cdis/uploadhistory": {
+    "/cdis/history": {
       "parameters": [
         {
           "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
@@ -2288,6 +2288,9 @@
         }
       ],
       "get": {
+        "produces": [
+          "application/json"
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -2298,12 +2301,51 @@
                 "type": "string"
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
           }
         },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
         "tags": [
           "Payment Service Providers"
         ],
-        "operationId": "uploadHistory_1"
+        "operationId": "uploadHistory_1",
+        "summary": "Sync CDI history"
       }
     },
     "/cdis/{idcdi}": {

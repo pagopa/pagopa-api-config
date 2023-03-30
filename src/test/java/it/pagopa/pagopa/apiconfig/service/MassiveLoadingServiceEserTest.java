@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.cosmos.repository.CdiCosmosRepository;
 import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.repository.PaRepository;
@@ -45,8 +44,6 @@ class MassiveLoadingServiceEserTest {
   @MockBean private StazioniRepository stazioniRepository;
 
   @MockBean private PaStazionePaRepository paStazionePaRepository;
-
-  @MockBean private CdiCosmosRepository cdiCosmosRepository;
 
   @Autowired @InjectMocks private MassiveLoadingService massiveLoadingService;
 

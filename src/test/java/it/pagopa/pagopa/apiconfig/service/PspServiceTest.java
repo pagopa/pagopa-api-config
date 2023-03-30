@@ -68,7 +68,9 @@ class PspServiceTest {
   @Test
   void getPaymentServiceProviders() throws IOException, JSONException {
     Page<Psp> page = TestUtil.mockPage(Lists.newArrayList(getMockPsp()), 50, 0);
-    when(pspRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+    when(pspRepository.findAll(
+            any(org.springframework.data.domain.Example.class), any(Pageable.class)))
+        .thenReturn(page);
 
     PaymentServiceProviders result =
         pspService.getPaymentServiceProviders(50, 0, getMockFilterAndOrder(Order.Psp.CODE));

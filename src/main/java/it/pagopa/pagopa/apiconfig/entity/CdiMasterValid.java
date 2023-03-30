@@ -23,7 +23,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Immutable;
 
-@Table(name = "CDI_VALIDI_PER_PSP", schema = "NODO4_CFG")
+@Table(name = "CDI_VALIDI_PER_PSP")
 @Entity
 @Immutable
 @Getter

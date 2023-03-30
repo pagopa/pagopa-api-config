@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Table(name = "BINARY_FILE", schema = "NODO4_CFG")
+@Table(name = "BINARY_FILE")
 @Entity
 @Getter
 @Setter

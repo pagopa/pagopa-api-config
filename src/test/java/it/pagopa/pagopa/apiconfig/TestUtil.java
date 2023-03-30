@@ -489,6 +489,7 @@ public class TestUtil {
         .id(1L)
         .fkPsp(getMockPsp())
         .fkBinaryFile(getMockBinaryFile())
+        .cdiDetail(List.of(getMockCdiDetail()))
         .dataPubblicazione(Timestamp.valueOf("2021-12-14 00:00:00"))
         .dataInizioValidita(Timestamp.valueOf("2021-12-14 00:00:00"))
         .build();
@@ -935,5 +936,9 @@ public class TestUtil {
         .cache(new byte[] {1, 11})
         .version("3.10.0")
         .build();
+  }
+
+  public static Page<CdiMasterValid> getMockCdiMasterPaged() {
+    return mockPage(List.of(getMockCdiMasterValid()), 1, 0);
   }
 }
