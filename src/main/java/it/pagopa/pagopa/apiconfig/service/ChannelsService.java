@@ -3,13 +3,30 @@ package it.pagopa.pagopa.apiconfig.service;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getSort;
 
-import it.pagopa.pagopa.apiconfig.entity.*;
+import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
+import it.pagopa.pagopa.apiconfig.entity.Canali;
+import it.pagopa.pagopa.apiconfig.entity.Psp;
+import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
+import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.model.psp.*;
-import it.pagopa.pagopa.apiconfig.repository.*;
+import it.pagopa.pagopa.apiconfig.model.psp.Channel;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelPspList;
+import it.pagopa.pagopa.apiconfig.model.psp.Channels;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
+import it.pagopa.pagopa.apiconfig.repository.CanaleTipoVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
+import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
+import it.pagopa.pagopa.apiconfig.specification.PspSpecification;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,12 +169,20 @@ public class ChannelsService {
   }
 
   public ChannelPspList getChannelPaymentServiceProviders(
-      @Positive Integer limit, @PositiveOrZero Integer pageNumber, String channelCode) {
+      @Positive Integer limit,
+      @PositiveOrZero Integer pageNumber,
+      String channelCode,
+      String pspCode,
+      String pspName,
+      Boolean pspEnabled) {
+
     Pageable pageable = PageRequest.of(pageNumber, limit);
     Page<Psp> page =
-        pspRepository
-            .findDistinctByPspCanaleTipoVersamentoList_canaleTipoVersamento_canale_idCanale(
-                channelCode, pageable);
+        pspRepository.findAll(
+            PspSpecification.filterPspByChannelIdAndOptionalFilters(
+                channelCode, pspCode, pspName, pspEnabled),
+            pageable);
+
     return ChannelPspList.builder()
         .psp(getPspList(page, channelCode))
         .pageInfo(CommonUtil.buildPageInfo(page))

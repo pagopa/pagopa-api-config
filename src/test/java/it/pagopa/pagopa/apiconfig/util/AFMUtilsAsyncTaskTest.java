@@ -25,24 +25,22 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest(classes = ApiConfig.class)
 class AFMUtilsAsyncTaskTest {
-  @MockBean
-  private CdiMasterValidRepository cdiMasterValidRepository;
+  @MockBean private CdiMasterValidRepository cdiMasterValidRepository;
 
-  @MockBean
-  private ModelMapper modelMapper;
-  @MockBean
-  private AFMUtilsClient afmUtilsClient;
+  @MockBean private ModelMapper modelMapper;
+  @MockBean private AFMUtilsClient afmUtilsClient;
 
-  @Autowired
-  private AFMUtilsAsyncTask afmUtilsAsyncTask;
+  @Autowired private AFMUtilsAsyncTask afmUtilsAsyncTask;
 
   @BeforeEach
   void setUp() {
     ReflectionTestUtils.setField(afmUtilsAsyncTask, "afmUtilsClient", afmUtilsClient);
   }
+
   @Test
   void executeSync() {
-    Page<CdiMasterValid> page = TestUtil.mockPage(Lists.newArrayList(getMockCdiMasterValid()), 1, 0);
+    Page<CdiMasterValid> page =
+        TestUtil.mockPage(Lists.newArrayList(getMockCdiMasterValid()), 1, 0);
     when(cdiMasterValidRepository.findAll(any(PageRequest.class))).thenReturn(page);
 
     doNothing().when(afmUtilsClient).syncPaymentTypes(anyString(), any());
@@ -52,12 +50,12 @@ class AFMUtilsAsyncTaskTest {
 
   @Test
   void executeSync2() {
-    Page<CdiMasterValid> page = TestUtil.mockPage(Lists.newArrayList(getMockCdiMasterValid()), 1, 0);
+    Page<CdiMasterValid> page =
+        TestUtil.mockPage(Lists.newArrayList(getMockCdiMasterValid()), 1, 0);
     when(cdiMasterValidRepository.findAll(any(PageRequest.class))).thenReturn(page);
 
     doNothing().when(afmUtilsClient).syncPaymentTypes(anyString(), any());
 
     assertTrue(afmUtilsAsyncTask.executeSync(getMockCdiMaster()));
   }
-
 }

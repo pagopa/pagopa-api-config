@@ -86,8 +86,7 @@ class CdiServiceTest {
   @MockBean private CdiFasciaCostoServizioRepository cdiFasciaCostoServizioRepository;
 
   @Autowired @InjectMocks private CdiService cdiService;
-  @MockBean
-  private AFMUtilsAsyncTask afmUtilsAsyncTask;
+  @MockBean private AFMUtilsAsyncTask afmUtilsAsyncTask;
 
   @BeforeEach
   void setUp() {
