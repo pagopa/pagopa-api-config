@@ -67,7 +67,8 @@ public class ConfigurationService {
   public ConfigurationService(
       @Value("${service.marketplace.host}") Optional<String> optAfmMarketplaceHost) {
 
-    this.afmMarketplaceClient = Feign.builder()
+    this.afmMarketplaceClient =
+        Feign.builder()
             .encoder(new JacksonEncoder())
             .decoder(new JacksonDecoder())
             .target(AFMMarketplaceClient.class, optAfmMarketplaceHost.orElse(""));
@@ -327,11 +328,11 @@ public class ConfigurationService {
 
     try {
       // check if payment type is used to create bundles (AFM Marketplace)
-      AfmMarketplacePaymentType response = afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, paymentTypeCode);
+      AfmMarketplacePaymentType response =
+          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, paymentTypeCode);
       if (Boolean.TRUE.equals(response.getUsed())) {
         throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
-      }
-      else {
+      } else {
         removeFromMarketplace = true;
       }
     } catch (FeignException e) {
@@ -362,8 +363,7 @@ public class ConfigurationService {
       afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, paymentTypes);
     } catch (FeignException.BadRequest e) {
       throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
-    }
-    catch (FeignException e) {
+    } catch (FeignException e) {
       throw new AppException(AppError.PAYMENT_TYPE_BAD_REQUEST);
     }
   }
