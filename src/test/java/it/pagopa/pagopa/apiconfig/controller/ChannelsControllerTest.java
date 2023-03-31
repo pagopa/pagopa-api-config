@@ -1,18 +1,20 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.*;
-import static org.mockito.ArgumentMatchers.*;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getChannelPspList;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannelDetails;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockChannels;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPspChannelPaymentTypes;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
-import it.pagopa.pagopa.apiconfig.service.ChannelsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,6 +26,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
+import it.pagopa.pagopa.apiconfig.service.ChannelsService;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc

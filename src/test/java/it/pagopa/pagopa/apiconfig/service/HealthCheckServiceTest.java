@@ -5,15 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.repository.HealthCheckRepository;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessResourceFailureException;
+
+import it.gov.pagopa.apiconfig.starter.repository.HealthCheckRepository;
+import it.pagopa.pagopa.apiconfig.ApiConfig;
 
 @SpringBootTest(classes = ApiConfig.class)
 class HealthCheckServiceTest {

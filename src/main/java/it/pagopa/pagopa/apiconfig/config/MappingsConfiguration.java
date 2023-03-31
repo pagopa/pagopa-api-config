@@ -1,25 +1,31 @@
 package it.pagopa.pagopa.apiconfig.config;
 
-import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
-import it.pagopa.pagopa.apiconfig.entity.FtpServers;
-import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
-import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Pdd;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
-import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.Canali;
+import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
+import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
+import it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys;
+import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
+import it.gov.pagopa.apiconfig.starter.entity.FtpServers;
+import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
+import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
+import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
+import it.gov.pagopa.apiconfig.starter.entity.Pdd;
+import it.gov.pagopa.apiconfig.starter.entity.Psp;
+import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertBrokerDetailsToIntermediariPa;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertBrokerPspDetailsToIntermediariPsp;
 import it.pagopa.pagopa.apiconfig.mapper.ConvertCanaleTipoVersamentoToPaymentType;
@@ -83,17 +89,12 @@ import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannel;
 import it.pagopa.pagopa.apiconfig.model.psp.Service;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MappingsConfiguration {
 
   @Bean
-  public ModelMapper modelMapper() {
+  ModelMapper modelMapper() {
 
     ModelMapper mapper = new ModelMapper();
     mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);

@@ -3,6 +3,11 @@ package it.pagopa.pagopa.apiconfig.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import feign.Feign;
 import feign.mock.HttpMethod;
 import feign.mock.MockClient;
@@ -12,10 +17,6 @@ import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
 import it.pagopa.pagopa.apiconfig.model.JobTrigger;
 import it.pagopa.pagopa.apiconfig.util.RefreshClient;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = ApiConfig.class)
 class RefreshServiceTest {

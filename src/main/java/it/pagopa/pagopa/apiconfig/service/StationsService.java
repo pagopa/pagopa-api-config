@@ -2,31 +2,16 @@ package it.pagopa.pagopa.apiconfig.service;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.exception.AppError;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitution;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.repository.IntermediariPaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +22,24 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import it.gov.pagopa.apiconfig.starter.repository.IntermediariPaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitution;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationCreditorInstitutions;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.StationDetails;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Stations;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 @Service
 @Validated

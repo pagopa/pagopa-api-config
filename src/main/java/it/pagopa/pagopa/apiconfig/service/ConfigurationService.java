@@ -1,12 +1,28 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotNull;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import feign.Feign;
 import feign.FeignException;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.repository.ConfigurationKeysRepository;
+import it.gov.pagopa.apiconfig.starter.repository.FtpServersRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PddRepository;
+import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
+import it.gov.pagopa.apiconfig.starter.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.afm.PaymentTypesCosmos;
@@ -25,22 +41,8 @@ import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfBase;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
-import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
-import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PddRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
 import it.pagopa.pagopa.apiconfig.util.AFMMarketplaceClient;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 @Service
 @Validated
@@ -75,7 +77,7 @@ public class ConfigurationService {
   }
 
   public ConfigurationKeys getConfigurationKeys() {
-    List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKeyList =
+    List<it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys> configKeyList =
         configurationKeysRepository.findAll();
     return it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys.builder()
         .configurationKeyList(getConfigurationKeys(configKeyList))
@@ -83,13 +85,13 @@ public class ConfigurationService {
   }
 
   public ConfigurationKey getConfigurationKey(@NotNull String category, @NotNull String key) {
-    it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configKey =
+    it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys configKey =
         getConfigurationKeyIfExists(category, key);
     return modelMapper.map(configKey, ConfigurationKey.class);
   }
 
   public ConfigurationKey createConfigurationKey(ConfigurationKey configurationKey) {
-    Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKey =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys> configKey =
         configurationKeysRepository.findByConfigCategoryAndConfigKey(
             configurationKey.getConfigCategory(), configurationKey.getConfigKey());
     if (configKey.isPresent()) {
@@ -99,22 +101,22 @@ public class ConfigurationService {
           configKey.get().getConfigKey());
     }
 
-    it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configKeyEntity =
+    it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys configKeyEntity =
         modelMapper.map(
-            configurationKey, it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.class);
+            configurationKey, it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys.class);
     configurationKeysRepository.save(configKeyEntity);
     return modelMapper.map(configKeyEntity, ConfigurationKey.class);
   }
 
   public ConfigurationKey updateConfigurationKey(
       String category, String key, ConfigurationKeyBase configurationKey) {
-    Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKey =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys> configKey =
         configurationKeysRepository.findByConfigCategoryAndConfigKey(category, key);
     if (configKey.isEmpty()) {
       throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
     }
 
-    it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configKeyEntity = configKey.get();
+    it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys configKeyEntity = configKey.get();
     configKeyEntity.setConfigValue(configurationKey.getConfigValue());
     configKeyEntity.setConfigDescription(configurationKey.getConfigDescription());
     configurationKeysRepository.save(configKeyEntity);
@@ -123,13 +125,13 @@ public class ConfigurationService {
   }
 
   public void deleteConfigurationKey(String category, String key) {
-    it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configurationKey =
+    it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys configurationKey =
         getConfigurationKeyIfExists(category, key);
     configurationKeysRepository.delete(configurationKey);
   }
 
   public WfespPluginConfs getWfespPluginConfigurations() {
-    List<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> list =
+    List<it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf> list =
         wfespPluginConfRepository.findAll();
     return it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs.builder()
         .wfespPluginConfList(getWfespPluginConfList(list))
@@ -137,34 +139,34 @@ public class ConfigurationService {
   }
 
   public WfespPluginConf getWfespPluginConfiguration(@NotNull String idServPlugin) {
-    it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wfespPluginConf =
+    it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf wfespPluginConf =
         getWfespPluginConfigurationIfExists(idServPlugin);
     return modelMapper.map(wfespPluginConf, WfespPluginConf.class);
   }
 
   public WfespPluginConf createWfespPluginConfiguration(WfespPluginConf wfespPluginConf) {
-    Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf> wp =
         wfespPluginConfRepository.findByIdServPlugin(wfespPluginConf.getIdServPlugin());
     if (wp.isPresent()) {
       throw new AppException(
           AppError.CONFIGURATION_WFESP_PLUGIN_CONFLICT, wfespPluginConf.getIdServPlugin());
     }
 
-    it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wpEntity =
-        modelMapper.map(wfespPluginConf, it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class);
+    it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf wpEntity =
+        modelMapper.map(wfespPluginConf, it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf.class);
     wfespPluginConfRepository.save(wpEntity);
     return modelMapper.map(wpEntity, WfespPluginConf.class);
   }
 
   public WfespPluginConf updateWfespPluginConfiguration(
       String idServPlugin, WfespPluginConfBase wfespPluginConf) {
-    Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wp =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf> wp =
         wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
     if (wp.isEmpty()) {
       throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
     }
 
-    it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wpEntity = wp.get();
+    it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf wpEntity = wp.get();
     wpEntity.setIdServPlugin(idServPlugin);
     wpEntity.setIdBean(wfespPluginConf.getIdBean());
     wpEntity.setProfiloPagConstString(wfespPluginConf.getProfiloPagConstString());
@@ -177,42 +179,42 @@ public class ConfigurationService {
   }
 
   public void deleteWfespPluginConfiguration(String idServPlugin) {
-    it.pagopa.pagopa.apiconfig.entity.WfespPluginConf wp =
+    it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf wp =
         getWfespPluginConfigurationIfExists(idServPlugin);
     wfespPluginConfRepository.delete(wp);
   }
 
   public Pdds getPdds() {
-    List<it.pagopa.pagopa.apiconfig.entity.Pdd> pddList = pddRepository.findAll();
+    List<it.gov.pagopa.apiconfig.starter.entity.Pdd> pddList = pddRepository.findAll();
     return it.pagopa.pagopa.apiconfig.model.configuration.Pdds.builder()
         .pddList(getPdds(pddList))
         .build();
   }
 
   public Pdd getPdd(@NotNull String idPdd) {
-    it.pagopa.pagopa.apiconfig.entity.Pdd pdd = getPddIfExists(idPdd);
+    it.gov.pagopa.apiconfig.starter.entity.Pdd pdd = getPddIfExists(idPdd);
     return modelMapper.map(pdd, Pdd.class);
   }
 
   public Pdd createPdd(Pdd pdd) {
-    Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> optPdd =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.Pdd> optPdd =
         pddRepository.findByIdPdd(pdd.getIdPdd());
     if (optPdd.isPresent()) {
       throw new AppException(AppError.PDD_CONFLICT, pdd.getIdPdd());
     }
 
-    it.pagopa.pagopa.apiconfig.entity.Pdd pddEntity =
-        modelMapper.map(pdd, it.pagopa.pagopa.apiconfig.entity.Pdd.class);
+    it.gov.pagopa.apiconfig.starter.entity.Pdd pddEntity =
+        modelMapper.map(pdd, it.gov.pagopa.apiconfig.starter.entity.Pdd.class);
     pddRepository.save(pddEntity);
     return modelMapper.map(pddEntity, Pdd.class);
   }
 
   public Pdd updatePdd(String idPdd, PddBase pdd) {
-    Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> optPdd = pddRepository.findByIdPdd(idPdd);
+    Optional<it.gov.pagopa.apiconfig.starter.entity.Pdd> optPdd = pddRepository.findByIdPdd(idPdd);
     if (optPdd.isEmpty()) {
       throw new AppException(AppError.PDD_NOT_FOUND, idPdd);
     }
-    it.pagopa.pagopa.apiconfig.entity.Pdd updatedPdd = optPdd.get();
+    it.gov.pagopa.apiconfig.starter.entity.Pdd updatedPdd = optPdd.get();
     updatedPdd.setEnabled(pdd.getEnabled());
     updatedPdd.setDescrizione(pdd.getDescription());
     updatedPdd.setIp(pdd.getIp());
@@ -223,12 +225,12 @@ public class ConfigurationService {
   }
 
   public void deletePdd(String idPdd) {
-    it.pagopa.pagopa.apiconfig.entity.Pdd pdd = getPddIfExists(idPdd);
+    it.gov.pagopa.apiconfig.starter.entity.Pdd pdd = getPddIfExists(idPdd);
     pddRepository.delete(pdd);
   }
 
   public FtpServers getFtpServers() {
-    List<it.pagopa.pagopa.apiconfig.entity.FtpServers> ftpServerList =
+    List<it.gov.pagopa.apiconfig.starter.entity.FtpServers> ftpServerList =
         ftpServersRepository.findAll();
     return it.pagopa.pagopa.apiconfig.model.configuration.FtpServers.builder()
         .ftpServerList(getFtpServers(ftpServerList))
@@ -237,13 +239,13 @@ public class ConfigurationService {
 
   public FtpServer getFtpServer(
       @NotNull String host, @NotNull Integer port, @NotNull String service) {
-    it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServers =
+    it.gov.pagopa.apiconfig.starter.entity.FtpServers ftpServers =
         getFtpServerIfExists(host, port, service);
     return modelMapper.map(ftpServers, FtpServer.class);
   }
 
   public FtpServer createFtpServer(FtpServer ftpServer) {
-    Optional<it.pagopa.pagopa.apiconfig.entity.FtpServers> fs =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.FtpServers> fs =
         ftpServersRepository.findByHostAndPortAndService(
             ftpServer.getHost(), ftpServer.getPort(), ftpServer.getService());
     if (fs.isPresent()) {
@@ -254,18 +256,18 @@ public class ConfigurationService {
           ftpServer.getService());
     }
 
-    it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServerE =
-        modelMapper.map(ftpServer, it.pagopa.pagopa.apiconfig.entity.FtpServers.class);
+    it.gov.pagopa.apiconfig.starter.entity.FtpServers ftpServerE =
+        modelMapper.map(ftpServer, it.gov.pagopa.apiconfig.starter.entity.FtpServers.class);
     ftpServersRepository.save(ftpServerE);
     return modelMapper.map(ftpServerE, FtpServer.class);
   }
 
   public FtpServer updateFtpServer(String host, Integer port, String service, FtpServer ftpServer) {
-    it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServerE =
+    it.gov.pagopa.apiconfig.starter.entity.FtpServers ftpServerE =
         getFtpServerIfExists(host, port, service);
 
-    it.pagopa.pagopa.apiconfig.entity.FtpServers updatedFtpServer =
-        modelMapper.map(ftpServer, it.pagopa.pagopa.apiconfig.entity.FtpServers.class).toBuilder()
+    it.gov.pagopa.apiconfig.starter.entity.FtpServers updatedFtpServer =
+        modelMapper.map(ftpServer, it.gov.pagopa.apiconfig.starter.entity.FtpServers.class).toBuilder()
             .id(ftpServerE.getId())
             .build();
     ftpServersRepository.save(updatedFtpServer);
@@ -274,13 +276,13 @@ public class ConfigurationService {
   }
 
   public void deleteFtpServer(String host, Integer port, String service) {
-    it.pagopa.pagopa.apiconfig.entity.FtpServers ftpServerE =
+    it.gov.pagopa.apiconfig.starter.entity.FtpServers ftpServerE =
         getFtpServerIfExists(host, port, service);
     ftpServersRepository.delete(ftpServerE);
   }
 
   public PaymentTypes getPaymentTypes() {
-    List<it.pagopa.pagopa.apiconfig.entity.TipiVersamento> paymentTypeList =
+    List<it.gov.pagopa.apiconfig.starter.entity.TipiVersamento> paymentTypeList =
         tipiVersamentoRepository.findAll();
     return it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes.builder()
         .paymentTypeList(getPaymentTypes(paymentTypeList))
@@ -353,7 +355,7 @@ public class ConfigurationService {
             .map(
                 tipiVersamento ->
                     PaymentTypesCosmos.builder()
-                        .id(deNull(tipiVersamento.getId()))
+                        .id(CommonUtil.deNull(tipiVersamento.getId()))
                         .name(tipiVersamento.getTipoVersamento())
                         .description(tipiVersamento.getDescrizione())
                         .build())
@@ -375,7 +377,7 @@ public class ConfigurationService {
    * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey}.
    */
   private List<ConfigurationKey> getConfigurationKeys(
-      List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configurationKeysList) {
+      List<it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys> configurationKeysList) {
     return configurationKeysList.stream()
         .map(elem -> modelMapper.map(elem, ConfigurationKey.class))
         .collect(Collectors.toList());
@@ -387,9 +389,9 @@ public class ConfigurationService {
    * @return return the configuration key record from DB if exists
    * @throws AppException if not found
    */
-  private it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys getConfigurationKeyIfExists(
+  private it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys getConfigurationKeyIfExists(
       String category, String key) throws AppException {
-    Optional<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> result =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys> result =
         configurationKeysRepository.findByConfigCategoryAndConfigKey(category, key);
     if (result.isEmpty()) {
       throw new AppException(AppError.CONFIGURATION_KEY_NOT_FOUND, category, key);
@@ -404,7 +406,7 @@ public class ConfigurationService {
    * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf}.
    */
   private List<WfespPluginConf> getWfespPluginConfList(
-      List<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> wfespPluginConfList) {
+      List<it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf> wfespPluginConfList) {
     return wfespPluginConfList.stream()
         .map(elem -> modelMapper.map(elem, WfespPluginConf.class))
         .collect(Collectors.toList());
@@ -415,9 +417,9 @@ public class ConfigurationService {
    * @return return the configuration wfesp plugin record from DB if exists
    * @throws AppException if not found
    */
-  private it.pagopa.pagopa.apiconfig.entity.WfespPluginConf getWfespPluginConfigurationIfExists(
+  private it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf getWfespPluginConfigurationIfExists(
       String idServPlugin) throws AppException {
-    Optional<it.pagopa.pagopa.apiconfig.entity.WfespPluginConf> result =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf> result =
         wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
     if (result.isEmpty()) {
       throw new AppException(AppError.CONFIGURATION_WFESP_PLUGIN_NOT_FOUND, idServPlugin);
@@ -431,7 +433,7 @@ public class ConfigurationService {
    * @param pddList list of pdd returned from the database
    * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.Pdds}.
    */
-  private List<Pdd> getPdds(List<it.pagopa.pagopa.apiconfig.entity.Pdd> pddList) {
+  private List<Pdd> getPdds(List<it.gov.pagopa.apiconfig.starter.entity.Pdd> pddList) {
     return pddList.stream()
         .map(elem -> modelMapper.map(elem, Pdd.class))
         .collect(Collectors.toList());
@@ -442,8 +444,8 @@ public class ConfigurationService {
    * @return return the configuration key record from DB if exists
    * @throws AppException if not found
    */
-  private it.pagopa.pagopa.apiconfig.entity.Pdd getPddIfExists(String idPdd) throws AppException {
-    Optional<it.pagopa.pagopa.apiconfig.entity.Pdd> result = pddRepository.findByIdPdd(idPdd);
+  private it.gov.pagopa.apiconfig.starter.entity.Pdd getPddIfExists(String idPdd) throws AppException {
+    Optional<it.gov.pagopa.apiconfig.starter.entity.Pdd> result = pddRepository.findByIdPdd(idPdd);
     if (result.isEmpty()) {
       throw new AppException(AppError.PDD_NOT_FOUND, idPdd);
     }
@@ -457,7 +459,7 @@ public class ConfigurationService {
    * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.FtpServer}.
    */
   private List<FtpServer> getFtpServers(
-      List<it.pagopa.pagopa.apiconfig.entity.FtpServers> ftpServerList) {
+      List<it.gov.pagopa.apiconfig.starter.entity.FtpServers> ftpServerList) {
     return ftpServerList.stream()
         .map(elem -> modelMapper.map(elem, FtpServer.class))
         .collect(Collectors.toList());
@@ -470,9 +472,9 @@ public class ConfigurationService {
    * @return return the configuration key record from DB if exists
    * @throws AppException if not found
    */
-  private it.pagopa.pagopa.apiconfig.entity.FtpServers getFtpServerIfExists(
+  private it.gov.pagopa.apiconfig.starter.entity.FtpServers getFtpServerIfExists(
       String host, Integer port, String service) throws AppException {
-    Optional<it.pagopa.pagopa.apiconfig.entity.FtpServers> result =
+    Optional<it.gov.pagopa.apiconfig.starter.entity.FtpServers> result =
         ftpServersRepository.findByHostAndPortAndService(host, port, service);
     if (result.isEmpty()) {
       throw new AppException(AppError.FTP_SERVER_NOT_FOUND, host, port, service);
@@ -487,7 +489,7 @@ public class ConfigurationService {
    * @return a list of {@link it.pagopa.pagopa.apiconfig.model.configuration.FtpServer}.
    */
   private List<PaymentType> getPaymentTypes(
-      List<it.pagopa.pagopa.apiconfig.entity.TipiVersamento> paymentTypes) {
+      List<it.gov.pagopa.apiconfig.starter.entity.TipiVersamento> paymentTypes) {
     return paymentTypes.stream()
         .map(elem -> modelMapper.map(elem, PaymentType.class))
         .collect(Collectors.toList());

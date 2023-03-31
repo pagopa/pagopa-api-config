@@ -8,10 +8,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +18,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
+import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
 
 @SpringBootTest(classes = ApiConfig.class)
 class AFMUtilsAsyncTaskTest {

@@ -24,35 +24,12 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import feign.FeignException;
-import feign.Request;
-import feign.RequestTemplate;
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.Pdd;
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
-import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
-import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
-import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PddRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
-import it.pagopa.pagopa.apiconfig.util.AFMMarketplaceClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -64,6 +41,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import feign.FeignException;
+import feign.Request;
+import feign.RequestTemplate;
+import it.gov.pagopa.apiconfig.starter.entity.Pdd;
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
+import it.gov.pagopa.apiconfig.starter.repository.ConfigurationKeysRepository;
+import it.gov.pagopa.apiconfig.starter.repository.FtpServersRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PddRepository;
+import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
+import it.gov.pagopa.apiconfig.starter.repository.WfespPluginConfRepository;
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
+import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
+import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
+import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
+import it.pagopa.pagopa.apiconfig.util.AFMMarketplaceClient;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ConfigurationServiceTest {
@@ -86,7 +88,7 @@ class ConfigurationServiceTest {
 
   @Test
   void getConfigurationKeys_ok() throws IOException, JSONException {
-    List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys> configKeyEntityList =
+    List<it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys> configKeyEntityList =
         getMockConfigurationKeysEntries();
     when(configurationKeysRepository.findAll()).thenReturn(configKeyEntityList);
 
@@ -98,7 +100,7 @@ class ConfigurationServiceTest {
 
   @Test
   void getConfigurationKey_ok() throws IOException, JSONException {
-    it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys configKeyEntity =
+    it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys configKeyEntity =
         getMockConfigurationKeyEntity();
     when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key"))
         .thenReturn(java.util.Optional.ofNullable(configKeyEntity));
@@ -128,7 +130,7 @@ class ConfigurationServiceTest {
     when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key"))
         .thenReturn(Optional.empty());
     when(configurationKeysRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys.class)))
         .thenReturn(getMockConfigurationKeyEntity());
 
     ConfigurationKey result =
@@ -143,7 +145,7 @@ class ConfigurationServiceTest {
     when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key"))
         .thenReturn(Optional.of(getMockConfigurationKeyEntity()));
     when(configurationKeysRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys.class)))
         .thenReturn(getMockConfigurationKeyEntity());
 
     try {
@@ -160,7 +162,7 @@ class ConfigurationServiceTest {
     when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key"))
         .thenReturn(Optional.of(getMockConfigurationKeyEntity()));
     when(configurationKeysRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys.class)))
         .thenReturn(getMockConfigurationKeyEntity());
 
     ConfigurationKey result =
@@ -176,7 +178,7 @@ class ConfigurationServiceTest {
     when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key"))
         .thenReturn(Optional.empty());
     when(configurationKeysRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys.class)))
         .thenReturn(getMockConfigurationKeyEntity());
 
     try {
@@ -194,7 +196,7 @@ class ConfigurationServiceTest {
     when(configurationKeysRepository.findByConfigCategoryAndConfigKey("category", "key"))
         .thenReturn(Optional.of(getMockConfigurationKeyEntity()));
     when(configurationKeysRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys.class)))
         .thenReturn(getMockConfigurationKeyEntity());
 
     try {
@@ -276,7 +278,7 @@ class ConfigurationServiceTest {
   void createWfespPlugin() throws IOException, JSONException {
     when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.empty());
     when(wfespPluginConfRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf.class)))
         .thenReturn(getMockWfespPluginConf());
 
     it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf result =
@@ -291,7 +293,7 @@ class ConfigurationServiceTest {
     when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin"))
         .thenReturn(Optional.of(getMockWfespPluginConf()));
     when(wfespPluginConfRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf.class)))
         .thenReturn(getMockWfespPluginConf());
 
     try {
@@ -308,7 +310,7 @@ class ConfigurationServiceTest {
     when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin"))
         .thenReturn(Optional.of(getMockWfespPluginConf()));
     when(wfespPluginConfRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf.class)))
         .thenReturn(getMockWfespPluginConf());
 
     it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf result =
@@ -323,7 +325,7 @@ class ConfigurationServiceTest {
   void updateWfespPlugin_notFound() {
     when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin")).thenReturn(Optional.empty());
     when(wfespPluginConfRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf.class)))
         .thenReturn(getMockWfespPluginConf());
 
     try {
@@ -341,7 +343,7 @@ class ConfigurationServiceTest {
     when(wfespPluginConfRepository.findByIdServPlugin("idServPlugin"))
         .thenReturn(Optional.of(getMockWfespPluginConf()));
     when(wfespPluginConfRepository.save(
-            any(it.pagopa.pagopa.apiconfig.entity.WfespPluginConf.class)))
+            any(it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf.class)))
         .thenReturn(getMockWfespPluginConf());
 
     try {
@@ -383,7 +385,7 @@ class ConfigurationServiceTest {
 
   @Test
   void getPdds_ok() throws IOException, JSONException {
-    List<it.pagopa.pagopa.apiconfig.entity.Pdd> pddList = getMockPddsEntities();
+    List<it.gov.pagopa.apiconfig.starter.entity.Pdd> pddList = getMockPddsEntities();
     when(pddRepository.findAll()).thenReturn(pddList);
 
     Pdds pdds = configurationService.getPdds();
@@ -419,7 +421,7 @@ class ConfigurationServiceTest {
   @Test
   void createPdd() throws IOException, JSONException {
     when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.empty());
-    when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class)))
+    when(pddRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.Pdd.class)))
         .thenReturn(getMockPddEntity());
 
     it.pagopa.pagopa.apiconfig.model.configuration.Pdd result =
@@ -433,7 +435,7 @@ class ConfigurationServiceTest {
   void createPdd_conflict() {
     when(pddRepository.findByIdPdd("idPdd"))
         .thenReturn(java.util.Optional.ofNullable(getMockPddEntity()));
-    when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class)))
+    when(pddRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.Pdd.class)))
         .thenReturn(getMockPddEntity());
 
     try {
@@ -448,7 +450,7 @@ class ConfigurationServiceTest {
   @Test
   void updatePdd() throws IOException, JSONException {
     when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.of(getMockPddEntity()));
-    when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class)))
+    when(pddRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.Pdd.class)))
         .thenReturn(getMockPddEntity());
 
     it.pagopa.pagopa.apiconfig.model.configuration.Pdd result =
@@ -461,7 +463,7 @@ class ConfigurationServiceTest {
   @Test
   void updatePdd_notFound() {
     when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.empty());
-    when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class)))
+    when(pddRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.Pdd.class)))
         .thenReturn(getMockPddEntity());
 
     try {
@@ -476,7 +478,7 @@ class ConfigurationServiceTest {
   @Test
   void updatePdd_badRequest() {
     when(pddRepository.findByIdPdd("idPdd")).thenReturn(Optional.of(getMockPddEntity()));
-    when(pddRepository.save(any(it.pagopa.pagopa.apiconfig.entity.Pdd.class)))
+    when(pddRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.Pdd.class)))
         .thenReturn(getMockPddEntity());
 
     try {
@@ -553,7 +555,7 @@ class ConfigurationServiceTest {
   void createFtpServer() throws IOException, JSONException {
     when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service"))
         .thenReturn(java.util.Optional.empty());
-    when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class)))
+    when(ftpServersRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.FtpServers.class)))
         .thenReturn(getMockFtpServersEntity());
 
     FtpServer result = configurationService.createFtpServer(getMockFtpServer());
@@ -566,7 +568,7 @@ class ConfigurationServiceTest {
   void createFtpServer_conflict() {
     when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service"))
         .thenReturn(Optional.of(getMockFtpServersEntity()));
-    when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class)))
+    when(ftpServersRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.FtpServers.class)))
         .thenReturn(getMockFtpServersEntity());
 
     try {
@@ -582,7 +584,7 @@ class ConfigurationServiceTest {
   void updateFtpServer() throws IOException, JSONException {
     when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service"))
         .thenReturn(Optional.of(getMockFtpServersEntity()));
-    when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class)))
+    when(ftpServersRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.FtpServers.class)))
         .thenReturn(getMockFtpServersEntity());
 
     FtpServer result =
@@ -596,7 +598,7 @@ class ConfigurationServiceTest {
   void updateFtpServer_notFound() {
     when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service"))
         .thenReturn(java.util.Optional.empty());
-    when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class)))
+    when(ftpServersRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.FtpServers.class)))
         .thenReturn(getMockFtpServersEntity());
 
     try {
@@ -612,7 +614,7 @@ class ConfigurationServiceTest {
   void updateFtpServer_badRequest() {
     when(ftpServersRepository.findByHostAndPortAndService("host", 1, "service"))
         .thenReturn(Optional.of(getMockFtpServersEntity()));
-    when(ftpServersRepository.save(any(it.pagopa.pagopa.apiconfig.entity.FtpServers.class)))
+    when(ftpServersRepository.save(any(it.gov.pagopa.apiconfig.starter.entity.FtpServers.class)))
         .thenReturn(getMockFtpServersEntity());
 
     try {

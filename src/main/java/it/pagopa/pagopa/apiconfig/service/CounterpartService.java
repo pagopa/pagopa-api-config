@@ -1,15 +1,9 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toTimestamp;
 
-import it.pagopa.pagopa.apiconfig.entity.*;
-import it.pagopa.pagopa.apiconfig.exception.AppError;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartXml;
-import it.pagopa.pagopa.apiconfig.repository.*;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
@@ -17,9 +11,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +29,23 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
+
+import it.gov.pagopa.apiconfig.starter.entity.BinaryFile;
+import it.gov.pagopa.apiconfig.starter.entity.InformativePaDetail;
+import it.gov.pagopa.apiconfig.starter.entity.InformativePaFasce;
+import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativePaDetailRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativePaFasceRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativePaMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTable;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartXml;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 @Service
 @Validated

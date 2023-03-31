@@ -1,20 +1,23 @@
 package it.pagopa.pagopa.apiconfig.util;
 
-import com.opencsv.bean.BeanVerifier;
-import com.opencsv.exceptions.CsvConstraintViolationException;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.model.massiveloading.CreditorInstitutionStation;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.opencsv.bean.BeanVerifier;
+import com.opencsv.exceptions.CsvConstraintViolationException;
+
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import it.pagopa.pagopa.apiconfig.model.massiveloading.CreditorInstitutionStation;
 
 public class CreditorInstitutionStationVerifier
     implements BeanVerifier<CreditorInstitutionStation> {

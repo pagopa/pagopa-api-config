@@ -37,9 +37,23 @@
     <commons-validator>1.7</commons-validator>
     <feign-version>12.1</feign-version>
     <postgresql-version>42.5.1</postgresql-version>
+    <starter.version>0.3.0</starter.version>
   </properties>
+  
+  <repositories>
+    <repository>
+      <id>github</id>
+      <url>https://public:${env.GITHUB_TOKEN_READ_PACKAGES}@maven.pkg.github.com/pagopa/pagopa-api-config-starter</url>
+    </repository>
+  </repositories>
 
   <dependencies>
+  <dependency>
+      <groupId>it.gov.pagopa.api-config</groupId>
+      <artifactId>starter</artifactId>
+      <version>${starter.version}</version>
+    </dependency>
+    
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>

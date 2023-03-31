@@ -4,13 +4,8 @@ import static it.pagopa.pagopa.apiconfig.TestUtil.getMockElencoServizi;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
-import it.pagopa.pagopa.apiconfig.model.psp.Service;
-import it.pagopa.pagopa.apiconfig.model.psp.Services;
-import it.pagopa.pagopa.apiconfig.repository.ElencoServiziRepository;
 import java.io.IOException;
+
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -22,6 +17,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
+import it.gov.pagopa.apiconfig.starter.repository.ElencoServiziRepository;
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.model.psp.Service;
+import it.pagopa.pagopa.apiconfig.model.psp.Services;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ServicesServiceTest {

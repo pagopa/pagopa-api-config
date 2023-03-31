@@ -1,10 +1,12 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.BrokerDetails;
 
 public class ConvertBrokerDetailsToIntermediariPa
     implements Converter<BrokerDetails, IntermediariPa> {

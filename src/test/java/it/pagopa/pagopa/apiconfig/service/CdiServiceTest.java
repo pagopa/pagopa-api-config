@@ -20,29 +20,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
-import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.CheckItem;
-import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspRepository;
-import it.pagopa.pagopa.apiconfig.util.AFMUtilsAsyncTask;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,6 +44,30 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import it.gov.pagopa.apiconfig.starter.entity.Canali;
+import it.gov.pagopa.apiconfig.starter.entity.CdiDetail;
+import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
+import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
+import it.gov.pagopa.apiconfig.starter.entity.CdiPreference;
+import it.gov.pagopa.apiconfig.starter.entity.Psp;
+import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
+import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CdiDetailRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CdiFasciaCostoServizioRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CdiInformazioniServizioRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CdiMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CdiPreferenceRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
+import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
+import it.pagopa.pagopa.apiconfig.util.AFMUtilsAsyncTask;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CdiServiceTest {

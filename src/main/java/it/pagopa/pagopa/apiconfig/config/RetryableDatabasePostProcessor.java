@@ -1,12 +1,14 @@
 package it.pagopa.pagopa.apiconfig.config;
 
 import javax.sql.DataSource;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Order(value = Ordered.HIGHEST_PRECEDENCE)

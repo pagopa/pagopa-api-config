@@ -1,10 +1,12 @@
 package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,16 +1,18 @@
 package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

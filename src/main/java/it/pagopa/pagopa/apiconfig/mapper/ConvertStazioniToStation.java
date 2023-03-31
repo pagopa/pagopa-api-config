@@ -1,10 +1,12 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Station;
 
 public class ConvertStazioniToStation implements Converter<Stazioni, Station> {
 

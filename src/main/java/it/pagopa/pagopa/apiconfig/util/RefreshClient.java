@@ -1,8 +1,9 @@
 package it.pagopa.pagopa.apiconfig.util;
 
+import org.springframework.stereotype.Service;
+
 import feign.Param;
 import feign.RequestLine;
-import org.springframework.stereotype.Service;
 
 @Service
 public interface RefreshClient {

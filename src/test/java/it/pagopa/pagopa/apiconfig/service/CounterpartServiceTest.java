@@ -11,20 +11,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.InformativePaDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.InformativePaFasceRepository;
-import it.pagopa.pagopa.apiconfig.repository.InformativePaMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
+
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -41,6 +32,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+
+import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
+import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativePaDetailRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativePaFasceRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativePaMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.CounterpartTables;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CounterpartServiceTest {

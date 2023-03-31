@@ -1,26 +1,12 @@
 package it.pagopa.pagopa.apiconfig.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import it.pagopa.pagopa.apiconfig.model.ProblemJson;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
-import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
-import it.pagopa.pagopa.apiconfig.service.BrokersPspService;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -36,6 +22,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import it.pagopa.pagopa.apiconfig.model.ProblemJson;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.Order;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokersPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviders;
+import it.pagopa.pagopa.apiconfig.service.BrokersPspService;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 @RestController()
 @RequestMapping(path = "/brokerspsp")

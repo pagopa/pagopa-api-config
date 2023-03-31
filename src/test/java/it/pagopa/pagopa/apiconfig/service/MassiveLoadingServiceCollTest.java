@@ -10,16 +10,11 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.repository.PaRepository;
-import it.pagopa.pagopa.apiconfig.repository.PaStazionePaRepository;
-import it.pagopa.pagopa.apiconfig.repository.StazioniRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +23,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
 
 @SpringBootTest(classes = ApiConfig.class)
 class MassiveLoadingServiceCollTest {

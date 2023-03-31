@@ -1,10 +1,12 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 
 public class ConvertCanaleTipoVersamentoToPaymentType
     implements Converter<CanaleTipoVersamento, PaymentType> {

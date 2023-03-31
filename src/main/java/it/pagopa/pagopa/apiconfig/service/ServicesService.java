@@ -1,19 +1,25 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
-import it.pagopa.pagopa.apiconfig.model.psp.Service;
-import it.pagopa.pagopa.apiconfig.model.psp.Services;
-import it.pagopa.pagopa.apiconfig.repository.ElencoServiziRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
+import it.gov.pagopa.apiconfig.starter.repository.ElencoServiziRepository;
+import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
+import it.pagopa.pagopa.apiconfig.model.psp.Service;
+import it.pagopa.pagopa.apiconfig.model.psp.Services;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 @org.springframework.stereotype.Service
 @Validated

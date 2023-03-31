@@ -2,36 +2,50 @@ package it.pagopa.pagopa.apiconfig;
 
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
-import it.pagopa.pagopa.apiconfig.entity.CanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
-import it.pagopa.pagopa.apiconfig.entity.Codifiche;
-import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.entity.ElencoServizi;
-import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.entity.InformativeContoAccreditoMaster;
-import it.pagopa.pagopa.apiconfig.entity.InformativePaDetail;
-import it.pagopa.pagopa.apiconfig.entity.InformativePaMaster;
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPa;
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
-import it.pagopa.pagopa.apiconfig.entity.Pa;
-import it.pagopa.pagopa.apiconfig.entity.PaStazionePa;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
-import it.pagopa.pagopa.apiconfig.entity.Stazioni;
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
-import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
+
+import it.gov.pagopa.apiconfig.starter.entity.BinaryFile;
+import it.gov.pagopa.apiconfig.starter.entity.Cache;
+import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.Canali;
+import it.gov.pagopa.apiconfig.starter.entity.CanaliNodo;
+import it.gov.pagopa.apiconfig.starter.entity.CdiDetail;
+import it.gov.pagopa.apiconfig.starter.entity.CdiFasciaCostoServizio;
+import it.gov.pagopa.apiconfig.starter.entity.CdiInformazioniServizio;
+import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
+import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
+import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
+import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
+import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
+import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
+import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
+import it.gov.pagopa.apiconfig.starter.entity.InformativePaDetail;
+import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
+import it.gov.pagopa.apiconfig.starter.entity.Psp;
+import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.Cache;
 import it.pagopa.pagopa.apiconfig.model.configuration.CacheVersions;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
 import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
@@ -85,18 +99,7 @@ import it.pagopa.pagopa.apiconfig.model.psp.PspChannelList;
 import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
 import it.pagopa.pagopa.apiconfig.model.psp.Service;
 import it.pagopa.pagopa.apiconfig.model.psp.Services;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.experimental.UtilityClass;
-import org.mockito.Mockito;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 
 @UtilityClass
 public class TestUtil {
@@ -801,9 +804,9 @@ public class TestUtil {
         .build();
   }
 
-  public static it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys
+  public static it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys
       getMockConfigurationKeyEntity() {
-    return it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys.builder()
+    return it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys.builder()
         .configCategory("category")
         .configKey("key")
         .configValue("value")
@@ -811,7 +814,7 @@ public class TestUtil {
         .build();
   }
 
-  public static List<it.pagopa.pagopa.apiconfig.entity.ConfigurationKeys>
+  public static List<it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys>
       getMockConfigurationKeysEntries() {
     return List.of(getMockConfigurationKeyEntity());
   }
@@ -854,8 +857,8 @@ public class TestUtil {
     return Pdds.builder().pddList(List.of(getMockPdd())).build();
   }
 
-  public static it.pagopa.pagopa.apiconfig.entity.Pdd getMockPddEntity() {
-    return it.pagopa.pagopa.apiconfig.entity.Pdd.builder()
+  public static it.gov.pagopa.apiconfig.starter.entity.Pdd getMockPddEntity() {
+    return it.gov.pagopa.apiconfig.starter.entity.Pdd.builder()
         .idPdd("idPdd")
         .descrizione("description")
         .enabled(true)
@@ -863,7 +866,7 @@ public class TestUtil {
         .build();
   }
 
-  public static List<it.pagopa.pagopa.apiconfig.entity.Pdd> getMockPddsEntities() {
+  public static List<it.gov.pagopa.apiconfig.starter.entity.Pdd> getMockPddsEntities() {
     return List.of(getMockPddEntity());
   }
 
@@ -884,8 +887,8 @@ public class TestUtil {
     return FtpServers.builder().ftpServerList(List.of(getMockFtpServer())).build();
   }
 
-  public static it.pagopa.pagopa.apiconfig.entity.FtpServers getMockFtpServersEntity() {
-    return it.pagopa.pagopa.apiconfig.entity.FtpServers.builder()
+  public static it.gov.pagopa.apiconfig.starter.entity.FtpServers getMockFtpServersEntity() {
+    return it.gov.pagopa.apiconfig.starter.entity.FtpServers.builder()
         .host("host")
         .port(1)
         .service("service")
@@ -897,7 +900,7 @@ public class TestUtil {
         .build();
   }
 
-  public static List<it.pagopa.pagopa.apiconfig.entity.FtpServers> getMockFtpServersEntities() {
+  public static List<it.gov.pagopa.apiconfig.starter.entity.FtpServers> getMockFtpServersEntities() {
     return List.of(getMockFtpServersEntity());
   }
 
@@ -920,18 +923,18 @@ public class TestUtil {
         .build();
   }
 
-  public static Page<it.pagopa.pagopa.apiconfig.model.configuration.Cache>
+  public static Page<Cache>
       getMockCacheVersionsPaged() {
     return mockPage(
         List.of(Cache.builder().id("2023-02-08 01:00:06").version("3.10.0").build()), 50, 0);
   }
 
-  public static Optional<it.pagopa.pagopa.apiconfig.entity.Cache> getMockCacheByVersion() {
+  public static Optional<Cache> getMockCacheByVersion() {
     return Optional.of(getMockCache());
   }
 
-  public static it.pagopa.pagopa.apiconfig.entity.Cache getMockCache() {
-    return it.pagopa.pagopa.apiconfig.entity.Cache.builder()
+  public static Cache getMockCache() {
+    return Cache.builder()
         .id("2023-02-08 01:00:06")
         .cache(new byte[] {1, 11})
         .version("3.10.0")

@@ -15,13 +15,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import it.pagopa.pagopa.apiconfig.ApiConfig;
-import it.pagopa.pagopa.apiconfig.TestUtil;
-import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
-import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
-import it.pagopa.pagopa.apiconfig.service.PspService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,6 +26,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import it.pagopa.pagopa.apiconfig.ApiConfig;
+import it.pagopa.pagopa.apiconfig.TestUtil;
+import it.pagopa.pagopa.apiconfig.model.filterandorder.FilterAndOrder;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelCode;
+import it.pagopa.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
+import it.pagopa.pagopa.apiconfig.service.PspService;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
