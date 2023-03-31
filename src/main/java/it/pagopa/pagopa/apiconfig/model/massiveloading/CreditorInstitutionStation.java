@@ -1,6 +1,7 @@
 package it.pagopa.pagopa.apiconfig.model.massiveloading;
 
 import com.opencsv.bean.CsvBindByName;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

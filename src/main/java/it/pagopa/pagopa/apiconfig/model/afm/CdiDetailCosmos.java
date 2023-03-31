@@ -1,8 +1,10 @@
 package it.pagopa.pagopa.apiconfig.model.afm;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import it.pagopa.pagopa.apiconfig.entity.ServiceAmountCosmos;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import it.gov.pagopa.apiconfig.starter.entity.ServiceAmountCosmos;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

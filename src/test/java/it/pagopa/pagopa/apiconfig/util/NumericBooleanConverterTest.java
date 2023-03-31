@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import it.gov.pagopa.apiconfig.starter.util.NumericBooleanConverter;
+
 class NumericBooleanConverterTest {
 
   @Test

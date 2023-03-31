@@ -2,11 +2,13 @@ package it.pagopa.pagopa.apiconfig.mapper;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.toOffsetDateTime;
 
-import it.pagopa.pagopa.apiconfig.entity.IbanValidiPerPa;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Iban;
 
 public class ConvertIbanValidiPerPaToIban implements Converter<IbanValidiPerPa, Iban> {
 

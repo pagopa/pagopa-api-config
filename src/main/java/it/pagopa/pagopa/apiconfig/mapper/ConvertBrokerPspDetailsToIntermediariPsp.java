@@ -1,10 +1,12 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
-import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
 
 public class ConvertBrokerPspDetailsToIntermediariPsp
     implements Converter<BrokerPspDetails, IntermediariPsp> {

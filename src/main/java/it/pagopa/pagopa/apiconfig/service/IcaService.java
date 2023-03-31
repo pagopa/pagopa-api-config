@@ -1,29 +1,33 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
 
-import it.pagopa.pagopa.apiconfig.entity.*;
-import it.pagopa.pagopa.apiconfig.exception.AppError;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.CheckItem;
-import it.pagopa.pagopa.apiconfig.model.MassiveCheck;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.*;
-import it.pagopa.pagopa.apiconfig.repository.*;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import javax.validation.constraints.NotNull;
 import javax.xml.stream.XMLStreamException;
+
 import org.apache.commons.validator.routines.IBANValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +42,29 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
+
+import it.gov.pagopa.apiconfig.starter.entity.BinaryFile;
+import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
+import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
+import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoDetail;
+import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativeContoAccreditoDetailRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativeContoAccreditoMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.CheckItem;
+import it.pagopa.pagopa.apiconfig.model.MassiveCheck;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Ica;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.IcaXml;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Icas;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.XSDValidation;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 @Service
 @Validated

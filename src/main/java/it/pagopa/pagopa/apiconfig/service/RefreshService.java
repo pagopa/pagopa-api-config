@@ -1,8 +1,14 @@
 package it.pagopa.pagopa.apiconfig.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import feign.Feign;
 import feign.FeignException;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
@@ -12,10 +18,6 @@ import it.pagopa.pagopa.apiconfig.model.JobTrigger;
 import it.pagopa.pagopa.apiconfig.util.RefreshClient;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated

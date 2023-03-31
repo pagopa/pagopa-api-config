@@ -1,12 +1,14 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CanaliNodo;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Protocol;
-import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.Canali;
+import it.gov.pagopa.apiconfig.starter.entity.CanaliNodo;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Protocol;
+import it.pagopa.pagopa.apiconfig.model.psp.ChannelDetails;
 
 public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, Canali> {
 

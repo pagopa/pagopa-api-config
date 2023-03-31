@@ -1,11 +1,13 @@
 package it.pagopa.pagopa.apiconfig.util;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 import it.pagopa.pagopa.apiconfig.model.afm.CdiCosmos;
-import java.util.List;
-import org.springframework.stereotype.Service;
 
 @Service
 public interface AFMUtilsClient {

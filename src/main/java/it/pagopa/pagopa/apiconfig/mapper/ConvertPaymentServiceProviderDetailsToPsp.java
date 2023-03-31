@@ -1,9 +1,10 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.Psp;
+import it.pagopa.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 
 public class ConvertPaymentServiceProviderDetailsToPsp
     implements Converter<PaymentServiceProviderDetails, Psp> {

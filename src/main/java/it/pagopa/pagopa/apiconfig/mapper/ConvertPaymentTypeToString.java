@@ -1,9 +1,11 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 
 public class ConvertPaymentTypeToString implements Converter<PaymentType, String> {
   @Override

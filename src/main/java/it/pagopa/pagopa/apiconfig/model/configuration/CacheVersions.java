@@ -1,11 +1,15 @@
 package it.pagopa.pagopa.apiconfig.model.configuration;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
-import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import it.gov.pagopa.apiconfig.starter.entity.Cache;
+import it.pagopa.pagopa.apiconfig.model.PageInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,11 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import it.pagopa.pagopa.apiconfig.entity.Cache;
-import it.pagopa.pagopa.apiconfig.exception.AppError;
-import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.CacheVersions;
-import it.pagopa.pagopa.apiconfig.repository.CacheRepository;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +9,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import it.gov.pagopa.apiconfig.starter.entity.Cache;
+import it.gov.pagopa.apiconfig.starter.repository.CacheRepository;
+import it.pagopa.pagopa.apiconfig.exception.AppError;
+import it.pagopa.pagopa.apiconfig.exception.AppException;
+import it.pagopa.pagopa.apiconfig.model.configuration.CacheVersions;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 @Service
 @Validated
@@ -34,8 +35,8 @@ public class CacheService {
   public CacheVersions getCacheVersions(Integer page, Integer limit) {
     Sort sortOrder = Sort.by(Sort.Direction.DESC, "time").and(Sort.by("version"));
     Pageable pageable = PageRequest.of(page, limit, sortOrder);
-    Page<it.pagopa.pagopa.apiconfig.model.configuration.Cache> data =
-        cacheRepository.findAllPaged(pageable);
+    Page<Cache> data =
+        cacheRepository.findAll(pageable);
 
     return CacheVersions.builder()
         .versionList(data.toList())

@@ -1,11 +1,14 @@
 package it.pagopa.pagopa.apiconfig.model.psp;
 
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -41,6 +44,7 @@ public class PaymentServiceProviderDetails extends PaymentServiceProvider {
 
   @JsonProperty("agid_psp")
   @Schema(description = "True if the PSP is internal")
+  @Builder.Default
   private Boolean agidPsp = false;
 
   @JsonProperty("tax_code")

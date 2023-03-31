@@ -1,8 +1,8 @@
 package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
-import it.pagopa.pagopa.apiconfig.util.XMLDateAdapter;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -10,6 +10,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import it.pagopa.pagopa.apiconfig.util.XMLDateAdapter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

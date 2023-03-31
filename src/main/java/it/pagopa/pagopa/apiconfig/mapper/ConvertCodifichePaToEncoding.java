@@ -1,10 +1,12 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.CodifichePa;
-import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
+import it.pagopa.pagopa.apiconfig.model.creditorinstitution.Encoding;
 
 public class ConvertCodifichePaToEncoding implements Converter<CodifichePa, Encoding> {
 

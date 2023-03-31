@@ -1,10 +1,12 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.FtpServers;
+import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
 
 public class ConvertFtpServersToFtpServer implements Converter<FtpServers, FtpServer> {
   @Override

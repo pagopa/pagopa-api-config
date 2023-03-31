@@ -1,11 +1,13 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
+import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 public class ConvertCdiMasterToCdi implements Converter<CdiMaster, Cdi> {
 

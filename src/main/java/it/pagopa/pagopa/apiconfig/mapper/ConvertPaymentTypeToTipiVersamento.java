@@ -1,10 +1,12 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 import javax.validation.Valid;
+
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
 
 public class ConvertPaymentTypeToTipiVersamento implements Converter<PaymentType, TipiVersamento> {
   @Override

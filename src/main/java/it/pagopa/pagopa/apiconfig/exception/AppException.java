@@ -1,11 +1,14 @@
 package it.pagopa.pagopa.apiconfig.exception;
 
 import java.util.Formatter;
+
 import javax.validation.constraints.NotNull;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 /**
  * Custom exception.

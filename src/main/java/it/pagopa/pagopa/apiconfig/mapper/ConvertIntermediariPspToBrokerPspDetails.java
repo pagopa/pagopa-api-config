@@ -1,10 +1,11 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.IntermediariPsp;
-import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
-import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
+import it.pagopa.pagopa.apiconfig.model.psp.BrokerPspDetails;
+import it.pagopa.pagopa.apiconfig.util.CommonUtil;
 
 public class ConvertIntermediariPspToBrokerPspDetails
     implements Converter<IntermediariPsp, BrokerPspDetails> {

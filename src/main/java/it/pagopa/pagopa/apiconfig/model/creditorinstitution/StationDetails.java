@@ -1,14 +1,17 @@
 package it.pagopa.pagopa.apiconfig.model.creditorinstitution;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -117,18 +120,21 @@ public class StationDetails extends Station {
   @JsonProperty("timeout_a")
   @Schema(required = true)
   @NotNull
+  @Builder.Default
   private Long timeoutA = 15L;
 
   @Min(0)
   @JsonProperty("timeout_b")
   @Schema(required = true)
   @NotNull
+  @Builder.Default
   private Long timeoutB = 30L;
 
   @Min(0)
   @JsonProperty("timeout_c")
   @Schema(required = true)
   @NotNull
+  @Builder.Default
   private Long timeoutC = 120L;
 
   @JsonProperty("flag_online")

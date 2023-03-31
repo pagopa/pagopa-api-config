@@ -1,8 +1,9 @@
 package it.pagopa.pagopa.apiconfig.mapper;
 
-import it.pagopa.pagopa.apiconfig.entity.Pdd;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import it.gov.pagopa.apiconfig.starter.entity.Pdd;
 
 public class ConvertPddEToPddM
     implements Converter<Pdd, it.pagopa.pagopa.apiconfig.model.configuration.Pdd> {
