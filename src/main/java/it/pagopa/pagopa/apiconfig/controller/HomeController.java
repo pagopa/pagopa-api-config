@@ -23,7 +23,7 @@ import it.pagopa.pagopa.apiconfig.service.HealthCheckService;
 @RestController
 public class HomeController {
 
-  @Value("${info.application.name}")
+  @Value("${info.application.artifactId}")
   private String name;
 
   @Value("${info.application.version}")
