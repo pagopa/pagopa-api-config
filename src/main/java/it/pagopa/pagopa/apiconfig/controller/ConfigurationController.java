@@ -24,6 +24,9 @@ import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfBase;
 import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
 import it.pagopa.pagopa.apiconfig.service.ConfigurationService;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,10 +40,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @RestController()
 @RequestMapping(path = "/configuration")

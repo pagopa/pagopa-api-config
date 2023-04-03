@@ -3,11 +3,13 @@ locals {
     org        = "pagopa"
     repository = "pagopa-api-config"
   }
+  prefix = "pagopa"
+  product = "${local.prefix}-${var.env_short}"
+  project = "${local.prefix}-${var.env_short}-${local.location_short}-${local.domain}"
+  runner = "${local.prefix}-${var.env_short}-${local.location_short}"
+
   domain = "apiconfig"
   location_short  = "weu"
-
-  product = "${var.prefix}-${var.env_short}"
-  project = "${var.prefix}-${var.env_short}-${local.location_short}-${local.domain}"
 
   aks_name                = "${local.product}-${local.location_short}-${var.env}-aks"
   aks_resource_group_name = "${local.product}-${local.location_short}-${var.env}-aks-rg"

@@ -22,7 +22,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 public class HomeController {
 
-  @Value("${info.application.name}")
+  @Value("${info.application.artifactId}")
   private String name;
 
   @Value("${info.application.version}")

@@ -595,9 +595,20 @@ public class ChannelsController {
       @Size(max = 50)
           @Parameter(description = "Channel code", required = true)
           @PathVariable("channelcode")
-          String channelCode) {
+          String channelCode,
+      @RequestParam(required = false, name = "pspCode")
+          @Parameter(description = "Filter by psp code")
+          String filterByPspCode,
+      @RequestParam(required = false, name = "pspName")
+          @Parameter(description = "Filter by psp name")
+          String filterByPspName,
+      @RequestParam(required = false, name = "pspEnabled")
+          @Parameter(description = "Filter by psp enabled")
+          Boolean filterByPspEnabled) {
     return ResponseEntity.ok()
-        .body(channelsService.getChannelPaymentServiceProviders(limit, page, channelCode));
+        .body(
+            channelsService.getChannelPaymentServiceProviders(
+                limit, page, channelCode, filterByPspCode, filterByPspName, filterByPspEnabled));
   }
 
   @Operation(

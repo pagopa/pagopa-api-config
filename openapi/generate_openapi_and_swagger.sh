@@ -35,6 +35,9 @@ echo 'Service Started'
 
 
 curl http://127.0.0.1:8080/apiconfig/api/v1/v3/api-docs > ./openapi/openapi.json
+cp ./openapi/openapi.json ./openapi/openapi_auth.json
+jq '.servers[0].url = "http://localhost:8080/apiconfig/auth/api/v1"' ./openapi/openapi.json > ./openapi/openapi_auth.json
+
 api-spec-converter  --from=openapi_3 --to=swagger_2 ./openapi/openapi.json > ./openapi/swagger.json
 
 # BugFix for api-spec-converter: swagger 2 does not support http as type

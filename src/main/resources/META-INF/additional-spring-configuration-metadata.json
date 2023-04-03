@@ -1,11 +1,6 @@
 {
   "properties": [
     {
-      "name": "application.name",
-      "type": "java.lang.String",
-      "description": "Name of the application set in the POM file."
-    },
-    {
       "name": "application.version",
       "type": "java.lang.String",
       "description": "Version of the application set in the POM file."
