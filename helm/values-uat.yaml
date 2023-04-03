@@ -144,8 +144,8 @@ oracle:
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-oracle'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-oracle"
-    SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@db-nodo-pagamenti.u.db-nodo-pagamenti.com:1522/NDPSPCA_PP_NODO4_CFG'
-    SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
+    SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@db-nodo-pagamenti.u.db-nodo-pagamenti.com:1524/NDPSPCA_PP_NODO4_CFG'
+    SPRING_DATASOURCE_USERNAME: 'PP_NODO4_CFG'
     SPRING_DATASOURCE_DRIVER: 'oracle.jdbc.OracleDriver'
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
     DATABASE_SCHEMA: 'NODO4_CFG'
