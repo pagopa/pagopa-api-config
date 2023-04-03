@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "ApiConfig",
-    "version": "0.37.1-2-fix-aks-oracle"
+    "version": "0.37.1-1-fix-aks-oracle"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
