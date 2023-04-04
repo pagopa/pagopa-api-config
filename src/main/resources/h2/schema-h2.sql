@@ -126,6 +126,7 @@ create table NODO4_CFG.PA_STAZIONE_PA
     STAZIONE_NODO  boolean not null default 'N',
     STAZIONE_AVV   boolean not null default 'N',
     BROADCAST      char    not null default 'N',
+    PAGAMENTO_SPONTANEO char    not null default 'N',
     constraint PK_PA_STAZIONE_PA
         primary key (OBJ_ID),
     constraint FK_PA_STAZIONE_PA_PA
