@@ -39,6 +39,7 @@ import it.gov.pagopa.apiconfig.mapper.ConvertPddMToPddE;
 import it.gov.pagopa.apiconfig.mapper.ConvertPspCanaleTipoVersamentoToPspChannel;
 import it.gov.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProvider;
 import it.gov.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProviderDetails;
+import it.gov.pagopa.apiconfig.mapper.ConvertPspToPaymentServiceProviderView;
 import it.gov.pagopa.apiconfig.mapper.ConvertStationDetailsToStazioni;
 import it.gov.pagopa.apiconfig.mapper.ConvertStazioniToStation;
 import it.gov.pagopa.apiconfig.mapper.ConvertStazioniToStationDetails;
@@ -67,6 +68,7 @@ import it.gov.pagopa.apiconfig.model.psp.Channel;
 import it.gov.pagopa.apiconfig.model.psp.ChannelDetails;
 import it.gov.pagopa.apiconfig.model.psp.PaymentServiceProvider;
 import it.gov.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
+import it.gov.pagopa.apiconfig.model.psp.PaymentServiceProviderView;
 import it.gov.pagopa.apiconfig.model.psp.PspChannel;
 import it.gov.pagopa.apiconfig.model.psp.Service;
 import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
@@ -175,6 +177,8 @@ public class MappingsConfiguration {
     Converter<PaymentType, String> convertPaymentTypeString = new ConvertPaymentTypeToString();
     Converter<PaymentType, TipiVersamento> convertPaymentTypeTipiVersamento =
         new ConvertPaymentTypeToTipiVersamento();
+    
+    ConvertPspToPaymentServiceProviderView convertPspToPaymentServiceProviderView = new ConvertPspToPaymentServiceProviderView();
 
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
@@ -284,6 +288,9 @@ public class MappingsConfiguration {
     mapper
         .createTypeMap(PaymentType.class, TipiVersamento.class)
         .setConverter(convertPaymentTypeTipiVersamento);
+    mapper
+    .createTypeMap(Psp.class, PaymentServiceProviderView.class)
+    .setConverter(convertPspToPaymentServiceProviderView);
 
     return mapper;
   }

@@ -38,6 +38,7 @@ import it.gov.pagopa.apiconfig.model.ProblemJson;
 import it.gov.pagopa.apiconfig.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.model.psp.PaymentServiceProviderDetails;
 import it.gov.pagopa.apiconfig.model.psp.PaymentServiceProviders;
+import it.gov.pagopa.apiconfig.model.psp.PaymentServiceProvidersView;
 import it.gov.pagopa.apiconfig.model.psp.PspChannelCode;
 import it.gov.pagopa.apiconfig.model.psp.PspChannelList;
 import it.gov.pagopa.apiconfig.model.psp.PspChannelPaymentTypes;
@@ -54,70 +55,70 @@ public class PspController {
   @Operation(
       summary = "Get paginated list of Payment Service Providers",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {
-        "Payment Service Providers",
+          "Payment Service Providers",
       })
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PaymentServiceProviders.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PaymentServiceProviders.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
       value = "",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<PaymentServiceProviders> getPaymentServiceProviders(
       @Positive
-          @Parameter(description = "Number of elements on one page. Default = 50")
-          @RequestParam(required = false, defaultValue = "50")
-          Integer limit,
+      @Parameter(description = "Number of elements on one page. Default = 50")
+      @RequestParam(required = false, defaultValue = "50")
+      Integer limit,
       @PositiveOrZero
-          @Parameter(description = "Page number. Page value starts from 0", required = true)
-          @RequestParam
-          Integer page,
+      @Parameter(description = "Page number. Page value starts from 0", required = true)
+      @RequestParam
+      Integer page,
       @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code")
-          String filterByCode,
+      String filterByCode,
       @RequestParam(required = false, name = "name") @Parameter(description = "Filter by name")
-          String filterByName,
+      String filterByName,
       @RequestParam(required = false, name = "orderby", defaultValue = "CODE")
-          @Parameter(description = "Order by code or name")
-          Order.Psp orderBy,
+      @Parameter(description = "Order by code or name")
+      Order.Psp orderBy,
       @RequestParam(required = false, name = "ordering", defaultValue = "DESC")
-          @Parameter(description = "Direction of ordering")
-          Sort.Direction ordering) {
+      @Parameter(description = "Direction of ordering")
+      Sort.Direction ordering) {
     return ResponseEntity.ok(
         pspService.getPaymentServiceProviders(
             limit, page, getFilterAndOrder(filterByCode, filterByName, orderBy, ordering)));
@@ -126,114 +127,114 @@ public class PspController {
   @Operation(
       summary = "Get payment service provider details",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {"Payment Service Providers"})
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PaymentServiceProviderDetails.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PaymentServiceProviderDetails.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
       value = "/{pspcode}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<PaymentServiceProviderDetails> getPaymentServiceProvider(
       @NotBlank
-          @Pattern(regexp = "[A-Z0-9_]{6,14}")
-          @Parameter(description = "Code of the payment service provider", required = true)
-          @PathVariable("pspcode")
-          String pspCode) {
+      @Pattern(regexp = "[A-Z0-9_]{6,14}")
+      @Parameter(description = "Code of the payment service provider", required = true)
+      @PathVariable("pspcode")
+      String pspCode) {
     return ResponseEntity.ok(pspService.getPaymentServiceProvider(pspCode));
   }
 
   @Operation(
       summary = "Create a payment service provider",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {"Payment Service Providers"})
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Created",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PaymentServiceProviderDetails.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "409",
-            description = "Conflict",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "201",
+              description = "Created",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PaymentServiceProviderDetails.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "409",
+              description = "Conflict",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @PostMapping(
       value = "",
@@ -247,62 +248,62 @@ public class PspController {
   @Operation(
       summary = "Update a payment service provider",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {"Payment Service Providers"})
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PaymentServiceProviderDetails.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PaymentServiceProviderDetails.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @PutMapping(
       value = "/{pspcode}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<PaymentServiceProviderDetails> updatePaymentServiceProvider(
       @NotBlank
-          @Pattern(regexp = "[A-Z0-9_]{6,14}")
-          @Parameter(description = "Code of the payment service provider", required = true)
-          @PathVariable("pspcode")
-          String pspCode,
+      @Pattern(regexp = "[A-Z0-9_]{6,14}")
+      @Parameter(description = "Code of the payment service provider", required = true)
+      @PathVariable("pspcode")
+      String pspCode,
       @RequestBody @Valid @NotNull PaymentServiceProviderDetails paymentServiceProviderDetails) {
     return ResponseEntity.ok(
         pspService.updatePaymentServiceProvider(pspCode, paymentServiceProviderDetails));
@@ -311,59 +312,59 @@ public class PspController {
   @Operation(
       summary = "Delete a payment service provider",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {"Payment Service Providers"})
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @DeleteMapping(
       value = "/{pspcode}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<Void> deletePaymentServiceProvider(
       @NotBlank
-          @Pattern(regexp = "[A-Z0-9_]{6,14}")
-          @Parameter(description = "Code of the payment service provider", required = true)
-          @PathVariable("pspcode")
-          String pspCode) {
+      @Pattern(regexp = "[A-Z0-9_]{6,14}")
+      @Parameter(description = "Code of the payment service provider", required = true)
+      @PathVariable("pspcode")
+      String pspCode) {
     pspService.deletePaymentServiceProvider(pspCode);
     return ResponseEntity.ok().build();
   }
@@ -371,133 +372,133 @@ public class PspController {
   @Operation(
       summary = "Get channels details and relation info with PSP",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {
-        "Payment Service Providers",
+          "Payment Service Providers",
       })
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK.",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PspChannelList.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK.",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PspChannelList.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
       value = "/{pspcode}/channels",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<PspChannelList> getPaymentServiceProvidersChannels(
       @Pattern(regexp = "[A-Z0-9_]{6,14}")
-          @Parameter(description = "Code of the payment service provider", required = true)
-          @PathVariable("pspcode")
-          String pspCode) {
+      @Parameter(description = "Code of the payment service provider", required = true)
+      @PathVariable("pspcode")
+      String pspCode) {
     return ResponseEntity.ok(pspService.getPaymentServiceProvidersChannels(pspCode));
   }
 
   @Operation(
       summary = "Create channel details and relation info with PSP",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {
-        "Payment Service Providers",
+          "Payment Service Providers",
       })
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Created",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PspChannelCode.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "409",
-            description = "Conflict",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "201",
+              description = "Created",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PspChannelCode.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "409",
+              description = "Conflict",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @PostMapping(
       value = "/{pspcode}/channels",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<PspChannelCode> createPaymentServiceProvidersChannels(
       @Pattern(regexp = "[A-Z0-9_]{6,14}")
-          @Parameter(description = "Code of the payment service provider", required = true)
-          @PathVariable("pspcode")
-          String pspCode,
+      @Parameter(description = "Code of the payment service provider", required = true)
+      @PathVariable("pspcode")
+      String pspCode,
       @RequestBody @Valid @NotNull PspChannelCode pspChannelCode) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(pspService.createPaymentServiceProvidersChannels(pspCode, pspChannelCode));
@@ -506,70 +507,70 @@ public class PspController {
   @Operation(
       summary = "Update a relation between PSP and channel",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {"Payment Service Providers"})
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PspChannelPaymentTypes.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PspChannelPaymentTypes.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @PutMapping(
       value = "/{pspcode}/channels/{channelcode}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<PspChannelPaymentTypes> updatePaymentServiceProvidersChannels(
       @Pattern(regexp = "[A-Z0-9_]{6,14}")
-          @Parameter(description = "Code of the payment service provider", required = true)
-          @PathVariable("pspcode")
-          String pspCode,
+      @Parameter(description = "Code of the payment service provider", required = true)
+      @PathVariable("pspcode")
+      String pspCode,
       @Size(max = 50)
-          @Parameter(description = "Channel code.", required = true)
-          @PathVariable("channelcode")
-          String channelCode,
+      @Parameter(description = "Channel code.", required = true)
+      @PathVariable("channelcode")
+      String channelCode,
       @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true)
-          @RequestBody
-          @Valid
-          @NotNull
-          PspChannelPaymentTypes pspChannelPaymentTypes) {
+      @RequestBody
+      @Valid
+      @NotNull
+      PspChannelPaymentTypes pspChannelPaymentTypes) {
     return ResponseEntity.ok(
         pspService.updatePaymentServiceProvidersChannels(
             pspCode, channelCode, pspChannelPaymentTypes));
@@ -578,70 +579,142 @@ public class PspController {
   @Operation(
       summary = "Delete a relation between a PSP and a channel",
       security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
       },
       tags = {"Payment Service Providers"})
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "409",
-            description = "Conflict",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "409",
+              description = "Conflict",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
       })
   @DeleteMapping(
       value = "/{pspcode}/channels/{channelcode}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<Void> deletePaymentServiceProvidersChannels(
       @Pattern(regexp = "[A-Z0-9_]{6,14}")
-          @Parameter(description = "Code of the payment service provider", required = true)
-          @PathVariable("pspcode")
-          String pspCode,
+      @Parameter(description = "Code of the payment service provider", required = true)
+      @PathVariable("pspcode")
+      String pspCode,
       @Size(max = 50)
-          @Parameter(description = "Code of the channel", required = true)
-          @PathVariable("channelcode")
-          String channelCode) {
+      @Parameter(description = "Code of the channel", required = true)
+      @PathVariable("channelcode")
+      String channelCode) {
     pspService.deletePaymentServiceProvidersChannels(pspCode, channelCode);
     return ResponseEntity.ok().build();
+  }
+
+  @Operation(
+      summary = "Get view Payment Service Providers channel broker",
+      security = {
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
+      },
+      tags = {
+          "Payment Service Providers Channel Broker",
+      })
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PaymentServiceProvidersView.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @GetMapping(
+      value = "/view",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<PaymentServiceProvidersView> getPaymentServiceProvidersView(
+      @Positive
+      @Parameter(description = "Number of elements on one page. Default = 50")
+      @RequestParam(required = false, defaultValue = "50")
+      Integer limit,
+      @PositiveOrZero
+      @Parameter(description = "Page number. Page value starts from 0", required = true)
+      @RequestParam
+      Integer page,
+      @RequestParam(required = false, name = "pspCode") @Parameter(description = "Filter by psp code")
+      String pspCode,
+      @RequestParam(required = false, name = "pspBrokerCode") @Parameter(description = "Filter by psp broker code")
+      String pspBrokerCode,
+      @RequestParam(required = false, name = "channelCode") @Parameter(description = "Filter by channel code")
+      String channelCode, 
+      @RequestParam(required = false, name = "paymentType") @Parameter(description = "Filter by payment type")
+      String paymentType,
+      @RequestParam(required = false, name = "paymentModel") @Parameter(description = "Filter by payment model")
+      String paymentModel) {
+    return ResponseEntity.ok(
+        pspService.getPaymentServiceProvidersView(
+            limit, page, pspCode, pspBrokerCode, channelCode, paymentType, paymentModel));
   }
 }
