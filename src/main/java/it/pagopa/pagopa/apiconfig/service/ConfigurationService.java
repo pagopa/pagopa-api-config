@@ -1,7 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
-
 import feign.Feign;
 import feign.FeignException;
 import feign.jackson.JacksonDecoder;
@@ -10,37 +8,23 @@ import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.afm.PaymentTypesCosmos;
-import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeyBase;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypeBase;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdd;
-import it.pagopa.pagopa.apiconfig.model.configuration.PddBase;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConf;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfBase;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
-import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
-import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PddRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
+import it.pagopa.pagopa.apiconfig.model.configuration.*;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.AFMMarketplaceClient;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
 
 @Service
 @Validated
@@ -329,7 +313,7 @@ public class ConfigurationService {
     try {
       // check if payment type is used to create bundles (AFM Marketplace)
       AfmMarketplacePaymentType response =
-          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, paymentTypeCode);
+          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, MDC.get("requestId"), paymentTypeCode);
       if (Boolean.TRUE.equals(response.getUsed())) {
         throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
       } else {
@@ -360,7 +344,7 @@ public class ConfigurationService {
             .collect(Collectors.toList());
 
     try {
-      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, paymentTypes);
+      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, MDC.get("requestId"), paymentTypes);
     } catch (FeignException.BadRequest e) {
       throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
     } catch (FeignException e) {

@@ -1,13 +1,5 @@
 package it.pagopa.pagopa.apiconfig.util;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMaster;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMasterValid;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
 import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
@@ -22,6 +14,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMaster;
+import static it.pagopa.pagopa.apiconfig.TestUtil.getMockCdiMasterValid;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
 class AFMUtilsAsyncTaskTest {
@@ -43,7 +43,7 @@ class AFMUtilsAsyncTaskTest {
         TestUtil.mockPage(Lists.newArrayList(getMockCdiMasterValid()), 1, 0);
     when(cdiMasterValidRepository.findAll(any(PageRequest.class))).thenReturn(page);
 
-    doNothing().when(afmUtilsClient).syncPaymentTypes(anyString(), any());
+    doNothing().when(afmUtilsClient).syncPaymentTypes(anyString(), anyString(), any());
 
     assertTrue(afmUtilsAsyncTask.executeSync());
   }
@@ -54,7 +54,7 @@ class AFMUtilsAsyncTaskTest {
         TestUtil.mockPage(Lists.newArrayList(getMockCdiMasterValid()), 1, 0);
     when(cdiMasterValidRepository.findAll(any(PageRequest.class))).thenReturn(page);
 
-    doNothing().when(afmUtilsClient).syncPaymentTypes(anyString(), any());
+    doNothing().when(afmUtilsClient).syncPaymentTypes(anyString(), anyString(), any());
 
     assertTrue(afmUtilsAsyncTask.executeSync(getMockCdiMaster()));
   }

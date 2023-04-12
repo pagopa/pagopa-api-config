@@ -11,6 +11,7 @@ import it.pagopa.pagopa.apiconfig.model.afm.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -136,7 +137,7 @@ public class AFMUtilsAsyncTask {
 
   private void afmUtilsTrigger(List<CdiCosmos> cdis) {
     try {
-      afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, cdis);
+      afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, MDC.get("requestId"), cdis);
     } catch (Exception e) {
       String cdiList =
           cdis.stream().map(CdiCosmos::getIdCdi).collect(Collectors.joining(", ", "{", "}"));

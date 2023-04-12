@@ -696,7 +696,7 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(), any());
+    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(), anyString(), any());
 
     PaymentType result = configurationService.createPaymentType(getMockPaymentType());
     String actual = TestUtil.toJson(result);
@@ -731,7 +731,7 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(), any());
+    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(),anyString(), any());
 
     PaymentType result = configurationService.updatePaymentType("PPAL", getMockPaymentType());
     String actual = TestUtil.toJson(result);
@@ -761,7 +761,7 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    when(afmMarketplaceClient.getPaymentType(anyString(), anyString()))
+    when(afmMarketplaceClient.getPaymentType(anyString(),anyString(), anyString()))
         .thenReturn(getMockAfmMarketplacePaymentType());
 
     try {
@@ -794,7 +794,7 @@ class ConfigurationServiceTest {
         Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
     doThrow(new FeignException.InternalServerError("", request, null, null))
         .when(afmMarketplaceClient)
-        .getPaymentType(anyString(), anyString());
+        .getPaymentType(anyString(),anyString(), anyString());
 
     try {
       configurationService.deletePaymentType("PPAL");
@@ -813,7 +813,7 @@ class ConfigurationServiceTest {
     response.setUsed(true);
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    when(afmMarketplaceClient.getPaymentType(anyString(), anyString())).thenReturn(response);
+    when(afmMarketplaceClient.getPaymentType(anyString(), anyString(), anyString())).thenReturn(response);
 
     try {
       configurationService.deletePaymentType("PPAL");
@@ -891,7 +891,7 @@ class ConfigurationServiceTest {
         Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
     doThrow(new FeignException.InternalServerError("", request, null, null))
         .when(afmMarketplaceClient)
-        .getPaymentType(anyString(), anyString());
+        .getPaymentType(anyString(),anyString(), anyString());
 
     try {
       configurationService.deletePaymentType("PPAL");
