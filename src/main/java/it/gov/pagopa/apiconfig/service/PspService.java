@@ -331,11 +331,8 @@ public class PspService {
 
   public PaymentServiceProvidersView getPaymentServiceProvidersView(@Positive Integer limit, @PositiveOrZero Integer pageNumber,
       String pspCode, String pspBrokerCode, String channelCode, String paymentType, String paymentModel) {
+    
     Pageable pageable = PageRequest.of(pageNumber, limit);
-    /*Page<Psp> page =
-        pspRepository.findAll(
-            PspSpecification.filterViewPspChannelBroker(pspCode, pspBrokerCode, channelCode, paymentType, paymentModel),
-            pageable);*/
     
     Page<PspCanaleTipoVersamento> page = pspCanaleTipoVersamentoRepository.findAll(
         PspCanaleTipoVersamentoSpecification.filterViewPspChannelBroker(pspCode, pspBrokerCode, channelCode, paymentType, paymentModel), pageable);
