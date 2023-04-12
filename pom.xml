@@ -13,7 +13,7 @@
 
   <groupId>it.pagopa.pagopa.api-config</groupId>
   <artifactId>api-config</artifactId>
-  <version>0.37.1</version>
+  <version>0.37.1-1-PAGOPA-866-problema-di-traduzione-cdi-bundle</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
