@@ -3,23 +3,12 @@ package it.pagopa.pagopa.apiconfig.util;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
-import it.pagopa.pagopa.apiconfig.entity.ServiceAmountCosmos;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.afm.CdiCosmos;
 import it.pagopa.pagopa.apiconfig.model.afm.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +18,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -124,7 +120,7 @@ public class AFMUtilsAsyncTask {
                         ServiceAmountCosmos.builder()
                             .minPaymentAmount((int) (elem.getImportoMinimo() * 100))
                             .maxPaymentAmount((int) (elem.getImportoMassimo() * 100))
-                            .paymentAmount((int) (elem.getCostoFisso() * 100))
+                            .paymentAmount((int) (elem.getValoreCommissione() * 100))
                             .build())
                 .collect(Collectors.toList()))
         .build();
