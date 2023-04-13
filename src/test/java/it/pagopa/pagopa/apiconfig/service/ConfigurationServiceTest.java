@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -768,6 +769,8 @@ class ConfigurationServiceTest {
         .getPaymentType(anyString(),anyString(), anyString());
 
     try {
+      MDC.put("requestId", "123");
+
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
       assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
@@ -785,7 +788,7 @@ class ConfigurationServiceTest {
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
     when(afmMarketplaceClient.getPaymentType(anyString(), anyString(), anyString())).thenReturn(response);
-
+    MDC.put("requestId", "123");
     try {
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
@@ -865,6 +868,8 @@ class ConfigurationServiceTest {
         .getPaymentType(anyString(),anyString(), anyString());
 
     try {
+      MDC.put("requestId", "123");
+
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
       assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
