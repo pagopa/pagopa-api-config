@@ -27,7 +27,7 @@ basecache: &basecache
       envSecret: {}
   image:
     repository: pagopaucommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.37.1-1-fix-aks-oracle"
+    tag: "0.37.1-2-PAGOPA-866-problema-di-traduzione-cdi-bundle"
     pullPolicy: Always
   livenessProbe:
     httpGet:
