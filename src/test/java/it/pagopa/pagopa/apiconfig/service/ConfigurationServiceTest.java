@@ -1,29 +1,5 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockAfmMarketplacePaymentType;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKey;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKeyEntity;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockConfigurationKeysEntries;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFtpServer;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFtpServersEntities;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockFtpServersEntity;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockModelWfespPluginConf;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPaymentType;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPdd;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPddEntity;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockPddsEntities;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockTipiVersamento;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockTipoVersamento;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockWfespPluginConf;
-import static it.pagopa.pagopa.apiconfig.TestUtil.getMockWfespPluginConfEntries;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
 import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
@@ -33,26 +9,9 @@ import it.pagopa.pagopa.apiconfig.entity.Pdd;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.entity.WfespPluginConf;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
-import it.pagopa.pagopa.apiconfig.model.configuration.AfmMarketplacePaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKey;
-import it.pagopa.pagopa.apiconfig.model.configuration.ConfigurationKeys;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServer;
-import it.pagopa.pagopa.apiconfig.model.configuration.FtpServers;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentType;
-import it.pagopa.pagopa.apiconfig.model.configuration.PaymentTypes;
-import it.pagopa.pagopa.apiconfig.model.configuration.Pdds;
-import it.pagopa.pagopa.apiconfig.model.configuration.WfespPluginConfs;
-import it.pagopa.pagopa.apiconfig.repository.ConfigurationKeysRepository;
-import it.pagopa.pagopa.apiconfig.repository.FtpServersRepository;
-import it.pagopa.pagopa.apiconfig.repository.PddRepository;
-import it.pagopa.pagopa.apiconfig.repository.TipiVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.WfespPluginConfRepository;
+import it.pagopa.pagopa.apiconfig.model.configuration.*;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.AFMMarketplaceClient;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -64,6 +23,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+
+import static it.pagopa.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ConfigurationServiceTest {
@@ -761,9 +733,8 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    when(afmMarketplaceClient.getPaymentType(anyString(),anyString(), anyString()))
+    when(afmMarketplaceClient.getPaymentType(anyString(),any(), anyString()))
         .thenReturn(getMockAfmMarketplacePaymentType());
-
     try {
       configurationService.deletePaymentType("PPAL");
     } catch (Exception e) {
