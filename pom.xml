@@ -13,8 +13,7 @@
 
   <groupId>it.pagopa.pagopa.api-config</groupId>
   <artifactId>api-config</artifactId>
-  <name>ApiConfig</name>
-  <version>0.37.1-1-fix-aks-oracle</version>
+  <version>0.37.1-1-main</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
