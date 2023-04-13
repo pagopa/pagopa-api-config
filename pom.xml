@@ -11,9 +11,10 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
-  <groupId>it.pagopa.pagopa.api-config</groupId>
-  <artifactId>api-config</artifactId>
-  <version>0.37.1-1-main</version>
+  <groupId>it.gov.pagopa.apiconfig</groupId>
+  <artifactId>core</artifactId>
+  <name>ApiConfig</name>
+  <version>0.37.1</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
@@ -32,7 +33,7 @@
     <commons-validator>1.7</commons-validator>
     <feign-version>12.1</feign-version>
     <postgresql-version>42.5.1</postgresql-version>
-    <starter.version>1.0.0</starter.version>
+    <starter.version>1.2.0</starter.version>
   </properties>
   
   <repositories>
