@@ -12,19 +12,20 @@ import it.pagopa.pagopa.apiconfig.model.configuration.*;
 import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.AFMMarketplaceClient;
 import org.modelmapper.ModelMapper;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
+import static it.pagopa.pagopa.apiconfig.util.Constants.HEADER_REQUEST_ID;
 
 @Service
 @Validated
@@ -45,6 +46,9 @@ public class ConfigurationService {
 
   @Value("${service.marketplace.subscriptionKey}")
   private String afmMarketplaceSubscriptionKey;
+
+  @Autowired
+  HttpServletRequest httpServletRequest;
 
   private AFMMarketplaceClient afmMarketplaceClient;
 
@@ -313,7 +317,7 @@ public class ConfigurationService {
     try {
       // check if payment type is used to create bundles (AFM Marketplace)
       AfmMarketplacePaymentType response =
-          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, MDC.get("requestId"), paymentTypeCode);
+          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, httpServletRequest.getHeader(HEADER_REQUEST_ID), paymentTypeCode);
       if (Boolean.TRUE.equals(response.getUsed())) {
         throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
       } else {
@@ -344,7 +348,7 @@ public class ConfigurationService {
             .collect(Collectors.toList());
 
     try {
-      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, MDC.get("requestId"), paymentTypes);
+      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, httpServletRequest.getHeader(HEADER_REQUEST_ID), paymentTypes);
     } catch (FeignException.BadRequest e) {
       throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
     } catch (FeignException e) {

@@ -769,8 +769,6 @@ class ConfigurationServiceTest {
         .getPaymentType(anyString(),anyString(), anyString());
 
     try {
-      MDC.put("requestId", "123");
-
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
       assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
@@ -788,7 +786,6 @@ class ConfigurationServiceTest {
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
     when(afmMarketplaceClient.getPaymentType(anyString(), anyString(), anyString())).thenReturn(response);
-    MDC.put("requestId", "123");
     try {
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
@@ -868,8 +865,6 @@ class ConfigurationServiceTest {
         .getPaymentType(anyString(),anyString(), anyString());
 
     try {
-      MDC.put("requestId", "123");
-
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
       assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());

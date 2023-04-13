@@ -11,7 +11,6 @@ import it.pagopa.pagopa.apiconfig.model.afm.CdiDetailCosmos;
 import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -20,12 +19,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import static it.pagopa.pagopa.apiconfig.util.Constants.HEADER_REQUEST_ID;
 
 @Component
 @Slf4j
@@ -36,6 +38,9 @@ public class AFMUtilsAsyncTask {
   private String afmUtilsSubscriptionKey;
 
   @Autowired private ModelMapper modelMapper;
+
+  @Autowired
+  HttpServletRequest httpServletRequest;
 
   private AFMUtilsClient afmUtilsClient;
 
@@ -137,7 +142,7 @@ public class AFMUtilsAsyncTask {
 
   private void afmUtilsTrigger(List<CdiCosmos> cdis) {
     try {
-      afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, MDC.get("requestId"), cdis);
+      afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, httpServletRequest.getHeader(HEADER_REQUEST_ID), cdis);
     } catch (Exception e) {
       String cdiList =
           cdis.stream().map(CdiCosmos::getIdCdi).collect(Collectors.joining(", ", "{", "}"));
