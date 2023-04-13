@@ -3,8 +3,8 @@
   "info": {
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "title": "ApiConfig",
-    "version": "0.37.1-3-PAGOPA-866-problema-di-traduzione-cdi-bundle"
+    "title": "api-config",
+    "version": "0.37.1-1-main"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -3296,6 +3296,27 @@
             "name": "channelcode",
             "required": true,
             "type": "string"
+          },
+          {
+            "description": "Filter by psp code",
+            "in": "query",
+            "name": "pspCode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by psp name",
+            "in": "query",
+            "name": "pspName",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by psp enabled",
+            "in": "query",
+            "name": "pspEnabled",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
