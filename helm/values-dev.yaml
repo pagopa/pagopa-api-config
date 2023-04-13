@@ -12,7 +12,7 @@ basecache: &basecache
     ingress:
       canary:
         type: header
-        headerName: X-Pod-Version
+        headerName: X-Canary
         headerValue: canary
         weightPercent: 0
     service:
@@ -27,7 +27,7 @@ basecache: &basecache
       envSecret: {}
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.37.1"
+    tag: "0.37.1-2-fix-aks-oracle"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -87,7 +87,7 @@ basecache: &basecache
     AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
     COSMOS_URI: 'https://pagopa-d-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
-    APP_LOGGING_LEVEL: 'DEBUG'
+    APP_LOGGING_LEVEL: "INFO"
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
@@ -151,4 +151,4 @@ oracle:
     DATABASE_SCHEMA: 'NODO4_CFG'
   envSecret:
     !!merge <<: *envSecret
-    SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
+    SPRING_DATASOURCE_PASSWORD: 'oracle-db-cfg-password'
