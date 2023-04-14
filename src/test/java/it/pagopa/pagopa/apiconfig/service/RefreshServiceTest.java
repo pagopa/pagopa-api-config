@@ -11,7 +11,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
 import it.pagopa.pagopa.apiconfig.model.JobTrigger;
-import it.pagopa.pagopa.apiconfig.util.RefreshClient;
+import it.pagopa.pagopa.apiconfig.client.RefreshClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

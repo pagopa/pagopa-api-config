@@ -9,7 +9,7 @@ import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.ConfigurationDomain;
 import it.pagopa.pagopa.apiconfig.model.JobTrigger;
-import it.pagopa.pagopa.apiconfig.util.RefreshClient;
+import it.pagopa.pagopa.apiconfig.client.RefreshClient;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -3,6 +3,7 @@ package it.pagopa.pagopa.apiconfig.util;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import it.pagopa.pagopa.apiconfig.client.AFMUtilsClient;
 import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;

@@ -4,13 +4,14 @@ import feign.Feign;
 import feign.FeignException;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import it.pagopa.pagopa.apiconfig.client.AFMMarketplaceClient;
 import it.pagopa.pagopa.apiconfig.entity.TipiVersamento;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.afm.PaymentTypesCosmos;
 import it.pagopa.pagopa.apiconfig.model.configuration.*;
 import it.pagopa.pagopa.apiconfig.repository.*;
-import it.pagopa.pagopa.apiconfig.util.AFMMarketplaceClient;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static it.pagopa.pagopa.apiconfig.util.CommonUtil.deNull;
@@ -30,6 +32,7 @@ import static it.pagopa.pagopa.apiconfig.util.Constants.HEADER_REQUEST_ID;
 @Service
 @Validated
 @Transactional
+@Slf4j
 public class ConfigurationService {
 
   @Autowired private ConfigurationKeysRepository configurationKeysRepository;
@@ -317,7 +320,7 @@ public class ConfigurationService {
     try {
       // check if payment type is used to create bundles (AFM Marketplace)
       AfmMarketplacePaymentType response =
-          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, httpServletRequest.getHeader(HEADER_REQUEST_ID), paymentTypeCode);
+          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, getRequestId(), paymentTypeCode);
       if (Boolean.TRUE.equals(response.getUsed())) {
         throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
       } else {
@@ -335,6 +338,13 @@ public class ConfigurationService {
     }
   }
 
+  private String getRequestId() {
+    String header = httpServletRequest.getHeader(HEADER_REQUEST_ID);
+    header = header != null ? header : UUID.randomUUID().toString();
+    log.info("RequestId to call Utils: {}", header);
+    return header;
+  }
+
   public void syncPaymentTypesHistory() {
     List<PaymentTypesCosmos> paymentTypes =
         tipiVersamentoRepository.findAll().stream()
@@ -348,7 +358,7 @@ public class ConfigurationService {
             .collect(Collectors.toList());
 
     try {
-      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, httpServletRequest.getHeader(HEADER_REQUEST_ID), paymentTypes);
+      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, getRequestId(), paymentTypes);
     } catch (FeignException.BadRequest e) {
       throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
     } catch (FeignException e) {

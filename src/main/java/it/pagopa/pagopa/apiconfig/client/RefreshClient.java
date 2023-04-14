@@ -1,4 +1,4 @@
-package it.pagopa.pagopa.apiconfig.util;
+package it.pagopa.pagopa.apiconfig.client;
 
 import feign.Param;
 import feign.RequestLine;

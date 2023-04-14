@@ -4,6 +4,7 @@ import it.pagopa.pagopa.apiconfig.ApiConfig;
 import it.pagopa.pagopa.apiconfig.TestUtil;
 import it.pagopa.pagopa.apiconfig.entity.CdiMasterValid;
 import it.pagopa.pagopa.apiconfig.repository.CdiMasterValidRepository;
+import it.pagopa.pagopa.apiconfig.client.AFMUtilsClient;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

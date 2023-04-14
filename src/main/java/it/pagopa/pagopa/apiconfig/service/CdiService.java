@@ -1,52 +1,15 @@
 package it.pagopa.pagopa.apiconfig.service;
 
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.getExceptionErrors;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.mapXml;
-import static it.pagopa.pagopa.apiconfig.util.CommonUtil.syntaxValidation;
-
-import it.pagopa.pagopa.apiconfig.entity.BinaryFile;
-import it.pagopa.pagopa.apiconfig.entity.Canali;
-import it.pagopa.pagopa.apiconfig.entity.CdiDetail;
-import it.pagopa.pagopa.apiconfig.entity.CdiFasciaCostoServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiInformazioniServizio;
-import it.pagopa.pagopa.apiconfig.entity.CdiMaster;
-import it.pagopa.pagopa.apiconfig.entity.CdiPreference;
-import it.pagopa.pagopa.apiconfig.entity.Psp;
-import it.pagopa.pagopa.apiconfig.entity.PspCanaleTipoVersamento;
+import it.pagopa.pagopa.apiconfig.util.AFMUtilsAsyncTask;
+import it.pagopa.pagopa.apiconfig.entity.*;
 import it.pagopa.pagopa.apiconfig.exception.AppError;
 import it.pagopa.pagopa.apiconfig.exception.AppException;
 import it.pagopa.pagopa.apiconfig.model.CheckItem;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdi;
 import it.pagopa.pagopa.apiconfig.model.psp.CdiXml;
 import it.pagopa.pagopa.apiconfig.model.psp.Cdis;
-import it.pagopa.pagopa.apiconfig.repository.BinaryFileRepository;
-import it.pagopa.pagopa.apiconfig.repository.CanaliRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiDetailRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiFasciaCostoServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiInformazioniServizioRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiMasterRepository;
-import it.pagopa.pagopa.apiconfig.repository.CdiPreferenceRepository;
-import it.pagopa.pagopa.apiconfig.repository.IntermediariPspRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspCanaleTipoVersamentoRepository;
-import it.pagopa.pagopa.apiconfig.repository.PspRepository;
-import it.pagopa.pagopa.apiconfig.util.AFMUtilsAsyncTask;
+import it.pagopa.pagopa.apiconfig.repository.*;
 import it.pagopa.pagopa.apiconfig.util.CommonUtil;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +25,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static it.pagopa.pagopa.apiconfig.util.CommonUtil.*;
 
 @Service
 @Validated
