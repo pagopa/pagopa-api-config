@@ -1,35 +1,17 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getMockAfmMarketplacePaymentType;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockConfigurationKey;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockConfigurationKeyEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockConfigurationKeysEntries;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockFtpServer;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockFtpServersEntities;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockFtpServersEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockModelWfespPluginConf;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentType;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPdd;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPddEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPddsEntities;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockTipiVersamento;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockTipoVersamento;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockWfespPluginConf;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockWfespPluginConfEntries;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-
+import feign.FeignException;
+import feign.Request;
+import feign.RequestTemplate;
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.client.AFMMarketplaceClient;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.configuration.*;
+import it.gov.pagopa.apiconfig.starter.entity.Pdd;
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
+import it.gov.pagopa.apiconfig.starter.repository.*;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -41,6 +23,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+
+import static it.gov.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ConfigurationServiceTest {
