@@ -36,7 +36,9 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationList;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutions;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvidersView;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 
@@ -737,5 +739,90 @@ public class CreditorInstitutionsController {
           String creditorInstitutionCode) {
     return ResponseEntity.ok(
         creditorInstitutionsService.getCreditorInstitutionsIbans(creditorInstitutionCode));
+  }
+  
+  @Operation(
+      summary = "Get view creditor institutions broker station",
+      security = {
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
+      },
+      tags = {
+          "Creditor Institutions Broker Station",
+      })
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PaymentServiceProvidersView.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @GetMapping(
+      value = "/view",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<CreditorInstitutions> getPaymentServiceProvidersView(
+      @Positive
+      @Parameter(description = "Number of elements on one page. Default = 50")
+      @RequestParam(required = false, defaultValue = "50")
+      Integer limit,
+      @PositiveOrZero
+      @Parameter(description = "Page number. Page value starts from 0", required = true)
+      @RequestParam
+      Integer page,
+      @RequestParam(required = false, name = "creditorInstitutionCode") @Parameter(description = "Filter by creditor institution code")
+      String creditorInstitutionCode,
+      @RequestParam(required = false, name = "paBrokerCode") @Parameter(description = "Filter by pa broker code")
+      String paBrokerCode,
+      @RequestParam(required = false, name = "stationCode") @Parameter(description = "Filter by station code")
+      String stationCode, 
+      @RequestParam(required = false, name = "auxDigit") @Parameter(description = "Filter by aux digit")
+      Long auxDigit,
+      @RequestParam(required = false, name = "progressivo") @Parameter(description = "Filter by progressivo")
+      Long progressivo,
+      @RequestParam(required = false, name = "codiceSegregazione") @Parameter(description = "Filter by codice segregazione")
+      Long codiceSegregazione,
+      @RequestParam(required = false, name = "quartoModello") @Parameter(description = "Filter by quarto modello")
+      Boolean quartoModello) {
+    return ResponseEntity.ok(
+        creditorInstitutionsService.getCreditorInstitutionsView(
+            limit, page, 
+            FilterPaView.builder()
+            .creditorInstitutionCode(creditorInstitutionCode)
+            .paBrokerCode(paBrokerCode) 
+            .stationCode(stationCode)
+            .auxDigit(auxDigit)
+            .progressivo(progressivo)
+            .codiceSegregazione(codiceSegregazione)
+            .quartoModello(quartoModello)
+            .build()));
   }
 }

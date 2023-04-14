@@ -33,12 +33,16 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
+import it.gov.pagopa.apiconfig.core.specification.PaStazionePaSpecification;
+import it.gov.pagopa.apiconfig.core.specification.PspCanaleTipoVersamentoSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
 import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
 import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
 import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
+import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CodificheRepository;
@@ -123,6 +127,20 @@ public class CreditorInstitutionsService {
     Pa pa = getPaIfExists(creditorInstitutionCode);
     List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa(pa.getObjId());
     return CreditorInstitutionStationList.builder().stationsList(getStationsList(result)).build();
+  }
+  
+  public CreditorInstitutions getCreditorInstitutionsView(
+      @NotNull Integer limit, @NotNull Integer pageNumber, 
+      FilterPaView filter) {   
+    
+    Pageable pageable = PageRequest.of(pageNumber, limit);
+    
+    Page<PaStazionePa> page = paStazionePaRepository.findAll(
+        PaStazionePaSpecification.filterViewPaBrokerStation(
+            filter.getCreditorInstitutionCode(), filter.getPaBrokerCode(), filter.getStationCode(), 
+            filter.getAuxDigit(), filter.getProgressivo(), filter.getCodiceSegregazione(), filter.getQuartoModello()), pageable);
+    
+    return null;
   }
 
   /**
