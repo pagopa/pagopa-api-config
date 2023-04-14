@@ -1,10 +1,10 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "api-config",
+    "title" : "core",
     "description" : "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService" : "https://www.pagopa.gov.it/",
-    "version" : "0.37.1-2-PAGOPA-866-problema-di-traduzione-cdi-bundle"
+    "version" : "0.37.1"
   },
   "servers" : [ {
     "url" : "http://127.0.0.1:8080/apiconfig/api/v1",
@@ -361,8 +361,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "CODE", "NAME" ],
-            "default" : "CODE"
+            "default" : "CODE",
+            "enum" : [ "CODE", "NAME" ]
           }
         }, {
           "description" : "Direction of ordering",
@@ -371,8 +371,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "ASC", "DESC" ],
-            "default" : "DESC"
+            "default" : "DESC",
+            "enum" : [ "ASC", "DESC" ]
           }
         } ],
         "responses" : {
@@ -1052,8 +1052,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "CODE", "NAME" ],
-            "default" : "CODE"
+            "default" : "CODE",
+            "enum" : [ "CODE", "NAME" ]
           }
         }, {
           "description" : "Direction of ordering",
@@ -1062,8 +1062,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "ASC", "DESC" ],
-            "default" : "DESC"
+            "default" : "DESC",
+            "enum" : [ "ASC", "DESC" ]
           }
         } ],
         "responses" : {
@@ -3126,8 +3126,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "ASC", "DESC" ],
-            "default" : "DESC"
+            "default" : "DESC",
+            "enum" : [ "ASC", "DESC" ]
           }
         } ],
         "responses" : {
@@ -8565,8 +8565,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "CODE", "NAME" ],
-            "default" : "CODE"
+            "default" : "CODE",
+            "enum" : [ "CODE", "NAME" ]
           }
         }, {
           "description" : "Direction of ordering",
@@ -8575,8 +8575,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "ASC", "DESC" ],
-            "default" : "DESC"
+            "default" : "DESC",
+            "enum" : [ "ASC", "DESC" ]
           }
         } ],
         "responses" : {
@@ -11851,8 +11851,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "CODE", "NAME" ],
-            "default" : "CODE"
+            "default" : "CODE",
+            "enum" : [ "CODE", "NAME" ]
           }
         }, {
           "description" : "Direction of ordering",
@@ -11861,8 +11861,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "ASC", "DESC" ],
-            "default" : "DESC"
+            "default" : "DESC",
+            "enum" : [ "ASC", "DESC" ]
           }
         } ],
         "responses" : {
@@ -12097,6 +12097,176 @@
         "summary" : "Create a payment service provider",
         "tags" : [ "Payment Service Providers" ]
       }
+    },
+    "/paymentserviceproviders/view" : {
+      "get" : {
+        "operationId" : "getPaymentServiceProvidersView",
+        "parameters" : [ {
+          "description" : "Number of elements on one page. Default = 50",
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "description" : "Page number. Page value starts from 0",
+          "in" : "query",
+          "name" : "page",
+          "required" : true,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "description" : "Filter by psp code",
+          "in" : "query",
+          "name" : "pspCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Filter by psp broker code",
+          "in" : "query",
+          "name" : "pspBrokerCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Filter by channel code",
+          "in" : "query",
+          "name" : "channelCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Filter by payment type",
+          "in" : "query",
+          "name" : "paymentType",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Filter by payment model",
+          "in" : "query",
+          "name" : "paymentModel",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PaymentServiceProvidersView"
+                }
+              }
+            },
+            "description" : "OK",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemJson"
+                }
+              }
+            },
+            "description" : "Bad Request",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "429" : {
+            "description" : "Too many requests",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "500" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemJson"
+                }
+              }
+            },
+            "description" : "Service unavailable",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        }, {
+          "Authorization" : [ ]
+        } ],
+        "summary" : "Get view Payment Service Providers channel broker",
+        "tags" : [ "Payment Service Providers" ]
+      },
+      "parameters" : [ {
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "in" : "header",
+        "name" : "X-Request-Id",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
     },
     "/paymentserviceproviders/{pspcode}" : {
       "delete" : {
@@ -13556,8 +13726,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "IT", "EN", "FR", "DE", "SL" ],
-            "default" : "IT"
+            "default" : "IT",
+            "enum" : [ "IT", "EN", "FR", "DE", "SL" ]
           }
         }, {
           "in" : "query",
@@ -13727,8 +13897,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "ASC", "DESC" ],
-            "default" : "DESC"
+            "default" : "DESC",
+            "enum" : [ "ASC", "DESC" ]
           }
         } ],
         "responses" : {
@@ -15922,6 +16092,32 @@
           }
         }
       },
+      "PaymentServiceProviderView" : {
+        "required" : [ "broker_psp_code", "channel_code", "payment_method", "payment_type", "psp_code" ],
+        "type" : "object",
+        "properties" : {
+          "broker_psp_code" : {
+            "maxLength" : 35,
+            "minLength" : 0,
+            "type" : "string",
+            "example" : "223344556677889900"
+          },
+          "channel_code" : {
+            "type" : "string",
+            "example" : "223344556677889900"
+          },
+          "payment_method" : {
+            "type" : "string"
+          },
+          "payment_type" : {
+            "type" : "string"
+          },
+          "psp_code" : {
+            "pattern" : "[A-Z0-9_]{6,14}",
+            "type" : "string"
+          }
+        }
+      },
       "PaymentServiceProviders" : {
         "required" : [ "page_info", "payment_service_providers" ],
         "type" : "object",
@@ -15933,6 +16129,21 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/PaymentServiceProvider"
+            }
+          }
+        }
+      },
+      "PaymentServiceProvidersView" : {
+        "required" : [ "page_info", "payment_service_providers" ],
+        "type" : "object",
+        "properties" : {
+          "page_info" : {
+            "$ref" : "#/components/schemas/PageInfo"
+          },
+          "payment_service_providers" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PaymentServiceProviderView"
             }
           }
         }
