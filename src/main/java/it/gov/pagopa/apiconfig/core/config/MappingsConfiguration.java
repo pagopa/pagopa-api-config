@@ -36,6 +36,7 @@ import it.gov.pagopa.apiconfig.core.mapper.ConvertPaymentTypeToString;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPaymentTypeToTipiVersamento;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPddEToPddM;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPddMToPddE;
+import it.gov.pagopa.apiconfig.core.mapper.ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPspCanaleTipoVersamentoToPspChannel;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPspToPaymentServiceProvider;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPspToPaymentServiceProviderDetails;
@@ -67,6 +68,7 @@ import it.gov.pagopa.apiconfig.core.model.psp.Channel;
 import it.gov.pagopa.apiconfig.core.model.psp.ChannelDetails;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvider;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderView;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannel;
 import it.gov.pagopa.apiconfig.core.model.psp.Service;
 import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
@@ -175,6 +177,8 @@ public class MappingsConfiguration {
     Converter<PaymentType, String> convertPaymentTypeString = new ConvertPaymentTypeToString();
     Converter<PaymentType, TipiVersamento> convertPaymentTypeTipiVersamento =
         new ConvertPaymentTypeToTipiVersamento();
+    
+    ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView convertPspCanaleTipoVersamentoToPaymentServiceProviderView = new ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView();
 
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
@@ -284,6 +288,9 @@ public class MappingsConfiguration {
     mapper
         .createTypeMap(PaymentType.class, TipiVersamento.class)
         .setConverter(convertPaymentTypeTipiVersamento);
+    mapper
+    .createTypeMap(PspCanaleTipoVersamento.class, PaymentServiceProviderView.class)
+    .setConverter(convertPspCanaleTipoVersamentoToPaymentServiceProviderView);
 
     return mapper;
   }

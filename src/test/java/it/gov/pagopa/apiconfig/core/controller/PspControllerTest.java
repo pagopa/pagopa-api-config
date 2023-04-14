@@ -4,6 +4,7 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviderDeta
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviders;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPspChannel;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPspChannelList;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentServiceProvidersView;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,6 +61,9 @@ class PspControllerTest {
     when(pspService.updatePaymentServiceProvidersChannels(
             anyString(), anyString(), any(PspChannelPaymentTypes.class)))
         .thenReturn(getMockPspChannel());
+    when(pspService.getPaymentServiceProvidersView(
+        anyInt(), anyInt(), any(), any(), any(), any(), any()))
+        .thenReturn(getMockPaymentServiceProvidersView());
   }
 
   @ParameterizedTest
@@ -67,6 +71,8 @@ class PspControllerTest {
     "/paymentserviceproviders?page=0",
     "/paymentserviceproviders/1234ABC12345",
     "/paymentserviceproviders/1234ABC12345/channels",
+    "/paymentserviceproviders/view?page=0",
+    "/paymentserviceproviders/view?page=0&pspCode=BPPIITRRHHH"
   })
   void getPsp(String url) throws Exception {
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))

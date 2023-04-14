@@ -66,7 +66,9 @@ import it.gov.pagopa.apiconfig.core.model.psp.ChannelPspList;
 import it.gov.pagopa.apiconfig.core.model.psp.Channels;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvider;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderView;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviders;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvidersView;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannel;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelList;
@@ -672,6 +674,23 @@ public class TestUtil {
         .businessName("ciao")
         .enabled(true)
         .pspCode("12345ABC12345")
+        .build();
+  }
+  
+  public static PaymentServiceProviderView getMockPaymentServiceProviderView() {
+    return PaymentServiceProviderView.builder()
+        .pspCode("BPPIITRRHHH")
+        .brokerPspCode("171038877777")
+        .channelCode("00001060966_77")
+        .paymentType("OBEP")
+        .paymentMethod("PAYPAL")
+        .build();
+  }
+  
+  public static PaymentServiceProvidersView getMockPaymentServiceProvidersView() {
+    return PaymentServiceProvidersView.builder()
+        .pageInfo(getMockPageInfo())
+        .paymentServiceProviderList(List.of(getMockPaymentServiceProviderView()))
         .build();
   }
 
