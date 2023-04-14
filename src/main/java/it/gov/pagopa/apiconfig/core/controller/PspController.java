@@ -38,6 +38,7 @@ import it.gov.pagopa.apiconfig.core.model.ProblemJson;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviders;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvidersView;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelList;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
@@ -643,5 +644,77 @@ public class PspController {
           String channelCode) {
     pspService.deletePaymentServiceProvidersChannels(pspCode, channelCode);
     return ResponseEntity.ok().build();
+  }
+  
+  @Operation(
+      summary = "Get view Payment Service Providers channel broker",
+      security = {
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
+      },
+      tags = {
+          "Payment Service Providers Channel Broker",
+      })
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = PaymentServiceProvidersView.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @GetMapping(
+      value = "/view",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<PaymentServiceProvidersView> getPaymentServiceProvidersView(
+      @Positive
+      @Parameter(description = "Number of elements on one page. Default = 50")
+      @RequestParam(required = false, defaultValue = "50")
+      Integer limit,
+      @PositiveOrZero
+      @Parameter(description = "Page number. Page value starts from 0", required = true)
+      @RequestParam
+      Integer page,
+      @RequestParam(required = false, name = "pspCode") @Parameter(description = "Filter by psp code")
+      String pspCode,
+      @RequestParam(required = false, name = "pspBrokerCode") @Parameter(description = "Filter by psp broker code")
+      String pspBrokerCode,
+      @RequestParam(required = false, name = "channelCode") @Parameter(description = "Filter by channel code")
+      String channelCode, 
+      @RequestParam(required = false, name = "paymentType") @Parameter(description = "Filter by payment type")
+      String paymentType,
+      @RequestParam(required = false, name = "paymentModel") @Parameter(description = "Filter by payment model")
+      String paymentModel) {
+    return ResponseEntity.ok(
+        pspService.getPaymentServiceProvidersView(
+            limit, page, pspCode, pspBrokerCode, channelCode, paymentType, paymentModel));
   }
 }
