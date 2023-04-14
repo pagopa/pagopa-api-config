@@ -28,6 +28,7 @@ import it.gov.pagopa.apiconfig.core.mapper.ConvertIntermediariPaToBrokerDetails;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertIntermediariPspToBrokerPsp;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertIntermediariPspToBrokerPspDetails;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
+import it.gov.pagopa.apiconfig.core.mapper.ConvertPaStazionePaToCreditorInstitutionView;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPaStazionePaToStationCreditorInstitution;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPaToCreditorInstitution;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertPaToCreditorInstitutionDetails;
@@ -55,6 +56,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionDetails;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStation;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
@@ -179,6 +181,8 @@ public class MappingsConfiguration {
         new ConvertPaymentTypeToTipiVersamento();
     
     ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView convertPspCanaleTipoVersamentoToPaymentServiceProviderView = new ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView();
+    
+    ConvertPaStazionePaToCreditorInstitutionView convertPaStazionePaToCreditorInstitutionView = new ConvertPaStazionePaToCreditorInstitutionView();
 
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
@@ -291,6 +295,9 @@ public class MappingsConfiguration {
     mapper
     .createTypeMap(PspCanaleTipoVersamento.class, PaymentServiceProviderView.class)
     .setConverter(convertPspCanaleTipoVersamentoToPaymentServiceProviderView);
+    mapper
+    .createTypeMap(PaStazionePa.class, CreditorInstitutionView.class)
+    .setConverter(convertPaStazionePaToCreditorInstitutionView);
 
     return mapper;
   }
