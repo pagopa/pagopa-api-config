@@ -32,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 
 import it.gov.pagopa.apiconfig.ApiConfig;
@@ -40,11 +41,13 @@ import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviders;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvidersView;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelList;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
 import it.gov.pagopa.apiconfig.core.service.PspService;
 import it.gov.pagopa.apiconfig.starter.entity.Psp;
+import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.repository.CanaleTipoVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
@@ -268,5 +271,33 @@ class PspServiceTest {
     } catch (Exception e) {
       fail();
     }
+  }
+  
+  @Test
+  void getPaymentServiceProvidersView() throws IOException, JSONException {
+    Page<PspCanaleTipoVersamento> page = TestUtil.mockPage(Lists.newArrayList(getMockPspCanaleTipoVersamento()), 50, 0);
+    when(pspCanaleTipoVersamentoRepository.findAll(
+            any(Specification.class), any(Pageable.class)))
+        .thenReturn(page);
+
+    PaymentServiceProvidersView result =
+        pspService.getPaymentServiceProvidersView(50, 0, null, null, null, null, null);
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_paymentserviceprovidersview_ok.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+  
+  @Test
+  void getPaymentServiceProvidersViewWithFilters() throws IOException, JSONException {
+    Page<PspCanaleTipoVersamento> page = TestUtil.mockPage(Lists.newArrayList(getMockPspCanaleTipoVersamento()), 50, 0);
+    when(pspCanaleTipoVersamentoRepository.findAll(
+            any(Specification.class), any(Pageable.class)))
+        .thenReturn(page);
+
+    PaymentServiceProvidersView result =
+        pspService.getPaymentServiceProvidersView(50, 0, "50", "1234", "1234", "PPAL", "IMMEDIATO");
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_paymentserviceprovidersview_ok.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 }

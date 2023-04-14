@@ -16,6 +16,8 @@ import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +33,14 @@ import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvider;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderView;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviders;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvidersView;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannel;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelList;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
+import it.gov.pagopa.apiconfig.core.specification.PspCanaleTipoVersamentoSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Canali;
 import it.gov.pagopa.apiconfig.starter.entity.Psp;
@@ -243,6 +248,18 @@ public class PspService {
         .map(elem -> modelMapper.map(elem, PaymentServiceProvider.class))
         .collect(Collectors.toList());
   }
+  
+  /**
+   * Maps PSP objects stored in the DB in a List of PaymentServiceProviderView
+   *
+   * @param page page of PSP returned from the database
+   * @return a list of {@link PaymentServiceProviderView}.
+   */
+  private List<PaymentServiceProviderView> getPaymentServiceProviderViewList(Page<PspCanaleTipoVersamento> page) {
+    return page.stream()
+        .map(elem -> modelMapper.map(elem, PaymentServiceProviderView.class))
+        .collect(Collectors.toList());
+  }
 
   /**
    * @param channelCode code of the channel
@@ -309,5 +326,19 @@ public class PspService {
     if (!match) {
       throw new ValidationException("pspCode doesn't match the pattern [A-Z0-9]{6,14}");
     }
+  }
+  
+  public PaymentServiceProvidersView getPaymentServiceProvidersView(@Positive Integer limit, @PositiveOrZero Integer pageNumber,
+      String pspCode, String pspBrokerCode, String channelCode, String paymentType, String paymentModel) {
+    
+    Pageable pageable = PageRequest.of(pageNumber, limit);
+    
+    Page<PspCanaleTipoVersamento> page = pspCanaleTipoVersamentoRepository.findAll(
+        PspCanaleTipoVersamentoSpecification.filterViewPspChannelBroker(pspCode, pspBrokerCode, channelCode, paymentType, paymentModel), pageable);
+    
+    return PaymentServiceProvidersView.builder()
+        .paymentServiceProviderList(getPaymentServiceProviderViewList(page))
+        .pageInfo(CommonUtil.buildPageInfo(page))
+        .build();
   }
 }
