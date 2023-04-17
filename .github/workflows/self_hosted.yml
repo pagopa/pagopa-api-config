@@ -19,8 +19,7 @@ on:
 
 env:
   NAMESPACE: apiconfig
-  APP_NAME: core
-
+  APP_NAME: pagopaapiconfig
 
 permissions:
   id-token: write
