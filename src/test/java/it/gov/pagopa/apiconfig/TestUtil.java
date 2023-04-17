@@ -41,7 +41,9 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStation;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationList;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutions;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
@@ -602,10 +604,28 @@ public class TestUtil {
         .businessName("regione")
         .build();
   }
+  
+  public static CreditorInstitutionView getMockCreditorInstitutionView() {
+    return CreditorInstitutionView.builder()
+        .idDominio("1234567890100")
+        .idIntermediarioPa("223344556677889900")
+        .idStazione("1234567890999")
+        .auxDigit(1L)
+        .progressivo(2L)
+        .segregazione(3L)
+        .build();
+  }
 
   public static CreditorInstitutions getMockCreditorInstitutions() {
     return CreditorInstitutions.builder()
         .creditorInstitutionList(List.of(getMockCreditorInstitution()))
+        .pageInfo(getMockPageInfo())
+        .build();
+  }
+  
+  public static CreditorInstitutionsView getMockCreditorInstitutionsView() {
+    return CreditorInstitutionsView.builder()
+        .creditorInstitutionList(List.of(getMockCreditorInstitutionView()))
         .pageInfo(getMockPageInfo())
         .build();
   }
