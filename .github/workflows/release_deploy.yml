@@ -44,6 +44,8 @@ permissions:
   id-token: write
   actions: read
 
+env:
+  GITHUB_TOKEN_READ_PACKAGES: ${{env.GITHUB_TOKEN}}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
