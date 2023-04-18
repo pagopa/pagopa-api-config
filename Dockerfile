@@ -4,8 +4,8 @@
 FROM maven:3.8.4-jdk-11-slim as buildtime
 WORKDIR /build
 COPY . .
-RUN --mount=type=secret,id=GITHUB_TOKEN_READ_PACKAGES \
-  read_token="$(cat /run/secrets/GITHUB_TOKEN_READ_PACKAGES)" \
+RUN --mount=type=secret,id=GIT_AUTH_TOKEN \
+  read_token="$(cat /run/secrets/GIT_AUTH_TOKEN)" \
   && GITHUB_TOKEN_READ_PACKAGES=${read_token} mvn clean package -Dmaven.test.skip=true
 
 FROM adoptopenjdk/openjdk11:alpine-jre as builder

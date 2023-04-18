@@ -137,7 +137,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
-            GITHUB_TOKEN_READ_PACKAGES=${{secrets.GITHUB_TOKEN}}
+            GIT_AUTH_TOKEN=${{secrets.GITHUB_TOKEN}}
 
   deploy_aks:
     name: Deploy on AKS
