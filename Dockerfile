@@ -2,6 +2,7 @@
 # Build
 #
 FROM maven:3.8.4-jdk-11-slim as buildtime
+ENV GITHUB_TOKEN_READ_PACKAGES=$github_token
 WORKDIR /build
 COPY . .
 RUN mvn clean package -Dmaven.test.skip=true

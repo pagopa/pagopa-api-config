@@ -131,7 +131,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: GITHUB_TOKEN_READ_PACKAGES=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
+          build-args: github_token=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
 
 
   deploy_aks:
