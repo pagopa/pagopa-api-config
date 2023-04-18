@@ -2,12 +2,11 @@
 # Build
 #
 FROM maven:3.8.4-jdk-11-slim as buildtime
-ARG gh_token
-ENV GITHUB_TOKEN_READ_PACKAGES=$gh_token
 WORKDIR /build
 COPY . .
-RUN mvn clean package -Dmaven.test.skip=true
-
+RUN --mount=type=secret,id=GITHUB_TOKEN_READ_PACKAGES \
+  read_token="$(cat /run/secrets/GITHUB_TOKEN_READ_PACKAGES)" \
+  && GITHUB_TOKEN_READ_PACKAGES=${read_token} mvn clean package -Dmaven.test.skip=true
 
 FROM adoptopenjdk/openjdk11:alpine-jre as builder
 COPY --from=buildtime /build/target/*.jar application.jar
