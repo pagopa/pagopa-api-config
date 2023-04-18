@@ -44,9 +44,6 @@ permissions:
   id-token: write
   actions: read
 
-env:
-  GITHUB_TOKEN_READ_PACKAGES: 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
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   setup:
@@ -126,8 +123,6 @@ jobs:
             ${{ needs.release.outputs.version }}
             type=ref,event=branch
             type=sha
-        env:
-          GITHUB_TOKEN_READ_PACKAGES: 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
 
       - name: Build and push
         uses: docker/build-push-action@v3
@@ -136,9 +131,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: GITHUB_TOKEN_READ_PACKAGES=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
-        env:
-          GITHUB_TOKEN_READ_PACKAGES: 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
+          build-args: GITHUB_TOKEN_READ_PACKAGES=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
 
 
   deploy_aks:
