@@ -19,6 +19,7 @@ on:
 
 env:
   PROJECT_KEY: pagopa_pagopa-api-config
+  GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GITHUB_TOKEN }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
