@@ -132,7 +132,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            github_token=${{secrets.JACOPO_TOKEN}}
+            github_token=ciao
 
   deploy_aks:
     name: Deploy on AKS
