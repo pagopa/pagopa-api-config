@@ -14,7 +14,7 @@
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
   <name>ApiConfig</name>
-  <version>0.37.1-16-PAGOPA-818-integrazione-con-kibana</version>
+  <version>0.37.1-18-PAGOPA-818-integrazione-con-kibana</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
