@@ -45,7 +45,7 @@ permissions:
   actions: read
 
 env:
-  GITHUB_TOKEN_READ_PACKAGES: ${{secrets.BOT_TOKEN_GITHUB}}
+  GITHUB_TOKEN_READ_PACKAGES: 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
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -103,7 +103,6 @@ jobs:
         uses: pagopa/github-actions-template/ghcr-build-push@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref_name}}
           tag: ${{ needs.release.outputs.version }}
 
   deploy_aks:
