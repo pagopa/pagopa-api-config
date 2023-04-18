@@ -21,7 +21,7 @@ basecache: &basecache
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.37.1-14-PAGOPA-818-integrazione-con-kibana"
+        tag: "0.37.1-15-PAGOPA-818-integrazione-con-kibana"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
