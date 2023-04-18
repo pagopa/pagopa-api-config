@@ -137,7 +137,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
-            GIT_AUTH_TOKEN=${{secrets.GITHUB_TOKEN}}
+            GH_TOKEN=ciao
+        env:
+          GH_TOKEN=ciao
 
   deploy_aks:
     name: Deploy on AKS
@@ -153,21 +155,21 @@ jobs:
       beta: ${{ inputs.beta }}
     secrets: inherit
 
-  notify:
-    needs: [ deploy_aks ]
-    runs-on: ubuntu-latest
-    name: Notify
-    if: always()
-    steps:
-      - name: Report Status
-        if: always()
-        uses: ravsamhq/notify-slack-action@v2
-        with:
-          status: ${{ needs.deploy_aks.result }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          notify_when: 'failure,skipped'
-          notification_title: '{workflow} has {status_message}'
-          message_format: '{emoji} <{workflow_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
-          footer: 'Linked to Repo <{repo_url}|{repo}>'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#  notify:
+#    needs: [ deploy_aks ]
+#    runs-on: ubuntu-latest
+#    name: Notify
+#    if: always()
+#    steps:
+#      - name: Report Status
+#        if: always()
+#        uses: ravsamhq/notify-slack-action@v2
+#        with:
+#          status: ${{ needs.deploy_aks.result }}
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          notify_when: 'failure,skipped'
+#          notification_title: '{workflow} has {status_message}'
+#          message_format: '{emoji} <{workflow_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
+#          footer: 'Linked to Repo <{repo_url}|{repo}>'
+#        env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
