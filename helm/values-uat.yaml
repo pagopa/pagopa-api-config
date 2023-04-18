@@ -21,7 +21,7 @@ basecache: &basecache
       create: true
       image:
         repository: pagopaucommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.37.1-1-fix-aks-oracle"
+        tag: "0.37.1-1"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
