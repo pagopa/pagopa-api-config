@@ -53,6 +53,11 @@ jobs:
       semver: ${{ steps.get_semver.outputs.semver }}
       environment: ${{ steps.output.outputs.environment }}
     steps:
+      - name: Dump GitHub context
+        run: echo $JSON
+        env:
+          JSON: ${{ toJSON(github) }}
+
       - name: Get semver
         id: get_semver
         uses: pagopa/github-actions-template/semver-setup@1.3.0
@@ -111,7 +116,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.JACOPO_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Docker meta
         id: meta
@@ -132,7 +137,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            github_token=ciao
+            gh_token=${{secrets.GITHUB_TOKEN}}
 
   deploy_aks:
     name: Deploy on AKS
