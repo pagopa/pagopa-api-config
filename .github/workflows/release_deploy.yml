@@ -111,7 +111,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.JACOPO_TOKEN }}
 
       - name: Docker meta
         id: meta
@@ -131,7 +131,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: ['github_token=${{secrets.JACOPO_TOKEN}}']
+          build-args: |
+            github_token=${{secrets.JACOPO_TOKEN}}
 
   deploy_aks:
     name: Deploy on AKS
