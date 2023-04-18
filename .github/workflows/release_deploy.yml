@@ -139,7 +139,7 @@ jobs:
           secrets: |
             GH_TOKEN=ciao
         env:
-          GH_TOKEN=ciao
+          GH_TOKEN: ciao
 
   deploy_aks:
     name: Deploy on AKS
