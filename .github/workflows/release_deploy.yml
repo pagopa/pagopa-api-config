@@ -108,6 +108,8 @@ jobs:
 #          tag: ${{ needs.release.outputs.version }}
 #
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.release.outputs.version }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -135,9 +137,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
-            GH_TOKEN=${{ secrets.JACOPO_TOKEN }}
-        env:
-          GH_TOKEN: ${{ secrets.JACOPO_TOKEN }}
+            GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   deploy_aks:
     name: Deploy on AKS
