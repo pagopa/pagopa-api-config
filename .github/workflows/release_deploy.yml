@@ -137,9 +137,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
-            GH_TOKEN=ciao
+            GH_TOKEN=${{ secrets.JACOPO_TOKEN }}
         env:
-          GH_TOKEN: ciao
+          GH_TOKEN: ${{ secrets.JACOPO_TOKEN }}
 
   deploy_aks:
     name: Deploy on AKS
