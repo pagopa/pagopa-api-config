@@ -102,4 +102,4 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: "0.37.1-12-PAGOPA-818-integrazione-con-kibana"
+        tag: "0.37.1-14-PAGOPA-818-integrazione-con-kibana"
