@@ -95,44 +95,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.semver != 'skip' }}
     steps:
-#      - name: Build and Push
-#        id: semver
-#        uses: pagopa/github-actions-template/ghcr-build-push@main
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          tag: ${{ needs.release.outputs.version }}
-#
-      - uses: actions/checkout@v3
+      - name: Build and Push
+        id: semver
+        uses: pagopa/github-actions-template/ghcr-build-push@main
         with:
-          ref: ${{ needs.release.outputs.version }}
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4.3.0
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            latest
-            ${{ needs.release.outputs.version }}
-            type=ref,event=branch
-            type=sha
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: github_token=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
-
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.release.outputs.version }}
+          build-args: 'github_token=${{secrets.GITHUB_TOKEN}}'
 
   deploy_aks:
     name: Deploy on AKS
