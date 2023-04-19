@@ -21,7 +21,6 @@ env:
   NAMESPACE: apiconfig
   APP_NAME: pagopaapiconfig
 
-
 permissions:
   id-token: write
   contents: read

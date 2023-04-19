@@ -1,13 +1,16 @@
 package it.gov.pagopa.apiconfig.core.util;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
-import javax.validation.constraints.NotNull;
-
+import feign.Feign;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
+import it.gov.pagopa.apiconfig.core.client.AFMUtilsClient;
+import it.gov.pagopa.apiconfig.core.exception.AppError;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.afm.CdiCosmos;
+import it.gov.pagopa.apiconfig.core.model.afm.CdiDetailCosmos;
+import it.gov.pagopa.apiconfig.starter.entity.*;
+import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,21 +20,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import feign.Feign;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
-import it.gov.pagopa.apiconfig.core.exception.AppError;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.afm.CdiCosmos;
-import it.gov.pagopa.apiconfig.core.model.afm.CdiDetailCosmos;
-import it.gov.pagopa.apiconfig.starter.entity.Canali;
-import it.gov.pagopa.apiconfig.starter.entity.CdiDetail;
-import it.gov.pagopa.apiconfig.starter.entity.CdiInformazioniServizio;
-import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
-import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
-import it.gov.pagopa.apiconfig.starter.entity.ServiceAmountCosmos;
-import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
+
 
 @Component
 @Slf4j
@@ -42,6 +40,9 @@ public class AFMUtilsAsyncTask {
   private String afmUtilsSubscriptionKey;
 
   @Autowired private ModelMapper modelMapper;
+
+  @Autowired
+  HttpServletRequest httpServletRequest;
 
   private AFMUtilsClient afmUtilsClient;
 
@@ -127,7 +128,7 @@ public class AFMUtilsAsyncTask {
                         ServiceAmountCosmos.builder()
                             .minPaymentAmount((int) (elem.getImportoMinimo() * 100))
                             .maxPaymentAmount((int) (elem.getImportoMassimo() * 100))
-                            .paymentAmount((int) (elem.getCostoFisso() * 100))
+                            .paymentAmount((int) (elem.getValoreCommissione() * 100))
                             .build())
                 .collect(Collectors.toList()))
         .build();
@@ -143,7 +144,7 @@ public class AFMUtilsAsyncTask {
 
   private void afmUtilsTrigger(List<CdiCosmos> cdis) {
     try {
-      afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, cdis);
+      afmUtilsClient.syncPaymentTypes(afmUtilsSubscriptionKey, httpServletRequest.getHeader(HEADER_REQUEST_ID), cdis);
     } catch (Exception e) {
       String cdiList =
           cdis.stream().map(CdiCosmos::getIdCdi).collect(Collectors.joining(", ", "{", "}"));

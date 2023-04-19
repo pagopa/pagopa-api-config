@@ -1,23 +1,21 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import feign.Feign;
 import feign.mock.HttpMethod;
 import feign.mock.MockClient;
 import feign.mock.MockTarget;
 import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.core.client.RefreshClient;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.ConfigurationDomain;
 import it.gov.pagopa.apiconfig.core.model.JobTrigger;
-import it.gov.pagopa.apiconfig.core.service.RefreshService;
-import it.gov.pagopa.apiconfig.core.util.RefreshClient;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = ApiConfig.class)
 class RefreshServiceTest {
