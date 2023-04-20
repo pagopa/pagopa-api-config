@@ -184,12 +184,12 @@ stages:
                 echo "[INFO] Image version: $(pomversion.next)"
                 
                 echo $(GITHUB_TOKEN) > ./secrets
-                DOCKER_BUILDKIT=1 docker build -t $(dockerRegistryServiceConnection)/$(IMAGE_REPOSITORY):$(pomversion.next) --secret id=GH_TOKEN,src=./secrets .
-                DOCKER_BUILDKIT=1 docker build -t $(dockerRegistryServiceConnection)/$(IMAGE_REPOSITORY):latest --secret id=GH_TOKEN,src=./secrets .
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):$(pomversion.next) --secret id=GH_TOKEN,src=./secrets .
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):latest --secret id=GH_TOKEN,src=./secrets .
 
                
           - task: Docker@2
-            displayName: "docker login"
+            displayName: "docker push"
             inputs:
               containerRegistry: '$(dockerRegistryServiceConnection)'
               repository: '$(IMAGE_REPOSITORY)'
