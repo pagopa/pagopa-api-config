@@ -186,6 +186,7 @@ stages:
                 echo $(GITHUB_TOKEN) > ./secrets
                 DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):$(pomversion.next) --secret id=GH_TOKEN,src=./secrets .
                 DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):latest --secret id=GH_TOKEN,src=./secrets .
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):$(Build.BuildId) --secret id=GH_TOKEN,src=./secrets .
 
                
           - task: Docker@2
@@ -195,6 +196,7 @@ stages:
               repository: '$(IMAGE_REPOSITORY)'
               command: 'push'
               tags: |
+                $(Build.BuildId)
                 latest
                 $(pomversion.next)
               
