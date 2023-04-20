@@ -186,10 +186,20 @@ stages:
                 echo $(GITHUB_TOKEN) > ./secrets
                 DOCKER_BUILDKIT=1 docker build -t $(dockerRegistryServiceConnection)/$(IMAGE_REPOSITORY):$(pomversion.next) --secret id=GH_TOKEN,src=./secrets .
                 DOCKER_BUILDKIT=1 docker build -t $(dockerRegistryServiceConnection)/$(IMAGE_REPOSITORY):latest --secret id=GH_TOKEN,src=./secrets .
-                docker push $(dockerRegistryServiceConnection)/$(IMAGE_REPOSITORY):$(pomversion.next)
-                docker push $(dockerRegistryServiceConnection)/$(IMAGE_REPOSITORY):latest
-               
 
+               
+          - task: Docker@2
+            displayName: "docker login"
+            inputs:
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+              repository: '$(IMAGE_REPOSITORY)'
+              command: 'push'
+              tags: |
+                $(Build.BuildId)
+                latest
+                $(pomversion.next)
+              
+              
           - task: AzureRMWebAppDeployment@4
             displayName: Azure App Service Deploy
             inputs:
