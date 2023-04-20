@@ -44,7 +44,6 @@ permissions:
   id-token: write
   actions: read
 
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   setup:
@@ -54,6 +53,11 @@ jobs:
       semver: ${{ steps.get_semver.outputs.semver }}
       environment: ${{ steps.output.outputs.environment }}
     steps:
+      - name: Dump GitHub context
+        run: echo $JSON
+        env:
+          JSON: ${{ toJSON(github) }}
+
       - name: Get semver
         id: get_semver
         uses: pagopa/github-actions-template/semver-setup@1.3.0
@@ -96,13 +100,44 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.semver != 'skip' }}
     steps:
-      - name: Build and Push
-        id: semver
-        uses: pagopa/github-actions-template/ghcr-build-push@main
+#      - name: Build and Push
+#        id: semver
+#        uses: pagopa/github-actions-template/ghcr-build-push@main
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          tag: ${{ needs.release.outputs.version }}
+#
+      - uses: actions/checkout@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref_name}}
-          tag: ${{ needs.release.outputs.version }}
+          ref: ${{ github.ref_name }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4.3.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            latest
+            ${{ needs.release.outputs.version }}
+            type=ref,event=branch
+            type=sha
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          secrets: |
+            GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   deploy_aks:
     name: Deploy on AKS

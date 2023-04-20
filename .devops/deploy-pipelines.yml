@@ -146,29 +146,53 @@ stages:
                 echo "##vso[task.setvariable variable=next;isOutput=true]$version"
               failOnStderr: true
 
-          - task: Maven@3
-            inputs:
-              mavenPomFile: 'pom.xml'
-              publishJUnitResults: false
-              javaHomeOption: 'JDKVersion'
-              jdkVersionOption: '1.11'
-              mavenVersionOption: 'Default'
-              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
-              mavenAuthenticateFeed: false
-              effectivePomSkip: false
-              sonarQubeRunAnalysis: false
+#          - task: Maven@3
+#            inputs:
+#              mavenPomFile: 'pom.xml'
+#              publishJUnitResults: false
+#              javaHomeOption: 'JDKVersion'
+#              jdkVersionOption: '1.11'
+#              mavenVersionOption: 'Default'
+#              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+#              mavenAuthenticateFeed: false
+#              effectivePomSkip: false
+#              sonarQubeRunAnalysis: false
+#
+#          - task: Docker@2
+#            displayName: Build and push an image to container registry
+#            inputs:
+#              containerRegistry: '$(dockerRegistryServiceConnection)'
+#              repository: '$(IMAGE_REPOSITORY)'
+#              command: 'buildAndPush'
+#              tags: |
+#                $(Build.BuildId)
+#                latest
+#                $(pomversion.next)
 
           - task: Docker@2
-            displayName: Build and push an image to container registry
+            displayName: "docker login"
             inputs:
               containerRegistry: '$(dockerRegistryServiceConnection)'
-              repository: '$(IMAGE_REPOSITORY)'
-              command: 'buildAndPush'
-              tags: |
-                $(Build.BuildId)
-                latest
-                $(pomversion.next)
+              command: "login"
 
+          - task: Bash@3
+            displayName: "docker build and push"
+            inputs:
+              targetType: "inline"
+              script: |
+                # docker will return 0 on success or 1 on failure.
+                echo "[INFO] Image version: $(pomversion.next)"
+                
+                echo $(GITHUB_TOKEN) > ./secrets
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):$(pomversion.next) --secret id=GH_TOKEN,src=./secrets .
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):latest --secret id=GH_TOKEN,src=./secrets .
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):$(Build.BuildId) --secret id=GH_TOKEN,src=./secrets .
+                docker push $(dockerNamespace)/$(IMAGE_REPOSITORY):$(pomversion.next)
+                docker push $(dockerNamespace)/$(IMAGE_REPOSITORY):latest
+                docker push $(dockerNamespace)/$(IMAGE_REPOSITORY):$(Build.BuildId)
+
+              
+              
           - task: AzureRMWebAppDeployment@4
             displayName: Azure App Service Deploy
             inputs:

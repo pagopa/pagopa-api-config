@@ -67,7 +67,7 @@ jobs:
       #          cluster_name: ${{ secrets.CLUSTER_NAME }}
       #          resource_group: ${{ secrets.CLUSTER_RESOURCE_GROUP_NAME }}
       #          app_name: ${{ env.APP_NAME }}
-      #          helm_upgrade_options: ${{( inputs.beta && '--set microservice-chart.deployment.create=false') || '' }}
+      #          helm_upgrade_options: --set oracle.enabled=true --set postgresql.enabled=false
 
       - uses: actions/checkout@v3
         with:
@@ -104,6 +104,8 @@ jobs:
         run: helm upgrade --namespace ${{ env.NAMESPACE }}
           --install --values ./helm/values-${{ inputs.environment }}.yaml
           ${{( inputs.beta && '--set microservice-chart.canaryDelivery.deployment.image.tag=${{ env.stable_version }}') || '' }}
+          --set oracle.enabled=true
+          --set postgresql.enabled=false
           --wait --timeout 5m0s
           ${{ env.APP_NAME }} ./helm
 

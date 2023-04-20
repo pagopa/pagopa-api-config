@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.38.1"
+    "version": "0.38.2-1-fix-deploy"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
