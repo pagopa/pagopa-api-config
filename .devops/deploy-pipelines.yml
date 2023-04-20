@@ -195,7 +195,6 @@ stages:
               repository: '$(IMAGE_REPOSITORY)'
               command: 'push'
               tags: |
-                $(Build.BuildId)
                 latest
                 $(pomversion.next)
               
