@@ -187,18 +187,10 @@ stages:
                 DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):$(pomversion.next) --secret id=GH_TOKEN,src=./secrets .
                 DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):latest --secret id=GH_TOKEN,src=./secrets .
                 DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(IMAGE_REPOSITORY):$(Build.BuildId) --secret id=GH_TOKEN,src=./secrets .
+                docker push $(dockerNamespace)/$(IMAGE_REPOSITORY):$(pomversion.next)
+                docker push $(dockerNamespace)/$(IMAGE_REPOSITORY):latest
+                docker push $(dockerNamespace)/$(IMAGE_REPOSITORY):$(Build.BuildId)
 
-               
-          - task: Docker@2
-            displayName: "docker push"
-            inputs:
-              containerRegistry: '$(dockerRegistryServiceConnection)'
-              repository: '$(IMAGE_REPOSITORY)'
-              command: 'push'
-              tags: |
-                $(Build.BuildId)
-                latest
-                $(pomversion.next)
               
               
           - task: AzureRMWebAppDeployment@4
