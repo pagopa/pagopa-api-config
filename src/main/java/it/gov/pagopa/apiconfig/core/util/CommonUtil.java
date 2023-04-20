@@ -1,5 +1,31 @@
 package it.gov.pagopa.apiconfig.core.util;
 
+import it.gov.pagopa.apiconfig.core.exception.AppError;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.CheckItem;
+import it.gov.pagopa.apiconfig.core.model.PageInfo;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.Filter;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.OrderType;
+import lombok.experimental.UtilityClass;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -12,34 +38,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stax.StAXSource;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
-
-import it.gov.pagopa.apiconfig.core.exception.AppError;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.CheckItem;
-import it.gov.pagopa.apiconfig.core.model.PageInfo;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.Filter;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.OrderType;
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class CommonUtil {

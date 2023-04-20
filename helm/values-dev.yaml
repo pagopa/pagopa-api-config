@@ -21,13 +21,13 @@ basecache: &basecache
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.37.1-2"
+        tag: "0.38.0"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.37.1-2-fix-aks-oracle"
+    tag: "0.38.1"
     pullPolicy: Always
   livenessProbe:
     httpGet:

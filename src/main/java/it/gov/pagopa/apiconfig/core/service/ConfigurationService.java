@@ -1,11 +1,18 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.validation.constraints.NotNull;
-
+import feign.Feign;
+import feign.FeignException;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
+import it.gov.pagopa.apiconfig.core.client.AFMMarketplaceClient;
+import it.gov.pagopa.apiconfig.core.exception.AppError;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.afm.PaymentTypesCosmos;
+import it.gov.pagopa.apiconfig.core.model.configuration.*;
+import it.gov.pagopa.apiconfig.core.util.CommonUtil;
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,40 +20,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import feign.Feign;
-import feign.FeignException;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
-import it.gov.pagopa.apiconfig.core.exception.AppError;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.afm.PaymentTypesCosmos;
-import it.gov.pagopa.apiconfig.core.model.configuration.AfmMarketplacePaymentType;
-import it.gov.pagopa.apiconfig.core.model.configuration.ConfigurationKey;
-import it.gov.pagopa.apiconfig.core.model.configuration.ConfigurationKeyBase;
-import it.gov.pagopa.apiconfig.core.model.configuration.ConfigurationKeys;
-import it.gov.pagopa.apiconfig.core.model.configuration.FtpServer;
-import it.gov.pagopa.apiconfig.core.model.configuration.FtpServers;
-import it.gov.pagopa.apiconfig.core.model.configuration.PaymentType;
-import it.gov.pagopa.apiconfig.core.model.configuration.PaymentTypeBase;
-import it.gov.pagopa.apiconfig.core.model.configuration.PaymentTypes;
-import it.gov.pagopa.apiconfig.core.model.configuration.Pdd;
-import it.gov.pagopa.apiconfig.core.model.configuration.PddBase;
-import it.gov.pagopa.apiconfig.core.model.configuration.Pdds;
-import it.gov.pagopa.apiconfig.core.model.configuration.WfespPluginConf;
-import it.gov.pagopa.apiconfig.core.model.configuration.WfespPluginConfBase;
-import it.gov.pagopa.apiconfig.core.model.configuration.WfespPluginConfs;
-import it.gov.pagopa.apiconfig.core.util.AFMMarketplaceClient;
-import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
-import it.gov.pagopa.apiconfig.starter.repository.ConfigurationKeysRepository;
-import it.gov.pagopa.apiconfig.starter.repository.FtpServersRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PddRepository;
-import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.WfespPluginConfRepository;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
 
 @Service
 @Validated
 @Transactional
+@Slf4j
 public class ConfigurationService {
 
   @Autowired private ConfigurationKeysRepository configurationKeysRepository;
@@ -63,6 +49,9 @@ public class ConfigurationService {
 
   @Value("${service.marketplace.subscriptionKey}")
   private String afmMarketplaceSubscriptionKey;
+
+  @Autowired
+  HttpServletRequest httpServletRequest;
 
   private AFMMarketplaceClient afmMarketplaceClient;
 
@@ -331,7 +320,7 @@ public class ConfigurationService {
     try {
       // check if payment type is used to create bundles (AFM Marketplace)
       AfmMarketplacePaymentType response =
-          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, paymentTypeCode);
+          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, getRequestId(), paymentTypeCode);
       if (Boolean.TRUE.equals(response.getUsed())) {
         throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
       } else {
@@ -349,6 +338,13 @@ public class ConfigurationService {
     }
   }
 
+  private String getRequestId() {
+    String header = httpServletRequest.getHeader(HEADER_REQUEST_ID);
+    header = header != null ? header : UUID.randomUUID().toString();
+    log.info("RequestId to call Utils: {}", header);
+    return header;
+  }
+
   public void syncPaymentTypesHistory() {
     List<PaymentTypesCosmos> paymentTypes =
         tipiVersamentoRepository.findAll().stream()
@@ -362,7 +358,7 @@ public class ConfigurationService {
             .collect(Collectors.toList());
 
     try {
-      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, paymentTypes);
+      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, getRequestId(), paymentTypes);
     } catch (FeignException.BadRequest e) {
       throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
     } catch (FeignException e) {

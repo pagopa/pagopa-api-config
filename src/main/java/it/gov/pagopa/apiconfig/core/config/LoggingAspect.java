@@ -1,17 +1,9 @@
 package it.gov.pagopa.apiconfig.core.config;
 
-import java.util.Arrays;
-import java.util.stream.StreamSupport;
-
-import javax.annotation.PostConstruct;
-
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -21,7 +13,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.stream.StreamSupport;
 
 @Aspect
 @Component
@@ -60,6 +54,10 @@ public class LoggingAspect {
   @Pointcut("execution(* it.gov.pagopa.apiconfig.core.util..*.*(..))")
   public void util() {
     // all util methods
+  }
+  @Pointcut("execution(* it.gov.pagopa.apiconfig.core.client..*.*(..))")
+  public void client() {
+    // all client methods
   }
 
   /** Log essential info of application during the startup. */
@@ -125,7 +123,7 @@ public class LoggingAspect {
     return result;
   }
 
-  @Around(value = "repository() || service() || mapper() || util()")
+  @Around(value = "repository() || service() || mapper() || util() || client()")
   public Object logTrace(ProceedingJoinPoint joinPoint) throws Throwable {
     log.debug(
         "Call method {} - args: {}", joinPoint.getSignature().toShortString(), joinPoint.getArgs());

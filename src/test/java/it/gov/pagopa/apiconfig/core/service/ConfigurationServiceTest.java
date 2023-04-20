@@ -1,35 +1,17 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getMockAfmMarketplacePaymentType;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockConfigurationKey;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockConfigurationKeyEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockConfigurationKeysEntries;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockFtpServer;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockFtpServersEntities;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockFtpServersEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockModelWfespPluginConf;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentType;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPdd;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPddEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPddsEntities;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockTipiVersamento;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockTipoVersamento;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockWfespPluginConf;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockWfespPluginConfEntries;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-
+import feign.FeignException;
+import feign.Request;
+import feign.RequestTemplate;
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.client.AFMMarketplaceClient;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.configuration.*;
+import it.gov.pagopa.apiconfig.starter.entity.Pdd;
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
+import it.gov.pagopa.apiconfig.starter.repository.*;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -42,31 +24,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import feign.FeignException;
-import feign.Request;
-import feign.RequestTemplate;
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.configuration.AfmMarketplacePaymentType;
-import it.gov.pagopa.apiconfig.core.model.configuration.ConfigurationKey;
-import it.gov.pagopa.apiconfig.core.model.configuration.ConfigurationKeys;
-import it.gov.pagopa.apiconfig.core.model.configuration.FtpServer;
-import it.gov.pagopa.apiconfig.core.model.configuration.FtpServers;
-import it.gov.pagopa.apiconfig.core.model.configuration.PaymentType;
-import it.gov.pagopa.apiconfig.core.model.configuration.PaymentTypes;
-import it.gov.pagopa.apiconfig.core.model.configuration.Pdds;
-import it.gov.pagopa.apiconfig.core.model.configuration.WfespPluginConfs;
-import it.gov.pagopa.apiconfig.core.service.ConfigurationService;
-import it.gov.pagopa.apiconfig.core.util.AFMMarketplaceClient;
-import it.gov.pagopa.apiconfig.starter.entity.Pdd;
-import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
-import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
-import it.gov.pagopa.apiconfig.starter.repository.ConfigurationKeysRepository;
-import it.gov.pagopa.apiconfig.starter.repository.FtpServersRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PddRepository;
-import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.WfespPluginConfRepository;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+
+import static it.gov.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ConfigurationServiceTest {
@@ -699,7 +668,7 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(), any());
+    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(), anyString(), any());
 
     PaymentType result = configurationService.createPaymentType(getMockPaymentType());
     String actual = TestUtil.toJson(result);
@@ -734,7 +703,7 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(), any());
+    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(),anyString(), any());
 
     PaymentType result = configurationService.updatePaymentType("PPAL", getMockPaymentType());
     String actual = TestUtil.toJson(result);
@@ -764,9 +733,8 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    when(afmMarketplaceClient.getPaymentType(anyString(), anyString()))
+    when(afmMarketplaceClient.getPaymentType(anyString(),any(), anyString()))
         .thenReturn(getMockAfmMarketplacePaymentType());
-
     try {
       configurationService.deletePaymentType("PPAL");
     } catch (Exception e) {
@@ -797,7 +765,7 @@ class ConfigurationServiceTest {
         Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
     doThrow(new FeignException.InternalServerError("", request, null, null))
         .when(afmMarketplaceClient)
-        .getPaymentType(anyString(), anyString());
+        .getPaymentType(anyString(),anyString(), anyString());
 
     try {
       configurationService.deletePaymentType("PPAL");
@@ -816,8 +784,7 @@ class ConfigurationServiceTest {
     response.setUsed(true);
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    when(afmMarketplaceClient.getPaymentType(anyString(), anyString())).thenReturn(response);
-
+    when(afmMarketplaceClient.getPaymentType(anyString(), anyString(), anyString())).thenReturn(response);
     try {
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
@@ -894,7 +861,7 @@ class ConfigurationServiceTest {
         Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
     doThrow(new FeignException.InternalServerError("", request, null, null))
         .when(afmMarketplaceClient)
-        .getPaymentType(anyString(), anyString());
+        .getPaymentType(anyString(),anyString(), anyString());
 
     try {
       configurationService.deletePaymentType("PPAL");
