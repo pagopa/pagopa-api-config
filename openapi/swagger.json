@@ -7447,6 +7447,171 @@
         "summary": "Create creditor institution"
       }
     },
+    "/creditorinstitutions/view": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "default": 50,
+            "description": "Number of elements on one page. Default = 50",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "format": "int32",
+            "in": "query",
+            "minimum": 0,
+            "name": "page",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "Filter by creditor institution code",
+            "in": "query",
+            "name": "creditorInstitutionCode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by pa broker code",
+            "in": "query",
+            "name": "paBrokerCode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by station code",
+            "in": "query",
+            "name": "stationCode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by aux digit",
+            "format": "int64",
+            "in": "query",
+            "name": "auxDigit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Filter by application code",
+            "format": "int64",
+            "in": "query",
+            "name": "applicationCode",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Filter by segregation code",
+            "format": "int64",
+            "in": "query",
+            "name": "segregationCode",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Filter by mod4",
+            "in": "query",
+            "name": "mod4",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreditorInstitutionsView"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "getPaymentServiceProvidersView_1",
+        "summary": "Get view creditor institutions broker station"
+      }
+    },
     "/creditorinstitutions/{creditorinstitutioncode}": {
       "parameters": [
         {
@@ -13667,11 +13832,73 @@
       ],
       "type": "object"
     },
+    "CreditorInstitutionView": {
+      "properties": {
+        "application_code": {
+          "format": "int64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "aux_digit": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "broker_code": {
+          "example": "223344556677889900",
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "creditor_institution_code": {
+          "example": "1234567890100",
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        },
+        "mod4": {
+          "type": "boolean"
+        },
+        "segregation_code": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "station_code": {
+          "example": "1234567890100",
+          "maxLength": 35,
+          "minLength": 0,
+          "type": "string"
+        }
+      },
+      "required": [
+        "broker_code",
+        "creditor_institution_code",
+        "station_code"
+      ],
+      "type": "object"
+    },
     "CreditorInstitutions": {
       "properties": {
         "creditor_institutions": {
           "items": {
             "$ref": "#/definitions/CreditorInstitution"
+          },
+          "type": "array"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        }
+      },
+      "required": [
+        "creditor_institutions",
+        "page_info"
+      ],
+      "type": "object"
+    },
+    "CreditorInstitutionsView": {
+      "properties": {
+        "creditor_institutions": {
+          "items": {
+            "$ref": "#/definitions/CreditorInstitutionView"
           },
           "type": "array"
         },

@@ -28,11 +28,15 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStation;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationList;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutions;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
+import it.gov.pagopa.apiconfig.core.specification.PaStazionePaSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
 import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
@@ -123,6 +127,23 @@ public class CreditorInstitutionsService {
     Pa pa = getPaIfExists(creditorInstitutionCode);
     List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa(pa.getObjId());
     return CreditorInstitutionStationList.builder().stationsList(getStationsList(result)).build();
+  }
+  
+  public CreditorInstitutionsView getCreditorInstitutionsView(
+      @NotNull Integer limit, @NotNull Integer pageNumber, 
+      FilterPaView filter) {   
+    
+    Pageable pageable = PageRequest.of(pageNumber, limit);
+    
+    Page<PaStazionePa> page = paStazionePaRepository.findAll(
+        PaStazionePaSpecification.filterViewPaBrokerStation(
+            filter.getCreditorInstitutionCode(), filter.getPaBrokerCode(), filter.getStationCode(), 
+            filter.getAuxDigit(), filter.getApplicationCode(), filter.getSegregationCode(), filter.getMod4()), pageable);
+    
+    return CreditorInstitutionsView.builder()
+        .creditorInstitutionList(getCreditorInstitutionsView(page))
+        .pageInfo(CommonUtil.buildPageInfo(page))
+        .build();
   }
 
   /**
@@ -317,6 +338,18 @@ public class CreditorInstitutionsService {
   private List<CreditorInstitution> getCreditorInstitutions(Page<Pa> page) {
     return page.stream()
         .map(elem -> modelMapper.map(elem, CreditorInstitution.class))
+        .collect(Collectors.toList());
+  }
+  
+  /**
+   * Maps PaStazionePa objects stored in the DB in a List of CreditorInstitutionView
+   *
+   * @param page of PaStazionePa returned from the database
+   * @return a list of {@link CreditorInstitutionView}.
+   */
+  private List<CreditorInstitutionView> getCreditorInstitutionsView(Page<PaStazionePa> page) {
+    return page.stream()
+        .map(elem -> modelMapper.map(elem, CreditorInstitutionView.class))
         .collect(Collectors.toList());
   }
 

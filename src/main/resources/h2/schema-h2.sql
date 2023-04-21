@@ -122,9 +122,9 @@ create table NODO4_CFG.PA_STAZIONE_PA
     FK_STAZIONE    numeric not null,
     AUX_DIGIT      numeric,
     SEGREGAZIONE   numeric,
-    QUARTO_MODELLO boolean not null,
-    STAZIONE_NODO  boolean not null default 'N',
-    STAZIONE_AVV   boolean not null default 'N',
+    QUARTO_MODELLO char not null,
+    STAZIONE_NODO  char not null default 'N',
+    STAZIONE_AVV   char not null default 'N',
     BROADCAST      char    not null default 'N',
     PAGAMENTO_SPONTANEO char    not null default 'N',
     constraint PK_PA_STAZIONE_PA

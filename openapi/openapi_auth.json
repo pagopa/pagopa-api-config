@@ -394,11 +394,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -408,11 +408,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -1133,11 +1133,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -1147,11 +1147,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -3346,11 +3346,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -9113,11 +9113,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -9127,11 +9127,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -9379,6 +9379,212 @@
           "Creditor Institutions"
         ]
       }
+    },
+    "/creditorinstitutions/view": {
+      "get": {
+        "operationId": "getPaymentServiceProvidersView_1",
+        "parameters": [
+          {
+            "description": "Number of elements on one page. Default = 50",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "description": "Page number. Page value starts from 0",
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "description": "Filter by creditor institution code",
+            "in": "query",
+            "name": "creditorInstitutionCode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by pa broker code",
+            "in": "query",
+            "name": "paBrokerCode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by station code",
+            "in": "query",
+            "name": "stationCode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter by aux digit",
+            "in": "query",
+            "name": "auxDigit",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "description": "Filter by application code",
+            "in": "query",
+            "name": "applicationCode",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "description": "Filter by segregation code",
+            "in": "query",
+            "name": "segregationCode",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "description": "Filter by mod4",
+            "in": "query",
+            "name": "mod4",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditorInstitutionsView"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            },
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            },
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Get view creditor institutions broker station",
+        "tags": [
+          "Creditor Institutions"
+        ]
+      },
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "/creditorinstitutions/{creditorinstitutioncode}": {
       "delete": {
@@ -12616,11 +12822,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -12630,11 +12836,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -14637,14 +14843,14 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "IT",
               "enum": [
                 "IT",
                 "EN",
                 "FR",
                 "DE",
                 "SL"
-              ]
+              ],
+              "default": "IT"
             }
           },
           {
@@ -14829,11 +15035,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -16966,6 +17172,50 @@
           }
         }
       },
+      "CreditorInstitutionView": {
+        "required": [
+          "broker_code",
+          "creditor_institution_code",
+          "station_code"
+        ],
+        "type": "object",
+        "properties": {
+          "application_code": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int64"
+          },
+          "aux_digit": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "broker_code": {
+            "maxLength": 35,
+            "minLength": 0,
+            "type": "string",
+            "example": "223344556677889900"
+          },
+          "creditor_institution_code": {
+            "maxLength": 35,
+            "minLength": 0,
+            "type": "string",
+            "example": "1234567890100"
+          },
+          "mod4": {
+            "type": "boolean"
+          },
+          "segregation_code": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "station_code": {
+            "maxLength": 35,
+            "minLength": 0,
+            "type": "string",
+            "example": "1234567890100"
+          }
+        }
+      },
       "CreditorInstitutions": {
         "required": [
           "creditor_institutions",
@@ -16977,6 +17227,24 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CreditorInstitution"
+            }
+          },
+          "page_info": {
+            "$ref": "#/components/schemas/PageInfo"
+          }
+        }
+      },
+      "CreditorInstitutionsView": {
+        "required": [
+          "creditor_institutions",
+          "page_info"
+        ],
+        "type": "object",
+        "properties": {
+          "creditor_institutions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreditorInstitutionView"
             }
           },
           "page_info": {

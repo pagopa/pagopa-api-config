@@ -5,6 +5,7 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationEdit;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationList;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutions;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionsView;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbans;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -34,6 +35,7 @@ import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionDetails;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -67,6 +69,9 @@ class CreditorInstitutionsControllerTest {
     when(creditorInstitutionsService.updateCreditorInstitutionStation(
             anyString(), anyString(), any(CreditorInstitutionStationEdit.class)))
         .thenReturn(getMockCreditorInstitutionStationEdit());
+    when(creditorInstitutionsService.getCreditorInstitutionsView(
+        anyInt(), anyInt(), any(FilterPaView.class)))
+        .thenReturn(getMockCreditorInstitutionsView());
   }
 
   @ParameterizedTest
@@ -75,6 +80,8 @@ class CreditorInstitutionsControllerTest {
     "/creditorinstitutions/1234",
     "/creditorinstitutions/1234/stations",
     "/creditorinstitutions/1234/ibans",
+    "/creditorinstitutions/view?page=0",
+    "/creditorinstitutions/view?page=0&creditorInstitutionCode=00168480242"
   })
   void testGets(String url) throws Exception {
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
