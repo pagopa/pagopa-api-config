@@ -8,6 +8,7 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -38,6 +39,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 
 import it.gov.pagopa.apiconfig.ApiConfig;
@@ -48,14 +50,18 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationList;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutions;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvidersView;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
 import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
 import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
+import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CodificheRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
@@ -760,6 +766,44 @@ class CreditorInstitutionsServiceTest {
     String actual = TestUtil.toJson(result);
     String expected =
         TestUtil.readJsonFromFile("response/get_creditorinstitutions_by_encoding.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+  
+  @Test
+  void getCreditorInstitutionsServiceView() throws IOException, JSONException {
+    Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
+    when(paStazionePaRepository.findAll(
+            any(Specification.class), any(Pageable.class)))
+        .thenReturn(page);
+
+    CreditorInstitutionsView result =
+        creditorInstitutionsService.getCreditorInstitutionsView(50, 0, FilterPaView.builder().build());
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutionserviceview_ok.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+  
+  @Test
+  void getCreditorInstitutionsServiceWithFilters() throws IOException, JSONException {
+    Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
+    when(paStazionePaRepository.findAll(
+            any(Specification.class), any(Pageable.class)))
+        .thenReturn(page);
+
+    FilterPaView filter = FilterPaView.builder()
+        .applicationCode(2L)
+        .auxDigit(1L)
+        .mod4(true)
+        .segregationCode(3L)
+        .creditorInstitutionCode("00168480242")
+        .stationCode("80007580279_01")
+        .paBrokerCode("1234")
+        .build();
+    
+    CreditorInstitutionsView result =
+        creditorInstitutionsService.getCreditorInstitutionsView(50, 0, filter);
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutionserviceview_ok.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 }

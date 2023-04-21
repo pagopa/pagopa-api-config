@@ -1,0 +1,19 @@
+{
+  "creditor_institutions": [
+    {
+      "creditor_institution_code": "00168480242",
+      "broker_code": "1234",
+      "station_code": "80007580279_01",
+      "aux_digit": 1,
+      "application_code": 2,
+      "segregation_code": 3,
+      "mod4": true
+    }
+  ],
+  "page_info": {
+    "page": 0,
+    "limit": 50,
+    "items_found": 1,
+    "total_pages": 1
+  }
+}
