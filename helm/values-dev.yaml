@@ -21,7 +21,7 @@ basecache: &basecache
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.38.0"
+        tag: "0.39.0"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
