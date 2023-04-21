@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.39.0"
+    "version": "0.37.1"
   },
   "servers": [
     {
@@ -394,11 +394,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ],
-              "default": "CODE"
+              ]
             }
           },
           {
@@ -408,11 +408,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ],
-              "default": "DESC"
+              ]
             }
           }
         ],
@@ -1133,11 +1133,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ],
-              "default": "CODE"
+              ]
             }
           },
           {
@@ -1147,11 +1147,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ],
-              "default": "DESC"
+              ]
             }
           }
         ],
@@ -3346,11 +3346,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ],
-              "default": "DESC"
+              ]
             }
           }
         ],
@@ -9113,11 +9113,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ],
-              "default": "CODE"
+              ]
             }
           },
           {
@@ -9127,11 +9127,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ],
-              "default": "DESC"
+              ]
             }
           }
         ],
@@ -12822,11 +12822,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ],
-              "default": "CODE"
+              ]
             }
           },
           {
@@ -12836,11 +12836,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ],
-              "default": "DESC"
+              ]
             }
           }
         ],
@@ -14843,14 +14843,14 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "IT",
               "enum": [
                 "IT",
                 "EN",
                 "FR",
                 "DE",
                 "SL"
-              ],
-              "default": "IT"
+              ]
             }
           },
           {
@@ -15035,11 +15035,11 @@
             "required": false,
             "schema": {
               "type": "string",
+              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ],
-              "default": "DESC"
+              ]
             }
           }
         ],
