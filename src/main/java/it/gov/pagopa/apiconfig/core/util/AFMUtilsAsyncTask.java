@@ -79,6 +79,10 @@ public class AFMUtilsAsyncTask {
     afmUtilsTrigger(List.of(mapToCosmosEntity(master)));
     return true;
   }
+  
+  public void afmUtilsDeleteBundlesByIdCDI(String idCdi, String pspCode) {
+      afmUtilsClient.deleteBundlesByIdCDI(afmUtilsSubscriptionKey, httpServletRequest.getHeader(HEADER_REQUEST_ID), idCdi, pspCode);
+  }
 
   private CdiCosmos mapToCosmosEntity(CdiMaster master) {
     if (master.getCdiDetail() == null) {
@@ -151,4 +155,5 @@ public class AFMUtilsAsyncTask {
       log.error("Problem to sync cdis: " + cdiList, e);
     }
   }
+  
 }
