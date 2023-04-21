@@ -176,6 +176,9 @@ public class CreditorInstitutionStationVerifier
     var pa = paRepository.findByIdDominio(creditorInstitutionStation.getCreditorInstitutionId());
     if (pa.isPresent()) {
       if (creditorInstitutionStation.getSegregationCode() != null
+          && creditorInstitutionStation
+          .getOperation()
+          .equals(CreditorInstitutionStation.Operation.A)
           && !paStazionePaRepository
               .findAllByFkPaAndSegregazione(
                   pa.get().getObjId(),
@@ -184,6 +187,9 @@ public class CreditorInstitutionStationVerifier
         errors.add("segregationCode already exists");
       }
       if (creditorInstitutionStation.getApplicationCode() != null
+          && creditorInstitutionStation
+          .getOperation()
+          .equals(CreditorInstitutionStation.Operation.A)
           && !paStazionePaRepository
               .findAllByFkPaAndProgressivo(
                   pa.get().getObjId(),

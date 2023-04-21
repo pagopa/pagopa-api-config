@@ -7608,7 +7608,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "operationId": "getPaymentServiceProvidersView_1",
+        "operationId": "getCreditorInstitutionsView",
         "summary": "Get view creditor institutions broker station"
       }
     },
