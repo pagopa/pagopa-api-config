@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.37.1"
+    "version": "0.39.0"
   },
   "servers": [
     {
@@ -9382,7 +9382,7 @@
     },
     "/creditorinstitutions/view": {
       "get": {
-        "operationId": "getPaymentServiceProvidersView_1",
+        "operationId": "getCreditorInstitutionsView",
         "parameters": [
           {
             "description": "Number of elements on one page. Default = 50",

@@ -789,7 +789,7 @@ public class CreditorInstitutionsController {
   @GetMapping(
       value = "/view",
       produces = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<CreditorInstitutionsView> getPaymentServiceProvidersView(
+  public ResponseEntity<CreditorInstitutionsView> getCreditorInstitutionsView(
       @Positive
       @Parameter(description = "Number of elements on one page. Default = 50")
       @RequestParam(required = false, defaultValue = "50")
