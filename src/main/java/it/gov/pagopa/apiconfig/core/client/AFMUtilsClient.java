@@ -24,7 +24,7 @@ public interface AFMUtilsClient {
       exclude = FeignException.FeignClientException.class,
       maxAttemptsExpression = "${retry.utils.maxAttempts:1}",
       backoff = @Backoff(delayExpression = "${retry.utils.maxDelay:1000}"))
-  @RequestLine("DELETE /cdi/{idCdi}?pspCode={pspCode}")
+  @RequestLine("DELETE /psps/{pspCode}/cdis/{idCdi}")
   @Headers({"Content-Type: " + MediaType.APPLICATION_JSON_VALUE, "Ocp-Apim-Subscription-Key: {subscriptionKey}", "X-Request-Id: {requestId}"})
   ResponseEntity<Void> deleteBundlesByIdCDI(
       @Param String subscriptionKey, 
