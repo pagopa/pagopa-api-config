@@ -1,7 +1,6 @@
 package it.gov.pagopa.apiconfig.core.model.massiveloading;
 
 import com.opencsv.bean.CsvBindByName;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +27,7 @@ public class CreditorInstitutionStation {
   @CsvBindByName(required = true, column = "auxdigit")
   private long auxDigit; // 0, 1, 2, 3
 
-  @CsvBindByName(required = true, column = "codicesegregazione")
+  @CsvBindByName(column = "codicesegregazione")
   private String segregationCode; // 2 cipher if auxDigit = 3, blank otherwise
 
   @CsvBindByName(column = "applicationcode")
