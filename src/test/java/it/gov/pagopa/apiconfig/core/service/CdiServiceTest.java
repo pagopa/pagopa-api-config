@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,16 +42,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import feign.FeignException;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
 import it.gov.pagopa.apiconfig.core.model.psp.Cdis;
-import it.gov.pagopa.apiconfig.core.service.CdiService;
 import it.gov.pagopa.apiconfig.core.util.AFMUtilsAsyncTask;
 import it.gov.pagopa.apiconfig.starter.entity.Canali;
 import it.gov.pagopa.apiconfig.starter.entity.CdiDetail;
@@ -196,6 +198,22 @@ class CdiServiceTest {
     } catch (Exception e) {
       fail(e);
     }
+  }
+  
+  @Test
+  void deleteCdi_KO() {
+    when(cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(anyString(), anyString()))
+        .thenReturn(Optional.of(getMockCdiMaster()));
+    doThrow(FeignException.InternalServerError.class).when(afmUtilsAsyncTask).afmUtilsDeleteBundlesByIdCDI(anyString(), anyString());
+    try {
+      cdiService.deleteCdi("1234", "2");
+      fail();
+    } catch (AppException e) {
+      assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getHttpStatus());
+    } catch (Exception e) {
+      fail(e);
+    }
+    
   }
 
   @Test

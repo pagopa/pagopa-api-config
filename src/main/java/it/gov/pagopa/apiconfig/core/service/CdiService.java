@@ -64,9 +64,11 @@ import it.gov.pagopa.apiconfig.starter.repository.CdiPreferenceRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Validated
+@Slf4j
 public class CdiService {
 
   @Autowired private CdiMasterRepository cdiMasterRepository;
@@ -162,17 +164,27 @@ public class CdiService {
   public void deleteCdi(String idCdi, String pspCode) {
     CdiMaster cdiMaster =
         cdiMasterRepository
-            .findByIdInformativaPspAndFkPsp_IdPsp(idCdi, pspCode)
-            .orElseThrow(() -> new AppException(AppError.CDI_NOT_FOUND, idCdi));
+        .findByIdInformativaPspAndFkPsp_IdPsp(idCdi, pspCode)
+        .orElseThrow(() -> new AppException(AppError.CDI_NOT_FOUND, idCdi));
 
     var valid =
         cdiMasterRepository
-            .findByFkPsp_IdPspAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(
-                pspCode, Timestamp.valueOf(LocalDateTime.now()));
+        .findByFkPsp_IdPspAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(
+            pspCode, Timestamp.valueOf(LocalDateTime.now()));
     if (!valid.isEmpty() && valid.get(0).getId().equals(cdiMaster.getId())) {
       throw new AppException(HttpStatus.CONFLICT, "CDI conflict", "This CDI is used.");
     }
-    cdiMasterRepository.delete(cdiMaster);
+
+    try {
+      cdiMasterRepository.delete(cdiMaster);
+      // deletion of the bundles associated with the CDI by calling AFM Utils
+      afmUtilsAsyncTask.afmUtilsDeleteBundlesByIdCDI(idCdi, pspCode);
+    } 
+    catch (Exception e) {
+      log.error("Error while deleting the CDI or the associated bundles [idCdi="+idCdi+", pspCode="+pspCode+"]", e);
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+    }
+
   }
 
   @Transactional(readOnly = true, propagation = Propagation.NESTED)
