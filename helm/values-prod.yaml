@@ -104,4 +104,4 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: "0.39.1"
+        tag: "0.40.0"
