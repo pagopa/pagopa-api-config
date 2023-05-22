@@ -13,7 +13,7 @@ permissions:
 jobs:
   update:
     name: Update Openapi and Formatting
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     if: ${{ contains(github.event.comment.body, 'update_code') }}
     steps:
       - name: Checkout
@@ -30,10 +30,10 @@ jobs:
         with:
           java-version: 11
 
-#      - name: Update OpenApi/Swagger file
-#        run: |
-#          cd ./openapi
-#          sh ./generate_openapi.sh
+      - name: Update OpenApi/Swagger file
+        run: |
+          cd ./openapi
+          sh ./generate_openapi_and_swagger.sh
 
       - name: Formatting
         uses: axel-op/googlejavaformat-action@v3
