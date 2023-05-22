@@ -40,7 +40,7 @@ jobs:
       - name: Build the Docker image
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} > ./secrets
-          docker build . --file ${{ env.DOCKERFILE }} --tag localbuild/testimage:latest --secret id=GH_TOKEN,src=./secrets
+          DOCKER_BUILDKIT=1 docker build . --file ${{ env.DOCKERFILE }} --tag localbuild/testimage:latest --secret id=GH_TOKEN,src=./secrets
 
       - name: Run the Anchore scan action itself with GitHub Advanced Security code scanning integration enabled
         uses: anchore/scan-action@v3
