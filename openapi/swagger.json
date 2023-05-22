@@ -13242,6 +13242,9 @@
         "flag_io": {
           "type": "boolean"
         },
+        "flag_psp_cp": {
+          "type": "boolean"
+        },
         "ip": {
           "type": "string"
         },
@@ -13389,6 +13392,7 @@
         "channel_code",
         "digital_stamp_brand",
         "enabled",
+        "flag_psp_cp",
         "on_us",
         "payment_model",
         "port",
