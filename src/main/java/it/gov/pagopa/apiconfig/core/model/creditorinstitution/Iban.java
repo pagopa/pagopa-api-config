@@ -30,29 +30,30 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Iban {
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "obj_id")
-  @Schema(example = "123456789", required = true)
-  @NotBlank
-  //@JsonIgnore
-  private String objId;
-
   @JsonProperty("iban")
-  @Schema(example = "IT99C0222211111000000000000", required = true)
+  @Schema(example = "IT99C0222211111000000000000",
+          required = true,
+          description = "The iban code")
   @Size(max = 35)
+  @NotNull
   private String ibanValue;
 
   @JsonProperty("validity_date")
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
-  @Schema(required = true)
+  @Schema(example = "2023-05-23",
+          required = true,
+          description = "The date the Creditor Institution wants the iban to be used for its payments")
   @NotNull
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
   private OffsetDateTime validityDate;
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "publication_date")
+  @JsonProperty(value = "publication_date", access = JsonProperty.Access.READ_ONLY)
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
-  @Schema(required = true)
+  @Schema(example = "2023-05-23T10:38:07.165Z",
+          required = true,
+          description = "The date on which the iban has been inserted in the system")
   @NotNull
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime publicationDate;
@@ -60,12 +61,14 @@ public class Iban {
   @JsonProperty("description")
   @Schema(example = "Riscossione Tributi",
           required = false,
-          defaultValue = "")
+          defaultValue = "",
+          description = "The description the Creditor Institution gives to the iban about its usage")
   @Size(max = 300)
   private String description;
 
   @JsonProperty("isStandin")
   @Schema(example = "false",
+          description = "Does the Creditor Institution want to use this iban for standin process?",
           required = false,
           defaultValue = "false",
           allowableValues = {"true", "false"})
@@ -74,6 +77,7 @@ public class Iban {
 
   @JsonProperty("isCup")
   @Schema(example = "false",
+          description = "Does the Creditor Institution want to use this iban for CUP payments?",
           required = false,
           defaultValue = "false",
           allowableValues = {"true", "false"})
