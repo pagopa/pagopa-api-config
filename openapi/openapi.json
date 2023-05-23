@@ -16606,7 +16606,7 @@
         }
       },
       "Iban" : {
-        "required" : [ "description", "iban", "obj_id", "publication_date", "validity_date" ],
+        "required" : [ "iban", "obj_id", "publication_date", "validity_date" ],
         "type" : "object",
         "properties" : {
           "description" : {

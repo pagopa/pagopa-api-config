@@ -58,7 +58,9 @@ public class Iban {
   private OffsetDateTime publicationDate;
 
   @JsonProperty("description")
-  @Schema(example = "Riscossione Tributi", required = true)
+  @Schema(example = "Riscossione Tributi",
+          required = false,
+          defaultValue = "")
   @Size(max = 300)
   private String description;
 
