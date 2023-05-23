@@ -6,6 +6,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -31,12 +32,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionDetails;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationList;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutions;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
@@ -825,4 +820,231 @@ public class CreditorInstitutionsController {
             .mod4(mod4)
             .build()));
   }
+
+  // ******************************************************************************************************
+
+    /**
+     * POST /creditoristitutions/{creditorinstitutioncode}/iban : Post new creditor institution iban
+     *
+     * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
+     *     (required)
+     * @return OK. (status code 201) or Not Found (status code 404) or Service unavailable (status
+     * code 500)
+     */
+    @Operation(
+            summary = "Create new iban (if it doesn't exist) and associates it to the spcified creditor institution",
+            security = {
+                    @SecurityRequirement(name = "ApiKey"),
+                    @SecurityRequirement(name = "Authorization")
+            },
+            tags = {
+                    "Creditor Institutions",
+            })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "OK",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Iban.class))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "429",
+                            description = "Too many requests",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Service unavailable",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @PostMapping(
+            value = "/{creditorinstitutioncode}/iban",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Iban> createCreditorInstitutionsIban(
+            @Size(max = 50)
+            @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.",
+                    required = true)
+            @PathVariable("creditorinstitutioncode")
+            String creditorInstitutionCode,
+            @RequestBody @Valid @NotNull Iban iban) {
+
+        return null;
+    }
+
+    /**
+     * PUT /creditoristitutions/{creditorinstitutioncode}/iban/{ibanId}
+     *
+     * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
+     * (required)
+     * @param ibanId Iban id, the iban id to be updated.
+     * (required)
+     * @return OK. (status code 200) or Not Found (status code 404) or Service unavailable (status
+     * code 500)
+     */
+    @Operation(
+            summary = "Update existing iban associated to a specific Creditor Institution",
+            security = {
+                    @SecurityRequirement(name = "ApiKey"),
+                    @SecurityRequirement(name = "Authorization")
+            },
+            tags = {
+                    "Creditor Institutions",
+            })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Iban.class))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "429",
+                            description = "Too many requests",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Service unavailable",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @PutMapping(value = "/{creditorinstitutioncode}/iban/{ibanId}",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Iban> updateCreditorInstitutionsIban(
+            @Size(max = 50)
+            @Parameter(
+                    description = "Organization fiscal code, the fiscal code of the Organization.",
+                    required = true)
+            @PathVariable("creditorinstitutioncode")
+            String creditorInstitutionCode,
+            @Size(max = 27)
+            @Parameter(
+                    description = "Iban id, the iban to be updated.",
+                    required = true)
+            @PathVariable("ibanId")
+            String ibanId,
+            @RequestBody @Valid @NotNull Iban iban) {
+
+        return null;
+    }
+
+    /**
+     * DELETE /creditoristitutions/{creditorinstitutioncode}/iban/{ibanId}
+     *
+     * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
+     * (required)
+     * @param ibanId Iban id, the iban to be deleted. (required)
+     * @return OK. (status code 200) or Not Found (status code 404) or Service unavailable (status
+     * code 500)
+     */
+    @Operation(
+            summary = "Delete an existing iban associated to a specific Creditor Institution",
+            security = {
+                    @SecurityRequirement(name = "ApiKey"),
+                    @SecurityRequirement(name = "Authorization")
+            },
+            tags = {
+                    "Creditor Institutions",
+            })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "429",
+                            description = "Too many requests",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Service unavailable",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @DeleteMapping(
+            value = "/{creditorinstitutioncode}/iban/{ibanId}",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> deleteCreditorInstitutionsIban(
+            @Size(max = 50)
+            @Parameter(description = "Organization fiscal code, the fiscal code of the Organization.",
+                    required = true)
+            @PathVariable("creditorinstitutioncode")
+            String creditorInstitutionCode,
+            @Size(max = 27)
+            @Parameter(description = "Iban id, the iban to be deleted.", required = true)
+            @PathVariable("ibanId")
+            String ibanId) {
+
+        return null;
+    }
 }
