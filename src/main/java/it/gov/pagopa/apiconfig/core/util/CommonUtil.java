@@ -8,24 +8,6 @@ import it.gov.pagopa.apiconfig.core.model.filterandorder.Filter;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.OrderType;
-import lombok.experimental.UtilityClass;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stax.StAXSource;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -38,6 +20,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import lombok.experimental.UtilityClass;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
 
 @UtilityClass
 public class CommonUtil {
@@ -220,10 +219,12 @@ public class CommonUtil {
 
   public static CheckItem checkData(String title, Object data, Object target, String action) {
     CheckItem.Validity validity =
-        target.equals(data) ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID;
+        (target == null && data == null) || (target != null && target.equals(data))
+            ? CheckItem.Validity.VALID
+            : CheckItem.Validity.NOT_VALID;
     return CheckItem.builder()
         .title(title)
-        .value(data.toString())
+        .value(data != null ? data.toString() : null)
         .valid(validity)
         .note(validity.equals(CheckItem.Validity.VALID) ? "" : action)
         .build();
