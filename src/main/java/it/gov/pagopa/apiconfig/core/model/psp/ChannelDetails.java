@@ -183,10 +183,14 @@ public class ChannelDetails extends Channel {
   @JsonProperty("agid")
   @Schema(required = true)
   @NotNull
-  private Boolean agid; 
-  
+  private Boolean agid;
+
   @JsonProperty("flag_psp_cp")
-  @Schema(required = true)
+  @Schema(
+    required = true,
+    description =
+        "Represents the authorization to carry out the transfer of the information present in additional payment information in the tags relating to payment by card for the PA in V1"
+  )
   @NotNull
   private Boolean flagPspCp;
 
