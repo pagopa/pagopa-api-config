@@ -27,7 +27,7 @@ basecache: &basecache
       envSecret: {}
   image:
     repository: pagopaucommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.37.1-2-PAGOPA-866-problema-di-traduzione-cdi-bundle"
+    tag: "0.40.1"
     pullPolicy: Always
   livenessProbe:
     httpGet:

@@ -4,39 +4,6 @@ import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getExceptionErrors;
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.mapXml;
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.syntaxValidation;
 
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.xml.stream.XMLStreamException;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
@@ -64,7 +31,37 @@ import it.gov.pagopa.apiconfig.starter.repository.CdiPreferenceRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
 
 @Service
 @Validated
@@ -129,7 +126,8 @@ public class CdiService {
     List<CheckItem> checks = verifyCdi(file);
 
     Optional<CheckItem> check =
-        checks.stream()
+        checks
+            .stream()
             .filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
             .findFirst();
     if (check.isPresent()) {
@@ -164,13 +162,13 @@ public class CdiService {
   public void deleteCdi(String idCdi, String pspCode) {
     CdiMaster cdiMaster =
         cdiMasterRepository
-        .findByIdInformativaPspAndFkPsp_IdPsp(idCdi, pspCode)
-        .orElseThrow(() -> new AppException(AppError.CDI_NOT_FOUND, idCdi));
+            .findByIdInformativaPspAndFkPsp_IdPsp(idCdi, pspCode)
+            .orElseThrow(() -> new AppException(AppError.CDI_NOT_FOUND, idCdi));
 
     var valid =
         cdiMasterRepository
-        .findByFkPsp_IdPspAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(
-            pspCode, Timestamp.valueOf(LocalDateTime.now()));
+            .findByFkPsp_IdPspAndDataInizioValiditaLessThanOrderByDataInizioValiditaDesc(
+                pspCode, Timestamp.valueOf(LocalDateTime.now()));
     if (!valid.isEmpty() && valid.get(0).getId().equals(cdiMaster.getId())) {
       throw new AppException(HttpStatus.CONFLICT, "CDI conflict", "This CDI is used.");
     }
@@ -179,12 +177,16 @@ public class CdiService {
       cdiMasterRepository.delete(cdiMaster);
       // deletion of the bundles associated with the CDI by calling AFM Utils
       afmUtilsAsyncTask.afmUtilsDeleteBundlesByIdCDI(idCdi, pspCode);
-    } 
-    catch (Exception e) {
-      log.error("Error while deleting the CDI or the associated bundles [idCdi="+idCdi+", pspCode="+pspCode+"]", e);
+    } catch (Exception e) {
+      log.error(
+          "Error while deleting the CDI or the associated bundles [idCdi="
+              + idCdi
+              + ", pspCode="
+              + pspCode
+              + "]",
+          e);
       throw new AppException(AppError.INTERNAL_SERVER_ERROR);
     }
-
   }
 
   @Transactional(readOnly = true, propagation = Propagation.NESTED)
@@ -325,7 +327,8 @@ public class CdiService {
             : "PO";
 
     CheckItem.Validity validity =
-        paymentMethods.stream()
+        paymentMethods
+                .stream()
                 .anyMatch(
                     pm ->
                         pm.getCanaleTipoVersamento()
@@ -362,9 +365,12 @@ public class CdiService {
     final boolean[] duplicate = {false};
 
     Map<String, Long> frequencyMap =
-        languages.stream()
+        languages
+            .stream()
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-    frequencyMap.entrySet().stream()
+    frequencyMap
+        .entrySet()
+        .stream()
         .filter(item -> item.getValue() > 1)
         .forEach(
             item -> {
@@ -514,7 +520,10 @@ public class CdiService {
         && costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio() != null) {
       // sort by importoMassimo and create fascia costi servizio
       var importi =
-          costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().stream()
+          costiServizio
+              .getListaFasceCostoServizio()
+              .getFasciaCostoServizio()
+              .stream()
               .map(CdiXml.FasciaCostoServizio::getImportoMassimoFascia)
               .sorted(Double::compareTo)
               .distinct()
@@ -526,7 +535,8 @@ public class CdiService {
         var fascia = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i);
         // importoMinimo is equals to previous importoMassimo (equals to 0 for the first element)
         var prev =
-            importi.stream()
+            importi
+                .stream()
                 .filter(elem -> elem < fascia.getImportoMassimoFascia())
                 .max(Double::compareTo)
                 .orElse(0.0);
@@ -606,7 +616,9 @@ public class CdiService {
       // join list of ParolaChiave in a string semicolon separated ([tag1, tag2,tag3] ->
       // "tag1;tag2;tag3")
       String tags =
-          detail.getListaParoleChiave().stream()
+          detail
+              .getListaParoleChiave()
+              .stream()
               .filter(Objects::nonNull)
               .reduce((a, b) -> a + ";" + b)
               .orElse(null);
