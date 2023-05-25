@@ -2,22 +2,8 @@ package it.gov.pagopa.apiconfig;
 
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.mockito.Mockito;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import it.gov.pagopa.apiconfig.core.model.PageInfo;
 import it.gov.pagopa.apiconfig.core.model.configuration.AfmMarketplacePaymentType;
 import it.gov.pagopa.apiconfig.core.model.configuration.CacheVersions;
@@ -103,7 +89,18 @@ import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.experimental.UtilityClass;
+import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 
 @UtilityClass
 public class TestUtil {
@@ -605,7 +602,7 @@ public class TestUtil {
         .businessName("regione")
         .build();
   }
-  
+
   public static CreditorInstitutionView getMockCreditorInstitutionView() {
     return CreditorInstitutionView.builder()
         .idDominio("1234567890100")
@@ -623,7 +620,7 @@ public class TestUtil {
         .pageInfo(getMockPageInfo())
         .build();
   }
-  
+
   public static CreditorInstitutionsView getMockCreditorInstitutionsView() {
     return CreditorInstitutionsView.builder()
         .creditorInstitutionList(List.of(getMockCreditorInstitutionView()))
@@ -697,7 +694,7 @@ public class TestUtil {
         .pspCode("12345ABC12345")
         .build();
   }
-  
+
   public static PaymentServiceProviderView getMockPaymentServiceProviderView() {
     return PaymentServiceProviderView.builder()
         .pspCode("BPPIITRRHHH")
@@ -707,7 +704,7 @@ public class TestUtil {
         .paymentMethod("PAYPAL")
         .build();
   }
-  
+
   public static PaymentServiceProvidersView getMockPaymentServiceProvidersView() {
     return PaymentServiceProvidersView.builder()
         .pageInfo(getMockPageInfo())
@@ -786,6 +783,7 @@ public class TestUtil {
         .digitalStampBrand(false)
         .paymentModel(ChannelDetails.PaymentModel.DEFERRED)
         .agid(true)
+        .flagPspCp(false)
         .primitiveVersion(1)
         .build();
   }
@@ -940,7 +938,8 @@ public class TestUtil {
         .build();
   }
 
-  public static List<it.gov.pagopa.apiconfig.starter.entity.FtpServers> getMockFtpServersEntities() {
+  public static List<it.gov.pagopa.apiconfig.starter.entity.FtpServers>
+      getMockFtpServersEntities() {
     return List.of(getMockFtpServersEntity());
   }
 
@@ -963,8 +962,7 @@ public class TestUtil {
         .build();
   }
 
-  public static Page<Cache>
-      getMockCacheVersionsPaged() {
+  public static Page<Cache> getMockCacheVersionsPaged() {
     return mockPage(
         List.of(Cache.builder().id("2023-02-08 01:00:06").version("3.10.0").build()), 50, 0);
   }

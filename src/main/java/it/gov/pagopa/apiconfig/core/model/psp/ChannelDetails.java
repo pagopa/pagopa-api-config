@@ -1,24 +1,19 @@
 package it.gov.pagopa.apiconfig.core.model.psp;
 
-import java.util.Arrays;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.http.HttpStatus;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Protocol;
 import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
 import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
+import java.util.Arrays;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.springframework.http.HttpStatus;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -188,6 +184,15 @@ public class ChannelDetails extends Channel {
   @Schema(required = true)
   @NotNull
   private Boolean agid;
+
+  @JsonProperty("flag_psp_cp")
+  @Schema(
+    required = true,
+    description =
+        "Represents the authorization to carry out the transfer of the information present in additional payment information in the tags relating to payment by card for the PA in V1"
+  )
+  @NotNull
+  private Boolean flagPspCp;
 
   @Min(1)
   @Max(2)

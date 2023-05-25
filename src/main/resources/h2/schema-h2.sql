@@ -369,6 +369,7 @@ create table NODO4_CFG.CANALI_NODO
     RECOVERY              char(1)      not null default 'N',
     MARCA_BOLLO_DIGITALE  char         not null,
     FLAG_IO               char                  default 'N',
+    FLAG_PSP_CP           char                  default 'N',
     VERSIONE_PRIMITIVE    numeric(2)            default 1,
     constraint PK_CANALI_NODO
         primary key (OBJ_ID),
