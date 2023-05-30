@@ -1,7 +1,9 @@
 package it.gov.pagopa.apiconfig.core.model.creditorinstitution;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -29,6 +31,13 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Iban {
+
+  @JsonProperty(value = "obj_id", access = JsonProperty.Access.READ_ONLY)
+  @Schema(example = "1001",
+          required = true,
+          defaultValue = "",
+          description = "The iban unique identifier")
+  private long ibanId;
 
   @JsonProperty("iban")
   @Schema(example = "IT99C0222211111000000000000",
@@ -66,21 +75,16 @@ public class Iban {
   @Size(max = 300)
   private String description;
 
-  @JsonProperty("isStandin")
-  @Schema(example = "false",
-          description = "Does the Creditor Institution want to use this iban for standin process?",
-          required = false,
-          defaultValue = "false",
-          allowableValues = {"true", "false"})
-  @Size(max = 5)
-  private String isStandin;
+  @JsonProperty("labels")
+  @Schema(required = false,
+          description = "The labels array associated with the iban")
+  private List<IbanLabel> ibanLabels;
 
-  @JsonProperty("isCup")
-  @Schema(example = "false",
-          description = "Does the Creditor Institution want to use this iban for CUP payments?",
-          required = false,
-          defaultValue = "false",
-          allowableValues = {"true", "false"})
-  @Size(max = 5)
-  private String isCup;
+  @JsonProperty(value = "companyName", access = JsonProperty.Access.READ_ONLY)
+  @Schema(example = "Comune di Firenze",
+          required = true,
+          defaultValue = "",
+          description = "The Creditor Institution company name")
+  @Size(max = 100)
+  private String companyName;
 }

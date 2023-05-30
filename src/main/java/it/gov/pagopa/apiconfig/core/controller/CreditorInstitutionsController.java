@@ -1049,7 +1049,7 @@ public class CreditorInstitutionsController {
     }
 
     /**
-     * GET /{creditorinstitutioncode}/iban/label/{label} : Get creditor institution ibans
+     * GET /{creditorinstitutioncode}/iban/labels/{label} : Get creditor institution ibans
      *
      * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
      * (required)
@@ -1108,7 +1108,7 @@ public class CreditorInstitutionsController {
                                     schema = @Schema(implementation = ProblemJson.class)))
             })
     @GetMapping(
-            value = "/{creditorinstitutioncode}/iban/label/{label}",
+            value = "/{creditorinstitutioncode}/iban/labels/{label}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Iban> getCreditorInstitutionsIbanByLabel(
             @Parameter(

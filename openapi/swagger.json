@@ -8429,7 +8429,7 @@
         "summary": "Create new iban (if it doesn't exist) and associates it to the spcified creditor institution"
       }
     },
-    "/creditorinstitutions/{creditorinstitutioncode}/iban/label/{label}": {
+    "/creditorinstitutions/{creditorinstitutioncode}/iban/labels/{label}": {
       "parameters": [
         {
           "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
@@ -14506,6 +14506,14 @@
     },
     "Iban": {
       "properties": {
+        "companyName": {
+          "description": "The Creditor Institution company name",
+          "example": "Comune di Firenze",
+          "maxLength": 100,
+          "minLength": 0,
+          "readOnly": true,
+          "type": "string"
+        },
         "description": {
           "description": "The description the Creditor Institution gives to the iban about its usage",
           "example": "Riscossione Tributi",
@@ -14520,29 +14528,19 @@
           "minLength": 0,
           "type": "string"
         },
-        "isCup": {
-          "default": "false",
-          "description": "Does the Creditor Institution want to use this iban for CUP payments?",
-          "enum": [
-            "true",
-            "false"
-          ],
-          "example": "false",
-          "maxLength": 5,
-          "minLength": 0,
-          "type": "string"
+        "labels": {
+          "description": "The labels array associated with the iban",
+          "items": {
+            "$ref": "#/definitions/IbanLabel"
+          },
+          "type": "array"
         },
-        "isStandin": {
-          "default": "false",
-          "description": "Does the Creditor Institution want to use this iban for standin process?",
-          "enum": [
-            "true",
-            "false"
-          ],
-          "example": "false",
-          "maxLength": 5,
-          "minLength": 0,
-          "type": "string"
+        "obj_id": {
+          "description": "The iban unique identifier",
+          "example": 1001,
+          "format": "int64",
+          "readOnly": true,
+          "type": "integer"
         },
         "publication_date": {
           "description": "The date on which the iban has been inserted in the system",
@@ -14558,9 +14556,35 @@
         }
       },
       "required": [
+        "companyName",
         "iban",
+        "obj_id",
         "publication_date",
         "validity_date"
+      ],
+      "type": "object"
+    },
+    "IbanLabel": {
+      "description": "The labels array associated with the iban",
+      "properties": {
+        "description": {
+          "description": "A short description about the label",
+          "example": "The iban to use for CUP payments",
+          "maxLength": 200,
+          "minLength": 0,
+          "type": "string"
+        },
+        "name": {
+          "description": "The label",
+          "example": "CUP",
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "name"
       ],
       "type": "object"
     },
