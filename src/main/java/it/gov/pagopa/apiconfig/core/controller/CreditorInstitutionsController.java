@@ -6,6 +6,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -1049,7 +1050,7 @@ public class CreditorInstitutionsController {
     }
 
     /**
-     * GET /{creditorinstitutioncode}/iban/labels/{label} : Get creditor institution ibans
+     * GET /{creditorinstitutioncode}/iban?label={value} : Get creditor institution ibans
      *
      * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
      * (required)
@@ -1108,18 +1109,17 @@ public class CreditorInstitutionsController {
                                     schema = @Schema(implementation = ProblemJson.class)))
             })
     @GetMapping(
-            value = "/{creditorinstitutioncode}/iban/labels/{label}",
+            value = "/{creditorinstitutioncode}/iban?label={value}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Iban> getCreditorInstitutionsIbanByLabel(
+    public ResponseEntity<Iban> getCreditorInstitutionsIban(
             @Parameter(
                     description = "Organization fiscal code, the fiscal code of the Organization.",
                     required = true)
             @PathVariable("creditorinstitutioncode")
             String creditorInstitutionCode,
             @Parameter(
-                    description = "Label, the label to search.",
-                    required = true)
-            @PathVariable("label")
+                    description = "The iban label to search for",
+                    required = true, in = ParameterIn.QUERY)
             String label) {
         return null;
     }

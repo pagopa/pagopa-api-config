@@ -67,6 +67,13 @@ public class Iban {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime publicationDate;
 
+  @JsonProperty("isActive")
+  @Schema(example = "true",
+          required = false,
+          defaultValue = "true",
+          description = "Is the iban active?")
+  private boolean isActive;
+
   @JsonProperty("description")
   @Schema(example = "Riscossione Tributi",
           required = false,
@@ -87,4 +94,12 @@ public class Iban {
           description = "The Creditor Institution company name")
   @Size(max = 100)
   private String companyName;
+
+  @JsonProperty(value = "ciOwner", access = JsonProperty.Access.READ_ONLY)
+  @Schema(example = "01307110484",
+          required = true,
+          defaultValue = "",
+          description = "Fiscal code of the Creditor Institution who owns the iban")
+  @Size(max = 11)
+  private String ciOwner;
 }
