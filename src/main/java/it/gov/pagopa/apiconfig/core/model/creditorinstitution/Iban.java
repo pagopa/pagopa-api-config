@@ -1,26 +1,20 @@
 package it.gov.pagopa.apiconfig.core.model.creditorinstitution;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.apiconfig.core.util.Constants;
+import java.time.OffsetDateTime;
+import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /** Iban */
 @Data
@@ -35,7 +29,6 @@ public class Iban {
   @JsonProperty(value = "obj_id", access = JsonProperty.Access.READ_ONLY)
   @Schema(example = "1001",
           required = true,
-          defaultValue = "",
           description = "The iban unique identifier")
   private long ibanId;
 
@@ -67,17 +60,16 @@ public class Iban {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime publicationDate;
 
-  @JsonProperty("isActive")
+  @JsonProperty("is_active")
   @Schema(example = "true",
           required = false,
           defaultValue = "true",
-          description = "Is the iban active?")
+          description = "True if the iban is active")
   private boolean isActive;
 
   @JsonProperty("description")
   @Schema(example = "Riscossione Tributi",
           required = false,
-          defaultValue = "",
           description = "The description the Creditor Institution gives to the iban about its usage")
   @Size(max = 300)
   private String description;
@@ -87,18 +79,16 @@ public class Iban {
           description = "The labels array associated with the iban")
   private List<IbanLabel> ibanLabels;
 
-  @JsonProperty(value = "companyName", access = JsonProperty.Access.READ_ONLY)
+  @JsonProperty(value = "company_name", access = JsonProperty.Access.READ_ONLY)
   @Schema(example = "Comune di Firenze",
           required = true,
-          defaultValue = "",
           description = "The Creditor Institution company name")
   @Size(max = 100)
   private String companyName;
 
-  @JsonProperty(value = "ciOwner", access = JsonProperty.Access.READ_ONLY)
+  @JsonProperty(value = "ci_owner", access = JsonProperty.Access.READ_ONLY)
   @Schema(example = "01307110484",
           required = true,
-          defaultValue = "",
           description = "Fiscal code of the Creditor Institution who owns the iban")
   @Size(max = 11)
   private String ciOwner;

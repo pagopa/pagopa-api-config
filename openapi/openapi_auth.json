@@ -394,11 +394,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -408,11 +408,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -1133,11 +1133,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -1147,11 +1147,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -3346,11 +3346,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -9113,11 +9113,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -9127,11 +9127,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -10918,160 +10918,6 @@
         ]
       }
     },
-    "/creditorinstitutions/{creditorinstitutioncode}/iban?label={value}": {
-      "get": {
-        "operationId": "getCreditorInstitutionsIban",
-        "parameters": [
-          {
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "in": "path",
-            "name": "creditorinstitutioncode",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "The iban label to search for",
-            "in": "query",
-            "name": "label",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Iban"
-                }
-              }
-            },
-            "description": "OK",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            },
-            "description": "Bad Request",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            },
-            "description": "Not Found",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            },
-            "description": "Service unavailable",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          },
-          {
-            "Authorization": []
-          }
-        ],
-        "summary": "Get the Creditor Institution iban marked with the specified {label}",
-        "tags": [
-          "Creditor Institutions"
-        ]
-      },
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ]
-    },
     "/creditorinstitutions/{creditorinstitutioncode}/ibans": {
       "get": {
         "operationId": "getCreditorInstitutionsIbans",
@@ -11085,6 +10931,19 @@
               "maxLength": 50,
               "minLength": 0,
               "type": "string"
+            }
+          },
+          {
+            "description": "The iban label to search for",
+            "in": "query",
+            "name": "label",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CUP",
+                "ACA"
+              ]
             }
           }
         ],
@@ -13443,11 +13302,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -13457,11 +13316,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -15464,14 +15323,14 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "IT",
               "enum": [
                 "IT",
                 "EN",
                 "FR",
                 "DE",
                 "SL"
-              ]
+              ],
+              "default": "IT"
             }
           },
           {
@@ -15656,11 +15515,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -17971,8 +17830,8 @@
       },
       "Iban": {
         "required": [
-          "ciOwner",
-          "companyName",
+          "ci_owner",
+          "company_name",
           "iban",
           "obj_id",
           "publication_date",
@@ -17980,7 +17839,7 @@
         ],
         "type": "object",
         "properties": {
-          "ciOwner": {
+          "ci_owner": {
             "maxLength": 11,
             "minLength": 0,
             "type": "string",
@@ -17988,7 +17847,7 @@
             "readOnly": true,
             "example": "01307110484"
           },
-          "companyName": {
+          "company_name": {
             "maxLength": 100,
             "minLength": 0,
             "type": "string",
@@ -18010,9 +17869,9 @@
             "description": "The iban code",
             "example": "IT99C0222211111000000000000"
           },
-          "isActive": {
+          "is_active": {
             "type": "boolean",
-            "description": "Is the iban active?",
+            "description": "True if the iban is active",
             "example": true,
             "default": true
           },
@@ -18063,7 +17922,11 @@
             "minLength": 0,
             "type": "string",
             "description": "The label",
-            "example": "CUP"
+            "example": "CUP",
+            "enum": [
+              "CUP",
+              "ACA"
+            ]
           }
         },
         "description": "The labels array associated with the iban"

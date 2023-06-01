@@ -8677,127 +8677,6 @@
         "summary": "Update existing iban associated to a specific Creditor Institution"
       }
     },
-    "/creditorinstitutions/{creditorinstitutioncode}/iban?label={value}": {
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "type": "string"
-        }
-      ],
-      "get": {
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "description": "Organization fiscal code, the fiscal code of the Organization.",
-            "in": "path",
-            "name": "creditorinstitutioncode",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "description": "The iban label to search for",
-            "in": "query",
-            "name": "label",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/Iban"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          },
-          "500": {
-            "description": "Service unavailable",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          },
-          {
-            "Authorization": []
-          }
-        ],
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "operationId": "getCreditorInstitutionsIban",
-        "summary": "Get the Creditor Institution iban marked with the specified {label}"
-      }
-    },
     "/creditorinstitutions/{creditorinstitutioncode}/ibans": {
       "parameters": [
         {
@@ -8819,6 +8698,17 @@
             "minLength": 0,
             "name": "creditorinstitutioncode",
             "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The iban label to search for",
+            "enum": [
+              "CUP",
+              "ACA"
+            ],
+            "in": "query",
+            "name": "label",
+            "required": false,
             "type": "string"
           }
         ],
@@ -14506,7 +14396,7 @@
     },
     "Iban": {
       "properties": {
-        "ciOwner": {
+        "ci_owner": {
           "description": "Fiscal code of the Creditor Institution who owns the iban",
           "example": "01307110484",
           "maxLength": 11,
@@ -14514,7 +14404,7 @@
           "readOnly": true,
           "type": "string"
         },
-        "companyName": {
+        "company_name": {
           "description": "The Creditor Institution company name",
           "example": "Comune di Firenze",
           "maxLength": 100,
@@ -14536,9 +14426,9 @@
           "minLength": 0,
           "type": "string"
         },
-        "isActive": {
+        "is_active": {
           "default": true,
-          "description": "Is the iban active?",
+          "description": "True if the iban is active",
           "example": true,
           "type": "boolean"
         },
@@ -14570,8 +14460,8 @@
         }
       },
       "required": [
-        "ciOwner",
-        "companyName",
+        "ci_owner",
+        "company_name",
         "iban",
         "obj_id",
         "publication_date",
@@ -14591,6 +14481,10 @@
         },
         "name": {
           "description": "The label",
+          "enum": [
+            "CUP",
+            "ACA"
+          ],
           "example": "CUP",
           "maxLength": 50,
           "minLength": 0,
