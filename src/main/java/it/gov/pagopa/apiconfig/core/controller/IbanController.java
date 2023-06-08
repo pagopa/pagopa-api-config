@@ -9,14 +9,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanV2;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
+import it.gov.pagopa.apiconfig.core.service.IbanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.constraints.Size;
@@ -30,8 +33,11 @@ public class IbanController {
   @Autowired
   private CreditorInstitutionsService creditorInstitutionsService;
 
+  @Autowired
+  private IbanService ibansService;
+
   /**
-   * GET /{creditorinstitutioncode}/ibans : Get creditor institution ibans
+   * GET /creditorinstitutions/{creditorinstitutioncode}/ibans : Get creditor institution ibans
    *
    * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
    *     (required)
@@ -88,7 +94,7 @@ public class IbanController {
                   schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
-      value = "/{creditorinstitutioncode}/ibans",
+      value = "",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<Ibans> getCreditorInstitutionsIbans(
       @Size(max = 50)
@@ -99,6 +105,78 @@ public class IbanController {
       String creditorInstitutionCode) {
     return ResponseEntity.ok(
         creditorInstitutionsService.getCreditorInstitutionsIbans(creditorInstitutionCode));
+  }
+
+  /**
+   * GET /{creditorinstitutioncode}/ibans : Get creditor institution ibans
+   *
+   * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
+   *     (required)
+   * @return OK. (status code 200) or Not Found (status code 404) or Service unavailable (status
+   *     code 500)
+   */
+  @Operation(
+      summary = "Create creditor institution ibans",
+      security = {
+          @SecurityRequirement(name = "ApiKey"),
+          @SecurityRequirement(name = "Authorization")
+      },
+      tags = {
+          "Iban",
+      })
+  @ApiResponses(
+      value = {
+          @ApiResponse(
+              responseCode = "201",
+              description = "Created",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = Ibans.class))),
+          @ApiResponse(
+              responseCode = "400",
+              description = "Bad Request",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "401",
+              description = "Unauthorized",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "403",
+              description = "Forbidden",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Not Found",
+              content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+          @ApiResponse(
+              responseCode = "429",
+              description = "Too many requests",
+              content = @Content(schema = @Schema())),
+          @ApiResponse(
+              responseCode = "500",
+              description = "Service unavailable",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @PostMapping(
+      value = "",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<IbanV2> createCreditorInstitutionsIbans(
+      @Size(max = 50)
+      @Parameter(
+          description = "Organization fiscal code, the fiscal code of the Organization.",
+          required = true)
+      @PathVariable("creditorinstitutioncode")
+      String creditorInstitutionCode,
+      IbanV2 iban) {
+    return ResponseEntity.ok(
+        ibansService.createIban(creditorInstitutionCode, iban));
   }
 
 }

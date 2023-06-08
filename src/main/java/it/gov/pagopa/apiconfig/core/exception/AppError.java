@@ -190,6 +190,11 @@ public enum AppError {
   REFRESH_CONFIG_EXCEPTION(
       HttpStatus.INTERNAL_SERVER_ERROR, "Node Monitoring Error", "Refresh configuration failure"),
 
+  IBAN_LABEL_NOT_VALID(
+      HttpStatus.UNPROCESSABLE_ENTITY,
+      "IBAN label not valid",
+      "The label %s is not valid and cannot be associated to IBAN"),
+
   UNKNOWN(null, null, null);
 
   public final HttpStatus httpStatus;
