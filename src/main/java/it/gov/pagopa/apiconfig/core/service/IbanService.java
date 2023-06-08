@@ -114,4 +114,14 @@ public class IbanService {
         .build();
   }
 
+  public IbanV2 deleteIban(@NotBlank String organizationFiscalCode, @NotNull IbanV2 iban) {
+    Iban ibanToBeDeleted = getIbanIfExists(iban);
+    return null;
+  }
+
+  private Iban getIbanIfExists(IbanV2 iban){
+    return ibanRepository
+        .findByIban(iban.getIbanValue())
+        .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban.getIbanValue())); //TODO add optional in starter to findByIban
+  }
 }
