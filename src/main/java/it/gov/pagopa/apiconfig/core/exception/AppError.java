@@ -196,8 +196,8 @@ public enum AppError {
       "Iban value %s is does not exists"),
   IBAN_NOT_FOUND(
       HttpStatus.NOT_FOUND,
-      "IBAN label not valid",
-      "The label %s is not valid and cannot be associated to IBAN"),
+      "IBAN value not found",
+      "The IBAN with value %s is not present"),
 
   UNKNOWN(null, null, null);
 

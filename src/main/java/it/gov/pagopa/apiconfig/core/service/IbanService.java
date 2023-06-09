@@ -114,9 +114,9 @@ public class IbanService {
         .build();
   }
 
-  public String deleteIban(@NotBlank String organizationFiscalCode, @NotNull Long ibanId) {
+  public String deleteIban(@NotBlank String organizationFiscalCode, @NotNull String ibanValue) {
     //Get iban entity to be deleted
-    Iban ibanToBeDeleted = getIbanIfExists(ibanId);
+    Iban ibanToBeDeleted = getIbanIfExists(ibanValue);
 
     //Get pa entity
     Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
@@ -131,15 +131,15 @@ public class IbanService {
     //Delete all relations listed before
     ibanAttributeMasterRepository.deleteAll(ibanAttributeMastersToBeDeleted);
     ibanMasterRepository.deleteAll(ibanMastersToBeDeleted);
-    if(ibanMasterRepository.findByFkIban(ibanId).isEmpty()){
+    if(ibanMasterRepository.findByFkIban(ibanToBeDeleted.getObjId()).isEmpty()){
       ibanRepository.delete(ibanToBeDeleted);
     }
-    return String.format("The Iban %s for the creditor institution %s has been deleted", String.valueOf(ibanId), organizationFiscalCode);
+    return String.format("The Iban %s for the creditor institution %s has been deleted", ibanValue, organizationFiscalCode);
   }
 
-  private Iban getIbanIfExists(Long ibanId){
+  private Iban getIbanIfExists(String ibanValue){
     return ibanRepository
-        .findById(ibanId)
-        .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, ibanId));
+        .findByIban(ibanValue)
+        .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, ibanValue));
   }
 }

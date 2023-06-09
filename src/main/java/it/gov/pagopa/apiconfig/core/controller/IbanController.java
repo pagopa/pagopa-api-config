@@ -185,7 +185,7 @@ public class IbanController {
    *
    * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
    *     (required)
-   * @param ibanId Value of the Iban to delete.
+   * @param ibanValue Value of the Iban to delete.
    *     (required)
    * @return OK. (status code 200) or Not Found (status code 404) or Service unavailable (status
    *     code 500)
@@ -202,8 +202,8 @@ public class IbanController {
   @ApiResponses(
       value = {
           @ApiResponse(
-              responseCode = "201",
-              description = "Created",
+              responseCode = "200",
+              description = "Ok",
               content =
               @Content(
                   mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -240,7 +240,7 @@ public class IbanController {
                   schema = @Schema(implementation = ProblemJson.class)))
       })
   @DeleteMapping(
-      value = "/{ibanId}",
+      value = "/{ibanValue}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<String> deleteCreditorInstitutionsIban(
       @Size(max = 50)
@@ -253,10 +253,10 @@ public class IbanController {
       @Parameter(
           description = "Value of the Iban to be deleted",
           required = true)
-      @PathVariable("ibanId")
-      String ibanId) {
+      @PathVariable("ibanValue")
+      String ibanValue) {
     return ResponseEntity.ok(
-        ibansService.deleteIban(creditorInstitutionCode, Long.parseLong(ibanId)));
+        ibansService.deleteIban(creditorInstitutionCode, ibanValue));
   }
 
 }
