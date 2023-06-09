@@ -97,7 +97,7 @@ public class IbanService {
           .orElseThrow(() -> new AppException(AppError.IBAN_LABEL_NOT_VALID, label));
       IbanAttributeMaster ibanAttributesMasterToBeCreated = IbanAttributeMaster.builder()
           .fkIbanMaster(ibanCIRelationToBeCreated.getObjId())
-          .fkAttributeMaster(ibanAttribute.getObjId())
+          .fkAttribute(ibanAttribute.getObjId())
           .build();
       ibanAttributeMasterRepository.save(ibanAttributesMasterToBeCreated);
     }
@@ -114,14 +114,40 @@ public class IbanService {
         .build();
   }
 
-  public IbanV2 deleteIban(@NotBlank String organizationFiscalCode, @NotNull IbanV2 iban) {
-    Iban ibanToBeDeleted = getIbanIfExists(iban);
-    return null;
+  public String deleteIban(@NotBlank String organizationFiscalCode, @NotNull Long ibanId) {
+    System.out.println("HERE0");
+    //Get iban entity to be deleted
+    Iban ibanToBeDeleted = getIbanIfExists(ibanId);
+
+    System.out.println("HERE1");
+    //Get pa entity
+    Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
+    Pa existingCreditorInstitution = creditorInstitutionOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
+
+    System.out.println("HERE2");
+    //Get all ibanMaster relations
+    List<IbanMaster> ibanMastersToBeDeleted = ibanMasterRepository.findByFkIbanAndFkPa(ibanToBeDeleted.getObjId(), existingCreditorInstitution.getObjId());
+
+    System.out.println("HERE3");
+    //Get all ibanAttributesMaster relations
+    List<IbanAttributeMaster> ibanAttributeMastersToBeDeleted = ibanAttributeMasterRepository.findByFkIbanMasterIn(ibanMastersToBeDeleted.stream().map(e->e.getObjId()).collect(Collectors.toList()));
+
+    //Delete all relations listed before
+    System.out.println("HERE6");
+    ibanAttributeMasterRepository.deleteAll(ibanAttributeMastersToBeDeleted);
+    System.out.println("HERE7");
+    ibanMasterRepository.deleteAll(ibanMastersToBeDeleted);
+    System.out.println("HERE8");
+    if(ibanMasterRepository.findByFkIban(ibanId).isEmpty()){
+      ibanRepository.delete(ibanToBeDeleted);
+    }
+    System.out.println("HEREFINAL");
+    return String.format("The Iban %s for the creditor institution %s has been deleted", String.valueOf(ibanId), organizationFiscalCode);
   }
 
-  private Iban getIbanIfExists(IbanV2 iban){
+  private Iban getIbanIfExists(Long ibanId){
     return ibanRepository
-        .findByIban(iban.getIbanValue())
-        .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban.getIbanValue())); //TODO add optional in starter to findByIban
+        .findById(ibanId)
+        .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, ibanId));
   }
 }
