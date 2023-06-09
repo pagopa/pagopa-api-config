@@ -192,6 +192,10 @@ public enum AppError {
 
   IBAN_LABEL_NOT_VALID(
       HttpStatus.UNPROCESSABLE_ENTITY,
+      "IBAN does not exists",
+      "Iban value %s is does not exists"),
+  IBAN_NOT_FOUND(
+      HttpStatus.NOT_FOUND,
       "IBAN label not valid",
       "The label %s is not valid and cannot be associated to IBAN"),
 
