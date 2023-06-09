@@ -7,7 +7,6 @@ on:
       - main
     types: [ closed ]
 
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
@@ -20,22 +19,17 @@ on:
           - uat
           - prod
           - all
-      semver:
-        required: true
-        type: choice
-        description: Select the new Semantic Version
-        options:
-          - major
-          - minor
-          - patch
-          - buildNumber
-          - skip
-        default: skip
       beta:
         required: false
         type: boolean
         description: deploy beta version on AKS
         default: false
+      skip_release:
+        required: false
+        type: boolean
+        description: skip the release. Only deploy
+        default: false
+
 
 permissions:
   packages: write
@@ -44,6 +38,7 @@ permissions:
   id-token: write
   actions: read
 
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   setup:
@@ -51,33 +46,36 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       semver: ${{ steps.get_semver.outputs.semver }}
-      environment: ${{ steps.output.outputs.environment }}
+      environment: ${{ steps.get_env.outputs.environment }}
     steps:
-      - name: Dump GitHub context
-        run: echo $JSON
-        env:
-          JSON: ${{ toJSON(github) }}
+      # Set Semvar
+      - run: echo "SEMVER=patch" >> $GITHUB_ENV
 
-      - name: Get semver
-        id: get_semver
-        uses: pagopa/github-actions-template/semver-setup@1.3.0
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'breaking-change ')) }}
+        run: echo "SEMVER=major" >> $GITHUB_ENV
 
-      - if: ${{ github.event.inputs.environment == null || github.event.inputs.environment == 'dev' }}
+      - if: ${{ inputs.environment == 'uat' }}
+        run: echo "SEMVER=minor" >> $GITHUB_ENV
+
+      - if: ${{ github.ref_name != 'main' }}
+        run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
+
+      - id: get_semver
+        name: Set Output
+        run: echo "semver=${{env.SEMVER}}" >> $GITHUB_OUTPUT
+
+      # Set Environment
+      - run: echo "ENVIRNOMENT=${{ inputs.environment}}" >> $GITHUB_ENV
+
+      - if: ${{ inputs.environment == null }}
         run: echo "ENVIRNOMENT=dev" >> $GITHUB_ENV
 
-      - if: ${{ github.event.inputs.environment == 'uat' }}
-        run: echo "ENVIRNOMENT=uat" >> $GITHUB_ENV
+      - if: ${{ inputs.skip_release }}
+        run: echo "ENVIRNOMENT=skip" >> $GITHUB_ENV
 
-      - if: ${{ github.event.inputs.environment == 'prod' }}
-        run: echo "ENVIRNOMENT=prod" >> $GITHUB_ENV
-
-      - if: ${{ github.event.inputs.environment == 'all' }}
-        run: echo "ENVIRNOMENT=all" >> $GITHUB_ENV
-
-      - id: output
+      - id: get_env
         name: Set Output
-        run: |
-          echo "environment=${{env.ENVIRNOMENT}}" >> $GITHUB_OUTPUT
+        run: echo "environment=${{env.ENVIRNOMENT}}" >> $GITHUB_OUTPUT
 
 
   release:
@@ -89,10 +87,12 @@ jobs:
     steps:
       - name: Make Release
         id: release
-        uses: pagopa/github-actions-template/maven-release@main
+        uses: pagopa/github-actions-template/maven-release@v1.5.4
         with:
           semver: ${{ needs.setup.outputs.semver }}
           github_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          beta: ${{ inputs.beta }}
+          skip_ci: false
 
   image:
     needs: [ setup, release ]
@@ -100,44 +100,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.semver != 'skip' }}
     steps:
-#      - name: Build and Push
-#        id: semver
-#        uses: pagopa/github-actions-template/ghcr-build-push@main
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          tag: ${{ needs.release.outputs.version }}
-#
-      - uses: actions/checkout@v3
+      - name: Build and Push
+        id: semver
+        uses: pagopa/github-actions-template/ghcr-build-push@v1.5.4
         with:
-          ref: ${{ github.ref_name }}
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4.3.0
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            latest
-            ${{ needs.release.outputs.version }}
-            type=ref,event=branch
-            type=sha
-
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          secrets: |
-            GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name}}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.release.outputs.version }}
 
   deploy_aks:
     name: Deploy on AKS
@@ -146,28 +115,26 @@ jobs:
     strategy:
       matrix:
         environment: [ dev, uat, prod ]
-    uses: ./.github/workflows/self_hosted.yml
+    uses: ./.github/workflows/deploy_with_github_runner.yml
     with:
-      target: ${{ matrix.environment }}
-      environment: ${{ needs.setup.outputs.environment }}
-      beta: ${{ inputs.beta }}
+      environment: ${{ matrix.environment }}
+      target: ${{ needs.setup.outputs.environment }}
     secrets: inherit
 
   notify:
-    needs: [ deploy_aks ]
+    needs: [ setup, release, deploy_aks ]
     runs-on: ubuntu-latest
     name: Notify
     if: always()
     steps:
       - name: Report Status
-        if: always()
+        if: ${{ needs.setup.outputs.environment == 'prod' || needs.setup.outputs.environment == 'all'  }}
         uses: ravsamhq/notify-slack-action@v2
         with:
           status: ${{ needs.deploy_aks.result }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          notify_when: 'failure,skipped'
-          notification_title: '{workflow} has {status_message}'
-          message_format: '{emoji} <{workflow_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
-          footer: 'Linked to Repo <{repo_url}|{repo}>'
+          notification_title: 'New Release on Production ${{ needs.release.outputs.version }} has {status_message}'
+          message_format: '{emoji} <{run_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
+          footer: 'Linked to <{workflow_url}| workflow file>'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -1,0 +1,116 @@
+name: Integration Tests
+
+on:
+  schedule:
+    - cron: '00 08 * * *'
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        description: Select the Environment
+        options:
+          - dev
+          - uat
+          - prod
+      canary:
+        description: 'run the tests on canary version'
+        required: false
+        type: boolean
+        default: false
+      notify:
+        required: false
+        type: boolean
+        description: 'send the slack notification'
+        default: true
+
+
+permissions:
+  id-token: write
+  contents: read
+  deployments: write
+
+
+jobs:
+  integration_test:
+    name: Test ${{(github.event.inputs == null && 'dev') || inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{(github.event.inputs == null && 'dev') || inputs.environment }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@1f9a0c22da41e6ebfa534300ef656657ea2c6707
+
+      - name: Login
+        id: login
+        # from https://github.com/Azure/login/commits/master
+        uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+      - name: Run Integration Tests
+        shell: bash
+        run: |
+          export SUBKEY=${{ secrets.SUBKEY }}
+          export CANARY=${{ inputs.canary }}
+          export CUCUMBER_PUBLISH_TOKEN=${{ secrets.CUCUMBER_PUBLISH_TOKEN }}
+
+          cd ./integration-test
+          chmod +x ./run_integration_test.sh
+          ./run_integration_test.sh ${{( github.event.inputs == null && 'dev') || inputs.environment }}
+
+  notify:
+    needs: [ integration_test ]
+    runs-on: ubuntu-latest
+    name: Notify
+    if: ${{ always() }}
+    steps:
+      - name: Report Status
+        if: ${{ inputs.notify }}
+        uses: ravsamhq/notify-slack-action@v2
+        with:
+          status: ${{ needs.integration_test.result }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          notify_when: 'failure,skipped'
+          notification_title: '<{run_url}|Scheduled Integration Test> has {status_message}'
+          message_format: '{emoji} <{run_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
+          footer: 'Linked to <{workflow_url}| workflow file>'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  delete_github_deployments:
+    runs-on: ubuntu-latest
+    needs: integration_test
+    if: ${{ always() }}
+    steps:
+      - name: Delete Previous deployments
+        uses: actions/github-script@v6
+        env:
+          SHA_HEAD: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.sha) || github.sha}}
+        with:
+          script: |
+            const { SHA_HEAD } = process.env
+
+            const deployments = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: SHA_HEAD
+            });
+            await Promise.all(
+              deployments.data.map(async (deployment) => {
+                await github.rest.repos.createDeploymentStatus({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  deployment_id: deployment.id,
+                  state: 'inactive'
+                });
+                return github.rest.repos.deleteDeployment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  deployment_id: deployment.id
+                });
+              })
+            );
