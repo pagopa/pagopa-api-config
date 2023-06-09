@@ -66,6 +66,11 @@ public class IbanService {
           .build();
       ibanToBeCreated = ibanRepository.save(ibanToBeCreated);
     }
+    // check if IBAN was already associated to creditor institution
+    ibanMasterRepository.findByFkIbanAndFkPa(ibanToBeCreated.getObjId(), existingCreditorInstitution.getObjId())
+        .stream()
+        .findAny()
+        .ifPresent(s -> {throw new AppException(AppError.IBAN_ALREADY_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode);});
     // generate an empty ICA binary file and a relation between iban, CI and ICA file
     IcaBinaryFile icaBinaryFileToBeCreated = IcaBinaryFile.builder()
         .fileSize(0L)
@@ -78,6 +83,9 @@ public class IbanService {
         .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
         .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
         .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
+        .pa(existingCreditorInstitution) // setting CI object reference
+        .iban(ibanToBeCreated) // setting IBAN object reference
+        .icaBinaryFile(icaBinaryFileToBeCreated) // setting ICA binary file object reference
         .build();
     ibanCIRelationToBeCreated = ibanMasterRepository.save(ibanCIRelationToBeCreated);
     // validating and inserting the labels
@@ -93,10 +101,12 @@ public class IbanService {
          - If not found (null result), throw an exception and stop computation.
        */
       IbanAttribute ibanAttribute = Optional.ofNullable(validLabels.get(label.getName()))
-          .orElseThrow(() -> new AppException(AppError.IBAN_LABEL_NOT_VALID, label));
+          .orElseThrow(() -> new AppException(AppError.IBAN_LABEL_NOT_VALID, label.getName()));
       IbanAttributeMaster ibanAttributesMasterToBeCreated = IbanAttributeMaster.builder()
           .fkIbanMaster(ibanCIRelationToBeCreated.getObjId())
-          .fkAttributeMaster(ibanAttribute.getObjId())
+          .fkAttribute(ibanAttribute.getObjId())
+          .ibanMaster(ibanCIRelationToBeCreated)
+          .ibanAttribute(ibanAttribute)
           .build();
       ibanAttributeMasterRepository.save(ibanAttributesMasterToBeCreated);
     }

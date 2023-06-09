@@ -21,8 +21,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @RestController()
@@ -175,7 +178,7 @@ public class IbanController {
           required = true)
       @PathVariable("creditorinstitutioncode")
       String creditorInstitutionCode,
-      IbanV2 iban) {
+      @RequestBody @Valid @NotNull IbanV2 iban) {
     return ResponseEntity.status(HttpStatus.CREATED).body(
         ibansService.createIban(creditorInstitutionCode, iban));
   }

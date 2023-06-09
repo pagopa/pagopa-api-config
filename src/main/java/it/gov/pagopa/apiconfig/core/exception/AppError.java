@@ -190,10 +190,16 @@ public enum AppError {
   REFRESH_CONFIG_EXCEPTION(
       HttpStatus.INTERNAL_SERVER_ERROR, "Node Monitoring Error", "Refresh configuration failure"),
 
+  IBAN_ALREADY_ASSOCIATED(
+      HttpStatus.CONFLICT,
+      "IBAN already associated",
+      "The IBAN with code %s was already associated to the creditor institution %s"),
+
   IBAN_LABEL_NOT_VALID(
       HttpStatus.UNPROCESSABLE_ENTITY,
       "IBAN label not valid",
       "The label %s is not valid and cannot be associated to IBAN"),
+
   IBAN_NOT_FOUND(
       HttpStatus.NOT_FOUND,
       "IBAN does not exists",
