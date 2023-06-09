@@ -56,7 +56,7 @@ public class IbanService {
     Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
     Pa existingCreditorInstitution = creditorInstitutionOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
 
-    Iban ibanToBeCreated = ibanRepository.findByIban(iban.getIbanValue());
+    Iban ibanToBeCreated = ibanRepository.findByIban(iban.getIbanValue()).orElse(null);
     if (ibanToBeCreated == null) {
       ibanToBeCreated = Iban.builder()
           .iban(iban.getIbanValue())
