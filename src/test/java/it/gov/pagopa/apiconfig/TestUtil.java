@@ -76,6 +76,8 @@ import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
 import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
 import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
 import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
+import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
 import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
 import it.gov.pagopa.apiconfig.starter.entity.InformativePaDetail;
@@ -98,6 +100,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
+import org.apache.tomcat.jni.Time;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -673,6 +676,27 @@ public class TestUtil {
         .ibanValue("IT99C0222211111000000000000")
         .publicationDate(OffsetDateTime.now())
         .validityDate(OffsetDateTime.now())
+        .build();
+  }
+
+  public static it.gov.pagopa.apiconfig.starter.entity.Iban getMockIbanEntity() {
+    return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
+        .objId((long)1)
+        .iban("IT99C0222211111000000000000")
+        .fiscalCode("1234")
+        .description("Iban description")
+        .build();
+  }
+
+  public static IbanMaster getMockIbanMaster() {
+    return IbanMaster.builder()
+        .insertedDate(Timestamp.valueOf("2021-10-01 17:48:22"))
+        .validityDate(Timestamp.valueOf("2021-10-01 17:48:22"))
+        .build();
+  }
+
+  public static IbanAttributeMaster getMockIbanAttributeMaster() {
+    return IbanAttributeMaster.builder()
         .build();
   }
 
