@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
@@ -51,11 +52,11 @@ public class IbanService {
 
   @Autowired private ModelMapper modelMapper;
 
-  public IbanV2 createIban(@NotBlank String organizationFiscalCode, @NotNull IbanV2 iban) {
-
+  public IbanV2 createIban(@NotBlank String organizationFiscalCode, @Valid @NotNull IbanV2 iban) {
+    // retrieve the creditor institution and throw exception if not found
     Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
     Pa existingCreditorInstitution = creditorInstitutionOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
-
+    // retrieve an existing iban or generate a new one if not defined
     Iban ibanToBeCreated = ibanRepository.findByIban(iban.getIbanValue()).orElse(null);
     if (ibanToBeCreated == null) {
       ibanToBeCreated = Iban.builder()
@@ -65,12 +66,11 @@ public class IbanService {
           .build();
       ibanToBeCreated = ibanRepository.save(ibanToBeCreated);
     }
-
+    // generate an empty ICA binary file and a relation between iban, CI and ICA file
     IcaBinaryFile icaBinaryFileToBeCreated = IcaBinaryFile.builder()
         .fileSize(0L)
         .build();
     icaBinaryFileToBeCreated = icaBinaryFileRepository.save(icaBinaryFileToBeCreated);
-
     IbanMaster ibanCIRelationToBeCreated = IbanMaster.builder()
         .fkPa(existingCreditorInstitution.getObjId())
         .fkIban(ibanToBeCreated.getObjId())
@@ -80,20 +80,19 @@ public class IbanService {
         .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
         .build();
     ibanCIRelationToBeCreated = ibanMasterRepository.save(ibanCIRelationToBeCreated);
-
+    // validating and inserting the labels
     Map<String, IbanAttribute> validLabels = ibanAttributeRepository.findAll()
         .stream()
         .collect(Collectors.toMap(IbanAttribute::getAttributeName, obj -> obj));
 
     // Analyzing the label from IBAN object passed as input (analyze an empty list if passed as null)
-    for (IbanLabel label : Optional.of(iban.getLabels()).orElse(List.of())) {
-
+    for (IbanLabel label : Optional.ofNullable(iban.getLabels()).orElse(List.of())) {
       /*
         Get the IBAN attribute using the label from list as search key from the valid label map:
          - If found, generate the entity to be saved.
          - If not found (null result), throw an exception and stop computation.
        */
-      IbanAttribute ibanAttribute = Optional.of(validLabels.get(label.getName()))
+      IbanAttribute ibanAttribute = Optional.ofNullable(validLabels.get(label.getName()))
           .orElseThrow(() -> new AppException(AppError.IBAN_LABEL_NOT_VALID, label));
       IbanAttributeMaster ibanAttributesMasterToBeCreated = IbanAttributeMaster.builder()
           .fkIbanMaster(ibanCIRelationToBeCreated.getObjId())
@@ -103,10 +102,10 @@ public class IbanService {
     }
 
     return IbanV2.builder()
-        .companyName(existingCreditorInstitution.getDescription())
+        .companyName(existingCreditorInstitution.getRagioneSociale())
         .ibanValue(ibanToBeCreated.getIban())
         .description(ibanToBeCreated.getDescription())
-        .labels(iban.getLabels())
+        .labels(Optional.ofNullable(iban.getLabels()).orElse(List.of()))
         .ciOwnerFiscalCode(ibanToBeCreated.getFiscalCode())
         .isActive(IbanStatus.ENABLED.equals(ibanCIRelationToBeCreated.getIbanStatus()))
         .validityDate(CommonUtil.toOffsetDateTime(ibanCIRelationToBeCreated.getValidityDate()))

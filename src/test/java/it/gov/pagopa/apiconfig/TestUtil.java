@@ -32,6 +32,8 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanV2;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Icas;
@@ -76,7 +78,9 @@ import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
 import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
 import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
 import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
 import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
+import it.gov.pagopa.apiconfig.starter.entity.IcaBinaryFile;
 import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
 import it.gov.pagopa.apiconfig.starter.entity.InformativePaDetail;
 import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
@@ -94,6 +98,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -981,5 +987,47 @@ public class TestUtil {
 
   public static Page<CdiMasterValid> getMockCdiMasterPaged() {
     return mockPage(List.of(getMockCdiMasterValid()), 1, 0);
+  }
+
+  public static IbanV2 getMockIbanV2() {
+    return IbanV2.builder()
+        .ibanValue("IT99C0222211111000000000000")
+        .description("Riscossione tributi")
+        .isActive(true)
+        .validityDate(OffsetDateTime.now().plus(Period.ofDays(365 * 2)))
+        .labels(List.of(
+            IbanLabel.builder()
+                .name("CUP")
+                .description("The iban to use for CUP payments")
+                .build(),
+            IbanLabel.builder()
+                .name("STANDIN")
+                .description("The iban to use for ACA/Standin payments")
+                .build()
+            )
+        )
+        .build();
+  }
+
+  public static IcaBinaryFile getMockIcaBinaryFile() {
+    return IcaBinaryFile.builder()
+        .objId(10L)
+        .fileContent(new byte[] {1, 10, 20, 30, 40})
+        .fileHash(new byte[] {100, 100})
+        .fileSize(5L)
+        .build();
+  }
+
+  public static List<IbanAttribute> getMockIbanAttributes() {
+    return List.of(
+        IbanAttribute.builder()
+            .attributeName("CUP")
+            .attributeDescription("The iban to use for CUP payments")
+            .build(),
+        IbanAttribute.builder()
+            .attributeName("STANDIN")
+            .attributeDescription("The iban to use for ACA/Standin payments")
+            .build()
+    );
   }
 }
