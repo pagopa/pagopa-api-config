@@ -71,17 +71,16 @@ public class IbanV2 {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime validityDate;
 
-  @JsonProperty("publication_date")
+  @JsonProperty(value = "publication_date", access = JsonProperty.Access.READ_ONLY)
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
   @Schema(example = "2023-06-01T23:59:59.999Z",
       required = true,
       description = "The date on which the iban has been inserted in the system")
-  @NotNull
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime publicationDate;
 
   @JsonProperty("labels")
-  @Schema(required = true, description = "The labels array associated with the iban")
+  @Schema(description = "The labels array associated with the iban")
   private List<IbanLabel> labels;
 }

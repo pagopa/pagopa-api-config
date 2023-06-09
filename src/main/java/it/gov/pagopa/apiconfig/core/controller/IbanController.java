@@ -14,6 +14,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -175,7 +176,7 @@ public class IbanController {
       @PathVariable("creditorinstitutioncode")
       String creditorInstitutionCode,
       IbanV2 iban) {
-    return ResponseEntity.ok(
+    return ResponseEntity.status(HttpStatus.CREATED).body(
         ibansService.createIban(creditorInstitutionCode, iban));
   }
 
