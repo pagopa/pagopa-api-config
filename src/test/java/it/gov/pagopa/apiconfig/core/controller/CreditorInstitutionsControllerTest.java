@@ -55,8 +55,6 @@ class CreditorInstitutionsControllerTest {
         .thenReturn(getMockCreditorInstitutionDetails());
     when(creditorInstitutionsService.getCreditorInstitutionStations("1234"))
         .thenReturn(getMockCreditorInstitutionStationList());
-    when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234"))
-        .thenReturn(getMockIbans());
     when(creditorInstitutionsService.createCreditorInstitution(
             any(CreditorInstitutionDetails.class)))
         .thenReturn(getMockCreditorInstitutionDetails());
@@ -79,7 +77,6 @@ class CreditorInstitutionsControllerTest {
     "/creditorinstitutions?page=0",
     "/creditorinstitutions/1234",
     "/creditorinstitutions/1234/stations",
-    "/creditorinstitutions/1234/ibans",
     "/creditorinstitutions/view?page=0",
     "/creditorinstitutions/view?page=0&creditorInstitutionCode=00168480242"
   })
