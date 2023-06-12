@@ -32,6 +32,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanV2;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Icas;
@@ -674,6 +675,14 @@ public class TestUtil {
   public static Iban getMockIban() {
     return Iban.builder()
         .ibanValue("IT99C0222211111000000000000")
+        .publicationDate(OffsetDateTime.now())
+        .validityDate(OffsetDateTime.now())
+        .build();
+  }
+
+  public static IbanV2 getMockIbanV2() {
+    return IbanV2.builder()
+        .ibanValue("IT99C0222211111000000000003")
         .publicationDate(OffsetDateTime.now())
         .validityDate(OffsetDateTime.now())
         .build();

@@ -1,9 +1,11 @@
 package it.gov.pagopa.apiconfig.core.controller;
 
 import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static it.gov.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanV2;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbans;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,5 +52,13 @@ public class IbanControllerTest {
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void deleteIban() throws Exception {
+    mvc.perform(post("/creditorinstitutions/1234/ibans")
+        .content(TestUtil.toJson(getMockIbanV2())).contentType(MediaType.APPLICATION_JSON));
+    mvc.perform(delete("/creditorinstitutions/1234/ibans/IT99C0222211111000000000003").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
   }
 }
