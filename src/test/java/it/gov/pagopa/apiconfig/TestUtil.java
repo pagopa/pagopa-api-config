@@ -35,6 +35,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanV2;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansV2;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Icas;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Protocol;
@@ -79,6 +80,8 @@ import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
 import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
 import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
+import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
 import it.gov.pagopa.apiconfig.starter.entity.IcaBinaryFile;
 import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
@@ -98,8 +101,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.time.Period;
-import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -208,6 +209,19 @@ public class TestUtil {
         .enabled(true)
         .ragioneSociale("Comune di Bassano del Grappa")
         .capDomicilioFiscale("00111")
+        .pagamentoPressoPsp(true)
+        .rendicontazioneFtp(false)
+        .rendicontazioneZip(false)
+        .build();
+  }
+
+  public static Pa getMockPa2() {
+    return Pa.builder()
+        .objId(2L)
+        .idDominio("00168480243")
+        .enabled(true)
+        .ragioneSociale("Comune di Firenze")
+        .capDomicilioFiscale("00112")
         .pagamentoPressoPsp(true)
         .rendicontazioneFtp(false)
         .rendicontazioneZip(false)
@@ -674,6 +688,10 @@ public class TestUtil {
     return Ibans.builder().ibanList(List.of(getMockIban())).build();
   }
 
+  public static IbansV2 getMockIbansV2() {
+    return IbansV2.builder().ibanV2List(List.of(getMockIbanV2())).build();
+  }
+
   public static Iban getMockIban() {
     return Iban.builder()
         .ibanValue("IT99C0222211111000000000000")
@@ -994,7 +1012,7 @@ public class TestUtil {
         .ibanValue("IT99C0222211111000000000000")
         .description("Riscossione tributi")
         .isActive(true)
-        .validityDate(OffsetDateTime.now().plus(Period.ofDays(365 * 2)))
+        .validityDate(OffsetDateTime.parse("2023-06-07T11:48:15.166Z"))
         .labels(List.of(
             IbanLabel.builder()
                 .name("CUP")
@@ -1027,6 +1045,19 @@ public class TestUtil {
         IbanAttribute.builder()
             .attributeName("STANDIN")
             .attributeDescription("The iban to use for ACA/Standin payments")
+            .build()
+    );
+  }
+
+  public static List<IbanAttributeMaster> getMockIbanAttributeMasters(IbanMaster ibanMaster) {
+    return List.of(
+        IbanAttributeMaster.builder()
+            .ibanAttribute(
+                IbanAttribute.builder()
+                    .attributeName("STANDIN")
+                    .attributeDescription("The iban to use for ACA/Standin payments")
+                    .build())
+            .ibanMaster(ibanMaster)
             .build()
     );
   }
