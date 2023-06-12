@@ -42,7 +42,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
-public class IbanServiceTest {
+class IbanServiceTest {
 
   @MockBean private PaRepository paRepository;
 

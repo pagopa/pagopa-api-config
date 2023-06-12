@@ -28,12 +28,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
-public class IbanControllerTest {
+class IbanControllerTest {
 
   @Autowired
   private MockMvc mvc;
@@ -99,6 +100,51 @@ public class IbanControllerTest {
     when(ibanService.createIban(anyString(), any(IbanV2.class))).thenThrow(OptimisticLockingFailureException.class);
     mvc.perform(
             post("/creditorinstitutions/1234/ibans")
+                .content(TestUtil.toJson(getMockIbanV2()))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void updateIban_200() throws Exception {
+    mvc.perform(
+            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
+                .content(TestUtil.toJson(getMockIbanV2()))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void updateIban_400() throws Exception {
+    IbanV2 ibanV2 = getMockIbanV2();
+    when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(ConstraintViolationException.class);
+    mvc.perform(
+            put("/creditorinstitutions/1234/ibans/fake")
+                .content(TestUtil.toJson(ibanV2))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void updateIban_422() throws Exception {
+    IbanV2 ibanV2 = getMockIbanV2();
+    ibanV2.getLabels().get(0).setName("IT99C0222211111000000000000");
+    when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
+    mvc.perform(
+            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
+                .content(TestUtil.toJson(ibanV2))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void updateIban_500() throws Exception {
+    when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(OptimisticLockingFailureException.class);
+    mvc.perform(
+            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
                 .content(TestUtil.toJson(getMockIbanV2()))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError())
