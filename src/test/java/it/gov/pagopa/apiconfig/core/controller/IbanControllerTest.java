@@ -2,6 +2,8 @@ package it.gov.pagopa.apiconfig.core.controller;
 
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanV2;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,22 +14,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
+import javax.validation.ConstraintViolationException;
+
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanV2;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanV2_2;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbans;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
-public class IbanControllerTest {
+class IbanControllerTest {
 
   @Autowired
   private MockMvc mvc;
@@ -55,9 +64,100 @@ public class IbanControllerTest {
   }
 
   @Test
+  void createIban_201() throws Exception {
+    mvc.perform(
+            post("/creditorinstitutions/1234/ibans")
+                .content(TestUtil.toJson(getMockIbanV2()))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+  }
+
+  @Test
+  void createIban_400() throws Exception {
+    IbanV2 ibanV2 = getMockIbanV2();
+    when(ibanService.createIban(anyString(), any(IbanV2.class))).thenThrow(ConstraintViolationException.class);
+    mvc.perform(
+            post("/creditorinstitutions/1234/ibans")
+                .content(TestUtil.toJson(ibanV2))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void createIban_422() throws Exception {
+    IbanV2 ibanV2 = getMockIbanV2();
+    ibanV2.getLabels().get(0).setName("FAKE");
+    when(ibanService.createIban(anyString(), any(IbanV2.class))).thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
+    mvc.perform(
+            post("/creditorinstitutions/1234/ibans")
+                .content(TestUtil.toJson(ibanV2))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void createIban_500() throws Exception {
+    when(ibanService.createIban(anyString(), any(IbanV2.class))).thenThrow(OptimisticLockingFailureException.class);
+    mvc.perform(
+            post("/creditorinstitutions/1234/ibans")
+                .content(TestUtil.toJson(getMockIbanV2()))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void updateIban_200() throws Exception {
+    mvc.perform(
+            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
+                .content(TestUtil.toJson(getMockIbanV2()))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void updateIban_400() throws Exception {
+    IbanV2 ibanV2 = getMockIbanV2();
+    when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(ConstraintViolationException.class);
+    mvc.perform(
+            put("/creditorinstitutions/1234/ibans/fake")
+                .content(TestUtil.toJson(ibanV2))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void updateIban_422() throws Exception {
+    IbanV2 ibanV2 = getMockIbanV2();
+    ibanV2.getLabels().get(0).setName("IT99C0222211111000000000000");
+    when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
+    mvc.perform(
+            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
+                .content(TestUtil.toJson(ibanV2))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void updateIban_500() throws Exception {
+    when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(OptimisticLockingFailureException.class);
+    mvc.perform(
+            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
+                .content(TestUtil.toJson(getMockIbanV2()))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+
+  @Test
   void deleteIban() throws Exception {
     mvc.perform(post("/creditorinstitutions/1234/ibans")
-        .content(TestUtil.toJson(getMockIbanV2())).contentType(MediaType.APPLICATION_JSON));
+        .content(TestUtil.toJson(getMockIbanV2_2())).contentType(MediaType.APPLICATION_JSON));
     mvc.perform(delete("/creditorinstitutions/1234/ibans/IT99C0222211111000000000003").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }

@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.apiconfig.core.util.Constants;
+import it.gov.pagopa.apiconfig.core.util.OffsetDateTimeDeserializer;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -64,6 +66,7 @@ public class IbanV2 {
   @JsonProperty("validity_date")
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
+  @JsonDeserialize(using = OffsetDateTimeDeserializer.class)
   @Schema(example= "2023-04-01T13:49:19.897Z",
       required = true,
       description = "The date the Creditor Institution wants the iban to be used for its payments")
@@ -71,17 +74,16 @@ public class IbanV2 {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime validityDate;
 
-  @JsonProperty("publication_date")
+  @JsonProperty(value = "publication_date", access = JsonProperty.Access.READ_ONLY)
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
   @Schema(example = "2023-06-01T23:59:59.999Z",
       required = true,
       description = "The date on which the iban has been inserted in the system")
-  @NotNull
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime publicationDate;
 
   @JsonProperty("labels")
-  @Schema(required = true, description = "The labels array associated with the iban")
+  @Schema(description = "The labels array associated with the iban")
   private List<IbanLabel> labels;
 }
