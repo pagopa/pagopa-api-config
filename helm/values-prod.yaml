@@ -9,7 +9,7 @@ microservice-chart:
       maxSurge: 1
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.42.0"
+    tag: "0.43.0"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -104,4 +104,4 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: "0.42.0"
+        tag: "0.43.0"
