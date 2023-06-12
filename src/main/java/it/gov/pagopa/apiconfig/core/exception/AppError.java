@@ -205,6 +205,11 @@ public enum AppError {
       "IBAN does not exists",
       "Iban value %s is does not exists"),
 
+  IBAN_NOT_ASSOCIATED(
+      HttpStatus.NOT_FOUND,
+      "IBAN not associated",
+      "The IBAN with code %s is not associated to the creditor institution %s"),
+
   UNKNOWN(null, null, null);
 
   public final HttpStatus httpStatus;

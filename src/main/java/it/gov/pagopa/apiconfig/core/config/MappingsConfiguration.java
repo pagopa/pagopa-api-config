@@ -1,5 +1,8 @@
 package it.gov.pagopa.apiconfig.core.config;
 
+import it.gov.pagopa.apiconfig.core.mapper.ConvertIbanAttributeMasterToIbanLabel;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -179,6 +182,8 @@ public class MappingsConfiguration {
     Converter<PaymentType, String> convertPaymentTypeString = new ConvertPaymentTypeToString();
     Converter<PaymentType, TipiVersamento> convertPaymentTypeTipiVersamento =
         new ConvertPaymentTypeToTipiVersamento();
+    Converter<IbanAttributeMaster, IbanLabel> convertIbanAttributeMasterToIbanLabel =
+        new ConvertIbanAttributeMasterToIbanLabel();
     
     ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView convertPspCanaleTipoVersamentoToPaymentServiceProviderView = new ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView();
     
@@ -298,6 +303,8 @@ public class MappingsConfiguration {
     mapper
     .createTypeMap(PaStazionePa.class, CreditorInstitutionView.class)
     .setConverter(convertPaStazionePaToCreditorInstitutionView);
+    mapper.createTypeMap(IbanAttributeMaster.class, IbanLabel.class)
+        .setConverter(convertIbanAttributeMasterToIbanLabel);
 
     return mapper;
   }
