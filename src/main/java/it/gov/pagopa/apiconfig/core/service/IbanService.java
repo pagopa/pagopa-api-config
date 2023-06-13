@@ -4,6 +4,7 @@ import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanV2;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansV2;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
@@ -30,6 +31,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +98,37 @@ public class IbanService {
     List<IbanAttributeMaster> updatedIbanAttributes = saveIbanLabelRelation(iban, ibanCIRelationToBeUpdated);
     // return final object
     return convertEntitiesToModel(existingCreditorInstitution, existingIban, updatedIbanAttributes, ibanCIRelationToBeUpdated);
+  }
+
+  public IbansV2 getCreditorInstitutionsIbansByLabel(@NotNull String organizationFiscalCode, String label) {
+    List<IbanV2> ibanV2List = new ArrayList<>();
+    Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
+    Pa pa = creditorInstitutionOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
+
+    List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
+    ibanMasters.stream()
+        .forEach(ibanMaster -> {
+          Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getFkIban());
+          Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND));
+          Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
+          Pa ciOwner = ciOwnerOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
+
+          if (label == null || label.isEmpty()) {
+            IbanV2 ibanV2 = convertEntitiesToModel(ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+            ibanV2List.add(ibanV2);
+          } else {
+            boolean labelMatch = ibanMaster.getIbanAttributesMasters().stream()
+                .map(ibanAttributeMaster -> ibanAttributeMaster.getIbanAttribute().getAttributeName())
+                .anyMatch(name -> name.equalsIgnoreCase(label));
+
+            if (labelMatch) {
+              IbanV2 ibanV2 = convertEntitiesToModel(ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+              ibanV2List.add(ibanV2);
+            }
+          }
+        });
+
+    return IbansV2.builder().ibanV2List(ibanV2List).build();
   }
 
   private Pa getCreditorInstitutionIfExists(String organizationFiscalCode) {

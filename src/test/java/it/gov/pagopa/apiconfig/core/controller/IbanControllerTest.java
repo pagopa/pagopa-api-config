@@ -23,6 +23,7 @@ import javax.validation.ConstraintViolationException;
 
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanV2;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbans;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbansV2;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -49,6 +50,8 @@ class IbanControllerTest {
   void setUp() {
     when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234"))
         .thenReturn(getMockIbans());
+    when(ibanService.getCreditorInstitutionsIbansByLabel(anyString(), anyString()))
+        .thenReturn(getMockIbansV2());
   }
 
   @ParameterizedTest
@@ -56,6 +59,16 @@ class IbanControllerTest {
       "/creditorinstitutions/1234/ibans"
   })
   void testGets(String url) throws Exception {
+    mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+      "/creditorinstitutions/1234/ibans/enhanced?label=STANDIN"
+  })
+  void testGetsEnhanced(String url) throws Exception {
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
