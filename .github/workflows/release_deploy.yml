@@ -64,11 +64,11 @@ jobs:
       - if: ${{ inputs.environment == 'prod' }}
         run: echo "SEMVER=skip" >> $GITHUB_ENV
 
-      - if: ${{ inputs.skip_release }}
-        run: echo "SEMVER=skip" >> $GITHUB_ENV
-
       - if: ${{ github.ref_name != 'main' }}
         run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
+
+      - if: ${{ inputs.skip_release }}
+        run: echo "SEMVER=skip" >> $GITHUB_ENV
 
       - id: get_semver
         name: Set Output
