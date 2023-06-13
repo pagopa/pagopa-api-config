@@ -1078,18 +1078,18 @@ public class TestUtil {
   public static IbanAttributeMaster getMockIbanAttributeMaster() {
     return IbanAttributeMaster.builder()
         .build();
+  }
 
-  public static List<IbanAttributeMaster> getMockIbanAttributeMasters(IbanMaster ibanMaster) {
-    return List.of(
-        IbanAttributeMaster.builder()
-            .ibanAttribute(
-                IbanAttribute.builder()
-                    .attributeName("STANDIN")
-                    .attributeDescription("The iban to use for ACA/Standin payments")
-                    .build())
-            .ibanMaster(ibanMaster)
-            .build()
-    );
-
+    public static List<IbanAttributeMaster> getMockIbanAttributeMasters (IbanMaster ibanMaster){
+      return List.of(
+          IbanAttributeMaster.builder()
+              .ibanAttribute(
+                  IbanAttribute.builder()
+                      .attributeName("STANDIN")
+                      .attributeDescription("The iban to use for ACA/Standin payments")
+                      .build())
+              .ibanMaster(ibanMaster)
+              .build()
+      );
   }
 }

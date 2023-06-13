@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMaster;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMasters;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributes;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
@@ -584,6 +585,7 @@ class IbanServiceTest {
     } catch (Exception e) {
       fail();
     }
+  }
 
   public static List<IbanMaster> getMockIbanMasters(Pa creditorInstitution, IbanV2 iban, Iban ibanEntity,
       IcaBinaryFile icaBinaryFile) {
