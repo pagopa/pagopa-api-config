@@ -111,6 +111,26 @@ class IbanServiceTest {
   }
 
   @Test
+  void getIbansEnhanced_noLabel_200() throws IOException, JSONException {
+    // retrieving mock object
+    Pa creditorInstitution = getMockPa();
+    String organizationFiscalCode = creditorInstitution.getIdDominio();
+    IbanV2 iban = getMockIbanV2();
+    Iban mockIban = getMockIban(iban, organizationFiscalCode);
+    IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
+    List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
+    // mocking responses from repositories
+    when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.of(creditorInstitution));
+    when(ibanMasterRepository.findByFkPa(creditorInstitution.getObjId())).thenReturn(mockIbanMasters);
+    when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+    // executing logic and check assertions
+    IbansV2 result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, null);
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @Test
   void getIbansEnhanced_EmptyIbanList_200() throws JsonProcessingException, JSONException {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();

@@ -100,7 +100,7 @@ public class IbanService {
     return convertEntitiesToModel(existingCreditorInstitution, existingIban, updatedIbanAttributes, ibanCIRelationToBeUpdated);
   }
 
-  public IbansV2 getCreditorInstitutionsIbansByLabel(@NotNull String organizationFiscalCode, @NotNull String label) {
+  public IbansV2 getCreditorInstitutionsIbansByLabel(@NotNull String organizationFiscalCode, String label) {
     List<IbanV2> ibanV2List = new ArrayList<>();
     Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
     Pa pa = creditorInstitutionOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
@@ -108,34 +108,23 @@ public class IbanService {
     List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
     ibanMasters.stream()
         .forEach(ibanMaster -> {
-          List<IbanLabel> ibanLabelList = ibanMaster.getIbanAttributesMasters().stream()
-              .map(ibanAttributeMaster -> {
-                IbanAttribute ibanAttribute = ibanAttributeMaster.getIbanAttribute();
-                return IbanLabel.builder()
-                    .description(ibanAttribute.getAttributeDescription())
-                    .name(ibanAttribute.getAttributeName())
-                    .build();
-              })
-              .collect(Collectors.toList());
+          Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getObjId());
+          Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, organizationFiscalCode));
+          Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
+          Pa ciOwner = ciOwnerOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
 
-          if (ibanLabelList.stream().map(IbanLabel::getName).anyMatch(name -> name.equalsIgnoreCase(label))) {
-            Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getObjId());
-            Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_LABEL_NOT_VALID, organizationFiscalCode));
-            Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
-            Pa ciOwner = ciOwnerOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
-
-            IbanV2 ibanV2 = IbanV2.builder()
-                .companyName(ciOwner.getRagioneSociale())
-                .ibanValue(iban.getIban())
-                .description(iban.getDescription())
-                .labels(ibanLabelList)
-                .ciOwnerFiscalCode(iban.getFiscalCode())
-                .isActive(IbanStatus.ENABLED.equals(ibanMaster.getIbanStatus()))
-                .validityDate(CommonUtil.toOffsetDateTime(ibanMaster.getValidityDate()))
-                .publicationDate(CommonUtil.toOffsetDateTime(ibanMaster.getInsertedDate()))
-                .build();
-
+          if (label == null || label.isEmpty()) {
+            IbanV2 ibanV2 = convertEntitiesToModel(ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
             ibanV2List.add(ibanV2);
+          } else {
+            boolean labelMatch = ibanMaster.getIbanAttributesMasters().stream()
+                .map(ibanAttributeMaster -> ibanAttributeMaster.getIbanAttribute().getAttributeName())
+                .anyMatch(name -> name.equalsIgnoreCase(label));
+
+            if (labelMatch) {
+              IbanV2 ibanV2 = convertEntitiesToModel(ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+              ibanV2List.add(ibanV2);
+            }
           }
         });
 

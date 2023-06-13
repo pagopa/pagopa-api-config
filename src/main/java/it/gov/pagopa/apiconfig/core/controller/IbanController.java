@@ -181,7 +181,7 @@ public class IbanController {
           required = true)
       @PathVariable("creditorinstitutioncode")
       String creditorInstitutionCode,
-      @RequestParam(required = true, name = "label") @Parameter(description = "Filter by label")
+      @RequestParam(required = false, name = "label") @Parameter(description = "Filter by label")
       String filterByLabel) {
 
     return ResponseEntity.ok(ibansService.getCreditorInstitutionsIbansByLabel(creditorInstitutionCode, filterByLabel));
