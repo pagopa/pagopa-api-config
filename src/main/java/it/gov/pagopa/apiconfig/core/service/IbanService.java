@@ -108,8 +108,8 @@ public class IbanService {
     List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
     ibanMasters.stream()
         .forEach(ibanMaster -> {
-          Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getObjId());
-          Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, organizationFiscalCode));
+          Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getFkIban());
+          Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND));
           Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
           Pa ciOwner = ciOwnerOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
 

@@ -66,7 +66,7 @@ class IbanControllerTest {
 
   @ParameterizedTest
   @CsvSource({
-      "/creditorinstitutions/1234/ibans/enhanced?label=STAND-IN"
+      "/creditorinstitutions/1234/ibans/enhanced?label=STANDIN"
   })
   void testGetsEnhanced(String url) throws Exception {
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
