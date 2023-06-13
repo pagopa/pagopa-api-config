@@ -1012,7 +1012,7 @@ public class TestUtil {
         .ibanValue("IT99C0222211111000000000000")
         .description("Riscossione tributi")
         .isActive(true)
-        .validityDate(OffsetDateTime.parse("2023-06-07T11:48:15.166Z"))
+        .validityDate(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"))
         .labels(List.of(
             IbanLabel.builder()
                 .name("CUP")
