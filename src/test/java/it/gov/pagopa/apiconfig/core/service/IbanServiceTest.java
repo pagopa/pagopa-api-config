@@ -18,6 +18,7 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IcaBinaryFileRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -42,7 +43,9 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -459,7 +462,11 @@ class IbanServiceTest {
     when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any())).thenReturn(List.of(getMockIbanMaster_2()));
     when(ibanAttributeMasterRepository.findByFkIbanMasterIn(any())).thenReturn(List.of(getMockIbanAttributeMaster()));
 
-    ibanService.deleteIban("1234", "IT99C0222211111000000000000");
+    ibanService.deleteIban("00168480242", "IT99C0222211111000000000000");
+    Mockito.verify(ibanRepository, times(1)).findByIban("IT99C0222211111000000000000");
+    Mockito.verify(paRepository, times(1)).findByIdDominio("00168480242");
+    Mockito.verify(ibanMasterRepository, times(1)).findByFkIbanAndFkPa(1L, 1L);
+    Mockito.verify(ibanAttributeMasterRepository, times(1)).findByFkIbanMasterIn(List.of(1L));
     assertTrue(true);
   }
 
