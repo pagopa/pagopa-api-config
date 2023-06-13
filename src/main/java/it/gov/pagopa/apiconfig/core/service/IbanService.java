@@ -25,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -42,6 +41,10 @@ import java.util.stream.Collectors;
 @Validated
 @Transactional
 public class IbanService {
+
+  public static final String ABI_IBAN_POSTALI = "07601";
+
+  public static final String POSTE_FISCAL_CODE = "TODO";  // todo
 
   @Autowired private PaRepository paRepository;
 
@@ -61,7 +64,11 @@ public class IbanService {
     // retrieve the creditor institution and throw exception if not found
     Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
     // retrieve an existing iban or generate a new one if not defined
-    Iban ibanToBeCreated = ibanRepository.findByIban(iban.getIbanValue()).orElseGet(() -> saveIban(iban, organizationFiscalCode));
+    Iban ibanToBeCreated = ibanRepository.findByIban(iban.getIbanValue())
+        .orElseGet(() -> {
+            checkPostalIbanCreation(iban, organizationFiscalCode);
+            return saveIban(iban, organizationFiscalCode);
+        });
     // check if IBAN was already associated to creditor institution. If already associated, throw an exception
     getIbanMaster(ibanToBeCreated, existingCreditorInstitution)
         .ifPresent(s -> {throw new AppException(AppError.IBAN_ALREADY_ASSOCIATED, iban.getIbanValue(), existingCreditorInstitution.getIdDominio());});
@@ -98,6 +105,12 @@ public class IbanService {
     List<IbanAttributeMaster> updatedIbanAttributes = saveIbanLabelRelation(iban, ibanCIRelationToBeUpdated);
     // return final object
     return convertEntitiesToModel(existingCreditorInstitution, existingIban, updatedIbanAttributes, ibanCIRelationToBeUpdated);
+  }
+
+  public void checkPostalIbanCreation(IbanV2 iban, String creditorInstitution) {
+    String abiCode = iban.getIbanValue().substring(5, 10);
+    if(abiCode.equals(ABI_IBAN_POSTALI) && !creditorInstitution.equals(POSTE_FISCAL_CODE))
+      throw new AppException(AppError.IBAN_CREATION_BAD_REQUEST, iban.getIbanValue(), creditorInstitution);
   }
 
   public IbansV2 getCreditorInstitutionsIbansByLabel(@NotNull String organizationFiscalCode, String label) {

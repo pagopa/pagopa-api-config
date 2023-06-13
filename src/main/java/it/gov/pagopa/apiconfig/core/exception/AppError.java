@@ -209,6 +209,11 @@ public enum AppError {
       "IBAN not associated",
       "The IBAN with code %s is not associated to the creditor institution %s"),
 
+  IBAN_CREATION_BAD_REQUEST(
+      HttpStatus.NOT_FOUND,
+      "IBAN creation bad request",
+      "The IBAN with code %s cannot be created by the creditor institution %s"),
+
   UNKNOWN(null, null, null);
 
   public final HttpStatus httpStatus;
