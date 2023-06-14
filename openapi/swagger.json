@@ -8679,7 +8679,7 @@
           "Ibans"
         ],
         "operationId": "getCreditorInstitutionsIbansEnhanced",
-        "summary": "Get creditor institution ibans"
+        "summary": "Get creditor institution ibans enhanced"
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/ibans/{ibanId}": {

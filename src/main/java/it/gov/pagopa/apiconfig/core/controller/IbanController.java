@@ -120,11 +120,12 @@ public class IbanController {
    *
    * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
    *     (required)
+   * @param filterByLabel label for iban filtering
    * @return OK. (status code 200) or Not Found (status code 404) or Service unavailable (status
    *     code 500)
    */
   @Operation(
-      summary = "Get creditor institution ibans",
+      summary = "Get creditor institution ibans enhanced",
       security = {
           @SecurityRequirement(name = "ApiKey"),
           @SecurityRequirement(name = "Authorization")
