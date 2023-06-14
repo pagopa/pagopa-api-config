@@ -3,8 +3,8 @@ package it.gov.pagopa.apiconfig.core.service;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanV2;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansV2;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
@@ -25,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -57,7 +56,7 @@ public class IbanService {
 
   @Autowired private ModelMapper modelMapper;
 
-  public IbanV2 createIban(@NotBlank String organizationFiscalCode, @Valid @NotNull IbanV2 iban) {
+  public IbanEnhanced createIban(@NotBlank String organizationFiscalCode, @Valid @NotNull IbanEnhanced iban) {
     // retrieve the creditor institution and throw exception if not found
     Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
     // retrieve an existing iban or generate a new one if not defined
@@ -77,7 +76,7 @@ public class IbanService {
     return convertEntitiesToModel(existingCreditorInstitution, ibanToBeCreated, updatedIbanAttributes, ibanCIRelationToBeCreated);
   }
 
-  public IbanV2 updateIban(@NotBlank String organizationFiscalCode, @NotBlank String ibanCode, @Valid @NotNull IbanV2 iban) {
+  public IbanEnhanced updateIban(@NotBlank String organizationFiscalCode, @NotBlank String ibanCode, @Valid @NotNull IbanEnhanced iban) {
     if (!ibanCode.equals(iban.getIbanValue())) {
       throw new AppException(HttpStatus.BAD_REQUEST, "IBAN codes not matching", "The IBAN code in the body request does not match with the IBAN code passed as path parameter.");
     }
@@ -100,8 +99,8 @@ public class IbanService {
     return convertEntitiesToModel(existingCreditorInstitution, existingIban, updatedIbanAttributes, ibanCIRelationToBeUpdated);
   }
 
-  public IbansV2 getCreditorInstitutionsIbansByLabel(@NotNull String organizationFiscalCode, String label) {
-    List<IbanV2> ibanV2List = new ArrayList<>();
+  public IbansEnhanced getCreditorInstitutionsIbansByLabel(@NotNull String organizationFiscalCode, String label) {
+    List<IbanEnhanced> ibanEnhancedList = new ArrayList<>();
     Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
     Pa pa = creditorInstitutionOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
 
@@ -114,21 +113,21 @@ public class IbanService {
           Pa ciOwner = ciOwnerOpt.orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
 
           if (label == null || label.isEmpty()) {
-            IbanV2 ibanV2 = convertEntitiesToModel(ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
-            ibanV2List.add(ibanV2);
+            IbanEnhanced ibanEnhanced = convertEntitiesToModel(ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+            ibanEnhancedList.add(ibanEnhanced);
           } else {
             boolean labelMatch = ibanMaster.getIbanAttributesMasters().stream()
                 .map(ibanAttributeMaster -> ibanAttributeMaster.getIbanAttribute().getAttributeName())
                 .anyMatch(name -> name.equalsIgnoreCase(label));
 
             if (labelMatch) {
-              IbanV2 ibanV2 = convertEntitiesToModel(ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
-              ibanV2List.add(ibanV2);
+              IbanEnhanced ibanEnhanced = convertEntitiesToModel(ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+              ibanEnhancedList.add(ibanEnhanced);
             }
           }
         });
 
-    return IbansV2.builder().ibanV2List(ibanV2List).build();
+    return IbansEnhanced.builder().ibanEnhancedList(ibanEnhancedList).build();
   }
 
   public String deleteIban(@NotBlank String organizationFiscalCode, @NotNull String ibanValue) {
@@ -168,7 +167,7 @@ public class IbanService {
         .findFirst();
   }
 
-  private Iban saveIban(IbanV2 iban, String organizationFiscalCode) {
+  private Iban saveIban(IbanEnhanced iban, String organizationFiscalCode) {
     Iban ibanToBeCreated = Iban.builder()
         .iban(iban.getIbanValue())
         .fiscalCode(organizationFiscalCode)
@@ -177,16 +176,16 @@ public class IbanService {
     return saveIban(iban, ibanToBeCreated);
   }
 
-  private Iban saveIban(IbanV2 iban, Iban existingIban) {
+  private Iban saveIban(IbanEnhanced iban, Iban existingIban) {
     existingIban.setDescription(iban.getDescription());
     return ibanRepository.save(existingIban);
   }
 
-  private IbanMaster saveIbanCIRelation(Pa creditorInstitution, IbanV2 iban, Iban ibanToBeCreated, IcaBinaryFile icaBinaryFileToBeCreated) {
+  private IbanMaster saveIbanCIRelation(Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated, IcaBinaryFile icaBinaryFileToBeCreated) {
     return saveIbanCIRelation(new IbanMaster(), creditorInstitution, iban, ibanToBeCreated, icaBinaryFileToBeCreated);
   }
 
-  private IbanMaster saveIbanCIRelation(IbanMaster ibanMaster, Pa creditorInstitution, IbanV2 iban, Iban ibanToBeCreated, IcaBinaryFile icaBinaryFileToBeCreated) {
+  private IbanMaster saveIbanCIRelation(IbanMaster ibanMaster, Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated, IcaBinaryFile icaBinaryFileToBeCreated) {
     ibanMaster.setFkPa(creditorInstitution.getObjId());
     ibanMaster.setFkIban(ibanToBeCreated.getObjId());
     ibanMaster.setFkIcaBinaryFile(icaBinaryFileToBeCreated.getObjId());
@@ -200,7 +199,7 @@ public class IbanService {
   }
 
 
-    private List<IbanAttributeMaster> saveIbanLabelRelation(IbanV2 iban, IbanMaster ibanCIRelation) {
+    private List<IbanAttributeMaster> saveIbanLabelRelation(IbanEnhanced iban, IbanMaster ibanCIRelation) {
     // validating and inserting the labels
     Map<String, IbanAttribute> validLabels = ibanAttributeRepository.findAll()
         .stream()
@@ -227,8 +226,8 @@ public class IbanService {
     return labels;
   }
 
-  private IbanV2 convertEntitiesToModel(Pa creditorInstitution, Iban iban, List<IbanAttributeMaster> ibanAttributes, IbanMaster ibanCIRelation) {
-    return IbanV2.builder()
+  private IbanEnhanced convertEntitiesToModel(Pa creditorInstitution, Iban iban, List<IbanAttributeMaster> ibanAttributes, IbanMaster ibanCIRelation) {
+    return IbanEnhanced.builder()
         .companyName(creditorInstitution.getRagioneSociale())
         .ibanValue(iban.getIban())
         .description(iban.getDescription())
