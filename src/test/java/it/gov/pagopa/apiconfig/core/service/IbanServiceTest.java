@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanV2;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansV2;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
@@ -43,7 +43,7 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMasters;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributes;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanV2;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPa2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,7 +82,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -91,7 +91,7 @@ class IbanServiceTest {
     when(ibanMasterRepository.findByFkPa(creditorInstitution.getObjId())).thenReturn(mockIbanMasters);
     when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
     // executing logic and check assertions
-    IbansV2 result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "STANDIN");
+    IbansEnhanced result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "STANDIN");
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -102,7 +102,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa pa1 = getMockPa();
     Pa pa2 = getMockPa2();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
     Iban mockIban = getMockIban(iban, pa1.getIdDominio());
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
@@ -112,7 +112,7 @@ class IbanServiceTest {
     when(ibanMasterRepository.findByFkPa(pa2.getObjId())).thenReturn(mockIbanMasters);
     when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
     // executing logic and check assertions
-    IbansV2 result = ibanService.getCreditorInstitutionsIbansByLabel(pa2.getIdDominio(), "STANDIN");
+    IbansEnhanced result = ibanService.getCreditorInstitutionsIbansByLabel(pa2.getIdDominio(), "STANDIN");
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -123,7 +123,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -132,7 +132,7 @@ class IbanServiceTest {
     when(ibanMasterRepository.findByFkPa(creditorInstitution.getObjId())).thenReturn(mockIbanMasters);
     when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
     // executing logic and check assertions
-    IbansV2 result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, null);
+    IbansEnhanced result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, null);
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -143,7 +143,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -152,9 +152,9 @@ class IbanServiceTest {
     when(ibanMasterRepository.findByFkPa(creditorInstitution.getObjId())).thenReturn(mockIbanMasters);
     when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
     // executing logic and check assertions
-    IbansV2 result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "CUP");
+    IbansEnhanced result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "CUP");
     String actual = TestUtil.toJson(result);
-    String expected = TestUtil.toJson(IbansV2.builder().ibanV2List(new ArrayList<>()).build());
+    String expected = TestUtil.toJson(IbansEnhanced.builder().ibanEnhancedList(new ArrayList<>()).build());
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
@@ -175,7 +175,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -190,7 +190,7 @@ class IbanServiceTest {
     when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
     when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class))).then(returnsFirstArg());
     // executing logic and check assertions
-    IbanV2 result = ibanService.createIban(organizationFiscalCode, iban);
+    IbanEnhanced result = ibanService.createIban(organizationFiscalCode, iban);
     assertEquals(iban.isActive(), result.isActive());
     assertEquals(iban.getIbanValue(), result.getIbanValue());
     assertEquals(iban.getDescription(), result.getDescription());
@@ -208,7 +208,7 @@ class IbanServiceTest {
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     String otherOwnerOrganizationFiscalCode = "anotherCI";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, otherOwnerOrganizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -222,7 +222,7 @@ class IbanServiceTest {
     when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
     when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class))).then(returnsFirstArg());
     // executing logic and check assertions
-    IbanV2 result = ibanService.createIban(organizationFiscalCode, iban);
+    IbanEnhanced result = ibanService.createIban(organizationFiscalCode, iban);
     assertEquals(iban.isActive(), result.isActive());
     assertEquals(iban.getIbanValue(), result.getIbanValue());
     assertEquals(iban.getDescription(), result.getDescription());
@@ -239,7 +239,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     iban.setLabels(null);
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
@@ -255,7 +255,7 @@ class IbanServiceTest {
     when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
     when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class))).thenThrow(IllegalArgumentException.class); // forcing to throws exception if it generate an iban attribute relation
     // executing logic and check assertions
-    IbanV2 result = ibanService.createIban(organizationFiscalCode, iban);
+    IbanEnhanced result = ibanService.createIban(organizationFiscalCode, iban);
     assertEquals(iban.isActive(), result.isActive());
     assertEquals(iban.getIbanValue(), result.getIbanValue());
     assertEquals(iban.getDescription(), result.getDescription());
@@ -270,7 +270,7 @@ class IbanServiceTest {
   void createIban_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     iban.setIbanValue(null);
     iban.setValidityDate(null);
     // executing logic and check assertions
@@ -281,7 +281,7 @@ class IbanServiceTest {
   void createIban_noCIFound_404() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
     // executing logic and check assertions
@@ -294,7 +294,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -309,7 +309,7 @@ class IbanServiceTest {
     when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
     when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class))).then(returnsFirstArg());
     // executing logic and check assertions
-    IbanV2 result = ibanService.createIban(organizationFiscalCode, iban);
+    IbanEnhanced result = ibanService.createIban(organizationFiscalCode, iban);
     assertEquals(iban.isActive(), result.isActive());
     assertEquals(iban.getIbanValue(), result.getIbanValue());
     assertEquals(iban.getDescription(), result.getDescription());
@@ -330,7 +330,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     iban.getLabels().get(0).setName("FAKELABEL");
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
@@ -353,7 +353,7 @@ class IbanServiceTest {
   @Test
   void updateIban_newIban_200() {
     // retrieving mock object
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
@@ -377,7 +377,7 @@ class IbanServiceTest {
     doNothing().when(ibanAttributeMasterRepository).flush();
     when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class))).then(returnsFirstArg());
     // executing logic and check assertions
-    IbanV2 result = ibanService.updateIban(organizationFiscalCode, iban.getIbanValue(), iban);
+    IbanEnhanced result = ibanService.updateIban(organizationFiscalCode, iban.getIbanValue(), iban);
     assertEquals(iban.isActive(), result.isActive());
     assertEquals(iban.getIbanValue(), result.getIbanValue());
     assertEquals(iban.getDescription(), result.getDescription());
@@ -392,7 +392,7 @@ class IbanServiceTest {
   @Test
   void updateIban_noLabelAssociated_200() {
     // retrieving mock object
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
@@ -417,7 +417,7 @@ class IbanServiceTest {
     doNothing().when(ibanAttributeMasterRepository).flush();
     when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class))).thenThrow(IllegalArgumentException.class); // forcing to throws exception if it generate an iban attribute relation
     // executing logic and check assertions
-    IbanV2 result = ibanService.updateIban(organizationFiscalCode, iban.getIbanValue(), iban);
+    IbanEnhanced result = ibanService.updateIban(organizationFiscalCode, iban.getIbanValue(), iban);
     assertEquals(iban.isActive(), result.isActive());
     assertEquals(iban.getIbanValue(), result.getIbanValue());
     assertEquals(iban.getDescription(), result.getDescription());
@@ -432,7 +432,7 @@ class IbanServiceTest {
   void updateIban_genericConstraintViolation_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     iban.setIbanValue(null);
     iban.setValidityDate(null);
     // executing logic and check assertions
@@ -443,7 +443,7 @@ class IbanServiceTest {
   void updateIban_ibanCodesConstraintViolation_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     // executing logic and check assertions
     AppException ex = assertThrows(AppException.class, () -> ibanService.updateIban(organizationFiscalCode, "fakeiban", iban));
     assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
@@ -454,7 +454,7 @@ class IbanServiceTest {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
     String ibanValue = "IT99C0222211111000000000000";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
     // executing logic and check assertions
@@ -467,7 +467,7 @@ class IbanServiceTest {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
     String ibanValue = "IT99C0222211111000000000000";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.of(creditorInstitution));
@@ -479,7 +479,7 @@ class IbanServiceTest {
 
   @Test
   void updateIban_noIbanCIRelationFound_404() {    // retrieving mock object
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     String ibanValue = "IT99C0222211111000000000000";
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
@@ -508,7 +508,7 @@ class IbanServiceTest {
     Pa creditorInstitution = getMockPa();
     String ibanValue = "IT99C0222211111000000000000";
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
     iban.getLabels().get(0).setName("FAKELABEL");
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
@@ -527,7 +527,7 @@ class IbanServiceTest {
     assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
   }
 
-  private Iban getMockIban(IbanV2 iban, String organizationFiscalCode) {
+  private Iban getMockIban(IbanEnhanced iban, String organizationFiscalCode) {
     return Iban.builder()
         .objId(100L)
         .iban(iban.getIbanValue())
@@ -545,7 +545,7 @@ class IbanServiceTest {
         .build();
   }
 
-  private IbanMaster getMockIbanMaster(Pa creditorInstitution, IbanV2 iban, Iban ibanToBeCreated, IcaBinaryFile icaBinaryFile) {
+  private IbanMaster getMockIbanMaster(Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated, IcaBinaryFile icaBinaryFile) {
     return IbanMaster.builder()
         .objId(100L)
         .fkPa(creditorInstitution.getObjId())
@@ -587,8 +587,8 @@ class IbanServiceTest {
     }
   }
 
-  public static List<IbanMaster> getMockIbanMasters(Pa creditorInstitution, IbanV2 iban, Iban ibanEntity,
-      IcaBinaryFile icaBinaryFile) {
+  public static List<IbanMaster> getMockIbanMasters(Pa creditorInstitution, IbanEnhanced iban, Iban ibanEntity,
+                                                    IcaBinaryFile icaBinaryFile) {
     List<IbanMaster> ibanMasters = List.of(
         IbanMaster.builder()
             .objId(100L)

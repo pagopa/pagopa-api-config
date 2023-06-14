@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-/** Ibans */
+/** IbansEnhanced */
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -18,11 +18,11 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IbansV2 {
+public class IbansEnhanced {
 
-  @JsonProperty("ibans")
+  @JsonProperty("ibans_enhanced")
   @Schema(required = true)
   @NotNull
   @Valid
-  private List<IbanV2> ibanV2List;
+  private List<IbanEnhanced> ibanEnhancedList;
 }
