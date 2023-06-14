@@ -19,11 +19,25 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.exception.AppError;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
+import it.gov.pagopa.apiconfig.core.model.psp.ChannelDetails;
+import it.gov.pagopa.apiconfig.core.model.psp.Channels;
+import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
+import it.gov.pagopa.apiconfig.starter.entity.Canali;
+import it.gov.pagopa.apiconfig.starter.repository.CanaleTipoVersamentoRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
+import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
+import it.gov.pagopa.apiconfig.starter.repository.WfespPluginConfRepository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -38,23 +52,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.exception.AppError;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
-import it.gov.pagopa.apiconfig.core.model.psp.ChannelDetails;
-import it.gov.pagopa.apiconfig.core.model.psp.Channels;
-import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
-import it.gov.pagopa.apiconfig.core.service.ChannelsService;
-import it.gov.pagopa.apiconfig.starter.entity.Canali;
-import it.gov.pagopa.apiconfig.starter.repository.CanaleTipoVersamentoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.WfespPluginConfRepository;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ChannelsServiceTest {
@@ -78,7 +75,28 @@ class ChannelsServiceTest {
     Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
     when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-    Channels result = channelsService.getChannels(50, 0, getMockFilterAndOrder(Order.Channel.CODE));
+    Channels result = channelsService.getChannels(50, 0, null, getMockFilterAndOrder(Order.Channel.CODE));
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+  @Test
+  void getChannels_FilterByBroker() throws IOException, JSONException {
+    Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
+    when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+
+    Channels result = channelsService.getChannels(50, 0, "1234", getMockFilterAndOrder(Order.Channel.CODE));
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  } 
+  
+  @Test
+  void getChannels_FilterByBroker_NotFound() throws IOException, JSONException {
+    Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
+    when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+
+    Channels result = channelsService.getChannels(50, 0, null, getMockFilterAndOrder(Order.Channel.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
