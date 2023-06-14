@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-/** Ibans */
+/** IbansEnhanced */
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -20,7 +20,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IbansEnhanced {
 
-  @JsonProperty("ibans")
+  @JsonProperty("ibans_enhanced")
   @Schema(required = true)
   @NotNull
   @Valid

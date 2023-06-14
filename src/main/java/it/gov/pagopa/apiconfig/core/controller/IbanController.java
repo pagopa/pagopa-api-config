@@ -140,7 +140,7 @@ public class IbanController {
               content =
               @Content(
                   mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = Ibans.class))),
+                  schema = @Schema(implementation = IbansEnhanced.class))),
           @ApiResponse(
               responseCode = "400",
               description = "Bad Request",
@@ -213,7 +213,7 @@ public class IbanController {
               content =
               @Content(
                   mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = Ibans.class))),
+                  schema = @Schema(implementation = IbanEnhanced.class))),
           @ApiResponse(
               responseCode = "400",
               description = "Bad Request",
@@ -294,7 +294,7 @@ public class IbanController {
               content =
               @Content(
                   mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = Ibans.class))),
+                  schema = @Schema(implementation = IbanEnhanced.class))),
           @ApiResponse(
               responseCode = "400",
               description = "Bad Request",
@@ -382,8 +382,8 @@ public class IbanController {
               description = "Ok",
               content =
               @Content(
-                  mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = Ibans.class))),
+                  mediaType = MediaType.TEXT_PLAIN_VALUE,
+                  schema = @Schema(implementation = String.class))),
           @ApiResponse(
               responseCode = "400",
               description = "Bad Request",
