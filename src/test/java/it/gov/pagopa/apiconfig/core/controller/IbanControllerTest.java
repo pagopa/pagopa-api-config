@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.validation.ConstraintViolationException;
 
+import java.time.OffsetDateTime;
+
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanV2;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanV2_2;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbans;
@@ -53,7 +55,7 @@ class IbanControllerTest {
     when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234"))
         .thenReturn(getMockIbans());
     when(ibanService.getCreditorInstitutionsIbansByLabel(anyString(), anyString()))
-        .thenReturn(getMockIbansV2());
+        .thenReturn(getMockIbansV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
   }
 
   @ParameterizedTest
@@ -80,14 +82,14 @@ class IbanControllerTest {
   void createIban_201() throws Exception {
     mvc.perform(
             post("/creditorinstitutions/1234/ibans")
-                .content(TestUtil.toJson(getMockIbanV2()))
+                .content(TestUtil.toJson(getMockIbanV2(OffsetDateTime.now())))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated());
   }
 
   @Test
   void createIban_400() throws Exception {
-    IbanV2 ibanV2 = getMockIbanV2();
+    IbanV2 ibanV2 = getMockIbanV2(OffsetDateTime.now());
     when(ibanService.createIban(anyString(), any(IbanV2.class))).thenThrow(ConstraintViolationException.class);
     mvc.perform(
             post("/creditorinstitutions/1234/ibans")
@@ -99,7 +101,7 @@ class IbanControllerTest {
 
   @Test
   void createIban_422() throws Exception {
-    IbanV2 ibanV2 = getMockIbanV2();
+    IbanV2 ibanV2 = getMockIbanV2(OffsetDateTime.now());
     ibanV2.getLabels().get(0).setName("FAKE");
     when(ibanService.createIban(anyString(), any(IbanV2.class))).thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
     mvc.perform(
@@ -115,7 +117,7 @@ class IbanControllerTest {
     when(ibanService.createIban(anyString(), any(IbanV2.class))).thenThrow(OptimisticLockingFailureException.class);
     mvc.perform(
             post("/creditorinstitutions/1234/ibans")
-                .content(TestUtil.toJson(getMockIbanV2()))
+                .content(TestUtil.toJson(getMockIbanV2(OffsetDateTime.now())))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -125,14 +127,14 @@ class IbanControllerTest {
   void updateIban_200() throws Exception {
     mvc.perform(
             put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
-                .content(TestUtil.toJson(getMockIbanV2()))
+                .content(TestUtil.toJson(getMockIbanV2(OffsetDateTime.now())))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
 
   @Test
   void updateIban_400() throws Exception {
-    IbanV2 ibanV2 = getMockIbanV2();
+    IbanV2 ibanV2 = getMockIbanV2(OffsetDateTime.now());
     when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(ConstraintViolationException.class);
     mvc.perform(
             put("/creditorinstitutions/1234/ibans/fake")
@@ -144,7 +146,7 @@ class IbanControllerTest {
 
   @Test
   void updateIban_422() throws Exception {
-    IbanV2 ibanV2 = getMockIbanV2();
+    IbanV2 ibanV2 = getMockIbanV2(OffsetDateTime.now());
     ibanV2.getLabels().get(0).setName("IT99C0222211111000000000000");
     when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
     mvc.perform(
@@ -160,7 +162,7 @@ class IbanControllerTest {
     when(ibanService.updateIban(anyString(), anyString(), any(IbanV2.class))).thenThrow(OptimisticLockingFailureException.class);
     mvc.perform(
             put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
-                .content(TestUtil.toJson(getMockIbanV2()))
+                .content(TestUtil.toJson(getMockIbanV2(OffsetDateTime.now())))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
