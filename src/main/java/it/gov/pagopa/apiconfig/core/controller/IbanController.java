@@ -140,7 +140,7 @@ public class IbanController {
               content =
               @Content(
                   mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = Ibans.class))),
+                  schema = @Schema(implementation = IbansV2.class))),
           @ApiResponse(
               responseCode = "400",
               description = "Bad Request",
