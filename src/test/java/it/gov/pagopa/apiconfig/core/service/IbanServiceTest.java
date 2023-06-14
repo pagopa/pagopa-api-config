@@ -82,7 +82,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -102,7 +102,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa pa1 = getMockPa();
     Pa pa2 = getMockPa2();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, pa1.getIdDominio());
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
@@ -123,7 +123,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -143,7 +143,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -175,7 +175,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -208,7 +208,7 @@ class IbanServiceTest {
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     String otherOwnerOrganizationFiscalCode = "anotherCI";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, otherOwnerOrganizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -229,6 +229,7 @@ class IbanServiceTest {
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(otherOwnerOrganizationFiscalCode, result.getCiOwnerFiscalCode());
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertTrue(result.getLabels().size() > 0);
     assertEquals(result.getLabels().get(0).getName(), iban.getLabels().get(0).getName());
     assertTrue(result.getPublicationDate().withOffsetSameLocal(ZoneOffset.UTC).isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
@@ -239,7 +240,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     iban.setLabels(null);
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
@@ -262,6 +263,7 @@ class IbanServiceTest {
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(creditorInstitution.getIdDominio(), result.getCiOwnerFiscalCode());
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(0, result.getLabels().size());
     assertTrue(result.getPublicationDate().withOffsetSameLocal(ZoneOffset.UTC).isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
   }
@@ -270,7 +272,7 @@ class IbanServiceTest {
   void createIban_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     iban.setIbanValue(null);
     iban.setValidityDate(null);
     // executing logic and check assertions
@@ -281,7 +283,7 @@ class IbanServiceTest {
   void createIban_noCIFound_404() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
     // executing logic and check assertions
@@ -294,7 +296,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -315,6 +317,7 @@ class IbanServiceTest {
     assertEquals(iban.getDescription(), result.getDescription());
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(creditorInstitution.getIdDominio(), result.getCiOwnerFiscalCode());
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertTrue(result.getLabels().size() > 0);
     assertEquals(result.getLabels().get(0).getName(), iban.getLabels().get(0).getName());
@@ -330,7 +333,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     iban.getLabels().get(0).setName("FAKELABEL");
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
@@ -353,7 +356,7 @@ class IbanServiceTest {
   @Test
   void updateIban_newIban_200() {
     // retrieving mock object
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
@@ -383,6 +386,7 @@ class IbanServiceTest {
     assertEquals(iban.getDescription(), result.getDescription());
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(creditorInstitution.getIdDominio(), result.getCiOwnerFiscalCode());
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(1, result.getLabels().size());
     assertEquals(result.getLabels().get(0).getName(), iban.getLabels().get(0).getName());
@@ -392,7 +396,7 @@ class IbanServiceTest {
   @Test
   void updateIban_noLabelAssociated_200() {
     // retrieving mock object
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
@@ -423,6 +427,7 @@ class IbanServiceTest {
     assertEquals(iban.getDescription(), result.getDescription());
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(creditorInstitution.getIdDominio(), result.getCiOwnerFiscalCode());
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(0, result.getLabels().size());
     assertTrue(result.getPublicationDate().withOffsetSameLocal(ZoneOffset.UTC).isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
@@ -432,7 +437,7 @@ class IbanServiceTest {
   void updateIban_genericConstraintViolation_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     iban.setIbanValue(null);
     iban.setValidityDate(null);
     // executing logic and check assertions
@@ -443,7 +448,7 @@ class IbanServiceTest {
   void updateIban_ibanCodesConstraintViolation_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     // executing logic and check assertions
     AppException ex = assertThrows(AppException.class, () -> ibanService.updateIban(organizationFiscalCode, "fakeiban", iban));
     assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
@@ -454,7 +459,7 @@ class IbanServiceTest {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
     String ibanValue = "IT99C0222211111000000000000";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
     // executing logic and check assertions
@@ -467,7 +472,7 @@ class IbanServiceTest {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
     String ibanValue = "IT99C0222211111000000000000";
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.of(creditorInstitution));
@@ -479,7 +484,7 @@ class IbanServiceTest {
 
   @Test
   void updateIban_noIbanCIRelationFound_404() {    // retrieving mock object
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     String ibanValue = "IT99C0222211111000000000000";
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
@@ -508,7 +513,7 @@ class IbanServiceTest {
     Pa creditorInstitution = getMockPa();
     String ibanValue = "IT99C0222211111000000000000";
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now());
+    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
     iban.getLabels().get(0).setName("FAKELABEL");
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
@@ -533,6 +538,7 @@ class IbanServiceTest {
         .iban(iban.getIbanValue())
         .fiscalCode(organizationFiscalCode)
         .description(iban.getDescription())
+        .dueDate(CommonUtil.toTimestamp(iban.getDueDate()))
         .build();
   }
 
@@ -596,7 +602,7 @@ class IbanServiceTest {
             .fkIban(ibanEntity.getObjId())
             .fkIcaBinaryFile(icaBinaryFile.getObjId())
             .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
-            .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165Z")))
+            .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
             .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
             .build()
     );

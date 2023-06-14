@@ -689,8 +689,8 @@ public class TestUtil {
     return Ibans.builder().ibanList(List.of(getMockIban())).build();
   }
 
-  public static IbansV2 getMockIbansV2(OffsetDateTime validityDate) {
-    return IbansV2.builder().ibanV2List(List.of(getMockIbanV2(validityDate))).build();
+  public static IbansV2 getMockIbansV2(OffsetDateTime validityDate, OffsetDateTime dueDate) {
+    return IbansV2.builder().ibanV2List(List.of(getMockIbanV2(validityDate, dueDate))).build();
   }
 
   public static Iban getMockIban() {
@@ -1008,12 +1008,13 @@ public class TestUtil {
     return mockPage(List.of(getMockCdiMasterValid()), 1, 0);
   }
 
-  public static IbanV2 getMockIbanV2(OffsetDateTime validityDate) {
+  public static IbanV2 getMockIbanV2(OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return IbanV2.builder()
         .ibanValue("IT99C0222211111000000000000")
         .description("Riscossione tributi")
         .isActive(true)
         .validityDate(validityDate)
+        .dueDate(dueDate)
         .labels(List.of(
             IbanLabel.builder()
                 .name("CUP")
