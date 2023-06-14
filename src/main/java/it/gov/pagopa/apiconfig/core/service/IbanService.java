@@ -131,6 +131,31 @@ public class IbanService {
     return IbansV2.builder().ibanV2List(ibanV2List).build();
   }
 
+  public String deleteIban(@NotBlank String organizationFiscalCode, @NotNull String ibanValue) {
+    //Get iban entity to be deleted
+    Iban ibanToBeDeleted = getIbanIfExists(ibanValue);
+
+    //Get pa entity
+    Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
+
+    //Get all ibanMaster relations
+    List<IbanMaster> ibanMastersToBeDeleted = ibanMasterRepository.findByFkIbanAndFkPa(ibanToBeDeleted.getObjId(), existingCreditorInstitution.getObjId());
+
+    //Get all ibanAttributesMaster relations
+    List<IbanAttributeMaster> ibanAttributeMastersToBeDeleted = ibanAttributeMasterRepository
+        .findByFkIbanMasterIn(ibanMastersToBeDeleted.stream()
+            .map(e->e.getObjId())
+            .collect(Collectors.toList()));
+
+    //Delete all relations listed before
+    ibanAttributeMasterRepository.deleteAll(ibanAttributeMastersToBeDeleted);
+    ibanMasterRepository.deleteAll(ibanMastersToBeDeleted);
+    if(ibanMasterRepository.findByFkIban(ibanToBeDeleted.getObjId()).isEmpty()){
+      ibanRepository.delete(ibanToBeDeleted);
+    }
+    return String.format("The Iban %s for the creditor institution %s has been deleted", ibanValue, organizationFiscalCode);
+  }
+
   private Pa getCreditorInstitutionIfExists(String organizationFiscalCode) {
     // retrieve the creditor institution and throw exception if not found
     Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
@@ -218,5 +243,11 @@ public class IbanService {
         .validityDate(CommonUtil.toOffsetDateTime(ibanCIRelation.getValidityDate()))
         .publicationDate(CommonUtil.toOffsetDateTime(ibanCIRelation.getInsertedDate()))
         .build();
+  }
+
+  private Iban getIbanIfExists(String ibanValue){
+    return ibanRepository
+        .findByIban(ibanValue)
+        .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, ibanValue));
   }
 }

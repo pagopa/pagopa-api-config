@@ -36,7 +36,6 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationList;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutions;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
