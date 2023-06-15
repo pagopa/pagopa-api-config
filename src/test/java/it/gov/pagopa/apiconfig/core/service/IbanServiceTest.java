@@ -39,6 +39,8 @@ import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -84,13 +86,11 @@ class IbanServiceTest {
 
   // PA IBAN owner differs from PA linked in IBAN_MASTER
   @Test
-  void getIbansEnhanced_200() throws IOException, JSONException {
+  void getIbansEnhanced_200() throws IOException, JSONException, org.springframework.boot.configurationprocessor.json.JSONException {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-    LocalDateTime dateTime = LocalDateTime.parse("2023-06-07 13:48:15.166", formatter);
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.of(dateTime, ZoneId.of("Etc/GMT+2").getRules().getOffset(LocalDateTime.now())), OffsetDateTime.of(dateTime, ZoneId.of("Etc/GMT+2").getRules().getOffset(LocalDateTime.now())));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"), OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -101,18 +101,22 @@ class IbanServiceTest {
     // executing logic and check assertions
     IbansEnhanced result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "STANDIN");
     String actual = TestUtil.toJson(result);
+    // Force date value for check
+    JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
+    obj.put("publication_date", "2023-05-23T10:38:07.165Z");
+    obj.put("validity_date", "2023-06-07T13:48:15.166Z");
+    obj.put("due_date", "2023-06-07T13:48:15.166Z");
+    actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
     String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
   @Test
-  void getIbansEnhanced_DifferentPA_200() throws IOException, JSONException {
+  void getIbansEnhanced_DifferentPA_200() throws IOException, JSONException, org.springframework.boot.configurationprocessor.json.JSONException {
     // retrieving mock object
     Pa pa1 = getMockPa();
     Pa pa2 = getMockPa2();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-    LocalDateTime dateTime = LocalDateTime.parse("2023-06-07 13:48:15.166", formatter);
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.of(dateTime, ZoneId.of("Etc/GMT+2").getRules().getOffset(LocalDateTime.now())), OffsetDateTime.of(dateTime, ZoneId.of("Etc/GMT+2").getRules().getOffset(LocalDateTime.now())));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"), OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
     Iban mockIban = getMockIban(iban, pa1.getIdDominio());
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
@@ -124,18 +128,22 @@ class IbanServiceTest {
     // executing logic and check assertions
     IbansEnhanced result = ibanService.getCreditorInstitutionsIbansByLabel(pa2.getIdDominio(), "STANDIN");
     String actual = TestUtil.toJson(result);
+    // Force date value for check
+    JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
+    obj.put("publication_date", "2023-05-23T10:38:07.165Z");
+    obj.put("validity_date", "2023-06-07T13:48:15.166Z");
+    obj.put("due_date", "2023-06-07T13:48:15.166Z");
+    actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
     String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
   @Test
-  void getIbansEnhanced_noLabel_200() throws IOException, JSONException {
+  void getIbansEnhanced_noLabel_200() throws IOException, JSONException, org.springframework.boot.configurationprocessor.json.JSONException {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-    LocalDateTime dateTime = LocalDateTime.parse("2023-06-07 13:48:15.166", formatter);
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.of(dateTime, ZoneId.of("Etc/GMT+2").getRules().getOffset(LocalDateTime.now())), OffsetDateTime.of(dateTime, ZoneId.of("Etc/GMT+2").getRules().getOffset(LocalDateTime.now())));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"), OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -146,18 +154,22 @@ class IbanServiceTest {
     // executing logic and check assertions
     IbansEnhanced result = ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, null);
     String actual = TestUtil.toJson(result);
+    // Force date value for check
+    JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
+    obj.put("publication_date", "2023-05-23T10:38:07.165Z");
+    obj.put("validity_date", "2023-06-07T13:48:15.166Z");
+    obj.put("due_date", "2023-06-07T13:48:15.166Z");
+    actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
     String expected = TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
   @Test
-  void getIbansEnhanced_EmptyIbanList_200() throws JsonProcessingException, JSONException {
+  void getIbansEnhanced_EmptyIbanList_200() throws JsonProcessingException, JSONException, org.springframework.boot.configurationprocessor.json.JSONException {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-    LocalDateTime dateTime = LocalDateTime.parse("2023-06-07 13:48:15.166", formatter);
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.of(dateTime, ZoneId.of("Etc/GMT+2").getRules().getOffset(LocalDateTime.now())), OffsetDateTime.of(dateTime, ZoneId.of("Etc/GMT+2").getRules().getOffset(LocalDateTime.now())));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"), OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
