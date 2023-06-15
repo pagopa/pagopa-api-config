@@ -13,12 +13,29 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.CheckItem;
+import it.gov.pagopa.apiconfig.core.model.MassiveCheck;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Icas;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.XSDValidation;
+import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
+import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
+import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
+import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
+import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativeContoAccreditoDetailRepository;
+import it.gov.pagopa.apiconfig.starter.repository.InformativeContoAccreditoMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -33,26 +50,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.CheckItem;
-import it.gov.pagopa.apiconfig.core.model.MassiveCheck;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Icas;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.XSDValidation;
-import it.gov.pagopa.apiconfig.core.service.IcaService;
-import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
-import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
-import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
-import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
-import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
-import it.gov.pagopa.apiconfig.starter.repository.InformativeContoAccreditoDetailRepository;
-import it.gov.pagopa.apiconfig.starter.repository.InformativeContoAccreditoMasterRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 
 @SpringBootTest(classes = ApiConfig.class)
 class IcaServiceTest {

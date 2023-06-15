@@ -1,19 +1,16 @@
 package it.gov.pagopa.apiconfig.core.specification;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.domain.Specification;
-
 import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.Canali;
 import it.gov.pagopa.apiconfig.starter.entity.Psp;
 import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 
 public class PspSpecification {
 

@@ -2,30 +2,6 @@ package it.gov.pagopa.apiconfig.core.controller;
 
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getFilterAndOrder;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,6 +19,28 @@ import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelList;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
 import it.gov.pagopa.apiconfig.core.service.PspService;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping(path = "/paymentserviceproviders")
@@ -645,74 +643,79 @@ public class PspController {
     pspService.deletePaymentServiceProvidersChannels(pspCode, channelCode);
     return ResponseEntity.ok().build();
   }
-  
+
   @Operation(
       summary = "Get view Payment Service Providers channel broker",
       security = {
-          @SecurityRequirement(name = "ApiKey"),
-          @SecurityRequirement(name = "Authorization")
+        @SecurityRequirement(name = "ApiKey"),
+        @SecurityRequirement(name = "Authorization")
       },
       tags = {
-          "Payment Service Providers Channel Broker",
+        "Payment Service Providers Channel Broker",
       })
   @ApiResponses(
       value = {
-          @ApiResponse(
-              responseCode = "200",
-              description = "OK",
-              content =
-              @Content(
-                  mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = PaymentServiceProvidersView.class))),
-          @ApiResponse(
-              responseCode = "400",
-              description = "Bad Request",
-              content =
-              @Content(
-                  mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = ProblemJson.class))),
-          @ApiResponse(
-              responseCode = "401",
-              description = "Unauthorized",
-              content = @Content(schema = @Schema())),
-          @ApiResponse(
-              responseCode = "403",
-              description = "Forbidden",
-              content = @Content(schema = @Schema())),
-          @ApiResponse(
-              responseCode = "429",
-              description = "Too many requests",
-              content = @Content(schema = @Schema())),
-          @ApiResponse(
-              responseCode = "500",
-              description = "Service unavailable",
-              content =
-              @Content(
-                  mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = ProblemJson.class)))
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = PaymentServiceProvidersView.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Too many requests",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Service unavailable",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
       value = "/view",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<PaymentServiceProvidersView> getPaymentServiceProvidersView(
       @Positive
-      @Parameter(description = "Number of elements on one page. Default = 50")
-      @RequestParam(required = false, defaultValue = "50")
-      Integer limit,
+          @Parameter(description = "Number of elements on one page. Default = 50")
+          @RequestParam(required = false, defaultValue = "50")
+          Integer limit,
       @PositiveOrZero
-      @Parameter(description = "Page number. Page value starts from 0", required = true)
-      @RequestParam
-      Integer page,
-      @RequestParam(required = false, name = "pspCode") @Parameter(description = "Filter by psp code")
-      String pspCode,
-      @RequestParam(required = false, name = "pspBrokerCode") @Parameter(description = "Filter by psp broker code")
-      String pspBrokerCode,
-      @RequestParam(required = false, name = "channelCode") @Parameter(description = "Filter by channel code")
-      String channelCode, 
-      @RequestParam(required = false, name = "paymentType") @Parameter(description = "Filter by payment type")
-      String paymentType,
-      @RequestParam(required = false, name = "paymentModel") @Parameter(description = "Filter by payment model")
-      String paymentModel) {
+          @Parameter(description = "Page number. Page value starts from 0", required = true)
+          @RequestParam
+          Integer page,
+      @RequestParam(required = false, name = "pspCode")
+          @Parameter(description = "Filter by psp code")
+          String pspCode,
+      @RequestParam(required = false, name = "pspBrokerCode")
+          @Parameter(description = "Filter by psp broker code")
+          String pspBrokerCode,
+      @RequestParam(required = false, name = "channelCode")
+          @Parameter(description = "Filter by channel code")
+          String channelCode,
+      @RequestParam(required = false, name = "paymentType")
+          @Parameter(description = "Filter by payment type")
+          String paymentType,
+      @RequestParam(required = false, name = "paymentModel")
+          @Parameter(description = "Filter by payment model")
+          String paymentModel) {
     return ResponseEntity.ok(
         pspService.getPaymentServiceProvidersView(
             limit, page, pspCode, pspBrokerCode, channelCode, paymentType, paymentModel));

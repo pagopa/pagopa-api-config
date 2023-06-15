@@ -1,10 +1,8 @@
 package it.gov.pagopa.apiconfig.core.model.creditorinstitution;
 
-import java.util.Arrays;
-
-import org.springframework.http.HttpStatus;
-
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import java.util.Arrays;
+import org.springframework.http.HttpStatus;
 
 public enum Protocol {
   HTTPS("HTTPS"),

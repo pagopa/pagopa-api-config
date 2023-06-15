@@ -6,7 +6,6 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStation
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationList;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutions;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionsView;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbans;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -18,6 +17,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionDetails;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
+import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,14 +35,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionDetails;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
-import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
@@ -68,7 +66,7 @@ class CreditorInstitutionsControllerTest {
             anyString(), anyString(), any(CreditorInstitutionStationEdit.class)))
         .thenReturn(getMockCreditorInstitutionStationEdit());
     when(creditorInstitutionsService.getCreditorInstitutionsView(
-        anyInt(), anyInt(), any(FilterPaView.class)))
+            anyInt(), anyInt(), any(FilterPaView.class)))
         .thenReturn(getMockCreditorInstitutionsView());
   }
 

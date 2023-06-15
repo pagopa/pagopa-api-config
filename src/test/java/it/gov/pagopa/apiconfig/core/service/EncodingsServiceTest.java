@@ -11,9 +11,17 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionEncodings;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
+import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
+import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CodificheRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import java.io.IOException;
 import java.util.Optional;
-
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -24,17 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionEncodings;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
-import it.gov.pagopa.apiconfig.core.service.EncodingsService;
-import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
-import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CodificheRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 
 @SpringBootTest(classes = ApiConfig.class)
 class EncodingsServiceTest {

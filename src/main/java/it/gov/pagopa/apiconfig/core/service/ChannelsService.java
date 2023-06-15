@@ -72,8 +72,7 @@ public class ChannelsService {
       String brokerCode,
       @Valid FilterAndOrder filterAndOrder) {
     Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
-    var broker = intermediariPspRepository.findByIdIntermediarioPsp(brokerCode)
-            .orElse(null);
+    var broker = intermediariPspRepository.findByIdIntermediarioPsp(brokerCode).orElse(null);
 
     var filters =
         CommonUtil.getFilters(

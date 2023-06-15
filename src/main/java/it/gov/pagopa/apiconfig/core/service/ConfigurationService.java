@@ -1,5 +1,7 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
+
 import feign.Feign;
 import feign.FeignException;
 import feign.jackson.JacksonDecoder;
@@ -12,6 +14,12 @@ import it.gov.pagopa.apiconfig.core.model.configuration.*;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
 import it.gov.pagopa.apiconfig.starter.repository.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +27,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
 
 @Service
 @Validated
@@ -50,8 +49,7 @@ public class ConfigurationService {
   @Value("${service.marketplace.subscriptionKey}")
   private String afmMarketplaceSubscriptionKey;
 
-  @Autowired
-  HttpServletRequest httpServletRequest;
+  @Autowired HttpServletRequest httpServletRequest;
 
   private AFMMarketplaceClient afmMarketplaceClient;
 
@@ -142,7 +140,8 @@ public class ConfigurationService {
     }
 
     it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf wpEntity =
-        modelMapper.map(wfespPluginConf, it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf.class);
+        modelMapper.map(
+            wfespPluginConf, it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf.class);
     wfespPluginConfRepository.save(wpEntity);
     return modelMapper.map(wpEntity, WfespPluginConf.class);
   }
@@ -256,7 +255,9 @@ public class ConfigurationService {
         getFtpServerIfExists(host, port, service);
 
     it.gov.pagopa.apiconfig.starter.entity.FtpServers updatedFtpServer =
-        modelMapper.map(ftpServer, it.gov.pagopa.apiconfig.starter.entity.FtpServers.class).toBuilder()
+        modelMapper
+            .map(ftpServer, it.gov.pagopa.apiconfig.starter.entity.FtpServers.class)
+            .toBuilder()
             .id(ftpServerE.getId())
             .build();
     ftpServersRepository.save(updatedFtpServer);
@@ -320,7 +321,8 @@ public class ConfigurationService {
     try {
       // check if payment type is used to create bundles (AFM Marketplace)
       AfmMarketplacePaymentType response =
-          afmMarketplaceClient.getPaymentType(afmMarketplaceSubscriptionKey, getRequestId(), paymentTypeCode);
+          afmMarketplaceClient.getPaymentType(
+              afmMarketplaceSubscriptionKey, getRequestId(), paymentTypeCode);
       if (Boolean.TRUE.equals(response.getUsed())) {
         throw new AppException(AppError.PAYMENT_TYPE_NON_DELETABLE);
       } else {
@@ -358,7 +360,8 @@ public class ConfigurationService {
             .collect(Collectors.toList());
 
     try {
-      afmMarketplaceClient.syncPaymentTypes(afmMarketplaceSubscriptionKey, getRequestId(), paymentTypes);
+      afmMarketplaceClient.syncPaymentTypes(
+          afmMarketplaceSubscriptionKey, getRequestId(), paymentTypes);
     } catch (FeignException.BadRequest e) {
       throw new AppException(AppError.PAYMENT_TYPE_AFM_MARKETPLACE_ERROR, e.getMessage());
     } catch (FeignException e) {
@@ -413,8 +416,8 @@ public class ConfigurationService {
    * @return return the configuration wfesp plugin record from DB if exists
    * @throws AppException if not found
    */
-  private it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf getWfespPluginConfigurationIfExists(
-      String idServPlugin) throws AppException {
+  private it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf
+      getWfespPluginConfigurationIfExists(String idServPlugin) throws AppException {
     Optional<it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf> result =
         wfespPluginConfRepository.findByIdServPlugin(idServPlugin);
     if (result.isEmpty()) {
@@ -440,7 +443,8 @@ public class ConfigurationService {
    * @return return the configuration key record from DB if exists
    * @throws AppException if not found
    */
-  private it.gov.pagopa.apiconfig.starter.entity.Pdd getPddIfExists(String idPdd) throws AppException {
+  private it.gov.pagopa.apiconfig.starter.entity.Pdd getPddIfExists(String idPdd)
+      throws AppException {
     Optional<it.gov.pagopa.apiconfig.starter.entity.Pdd> result = pddRepository.findByIdPdd(idPdd);
     if (result.isEmpty()) {
       throw new AppException(AppError.PDD_NOT_FOUND, idPdd);

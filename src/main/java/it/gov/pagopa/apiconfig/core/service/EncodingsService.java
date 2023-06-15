@@ -1,17 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.validation.constraints.NotNull;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionEncodings;
@@ -22,6 +10,15 @@ import it.gov.pagopa.apiconfig.starter.entity.Pa;
 import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CodificheRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
