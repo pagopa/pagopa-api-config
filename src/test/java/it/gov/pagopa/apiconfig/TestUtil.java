@@ -688,8 +688,8 @@ public class TestUtil {
     return Ibans.builder().ibanList(List.of(getMockIban())).build();
   }
 
-  public static IbansEnhanced getMockIbansEnhanced(OffsetDateTime validityDate) {
-    return IbansEnhanced.builder().ibanEnhancedList(List.of(getMockIbanEnhanced(validityDate))).build();
+  public static IbansEnhanced getMockIbansEnhanced(OffsetDateTime validityDate, OffsetDateTime dueDate) {
+    return IbansEnhanced.builder().ibanEnhancedList(List.of(getMockIbanEnhanced(validityDate, dueDate))).build();
   }
 
   public static Iban getMockIban() {

@@ -141,7 +141,11 @@ public class IbanController {
               content =
               @Content(
                   mediaType = MediaType.APPLICATION_JSON_VALUE,
+<<<<<<< HEAD
                   schema = @Schema(implementation = IbansEnhanced.class))),
+=======
+                  schema = @Schema(implementation = IbansV2.class))),
+>>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
           @ApiResponse(
               responseCode = "400",
               description = "Bad Request",
