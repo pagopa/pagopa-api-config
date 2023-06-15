@@ -21,9 +21,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -105,7 +108,9 @@ class IbanServiceTest {
     // retrieving mock object
     Pa pa1 = getMockPa();
     Pa pa2 = getMockPa2();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02", DateTimeFormatter.ISO_OFFSET_DATE_TIME), OffsetDateTime.parse("2023-06-07T13:48:15.166+02", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    LocalDateTime dateTime = LocalDateTime.parse("2023-06-07 13:48:15.166", formatter);
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.of(dateTime, ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now())), OffsetDateTime.of(dateTime, ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now())));
     Iban mockIban = getMockIban(iban, pa1.getIdDominio());
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
@@ -126,7 +131,9 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02", DateTimeFormatter.ISO_OFFSET_DATE_TIME), OffsetDateTime.parse("2023-06-07T13:48:15.166+02", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    LocalDateTime dateTime = LocalDateTime.parse("2023-06-07 13:48:15.166", formatter);
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.of(dateTime, ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now())), OffsetDateTime.of(dateTime, ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now())));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -146,7 +153,9 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    LocalDateTime dateTime = LocalDateTime.parse("2023-06-07 13:48:15.166", formatter);
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.of(dateTime, ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now())), OffsetDateTime.of(dateTime, ZoneId.of("Europe/Berlin").getRules().getOffset(LocalDateTime.now())));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
