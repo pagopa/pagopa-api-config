@@ -18083,6 +18083,7 @@
       "IbanEnhanced": {
         "required": [
           "ci_owner",
+          "due_date",
           "iban",
           "is_active",
           "publication_date",
@@ -18112,6 +18113,12 @@
             "type": "string",
             "description": "The description the Creditor Institution gives to the iban about its usage",
             "example": "Riscossione Tributi"
+          },
+          "due_date": {
+            "type": "string",
+            "description": "The date on which the iban will expire",
+            "format": "date-time",
+            "example": "2023-12-31T23:59:59.999Z"
           },
           "iban": {
             "maxLength": 35,
