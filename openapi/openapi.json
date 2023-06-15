@@ -1,19 +1,10 @@
 {
-<<<<<<< HEAD
   "openapi" : "3.0.1",
   "info" : {
     "title" : "core",
     "description" : "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService" : "https://www.pagopa.gov.it/",
     "version" : "0.45.0"
-=======
-  "openapi": "3.0.1",
-  "info": {
-    "title": "core",
-    "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
-    "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.45.0"
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
   },
   "servers" : [ {
     "url" : "http://127.0.0.1:8080/apiconfig/api/v1",
@@ -16864,7 +16855,7 @@
         }
       },
       "IbanEnhanced" : {
-        "required" : [ "ci_owner", "iban", "is_active", "publication_date", "validity_date" ],
+        "required" : [ "ci_owner", "due_date", "iban", "is_active", "publication_date", "validity_date" ],
         "type" : "object",
         "properties" : {
           "ci_owner" : {
@@ -16889,6 +16880,12 @@
             "type" : "string",
             "description" : "The description the Creditor Institution gives to the iban about its usage",
             "example" : "Riscossione Tributi"
+          },
+          "due_date" : {
+            "type" : "string",
+            "description" : "The date on which the iban will expire",
+            "format" : "date-time",
+            "example" : "2023-12-31T23:59:59.999Z"
           },
           "iban" : {
             "maxLength" : 35,
