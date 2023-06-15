@@ -54,7 +54,6 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -76,7 +75,6 @@ class IbanServiceTest {
 
   @Autowired private IbanService ibanService;
 
-  // PA IBAN owner differs from PA linked in IBAN_MASTER
   @Test
   void getIbansEnhanced_200() throws IOException, JSONException {
     // retrieving mock object
@@ -97,12 +95,13 @@ class IbanServiceTest {
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
+  // PA IBAN owner differs from PA linked in IBAN_MASTER
   @Test
   void getIbansEnhanced_DifferentPA_200() throws IOException, JSONException {
     // retrieving mock object
     Pa pa1 = getMockPa();
     Pa pa2 = getMockPa2();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, pa1.getIdDominio());
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
@@ -596,7 +595,7 @@ class IbanServiceTest {
             .fkIban(ibanEntity.getObjId())
             .fkIcaBinaryFile(icaBinaryFile.getObjId())
             .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
-            .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165Z")))
+            .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
             .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
             .build()
     );
