@@ -1,13 +1,11 @@
-name: Open a PR in Infra repository
+name: Update Infra
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types: [ closed ]
     paths:
       - 'openapi/openapi.json'
-      - 'openapi/swagger.json'
 
   workflow_dispatch:
 
@@ -28,7 +26,7 @@ jobs:
       - name: Create pull request
         uses: jacopocarlini/action-pull-request-another-repo@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          API_TOKEN_GITHUB: ${{ secrets.BOT_TOKEN_GITHUB }}
         with:
           source_folder: 'infra'
           destination_repo: 'pagopa/pagopa-infra'

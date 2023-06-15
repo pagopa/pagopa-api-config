@@ -26,7 +26,7 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IbanV2 {
+public class IbanEnhanced {
 
   @JsonProperty("iban")
   @Schema(example = "IT99C0222211111000000000000",
