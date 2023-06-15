@@ -1,16 +1,7 @@
 package it.gov.pagopa.apiconfig.core.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import com.opencsv.bean.BeanVerifier;
 import com.opencsv.exceptions.CsvConstraintViolationException;
-
 import it.gov.pagopa.apiconfig.core.model.massiveloading.CreditorInstitutionStation;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
 import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
@@ -18,6 +9,12 @@ import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class CreditorInstitutionStationVerifier
     implements BeanVerifier<CreditorInstitutionStation> {
@@ -177,8 +174,8 @@ public class CreditorInstitutionStationVerifier
     if (pa.isPresent()) {
       if (creditorInstitutionStation.getSegregationCode() != null
           && creditorInstitutionStation
-          .getOperation()
-          .equals(CreditorInstitutionStation.Operation.A)
+              .getOperation()
+              .equals(CreditorInstitutionStation.Operation.A)
           && !paStazionePaRepository
               .findAllByFkPaAndSegregazione(
                   pa.get().getObjId(),
@@ -188,8 +185,8 @@ public class CreditorInstitutionStationVerifier
       }
       if (creditorInstitutionStation.getApplicationCode() != null
           && creditorInstitutionStation
-          .getOperation()
-          .equals(CreditorInstitutionStation.Operation.A)
+              .getOperation()
+              .equals(CreditorInstitutionStation.Operation.A)
           && !paStazionePaRepository
               .findAllByFkPaAndProgressivo(
                   pa.get().getObjId(),

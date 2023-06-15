@@ -1,15 +1,5 @@
 package it.gov.pagopa.apiconfig.core.specification;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.domain.Specification;
-
 import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.Canali;
 import it.gov.pagopa.apiconfig.starter.entity.CanaliNodo;
@@ -17,19 +7,29 @@ import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
 import it.gov.pagopa.apiconfig.starter.entity.Psp;
 import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 
 public class PspCanaleTipoVersamentoSpecification {
-  
+
   private PspCanaleTipoVersamentoSpecification() {}
-  
-  public static Specification<PspCanaleTipoVersamento> filterViewPspChannelBroker(String pspCode,
-      String pspBrokerCode, String channelCode, String paymentType, String paymentMethod) {
+
+  public static Specification<PspCanaleTipoVersamento> filterViewPspChannelBroker(
+      String pspCode,
+      String pspBrokerCode,
+      String channelCode,
+      String paymentType,
+      String paymentMethod) {
     return (root, query, cb) -> {
       query.distinct(true);
       List<Predicate> list = new ArrayList<>();
-      
-      Join<PspCanaleTipoVersamento, Psp> psp =
-          root.join("psp", JoinType.LEFT); 
+
+      Join<PspCanaleTipoVersamento, Psp> psp = root.join("psp", JoinType.LEFT);
       Join<PspCanaleTipoVersamento, CanaleTipoVersamento> canaleTipoVersamento =
           root.join("canaleTipoVersamento", JoinType.LEFT);
       Join<CanaleTipoVersamento, Canali> canali =
@@ -38,9 +38,8 @@ public class PspCanaleTipoVersamentoSpecification {
           canaleTipoVersamento.join("tipoVersamento", JoinType.LEFT);
       Join<Canali, IntermediariPsp> intermediariPsp =
           canali.join("fkIntermediarioPsp", JoinType.LEFT);
-      Join<Canali, CanaliNodo> canaliNodo =
-          canali.join("fkCanaliNodo", JoinType.LEFT);
-      
+      Join<Canali, CanaliNodo> canaliNodo = canali.join("fkCanaliNodo", JoinType.LEFT);
+
       if (StringUtils.isNotEmpty(pspCode)) {
         list.add(cb.and(cb.equal(psp.get("idPsp"), pspCode)));
       }

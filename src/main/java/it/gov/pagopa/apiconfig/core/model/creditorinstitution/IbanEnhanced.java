@@ -10,13 +10,12 @@ import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.apiconfig.core.util.Constants;
 import it.gov.pagopa.apiconfig.core.util.OffsetDateTimeDeserializer;
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /** Iban (V2 Version) */
 @Data
@@ -29,37 +28,34 @@ import java.util.List;
 public class IbanEnhanced {
 
   @JsonProperty("iban")
-  @Schema(example = "IT99C0222211111000000000000",
-      required = true,
-      description = "The iban code")
+  @Schema(example = "IT99C0222211111000000000000", required = true, description = "The iban code")
   @Size(max = 35)
   @NotNull
   private String ibanValue;
 
   @JsonProperty(value = "ci_owner", access = JsonProperty.Access.READ_ONLY)
-  @Schema(example = "77777777777",
+  @Schema(
+      example = "77777777777",
       required = true,
       description = "Fiscal code of the Creditor Institution who owns the iban")
   @Size(max = 11)
   private String ciOwnerFiscalCode;
 
   @JsonProperty(value = "company_name", access = JsonProperty.Access.READ_ONLY)
-  @Schema(example = "Comune di Firenze",
-      description = "The Creditor Institution company name")
+  @Schema(example = "Comune di Firenze", description = "The Creditor Institution company name")
   @Size(max = 100)
   private String companyName;
 
   @JsonProperty("description")
-  @Schema(example = "Riscossione Tributi",
+  @Schema(
+      example = "Riscossione Tributi",
       required = false,
       description = "The description the Creditor Institution gives to the iban about its usage")
   @Size(max = 300)
   private String description;
 
   @JsonProperty("is_active")
-  @Schema(example = "true",
-      required = true,
-      description = "True if the iban is active")
+  @Schema(example = "true", required = true, description = "True if the iban is active")
   @NotNull
   private boolean isActive;
 
@@ -67,7 +63,8 @@ public class IbanEnhanced {
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
   @JsonDeserialize(using = OffsetDateTimeDeserializer.class)
-  @Schema(example= "2023-04-01T13:49:19.897Z",
+  @Schema(
+      example = "2023-04-01T13:49:19.897Z",
       required = true,
       description = "The date the Creditor Institution wants the iban to be used for its payments")
   @NotNull
@@ -77,17 +74,19 @@ public class IbanEnhanced {
   @JsonProperty(value = "publication_date", access = JsonProperty.Access.READ_ONLY)
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
-  @Schema(example = "2023-06-01T23:59:59.999Z",
+  @Schema(
+      example = "2023-06-01T23:59:59.999Z",
       required = true,
       description = "The date on which the iban has been inserted in the system")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime publicationDate;
-  
+
   @JsonProperty(value = "due_date")
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
   @JsonDeserialize(using = OffsetDateTimeDeserializer.class)
-  @Schema(example = "2023-12-31T23:59:59.999Z",
+  @Schema(
+      example = "2023-12-31T23:59:59.999Z",
       required = true,
       description = "The date on which the iban will expire")
   @NotNull

@@ -1,13 +1,11 @@
 package it.gov.pagopa.apiconfig.core.mapper;
 
-import javax.validation.Valid;
-
-import org.modelmapper.Converter;
-import org.modelmapper.spi.MappingContext;
-
 import it.gov.pagopa.apiconfig.core.model.configuration.ConfigurationKey;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys;
+import javax.validation.Valid;
+import org.modelmapper.Converter;
+import org.modelmapper.spi.MappingContext;
 
 public class ConvertConfigurationKeysToConfigurationKey
     implements Converter<ConfigurationKeys, ConfigurationKey> {

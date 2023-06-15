@@ -2,32 +2,6 @@ package it.gov.pagopa.apiconfig.core.service;
 
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getSort;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-import javax.validation.ValidationException;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
@@ -50,6 +24,29 @@ import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
 import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.ValidationException;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
@@ -248,14 +245,15 @@ public class PspService {
         .map(elem -> modelMapper.map(elem, PaymentServiceProvider.class))
         .collect(Collectors.toList());
   }
-  
+
   /**
    * Maps PSP objects stored in the DB in a List of PaymentServiceProviderView
    *
    * @param page page of PSP returned from the database
    * @return a list of {@link PaymentServiceProviderView}.
    */
-  private List<PaymentServiceProviderView> getPaymentServiceProviderViewList(Page<PspCanaleTipoVersamento> page) {
+  private List<PaymentServiceProviderView> getPaymentServiceProviderViewList(
+      Page<PspCanaleTipoVersamento> page) {
     return page.stream()
         .map(elem -> modelMapper.map(elem, PaymentServiceProviderView.class))
         .collect(Collectors.toList());
@@ -327,15 +325,24 @@ public class PspService {
       throw new ValidationException("pspCode doesn't match the pattern [A-Z0-9]{6,14}");
     }
   }
-  
-  public PaymentServiceProvidersView getPaymentServiceProvidersView(@Positive Integer limit, @PositiveOrZero Integer pageNumber,
-      String pspCode, String pspBrokerCode, String channelCode, String paymentType, String paymentModel) {
-    
+
+  public PaymentServiceProvidersView getPaymentServiceProvidersView(
+      @Positive Integer limit,
+      @PositiveOrZero Integer pageNumber,
+      String pspCode,
+      String pspBrokerCode,
+      String channelCode,
+      String paymentType,
+      String paymentModel) {
+
     Pageable pageable = PageRequest.of(pageNumber, limit);
-    
-    Page<PspCanaleTipoVersamento> page = pspCanaleTipoVersamentoRepository.findAll(
-        PspCanaleTipoVersamentoSpecification.filterViewPspChannelBroker(pspCode, pspBrokerCode, channelCode, paymentType, paymentModel), pageable);
-    
+
+    Page<PspCanaleTipoVersamento> page =
+        pspCanaleTipoVersamentoRepository.findAll(
+            PspCanaleTipoVersamentoSpecification.filterViewPspChannelBroker(
+                pspCode, pspBrokerCode, channelCode, paymentType, paymentModel),
+            pageable);
+
     return PaymentServiceProvidersView.builder()
         .paymentServiceProviderList(getPaymentServiceProviderViewList(page))
         .pageInfo(CommonUtil.buildPageInfo(page))

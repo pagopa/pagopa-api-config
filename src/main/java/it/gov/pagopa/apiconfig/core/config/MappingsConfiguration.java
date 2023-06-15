@@ -1,14 +1,5 @@
 package it.gov.pagopa.apiconfig.core.config;
 
-import it.gov.pagopa.apiconfig.core.mapper.ConvertIbanAttributeMasterToIbanLabel;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
-import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import it.gov.pagopa.apiconfig.core.mapper.ConvertBrokerDetailsToIntermediariPa;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertBrokerPspDetailsToIntermediariPsp;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertCanaleTipoVersamentoToPaymentType;
@@ -23,6 +14,7 @@ import it.gov.pagopa.apiconfig.core.mapper.ConvertCreditorInstitutionStationPost
 import it.gov.pagopa.apiconfig.core.mapper.ConvertElencoServiziToService;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertEncodingToCodifichePa;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertFtpServersToFtpServer;
+import it.gov.pagopa.apiconfig.core.mapper.ConvertIbanAttributeMasterToIbanLabel;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertIbanValidiPerPaToIban;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertInformativeContoAccreditoMasterRepositoryToIca;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertInformativePaMasterToCounterpartTable;
@@ -62,6 +54,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Station;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
@@ -83,6 +76,7 @@ import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
 import it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys;
 import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
 import it.gov.pagopa.apiconfig.starter.entity.FtpServers;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
 import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
 import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
@@ -96,6 +90,11 @@ import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MappingsConfiguration {
@@ -184,10 +183,13 @@ public class MappingsConfiguration {
         new ConvertPaymentTypeToTipiVersamento();
     Converter<IbanAttributeMaster, IbanLabel> convertIbanAttributeMasterToIbanLabel =
         new ConvertIbanAttributeMasterToIbanLabel();
-    
-    ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView convertPspCanaleTipoVersamentoToPaymentServiceProviderView = new ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView();
-    
-    ConvertPaStazionePaToCreditorInstitutionView convertPaStazionePaToCreditorInstitutionView = new ConvertPaStazionePaToCreditorInstitutionView();
+
+    ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView
+        convertPspCanaleTipoVersamentoToPaymentServiceProviderView =
+            new ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView();
+
+    ConvertPaStazionePaToCreditorInstitutionView convertPaStazionePaToCreditorInstitutionView =
+        new ConvertPaStazionePaToCreditorInstitutionView();
 
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
@@ -298,12 +300,13 @@ public class MappingsConfiguration {
         .createTypeMap(PaymentType.class, TipiVersamento.class)
         .setConverter(convertPaymentTypeTipiVersamento);
     mapper
-    .createTypeMap(PspCanaleTipoVersamento.class, PaymentServiceProviderView.class)
-    .setConverter(convertPspCanaleTipoVersamentoToPaymentServiceProviderView);
+        .createTypeMap(PspCanaleTipoVersamento.class, PaymentServiceProviderView.class)
+        .setConverter(convertPspCanaleTipoVersamentoToPaymentServiceProviderView);
     mapper
-    .createTypeMap(PaStazionePa.class, CreditorInstitutionView.class)
-    .setConverter(convertPaStazionePaToCreditorInstitutionView);
-    mapper.createTypeMap(IbanAttributeMaster.class, IbanLabel.class)
+        .createTypeMap(PaStazionePa.class, CreditorInstitutionView.class)
+        .setConverter(convertPaStazionePaToCreditorInstitutionView);
+    mapper
+        .createTypeMap(IbanAttributeMaster.class, IbanLabel.class)
         .setConverter(convertIbanAttributeMasterToIbanLabel);
 
     return mapper;

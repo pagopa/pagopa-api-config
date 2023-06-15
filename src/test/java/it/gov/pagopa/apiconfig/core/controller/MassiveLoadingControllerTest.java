@@ -4,9 +4,13 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.exception.AppError;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.service.MassiveLoadingService;
 import java.io.File;
 import java.io.FileInputStream;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,12 +19,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.exception.AppError;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.service.MassiveLoadingService;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc

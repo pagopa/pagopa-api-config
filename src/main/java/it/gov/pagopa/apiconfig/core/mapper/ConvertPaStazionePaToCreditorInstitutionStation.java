@@ -1,13 +1,11 @@
 package it.gov.pagopa.apiconfig.core.mapper;
 
-import javax.validation.Valid;
-
-import org.modelmapper.Converter;
-import org.modelmapper.spi.MappingContext;
-
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStation;
 import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import javax.validation.Valid;
+import org.modelmapper.Converter;
+import org.modelmapper.spi.MappingContext;
 
 public class ConvertPaStazionePaToCreditorInstitutionStation
     implements Converter<PaStazionePa, CreditorInstitutionStation> {

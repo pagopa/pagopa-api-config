@@ -1,8 +1,8 @@
 package it.gov.pagopa.apiconfig.core.model.psp;
 
+import it.gov.pagopa.apiconfig.core.util.XMLDateAdapter;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,8 +11,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import it.gov.pagopa.apiconfig.core.util.XMLDateAdapter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
