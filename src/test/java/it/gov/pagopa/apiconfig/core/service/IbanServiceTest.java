@@ -1,6 +1,46 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMaster;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMasters;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributes;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPa2;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.ConstraintViolationException;
+
+import org.json.JSONException;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
@@ -20,44 +60,6 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IcaBinaryFileRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
-import org.json.JSONException;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import javax.validation.ConstraintViolationException;
-import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMaster;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMasters;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributes;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa2;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
 class IbanServiceTest {
@@ -82,11 +84,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-<<<<<<< HEAD
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -106,11 +104,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa pa1 = getMockPa();
     Pa pa2 = getMockPa2();
-<<<<<<< HEAD
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
     Iban mockIban = getMockIban(iban, pa1.getIdDominio());
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
@@ -131,11 +125,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-<<<<<<< HEAD
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -155,11 +145,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-<<<<<<< HEAD
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -191,11 +177,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -228,11 +210,7 @@ class IbanServiceTest {
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     String otherOwnerOrganizationFiscalCode = "anotherCI";
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, otherOwnerOrganizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -264,11 +242,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     iban.setLabels(null);
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
@@ -300,11 +274,7 @@ class IbanServiceTest {
   void createIban_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     iban.setIbanValue(null);
     iban.setValidityDate(null);
     // executing logic and check assertions
@@ -315,11 +285,7 @@ class IbanServiceTest {
   void createIban_noCIFound_404() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
     // executing logic and check assertions
@@ -332,11 +298,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -373,11 +335,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     iban.getLabels().get(0).setName("FAKELABEL");
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
@@ -400,11 +358,7 @@ class IbanServiceTest {
   @Test
   void updateIban_newIban_200() {
     // retrieving mock object
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
@@ -444,11 +398,7 @@ class IbanServiceTest {
   @Test
   void updateIban_noLabelAssociated_200() {
     // retrieving mock object
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
@@ -489,11 +439,7 @@ class IbanServiceTest {
   void updateIban_genericConstraintViolation_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     iban.setIbanValue(null);
     iban.setValidityDate(null);
     // executing logic and check assertions
@@ -504,11 +450,7 @@ class IbanServiceTest {
   void updateIban_ibanCodesConstraintViolation_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     // executing logic and check assertions
     AppException ex = assertThrows(AppException.class, () -> ibanService.updateIban(organizationFiscalCode, "fakeiban", iban));
     assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
@@ -519,11 +461,7 @@ class IbanServiceTest {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
     String ibanValue = "IT99C0222211111000000000000";
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
     // executing logic and check assertions
@@ -536,11 +474,7 @@ class IbanServiceTest {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
     String ibanValue = "IT99C0222211111000000000000";
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.of(creditorInstitution));
@@ -552,11 +486,7 @@ class IbanServiceTest {
 
   @Test
   void updateIban_noIbanCIRelationFound_404() {    // retrieving mock object
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     String ibanValue = "IT99C0222211111000000000000";
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
@@ -585,11 +515,7 @@ class IbanServiceTest {
     Pa creditorInstitution = getMockPa();
     String ibanValue = "IT99C0222211111000000000000";
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-<<<<<<< HEAD
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now());
-=======
-    IbanV2 iban = getMockIbanV2(OffsetDateTime.now(), OffsetDateTime.now());
->>>>>>> 12d31da2 ([PAGOPA-1020] add due date to API: updated API and JUNIT test)
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     iban.getLabels().get(0).setName("FAKELABEL");
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
