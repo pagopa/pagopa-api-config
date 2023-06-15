@@ -82,7 +82,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -102,7 +102,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa pa1 = getMockPa();
     Pa pa2 = getMockPa2();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, pa1.getIdDominio());
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
@@ -123,7 +123,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -143,7 +143,7 @@ class IbanServiceTest {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.parse("2023-06-07T13:48:15.166+02"), OffsetDateTime.parse("2023-06-07T13:48:15.166+02"));
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
     List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
@@ -229,6 +229,7 @@ class IbanServiceTest {
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(otherOwnerOrganizationFiscalCode, result.getCiOwnerFiscalCode());
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertTrue(result.getLabels().size() > 0);
     assertEquals(result.getLabels().get(0).getName(), iban.getLabels().get(0).getName());
     assertTrue(result.getPublicationDate().withOffsetSameLocal(ZoneOffset.UTC).isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
@@ -262,6 +263,7 @@ class IbanServiceTest {
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(creditorInstitution.getIdDominio(), result.getCiOwnerFiscalCode());
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(0, result.getLabels().size());
     assertTrue(result.getPublicationDate().withOffsetSameLocal(ZoneOffset.UTC).isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
   }
@@ -315,6 +317,7 @@ class IbanServiceTest {
     assertEquals(iban.getDescription(), result.getDescription());
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(creditorInstitution.getIdDominio(), result.getCiOwnerFiscalCode());
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertTrue(result.getLabels().size() > 0);
     assertEquals(result.getLabels().get(0).getName(), iban.getLabels().get(0).getName());
@@ -383,6 +386,7 @@ class IbanServiceTest {
     assertEquals(iban.getDescription(), result.getDescription());
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(creditorInstitution.getIdDominio(), result.getCiOwnerFiscalCode());
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(1, result.getLabels().size());
     assertEquals(result.getLabels().get(0).getName(), iban.getLabels().get(0).getName());
@@ -423,6 +427,7 @@ class IbanServiceTest {
     assertEquals(iban.getDescription(), result.getDescription());
     assertEquals(creditorInstitution.getRagioneSociale(), result.getCompanyName());
     assertEquals(creditorInstitution.getIdDominio(), result.getCiOwnerFiscalCode());
+    assertEquals(iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC), result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC), result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
     assertEquals(0, result.getLabels().size());
     assertTrue(result.getPublicationDate().withOffsetSameLocal(ZoneOffset.UTC).isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
@@ -533,6 +538,7 @@ class IbanServiceTest {
         .iban(iban.getIbanValue())
         .fiscalCode(organizationFiscalCode)
         .description(iban.getDescription())
+        .dueDate(CommonUtil.toTimestamp(iban.getDueDate()))
         .build();
   }
 
@@ -596,7 +602,7 @@ class IbanServiceTest {
             .fkIban(ibanEntity.getObjId())
             .fkIcaBinaryFile(icaBinaryFile.getObjId())
             .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
-            .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165Z")))
+            .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
             .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
             .build()
     );

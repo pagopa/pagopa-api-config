@@ -82,6 +82,17 @@ public class IbanEnhanced {
       description = "The date on which the iban has been inserted in the system")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime publicationDate;
+  
+  @JsonProperty(value = "due_date")
+  @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+  @JsonSerialize(using = OffsetDateTimeSerializer.class)
+  @JsonDeserialize(using = OffsetDateTimeDeserializer.class)
+  @Schema(example = "2023-12-31T23:59:59.999Z",
+      required = true,
+      description = "The date on which the iban will expire")
+  @NotNull
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime dueDate;
 
   @JsonProperty("labels")
   @Schema(description = "The labels array associated with the iban")

@@ -241,6 +241,7 @@ public class IbanService {
         .isActive(IbanStatus.ENABLED.equals(ibanCIRelation.getIbanStatus()))
         .validityDate(CommonUtil.toOffsetDateTime(ibanCIRelation.getValidityDate()))
         .publicationDate(CommonUtil.toOffsetDateTime(ibanCIRelation.getInsertedDate()))
+        .dueDate(CommonUtil.toOffsetDateTime(iban.getDueDate()))
         .build();
   }
 

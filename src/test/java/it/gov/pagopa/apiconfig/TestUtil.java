@@ -1007,12 +1007,13 @@ public class TestUtil {
     return mockPage(List.of(getMockCdiMasterValid()), 1, 0);
   }
 
-  public static IbanEnhanced getMockIbanEnhanced(OffsetDateTime validityDate) {
+  public static IbanEnhanced getMockIbanEnhanced(OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return IbanEnhanced.builder()
         .ibanValue("IT99C0222211111000000000000")
         .description("Riscossione tributi")
         .isActive(true)
         .validityDate(validityDate)
+        .dueDate(dueDate)
         .labels(List.of(
             IbanLabel.builder()
                 .name("CUP")
