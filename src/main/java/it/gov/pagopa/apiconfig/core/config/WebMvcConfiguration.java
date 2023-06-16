@@ -1,14 +1,12 @@
 package it.gov.pagopa.apiconfig.core.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.apiconfig.core.model.AppCorsConfiguration;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import it.gov.pagopa.apiconfig.core.model.AppCorsConfiguration;
-import lombok.SneakyThrows;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {

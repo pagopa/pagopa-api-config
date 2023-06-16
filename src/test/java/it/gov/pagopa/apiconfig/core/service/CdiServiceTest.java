@@ -21,32 +21,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.assertj.core.util.Lists;
-import org.json.JSONException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import feign.FeignException;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
@@ -71,6 +45,30 @@ import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CdiPreferenceRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.util.Lists;
+import org.json.JSONException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CdiServiceTest {
@@ -199,12 +197,14 @@ class CdiServiceTest {
       fail(e);
     }
   }
-  
+
   @Test
   void deleteCdi_KO() {
     when(cdiMasterRepository.findByIdInformativaPspAndFkPsp_IdPsp(anyString(), anyString()))
         .thenReturn(Optional.of(getMockCdiMaster()));
-    doThrow(FeignException.InternalServerError.class).when(afmUtilsAsyncTask).afmUtilsDeleteBundlesByIdCDI(anyString(), anyString());
+    doThrow(FeignException.InternalServerError.class)
+        .when(afmUtilsAsyncTask)
+        .afmUtilsDeleteBundlesByIdCDI(anyString(), anyString());
     try {
       cdiService.deleteCdi("1234", "2");
       fail();
@@ -213,7 +213,6 @@ class CdiServiceTest {
     } catch (Exception e) {
       fail(e);
     }
-    
   }
 
   @Test

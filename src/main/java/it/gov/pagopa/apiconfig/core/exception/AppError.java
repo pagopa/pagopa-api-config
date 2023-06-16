@@ -1,8 +1,7 @@
 package it.gov.pagopa.apiconfig.core.exception;
 
-import org.springframework.http.HttpStatus;
-
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum AppError {
@@ -200,9 +199,7 @@ public enum AppError {
       "IBAN label not valid",
       "The label %s is not valid and cannot be associated to IBAN"),
   IBAN_NOT_FOUND(
-      HttpStatus.NOT_FOUND,
-      "IBAN value not found",
-      "The IBAN with value %s is not present"),
+      HttpStatus.NOT_FOUND, "IBAN value not found", "The IBAN with value %s is not present"),
 
   IBAN_NOT_ASSOCIATED(
       HttpStatus.NOT_FOUND,

@@ -1,25 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitution;
@@ -50,6 +30,23 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
@@ -128,18 +125,24 @@ public class CreditorInstitutionsService {
     List<PaStazionePa> result = paStazionePaRepository.findAllByFkPa(pa.getObjId());
     return CreditorInstitutionStationList.builder().stationsList(getStationsList(result)).build();
   }
-  
+
   public CreditorInstitutionsView getCreditorInstitutionsView(
-      @NotNull Integer limit, @NotNull Integer pageNumber, 
-      FilterPaView filter) {   
-    
+      @NotNull Integer limit, @NotNull Integer pageNumber, FilterPaView filter) {
+
     Pageable pageable = PageRequest.of(pageNumber, limit);
-    
-    Page<PaStazionePa> page = paStazionePaRepository.findAll(
-        PaStazionePaSpecification.filterViewPaBrokerStation(
-            filter.getCreditorInstitutionCode(), filter.getPaBrokerCode(), filter.getStationCode(), 
-            filter.getAuxDigit(), filter.getApplicationCode(), filter.getSegregationCode(), filter.getMod4()), pageable);
-    
+
+    Page<PaStazionePa> page =
+        paStazionePaRepository.findAll(
+            PaStazionePaSpecification.filterViewPaBrokerStation(
+                filter.getCreditorInstitutionCode(),
+                filter.getPaBrokerCode(),
+                filter.getStationCode(),
+                filter.getAuxDigit(),
+                filter.getApplicationCode(),
+                filter.getSegregationCode(),
+                filter.getMod4()),
+            pageable);
+
     return CreditorInstitutionsView.builder()
         .creditorInstitutionList(getCreditorInstitutionsView(page))
         .pageInfo(CommonUtil.buildPageInfo(page))
@@ -340,7 +343,7 @@ public class CreditorInstitutionsService {
         .map(elem -> modelMapper.map(elem, CreditorInstitution.class))
         .collect(Collectors.toList());
   }
-  
+
   /**
    * Maps PaStazionePa objects stored in the DB in a List of CreditorInstitutionView
    *

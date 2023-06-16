@@ -30,10 +30,10 @@ jobs:
         with:
           java-version: 11
 
-      - name: Update OpenApi/Swagger file
-        run: |
-          cd ./openapi
-          sh ./generate_openapi_and_swagger.sh
+#      - name: Update OpenApi/Swagger file
+#        run: |
+#          cd ./openapi
+#          sh ./generate_openapi_and_swagger.sh
 
       - name: Formatting
         uses: axel-op/googlejavaformat-action@v3
@@ -58,7 +58,7 @@ jobs:
                 repo: context.repo.repo
             });
             for (const comment of comments.data) {
-              if (comment.body.includes('Update Code is failed.')){
+              if (comment.body.includes('Update Code is failed. Please retry.')){
                 github.rest.issues.deleteComment({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
@@ -73,4 +73,4 @@ jobs:
               repo: context.repo.repo,
               body: 'Update Code is failed. Please retry.'
             })
-
+            core.setFailed('Update Code is failed. Please retry.')

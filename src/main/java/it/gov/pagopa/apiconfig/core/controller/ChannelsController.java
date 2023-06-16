@@ -2,12 +2,26 @@ package it.gov.pagopa.apiconfig.core.controller;
 
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getFilterAndOrder;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import it.gov.pagopa.apiconfig.core.model.ProblemJson;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
+import it.gov.pagopa.apiconfig.core.model.psp.ChannelDetails;
+import it.gov.pagopa.apiconfig.core.model.psp.ChannelPspList;
+import it.gov.pagopa.apiconfig.core.model.psp.Channels;
+import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
+import it.gov.pagopa.apiconfig.core.service.ChannelsService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -25,22 +39,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import it.gov.pagopa.apiconfig.core.model.ProblemJson;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
-import it.gov.pagopa.apiconfig.core.model.psp.ChannelDetails;
-import it.gov.pagopa.apiconfig.core.model.psp.ChannelPspList;
-import it.gov.pagopa.apiconfig.core.model.psp.Channels;
-import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
-import it.gov.pagopa.apiconfig.core.service.ChannelsService;
 
 @RestController()
 @RequestMapping(path = "/channels")
@@ -107,6 +105,9 @@ public class ChannelsController {
           @Parameter(description = "Page number. Page value starts from 0", required = true)
           @RequestParam
           Integer page,
+      @Parameter(description = "Filter by broker", required = false)
+          @RequestParam(name = "brokercode", required = false)
+          String brokerCode,
       @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code")
           String filterByCode,
       @RequestParam(required = false, name = "ordering", defaultValue = "DESC")
@@ -114,7 +115,10 @@ public class ChannelsController {
           Sort.Direction ordering) {
     return ResponseEntity.ok(
         channelsService.getChannels(
-            limit, page, getFilterAndOrder(filterByCode, null, Order.Channel.CODE, ordering)));
+            limit,
+            page,
+            brokerCode,
+            getFilterAndOrder(filterByCode, null, Order.Channel.CODE, ordering)));
   }
 
   @Operation(

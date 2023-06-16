@@ -13,7 +13,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-  <version>0.45.0</version>
+  <version>0.45.2</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
@@ -32,7 +32,7 @@
     <commons-validator>1.7</commons-validator>
     <feign-version>12.1</feign-version>
     <postgresql-version>42.5.1</postgresql-version>
-    <starter.version>1.6.0</starter.version>
+    <starter.version>1.7.0</starter.version>
   </properties>
 
   <repositories>

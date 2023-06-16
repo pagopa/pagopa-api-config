@@ -8,7 +8,6 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanValidiPerPa;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockStazioni;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -18,29 +17,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import org.assertj.core.util.Lists;
-import org.json.JSONException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
@@ -65,6 +41,27 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.util.Lists;
+import org.json.JSONException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CreditorInstitutionsServiceTest {
@@ -765,42 +762,44 @@ class CreditorInstitutionsServiceTest {
         TestUtil.readJsonFromFile("response/get_creditorinstitutions_by_encoding.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
-  
+
   @Test
   void getCreditorInstitutionsServiceView() throws IOException, JSONException {
     Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
-    when(paStazionePaRepository.findAll(
-            any(Specification.class), any(Pageable.class)))
+    when(paStazionePaRepository.findAll(any(Specification.class), any(Pageable.class)))
         .thenReturn(page);
 
     CreditorInstitutionsView result =
-        creditorInstitutionsService.getCreditorInstitutionsView(50, 0, FilterPaView.builder().build());
+        creditorInstitutionsService.getCreditorInstitutionsView(
+            50, 0, FilterPaView.builder().build());
     String actual = TestUtil.toJson(result);
-    String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutionserviceview_ok.json");
+    String expected =
+        TestUtil.readJsonFromFile("response/get_creditorinstitutionserviceview_ok.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
-  
+
   @Test
   void getCreditorInstitutionsServiceWithFilters() throws IOException, JSONException {
     Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
-    when(paStazionePaRepository.findAll(
-            any(Specification.class), any(Pageable.class)))
+    when(paStazionePaRepository.findAll(any(Specification.class), any(Pageable.class)))
         .thenReturn(page);
 
-    FilterPaView filter = FilterPaView.builder()
-        .applicationCode(2L)
-        .auxDigit(1L)
-        .mod4(true)
-        .segregationCode(3L)
-        .creditorInstitutionCode("00168480242")
-        .stationCode("80007580279_01")
-        .paBrokerCode("1234")
-        .build();
-    
+    FilterPaView filter =
+        FilterPaView.builder()
+            .applicationCode(2L)
+            .auxDigit(1L)
+            .mod4(true)
+            .segregationCode(3L)
+            .creditorInstitutionCode("00168480242")
+            .stationCode("80007580279_01")
+            .paBrokerCode("1234")
+            .build();
+
     CreditorInstitutionsView result =
         creditorInstitutionsService.getCreditorInstitutionsView(50, 0, filter);
     String actual = TestUtil.toJson(result);
-    String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutionserviceview_ok.json");
+    String expected =
+        TestUtil.readJsonFromFile("response/get_creditorinstitutionserviceview_ok.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 }
