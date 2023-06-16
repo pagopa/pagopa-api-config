@@ -1,5 +1,12 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import static it.gov.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
 import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
@@ -12,6 +19,11 @@ import it.gov.pagopa.apiconfig.starter.entity.Pdd;
 import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
 import it.gov.pagopa.apiconfig.starter.repository.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,19 +35,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-
-import static it.gov.pagopa.apiconfig.TestUtil.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ApiConfig.class)
 class ConfigurationServiceTest {
@@ -703,7 +702,7 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(),anyString(), any());
+    doNothing().when(afmMarketplaceClient).syncPaymentTypes(anyString(), anyString(), any());
 
     PaymentType result = configurationService.updatePaymentType("PPAL", getMockPaymentType());
     String actual = TestUtil.toJson(result);
@@ -733,7 +732,7 @@ class ConfigurationServiceTest {
 
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    when(afmMarketplaceClient.getPaymentType(anyString(),any(), anyString()))
+    when(afmMarketplaceClient.getPaymentType(anyString(), any(), anyString()))
         .thenReturn(getMockAfmMarketplacePaymentType());
     try {
       configurationService.deletePaymentType("PPAL");
@@ -765,7 +764,7 @@ class ConfigurationServiceTest {
         Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
     doThrow(new FeignException.InternalServerError("", request, null, null))
         .when(afmMarketplaceClient)
-        .getPaymentType(anyString(),anyString(), anyString());
+        .getPaymentType(anyString(), anyString(), anyString());
 
     try {
       configurationService.deletePaymentType("PPAL");
@@ -784,7 +783,8 @@ class ConfigurationServiceTest {
     response.setUsed(true);
     ReflectionTestUtils.setField(
         configurationService, "afmMarketplaceClient", afmMarketplaceClient);
-    when(afmMarketplaceClient.getPaymentType(anyString(), anyString(), anyString())).thenReturn(response);
+    when(afmMarketplaceClient.getPaymentType(anyString(), anyString(), anyString()))
+        .thenReturn(response);
     try {
       configurationService.deletePaymentType("PPAL");
     } catch (AppException e) {
@@ -861,7 +861,7 @@ class ConfigurationServiceTest {
         Request.create(Request.HttpMethod.GET, "url", new HashMap<>(), null, new RequestTemplate());
     doThrow(new FeignException.InternalServerError("", request, null, null))
         .when(afmMarketplaceClient)
-        .getPaymentType(anyString(),anyString(), anyString());
+        .getPaymentType(anyString(), anyString(), anyString());
 
     try {
       configurationService.deletePaymentType("PPAL");

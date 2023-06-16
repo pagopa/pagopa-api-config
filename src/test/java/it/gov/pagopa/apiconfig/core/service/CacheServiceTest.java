@@ -8,8 +8,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.starter.entity.Cache;
+import it.gov.pagopa.apiconfig.starter.repository.CacheRepository;
 import java.util.Optional;
-
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,13 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.service.CacheService;
-import it.gov.pagopa.apiconfig.starter.entity.Cache;
-import it.gov.pagopa.apiconfig.starter.repository.CacheRepository;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CacheServiceTest {
@@ -63,11 +60,7 @@ class CacheServiceTest {
   void getCacheVersions() {
     Page<Cache> page =
         TestUtil.mockPage(
-            Lists.newArrayList(
-                Cache.builder()
-                    .id("2023-02-08 01:00:06")
-                    .version("3.10.0")
-                    .build()),
+            Lists.newArrayList(Cache.builder().id("2023-02-08 01:00:06").version("3.10.0").build()),
             50,
             0);
     when(cacheRepository.findAll(any(Pageable.class))).thenReturn(page);

@@ -3,9 +3,8 @@ package it.gov.pagopa.apiconfig.core.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import it.gov.pagopa.apiconfig.starter.util.NumericBooleanConverter;
+import org.junit.jupiter.api.Test;
 
 class NumericBooleanConverterTest {
 

@@ -1,37 +1,38 @@
 package it.gov.pagopa.apiconfig.core.specification;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.domain.Specification;
-
 import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
 import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 
 public class PaStazionePaSpecification {
-  
+
   private PaStazionePaSpecification() {}
-  
-  public static Specification<PaStazionePa> filterViewPaBrokerStation(String creditorInstitutionCode,
-      String paBrokerCode, String stationCode, Long auxDigit, Long applicationCode, Long segregationCode, Boolean mod4) {
+
+  public static Specification<PaStazionePa> filterViewPaBrokerStation(
+      String creditorInstitutionCode,
+      String paBrokerCode,
+      String stationCode,
+      Long auxDigit,
+      Long applicationCode,
+      Long segregationCode,
+      Boolean mod4) {
     return (root, query, cb) -> {
       query.distinct(true);
       List<Predicate> list = new ArrayList<>();
-      
-      Join<PaStazionePa, Pa> pa =
-          root.join("pa", JoinType.LEFT); 
-      Join<PaStazionePa, Stazioni> stazioni =
-          root.join("fkStazione", JoinType.LEFT);
+
+      Join<PaStazionePa, Pa> pa = root.join("pa", JoinType.LEFT);
+      Join<PaStazionePa, Stazioni> stazioni = root.join("fkStazione", JoinType.LEFT);
       Join<Stazioni, IntermediariPa> intermediariPa =
           stazioni.join("intermediarioPa", JoinType.LEFT);
-      
+
       if (null != auxDigit) {
         list.add(cb.and(cb.equal(root.get("auxDigit"), auxDigit)));
       }

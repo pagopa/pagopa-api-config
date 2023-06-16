@@ -2,7 +2,6 @@ package it.gov.pagopa.apiconfig.core.util;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class XMLDateAdapter extends XmlAdapter<String, LocalDateTime> {

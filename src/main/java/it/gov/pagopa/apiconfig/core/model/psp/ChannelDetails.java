@@ -187,10 +187,11 @@ public class ChannelDetails extends Channel {
 
   @JsonProperty("flag_psp_cp")
   @Schema(
-    required = true,
-    description =
-        "Represents the authorization to carry out the transfer of the information present in additional payment information in the tags relating to payment by card for the PA in V1"
-  )
+      required = true,
+      description =
+          "Represents the authorization to carry out the transfer of the information present in"
+              + " additional payment information in the tags relating to payment by card for the PA"
+              + " in V1")
   @NotNull
   private Boolean flagPspCp;
 

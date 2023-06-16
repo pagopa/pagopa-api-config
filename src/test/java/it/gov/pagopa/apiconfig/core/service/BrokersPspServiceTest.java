@@ -11,9 +11,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
+import it.gov.pagopa.apiconfig.core.model.psp.BrokerPspDetails;
+import it.gov.pagopa.apiconfig.core.model.psp.BrokersPsp;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
+import it.gov.pagopa.apiconfig.starter.entity.Psp;
+import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
 import java.io.IOException;
 import java.util.Optional;
-
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -26,18 +35,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
-import it.gov.pagopa.apiconfig.core.model.psp.BrokerPspDetails;
-import it.gov.pagopa.apiconfig.core.model.psp.BrokersPsp;
-import it.gov.pagopa.apiconfig.core.service.BrokersPspService;
-import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
-import it.gov.pagopa.apiconfig.starter.entity.Psp;
-import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
 
 @SpringBootTest(classes = ApiConfig.class)
 class BrokersPspServiceTest {

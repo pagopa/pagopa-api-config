@@ -5,6 +5,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.core.model.ConfigurationDomain;
+import it.gov.pagopa.apiconfig.core.model.JobTrigger;
+import it.gov.pagopa.apiconfig.core.service.RefreshService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.core.model.ConfigurationDomain;
-import it.gov.pagopa.apiconfig.core.model.JobTrigger;
-import it.gov.pagopa.apiconfig.core.service.RefreshService;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc

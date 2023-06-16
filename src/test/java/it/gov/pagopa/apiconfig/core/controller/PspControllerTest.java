@@ -2,9 +2,9 @@ package it.gov.pagopa.apiconfig.core.controller;
 
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviderDetails;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentServiceProviders;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentServiceProvidersView;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPspChannel;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPspChannelList;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPaymentServiceProvidersView;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -16,6 +16,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
+import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
+import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
+import it.gov.pagopa.apiconfig.core.service.PspService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,14 +34,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
-import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
-import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
-import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
-import it.gov.pagopa.apiconfig.core.service.PspService;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
@@ -62,7 +61,7 @@ class PspControllerTest {
             anyString(), anyString(), any(PspChannelPaymentTypes.class)))
         .thenReturn(getMockPspChannel());
     when(pspService.getPaymentServiceProvidersView(
-        anyInt(), anyInt(), any(), any(), any(), any(), any()))
+            anyInt(), anyInt(), any(), any(), any(), any(), any()))
         .thenReturn(getMockPaymentServiceProvidersView());
   }
 

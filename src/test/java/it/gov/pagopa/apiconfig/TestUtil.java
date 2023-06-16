@@ -32,8 +32,8 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
@@ -689,7 +689,9 @@ public class TestUtil {
   }
 
   public static IbansEnhanced getMockIbansEnhanced(OffsetDateTime validityDate) {
-    return IbansEnhanced.builder().ibanEnhancedList(List.of(getMockIbanEnhanced(validityDate))).build();
+    return IbansEnhanced.builder()
+        .ibanEnhancedList(List.of(getMockIbanEnhanced(validityDate)))
+        .build();
   }
 
   public static Iban getMockIban() {
@@ -1013,17 +1015,16 @@ public class TestUtil {
         .description("Riscossione tributi")
         .isActive(true)
         .validityDate(validityDate)
-        .labels(List.of(
-            IbanLabel.builder()
-                .name("CUP")
-                .description("The iban to use for CUP payments")
-                .build(),
-            IbanLabel.builder()
-                .name("STANDIN")
-                .description("The iban to use for ACA/Standin payments")
-                .build()
-            )
-        )
+        .labels(
+            List.of(
+                IbanLabel.builder()
+                    .name("CUP")
+                    .description("The iban to use for CUP payments")
+                    .build(),
+                IbanLabel.builder()
+                    .name("STANDIN")
+                    .description("The iban to use for ACA/Standin payments")
+                    .build()))
         .build();
   }
 
@@ -1045,10 +1046,8 @@ public class TestUtil {
         IbanAttribute.builder()
             .attributeName("STANDIN")
             .attributeDescription("The iban to use for ACA/Standin payments")
-            .build()
-    );
+            .build());
   }
-
 
   public static IbanEnhanced getMockIbanEnhanced_2() {
     return IbanEnhanced.builder()
@@ -1076,20 +1075,18 @@ public class TestUtil {
   }
 
   public static IbanAttributeMaster getMockIbanAttributeMaster() {
-    return IbanAttributeMaster.builder()
-        .build();
+    return IbanAttributeMaster.builder().build();
   }
 
-    public static List<IbanAttributeMaster> getMockIbanAttributeMasters (IbanMaster ibanMaster){
-      return List.of(
-          IbanAttributeMaster.builder()
-              .ibanAttribute(
-                  IbanAttribute.builder()
-                      .attributeName("STANDIN")
-                      .attributeDescription("The iban to use for ACA/Standin payments")
-                      .build())
-              .ibanMaster(ibanMaster)
-              .build()
-      );
+  public static List<IbanAttributeMaster> getMockIbanAttributeMasters(IbanMaster ibanMaster) {
+    return List.of(
+        IbanAttributeMaster.builder()
+            .ibanAttribute(
+                IbanAttribute.builder()
+                    .attributeName("STANDIN")
+                    .attributeDescription("The iban to use for ACA/Standin payments")
+                    .build())
+            .ibanMaster(ibanMaster)
+            .build());
   }
 }

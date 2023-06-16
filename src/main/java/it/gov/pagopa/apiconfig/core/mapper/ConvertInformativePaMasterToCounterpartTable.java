@@ -2,14 +2,12 @@ package it.gov.pagopa.apiconfig.core.mapper;
 
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.toOffsetDateTime;
 
-import javax.validation.Valid;
-
-import org.modelmapper.Converter;
-import org.modelmapper.spi.MappingContext;
-
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CounterpartTable;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
+import javax.validation.Valid;
+import org.modelmapper.Converter;
+import org.modelmapper.spi.MappingContext;
 
 public class ConvertInformativePaMasterToCounterpartTable
     implements Converter<InformativePaMaster, CounterpartTable> {
