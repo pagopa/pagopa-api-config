@@ -209,6 +209,11 @@ public enum AppError {
       "IBAN not associated",
       "The IBAN with code %s is not associated to the creditor institution %s"),
 
+  AZURE_STORAGE_ERROR(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Error with the azure table storage",
+      "Error when interacting with the azure table storage"),
+
   UNKNOWN(null, null, null);
 
   public final HttpStatus httpStatus;

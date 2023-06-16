@@ -69,7 +69,7 @@ public class IbanService {
         .fileSize(0L)
         .build();
     icaBinaryFileToBeCreated = icaBinaryFileRepository.save(icaBinaryFileToBeCreated);
-    IbanMaster ibanCIRelationToBeCreated = saveIbanCIRelation(existingCreditorInstitution, iban, ibanToBeCreated, icaBinaryFileToBeCreated);
+    IbanMaster ibanCIRelationToBeCreated = saveIbanCIRelation(existingCreditorInstitution, iban, ibanToBeCreated);
     // generate the relation between iban and attributes
     List<IbanAttributeMaster> updatedIbanAttributes = saveIbanLabelRelation(iban, ibanCIRelationToBeCreated);
     // return final object
@@ -90,7 +90,7 @@ public class IbanService {
     // check if IBAN was already associated to creditor institution. If not associated, throw an exception
     IbanMaster existingIbanMaster = getIbanMaster(existingIban, existingCreditorInstitution).orElseThrow(() -> new AppException(AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
     // generate a relation between iban, CI and ICA file (this one already existing)
-    IbanMaster ibanCIRelationToBeUpdated = saveIbanCIRelation(existingIbanMaster, existingCreditorInstitution, iban, existingIban, existingIbanMaster.getIcaBinaryFile());
+    IbanMaster ibanCIRelationToBeUpdated = saveIbanCIRelation(existingIbanMaster, existingCreditorInstitution, iban, existingIban);
     // remove all labels and save them again
     ibanAttributeMasterRepository.deleteAll(existingIbanMaster.getIbanAttributesMasters());
     ibanAttributeMasterRepository.flush();
@@ -181,20 +181,18 @@ public class IbanService {
     return ibanRepository.save(existingIban);
   }
 
-  private IbanMaster saveIbanCIRelation(Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated, IcaBinaryFile icaBinaryFileToBeCreated) {
-    return saveIbanCIRelation(new IbanMaster(), creditorInstitution, iban, ibanToBeCreated, icaBinaryFileToBeCreated);
+  private IbanMaster saveIbanCIRelation(Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated) {
+    return saveIbanCIRelation(new IbanMaster(), creditorInstitution, iban, ibanToBeCreated);
   }
 
-  private IbanMaster saveIbanCIRelation(IbanMaster ibanMaster, Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated, IcaBinaryFile icaBinaryFileToBeCreated) {
+  private IbanMaster saveIbanCIRelation(IbanMaster ibanMaster, Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated) {
     ibanMaster.setFkPa(creditorInstitution.getObjId());
     ibanMaster.setFkIban(ibanToBeCreated.getObjId());
-    ibanMaster.setFkIcaBinaryFile(icaBinaryFileToBeCreated.getObjId());
     ibanMaster.setIbanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED);
     ibanMaster.setInsertedDate(ibanMaster.getInsertedDate() != null ? ibanMaster.getInsertedDate() : CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)));
     ibanMaster.setValidityDate(CommonUtil.toTimestamp(iban.getValidityDate()));
     ibanMaster.setPa(creditorInstitution); // setting CI object reference
     ibanMaster.setIban(ibanToBeCreated); // setting IBAN object reference
-    ibanMaster.setIcaBinaryFile(icaBinaryFileToBeCreated); // setting ICA binary file object reference
     return ibanMasterRepository.save(ibanMaster);
   }
 
