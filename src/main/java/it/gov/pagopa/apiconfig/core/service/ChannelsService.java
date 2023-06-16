@@ -16,11 +16,7 @@ import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvider;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
 import it.gov.pagopa.apiconfig.core.specification.PspSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
-import it.gov.pagopa.apiconfig.starter.entity.Canali;
-import it.gov.pagopa.apiconfig.starter.entity.Psp;
-import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
-import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.repository.CanaleTipoVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
@@ -28,6 +24,7 @@ import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoReposit
 import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
 import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.WfespPluginConfRepository;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,11 +71,19 @@ public class ChannelsService {
   @Autowired private PspRepository pspRepository;
 
   public Channels getChannels(
-      @NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
+      @NotNull Integer limit,
+      @NotNull Integer pageNumber,
+      String brokerCode,
+      @Valid FilterAndOrder filterAndOrder) {
     Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
+    var broker = intermediariPspRepository.findByIdIntermediarioPsp(brokerCode).orElse(null);
+
     var filters =
         CommonUtil.getFilters(
-            Canali.builder().idCanale(filterAndOrder.getFilter().getCode()).build());
+            Canali.builder()
+                .idCanale(filterAndOrder.getFilter().getCode())
+                .fkIntermediarioPsp(broker)
+                .build());
     Page<Canali> page = canaliRepository.findAll(filters, pageable);
     return Channels.builder()
         .channelList(getChannelList(page))

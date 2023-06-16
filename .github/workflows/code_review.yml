@@ -21,6 +21,11 @@ env:
   PROJECT_KEY: pagopa_pagopa-api-config
   GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GITHUB_TOKEN }}
 
+permissions:
+  id-token: write
+  contents: read
+  deployments: write
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   code-review:
@@ -31,7 +36,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Code Review
-        uses: pagopa/github-actions-template/maven-code-review@main
+        uses: pagopa/github-actions-template/maven-code-review@v1.4.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           sonar_token: ${{ secrets.SONAR_TOKEN }}

@@ -75,7 +75,20 @@ class ChannelsServiceTest {
     Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
     when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
 
-    Channels result = channelsService.getChannels(50, 0, getMockFilterAndOrder(Order.Channel.CODE));
+    Channels result =
+        channelsService.getChannels(50, 0, null, getMockFilterAndOrder(Order.Channel.CODE));
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @Test
+  void getChannels_FilterByBroker() throws IOException, JSONException {
+    Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
+    when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+
+    Channels result =
+        channelsService.getChannels(50, 0, "1234", getMockFilterAndOrder(Order.Channel.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
