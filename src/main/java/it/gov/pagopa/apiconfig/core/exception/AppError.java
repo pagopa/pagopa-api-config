@@ -209,10 +209,10 @@ public enum AppError {
       "IBAN not associated",
       "The IBAN with code %s is not associated to the creditor institution %s"),
 
-  IBAN_CREATION_BAD_REQUEST(
-      HttpStatus.NOT_FOUND,
-      "IBAN creation bad request",
-      "The IBAN with code %s cannot be created by the creditor institution %s"),
+  POSTAL_IBAN_ALREADY_ASSOCIATED (
+      HttpStatus.CONFLICT,
+      "Postal IBAN already associated with one CI",
+      "The postal IBAN with code %s was already associated to one CI, this type of IBAN cannot be associated to an additional creditor institution %s"),
 
   UNKNOWN(null, null, null);
 

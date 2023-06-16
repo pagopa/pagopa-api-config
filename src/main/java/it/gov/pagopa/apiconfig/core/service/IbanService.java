@@ -43,10 +43,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class IbanService {
   @Value("${iban.abi.poste}")
-  private String ABI_IBAN_POSTALI;
-
-  @Value("${psp.id.poste}")
-  private String POSTE_PSP_ID;
+  private String POSTAL_IBAN_ABI;
 
   @Autowired private PaRepository paRepository;
 
@@ -69,6 +66,9 @@ public class IbanService {
     Iban ibanToBeCreated = ibanRepository
         .findByIban(iban.getIbanValue())
         .orElseGet(() -> saveIban(iban, organizationFiscalCode));
+    // check if IBAN is a postal IBAN and if it is already related to an existing Creditor Institution
+    if (isPostalIban(iban) && ibanMasterRepository.findByFkIban(ibanToBeCreated.getObjId()).size() > 0)
+      throw new AppException(AppError.POSTAL_IBAN_ALREADY_ASSOCIATED, iban.getIbanValue(), existingCreditorInstitution.getIdDominio());
     // check if IBAN was already associated to creditor institution. If already associated, throw an exception
     getIbanMaster(ibanToBeCreated, existingCreditorInstitution)
         .ifPresent(s -> {throw new AppException(AppError.IBAN_ALREADY_ASSOCIATED, iban.getIbanValue(), existingCreditorInstitution.getIdDominio());});
@@ -175,14 +175,12 @@ public class IbanService {
         .findFirst();
   }
 
-  public void checkPostalIbanCreation(IbanV2 iban, String creditorInstitution) {
+  public boolean isPostalIban(IbanV2 iban) {
     String abiCode = iban.getIbanValue().substring(5, 10);
-    if(abiCode.equals(ABI_IBAN_POSTALI) && !creditorInstitution.equals(POSTE_PSP_ID))
-      throw new AppException(AppError.IBAN_CREATION_BAD_REQUEST, iban.getIbanValue(), creditorInstitution);
+    return abiCode.equals(POSTAL_IBAN_ABI);
   }
 
   private Iban saveIban(IbanV2 iban, String organizationFiscalCode) {
-    checkPostalIbanCreation(iban, organizationFiscalCode);
     Iban ibanToBeCreated = Iban.builder()
         .iban(iban.getIbanValue())
         .fiscalCode(organizationFiscalCode)
