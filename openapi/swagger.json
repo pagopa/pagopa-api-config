@@ -14612,6 +14612,12 @@
           "minLength": 0,
           "type": "string"
         },
+        "due_date": {
+          "description": "The date on which the iban will expire",
+          "example": "2023-12-31T23:59:59.999Z",
+          "format": "date-time",
+          "type": "string"
+        },
         "iban": {
           "description": "The iban code",
           "example": "IT99C0222211111000000000000",
@@ -14647,6 +14653,7 @@
       },
       "required": [
         "ci_owner",
+        "due_date",
         "iban",
         "is_active",
         "publication_date",

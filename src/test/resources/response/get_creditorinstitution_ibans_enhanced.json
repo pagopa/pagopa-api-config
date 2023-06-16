@@ -1,5 +1,5 @@
 {
-  "ibans": [
+  "ibans_enhanced": [
     {
       "ci_owner": "00168480242",
       "company_name": "Comune di Bassano del Grappa",
@@ -13,7 +13,8 @@
         }
       ],
       "publication_date": "2023-05-23T10:38:07.165Z",
-      "validity_date": "2023-06-07T13:48:15.166Z"
+      "validity_date": "2023-06-07T13:48:15.166Z",
+      "due_date": "2023-06-07T13:48:15.166Z"
     }
   ]
 }
