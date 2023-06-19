@@ -54,7 +54,6 @@ class SchedulerTest {
   @Test
   void checkSchedulerAction() throws StorageException, InterruptedException {
 
-    String x = null;
     when(paRepository.findByIdDominioIn(any(List.class))).thenReturn(Optional.of(List.of(getMockPa())));
     Map<String, String> mockMap = new HashMap<>();
     mockMap.put("00168480242", LocalDateTime.now().plusMinutes(10).toString());
