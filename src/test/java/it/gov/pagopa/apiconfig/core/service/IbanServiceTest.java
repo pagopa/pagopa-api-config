@@ -553,7 +553,6 @@ class IbanServiceTest {
         .fkIban(ibanToBeCreated.getObjId())
         .iban(ibanToBeCreated)
         .fkIcaBinaryFile(icaBinaryFile.getObjId())
-        .icaBinaryFile(icaBinaryFile)
         .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
         .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
         .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))

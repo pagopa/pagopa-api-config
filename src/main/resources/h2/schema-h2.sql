@@ -682,7 +682,6 @@ create table NODO4_CFG.IBAN_MASTER
     VALIDITY_DATE       timestamp(6) not null,
     FK_PA               numeric not null,
     FK_IBAN             numeric not null,
-    FK_ICA_BINARY_FILE  numeric not null,
     constraint PK_IBAN_MASTER
         primary key (OBJ_ID),
     constraint FK_PA
@@ -691,9 +690,6 @@ create table NODO4_CFG.IBAN_MASTER
     constraint FK_IBAN
             foreign key (FK_IBAN)
                 references NODO4_CFG.IBAN,
-    constraint FK_ICA_BINARY_FILE
-            foreign key (FK_ICA_BINARY_FILE)
-                references NODO4_CFG.ICA_BINARY_FILE
 );
 create table NODO4_CFG.IBAN_ATTRIBUTES_MASTER
 (

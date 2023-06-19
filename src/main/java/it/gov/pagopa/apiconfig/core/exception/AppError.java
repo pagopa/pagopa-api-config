@@ -13,6 +13,11 @@ public enum AppError {
       HttpStatus.NOT_FOUND,
       "Creditor Institution not found",
       "No Creditor Institution found with code: %s"),
+
+  CREDITOR_INSTITUTIONS_NOT_FOUND(
+      HttpStatus.NOT_FOUND,
+      "Creditor Institution not found",
+      "No Creditor Institution found inside list"),
   CREDITOR_INSTITUTION_CONFLICT(
       HttpStatus.CONFLICT,
       "Creditor Institution conflict",

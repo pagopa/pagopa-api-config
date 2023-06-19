@@ -1,16 +1,9 @@
 package it.gov.pagopa.apiconfig.core.scheduler;
 
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.table.CloudTable;
-import com.microsoft.azure.storage.table.TableOperation;
-import com.microsoft.azure.storage.table.TableQuery;
-import com.microsoft.azure.storage.table.TableQuery.QueryComparisons;
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
-import it.gov.pagopa.apiconfig.core.scheduler.entity.CreditorInstitutionIcaFile;
+import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IcaBinaryFile;
@@ -21,20 +14,14 @@ import it.gov.pagopa.apiconfig.starter.repository.IcaBinaryFileRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
-import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.events.XMLEvent;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -43,13 +30,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Spliterator;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Component
 @Slf4j
-public class Scheduler {
+public class SchedulerIca {
 
   @Autowired private PaRepository paRepository;
 
@@ -58,8 +43,8 @@ public class Scheduler {
   @Autowired private IbanMasterRepository ibanMasterRepository;
 
   @Autowired private IcaBinaryFileRepository icaBinaryFileRepository;
-  private String storageConnectionString = "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;";
-  private String icaTable = "ICATABLE";
+
+  @Autowired private AzureStorageInteraction azureStorageInteraction;
 
   private Thread threadOfExecution;
 
@@ -69,14 +54,15 @@ public class Scheduler {
   public void updateIcaFile() {
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC).minusDays(1L);
     String previousExecution = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(currentDate).toString();
-    Map<String, String> updatedEcFiscalCodeIcas = getUpdatedEC(previousExecution);
+    Map<String, String> updatedEcFiscalCodeIcas = azureStorageInteraction.getUpdatedEC(previousExecution);
+    List<String> x = new ArrayList<>(updatedEcFiscalCodeIcas.keySet());
     List<Pa> creditorInstitutions = paRepository
-        .findByIdDominioIn(updatedEcFiscalCodeIcas.keySet().stream().collect(Collectors.toList()))
-        .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND));
+        .findByIdDominioIn(new ArrayList<>(updatedEcFiscalCodeIcas.keySet()))
+        .orElseThrow(() ->new AppException(AppError.CREDITOR_INSTITUTIONS_NOT_FOUND));
     creditorInstitutions.forEach(ec -> {
       List<IbanMaster> ibanAttributeMasters = ibanMasterRepository.findByFkPa(ec.getObjId());
       List<Iban> ibans = ibanRepository.findByObjIdIn(ibanAttributeMasters.stream()
-          .map(ibnMas->ibnMas.getObjId())
+          .map(IbanMaster::getObjId)
           .collect(Collectors.toList()));
       byte[] icaBinaryFileXml = createXml(ec, ibans, updatedEcFiscalCodeIcas);
       IcaBinaryFile icaBinaryFile = IcaBinaryFile.builder()
@@ -152,23 +138,5 @@ public class Scheduler {
       log.error("No security algorithm was found %s", e.getMessage());
     }
     return hashedOutput;
-  }
-  private Map<String, String> getUpdatedEC(String lastUpdate) throws AppException {
-    Spliterator<CreditorInstitutionIcaFile> resultOrganizationIcaList = null;
-    try {
-      CloudTable table = CloudStorageAccount.parse(storageConnectionString).createCloudTableClient()
-          .getTableReference(this.icaTable);
-      resultOrganizationIcaList =
-          table.execute(TableQuery.from(CreditorInstitutionIcaFile.class)
-              .where(TableQuery.generateFilterCondition("PublicationDate", TableQuery.QueryComparisons.GREATER_THAN, lastUpdate)))
-              .spliterator();
-    } catch (InvalidKeyException | URISyntaxException | StorageException e) {
-      // unexpected error
-      throw new AppException(AppError.AZURE_STORAGE_ERROR);
-    }
-    return StreamSupport.stream(resultOrganizationIcaList, false).collect(
-        Collectors.toMap(
-            creditorInstitutionIcaFile -> creditorInstitutionIcaFile.getRowKey(),
-            creditorInstitutionIcaFile -> creditorInstitutionIcaFile.getPublicationDate()));
   }
 }
