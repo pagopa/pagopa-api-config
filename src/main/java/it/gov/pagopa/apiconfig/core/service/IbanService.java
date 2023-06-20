@@ -11,13 +11,11 @@ import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
-import it.gov.pagopa.apiconfig.starter.entity.IcaBinaryFile;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
 import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IcaBinaryFileRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -52,8 +50,6 @@ public class IbanService {
 
   @Autowired private IbanAttributeMasterRepository ibanAttributeMasterRepository;
 
-  @Autowired private IcaBinaryFileRepository icaBinaryFileRepository;
-
   @Autowired private ModelMapper modelMapper;
 
   public IbanEnhanced createIban(
@@ -75,12 +71,9 @@ public class IbanService {
                   iban.getIbanValue(),
                   existingCreditorInstitution.getIdDominio());
             });
-    // generate an empty ICA binary file and a relation between iban, CI and ICA file
-    IcaBinaryFile icaBinaryFileToBeCreated = IcaBinaryFile.builder().fileSize(0L).build();
-    icaBinaryFileToBeCreated = icaBinaryFileRepository.save(icaBinaryFileToBeCreated);
     IbanMaster ibanCIRelationToBeCreated =
         saveIbanCIRelation(
-            existingCreditorInstitution, iban, ibanToBeCreated, icaBinaryFileToBeCreated);
+            existingCreditorInstitution, iban, ibanToBeCreated);
     // generate the relation between iban and attributes
     List<IbanAttributeMaster> updatedIbanAttributes =
         saveIbanLabelRelation(iban, ibanCIRelationToBeCreated);
@@ -128,8 +121,7 @@ public class IbanService {
             existingIbanMaster,
             existingCreditorInstitution,
             iban,
-            existingIban,
-            existingIbanMaster.getIcaBinaryFile());
+            existingIban);
     // remove all labels and save them again
     ibanAttributeMasterRepository.deleteAll(existingIbanMaster.getIbanAttributesMasters());
     ibanAttributeMasterRepository.flush();
@@ -250,18 +242,16 @@ public class IbanService {
   private IbanMaster saveIbanCIRelation(
       Pa creditorInstitution,
       IbanEnhanced iban,
-      Iban ibanToBeCreated,
-      IcaBinaryFile icaBinaryFileToBeCreated) {
+      Iban ibanToBeCreated) {
     return saveIbanCIRelation(
-        new IbanMaster(), creditorInstitution, iban, ibanToBeCreated, icaBinaryFileToBeCreated);
+        new IbanMaster(), creditorInstitution, iban, ibanToBeCreated);
   }
 
   private IbanMaster saveIbanCIRelation(
       IbanMaster ibanMaster,
       Pa creditorInstitution,
       IbanEnhanced iban,
-      Iban ibanToBeCreated,
-      IcaBinaryFile icaBinaryFileToBeCreated) {
+      Iban ibanToBeCreated) {
     ibanMaster.setFkPa(creditorInstitution.getObjId());
     ibanMaster.setFkIban(ibanToBeCreated.getObjId());
     ibanMaster.setIbanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED);
@@ -272,8 +262,6 @@ public class IbanService {
     ibanMaster.setValidityDate(CommonUtil.toTimestamp(iban.getValidityDate()));
     ibanMaster.setPa(creditorInstitution); // setting CI object reference
     ibanMaster.setIban(ibanToBeCreated); // setting IBAN object reference
-    ibanMaster.setIcaBinaryFile(
-        icaBinaryFileToBeCreated); // setting ICA binary file object reference
     return ibanMasterRepository.save(ibanMaster);
   }
 
