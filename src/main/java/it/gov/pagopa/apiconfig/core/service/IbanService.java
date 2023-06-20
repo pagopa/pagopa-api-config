@@ -44,7 +44,7 @@ import org.springframework.validation.annotation.Validated;
 public class IbanService {
 
   @Value("${iban.abi.poste}")
-  private String POSTAL_IBAN_ABI;
+  private String postalIbanAbi;
 
   @Autowired private PaRepository paRepository;
 
@@ -70,7 +70,7 @@ public class IbanService {
             .findByIban(iban.getIbanValue())
             .orElseGet(() -> saveIban(iban, organizationFiscalCode));
     // check if IBAN is a postal IBAN and if it is already related to an existing Creditor Institution
-    if (isPostalIban(iban) && ibanMasterRepository.findByFkIban(ibanToBeCreated.getObjId()).size() > 0)
+    if (isPostalIban(iban) && !ibanMasterRepository.findByFkIban(ibanToBeCreated.getObjId()).isEmpty())
       throw new AppException(AppError.POSTAL_IBAN_ALREADY_ASSOCIATED, iban.getIbanValue(), existingCreditorInstitution.getIdDominio());
     // check if IBAN was already associated to creditor institution. If already associated, throw an
     // exception
@@ -227,7 +227,7 @@ public class IbanService {
 
   public boolean isPostalIban(IbanEnhanced iban) {
     String abiCode = iban.getIbanValue().substring(5, 10);
-    return abiCode.equals(POSTAL_IBAN_ABI);
+    return abiCode.equals(postalIbanAbi);
   }
 
   private Pa getCreditorInstitutionIfExists(String organizationFiscalCode) {
