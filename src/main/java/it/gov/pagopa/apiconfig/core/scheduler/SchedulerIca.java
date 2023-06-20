@@ -46,8 +46,6 @@ public class SchedulerIca {
 
   @Autowired private AzureStorageInteraction azureStorageInteraction;
 
-  private Thread threadOfExecution;
-
   @Scheduled(cron = "${cron.job.schedule.expression}")
   @Async
   @Transactional
