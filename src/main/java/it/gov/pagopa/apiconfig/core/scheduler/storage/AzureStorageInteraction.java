@@ -20,7 +20,8 @@ import java.util.stream.StreamSupport;
 @Component
 public class AzureStorageInteraction {
 
-  private String storageConnectionString = "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;";
+  @Value("${creditor.institution.table.connection.string}")
+  private String storageConnectionString;
 
   @Value("${creditor.institution.update.table}")
   private String icaTable;

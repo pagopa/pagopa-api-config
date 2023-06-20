@@ -53,9 +53,8 @@ public class SchedulerIca {
   @Transactional
   public void updateIcaFile() {
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC).minusDays(1L);
-    String previousExecution = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(currentDate).toString();
-    Map<String, String> updatedEcFiscalCodeIcas = azureStorageInteraction.getUpdatedEC(previousExecution);
-    List<String> x = new ArrayList<>(updatedEcFiscalCodeIcas.keySet());
+    Map<String, String> updatedEcFiscalCodeIcas = azureStorageInteraction
+        .getUpdatedEC(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(currentDate).toString());
     List<Pa> creditorInstitutions = paRepository
         .findByIdDominioIn(new ArrayList<>(updatedEcFiscalCodeIcas.keySet()))
         .orElseThrow(() ->new AppException(AppError.CREDITOR_INSTITUTIONS_NOT_FOUND));

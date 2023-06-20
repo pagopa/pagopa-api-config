@@ -689,7 +689,7 @@ create table NODO4_CFG.IBAN_MASTER
             references NODO4_CFG.PA,
     constraint FK_IBAN
             foreign key (FK_IBAN)
-                references NODO4_CFG.IBAN,
+                references NODO4_CFG.IBAN
 );
 create table NODO4_CFG.IBAN_ATTRIBUTES_MASTER
 (
