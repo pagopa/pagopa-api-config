@@ -5,6 +5,8 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -33,6 +35,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import org.springframework.http.HttpStatus;
 
 @Slf4j
 @SpringBootTest(classes = ApiConfig.class)
@@ -72,6 +75,22 @@ class SchedulerTest {
     String xml = new String(icaBinaryFile.getFileContent());
     assertThat(xml, containsString(LocalDateTime.now().toLocalDate().toString()));
     assertThat(xml, containsString(getMockIbanEntity().getIban()));
+  }
+
+  @Test
+  void checkSchedulerAction_NoPa() throws StorageException, InterruptedException {
+
+    when(paRepository.findByIdDominioIn(any(List.class))).thenReturn(Optional.empty());
+    when(azureStorageInteraction.getUpdatedEC(anyString())).thenReturn(Map.of());
+
+    // Funzione schedulata chiamata staticamente
+    try {
+      schedulerIca.updateIcaFile();
+    } catch (AppException e) {
+      assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+    } catch (Exception e) {
+      fail();
+    }
   }
 }
 

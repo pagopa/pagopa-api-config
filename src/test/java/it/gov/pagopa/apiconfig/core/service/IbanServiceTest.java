@@ -731,7 +731,6 @@ class IbanServiceTest {
         .pa(creditorInstitution)
         .fkIban(ibanToBeCreated.getObjId())
         .iban(ibanToBeCreated)
-        .fkIcaBinaryFile(icaBinaryFile.getObjId())
         .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
         .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
         .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
@@ -775,7 +774,6 @@ class IbanServiceTest {
                 .objId(100L)
                 .fkPa(creditorInstitution.getObjId())
                 .fkIban(ibanEntity.getObjId())
-                .fkIcaBinaryFile(icaBinaryFile.getObjId())
                 .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
                 .insertedDate(
                     CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
