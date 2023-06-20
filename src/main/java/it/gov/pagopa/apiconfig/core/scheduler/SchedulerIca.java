@@ -55,7 +55,7 @@ public class SchedulerIca {
         .getUpdatedEC(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(currentDate).toString());
     List<Pa> creditorInstitutions = paRepository
         .findByIdDominioIn(new ArrayList<>(updatedEcFiscalCodeIcas.keySet()))
-        .orElseThrow(() ->new AppException(AppError.CREDITOR_INSTITUTIONS_NOT_FOUND));
+        .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTIONS_NOT_FOUND));
     creditorInstitutions.forEach(ec -> {
       List<IbanMaster> ibanAttributeMasters = ibanMasterRepository.findByFkPa(ec.getObjId());
       List<Iban> ibans = ibanRepository.findByObjIdIn(ibanAttributeMasters.stream()
