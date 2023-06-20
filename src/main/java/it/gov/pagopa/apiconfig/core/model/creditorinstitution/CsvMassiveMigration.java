@@ -1,7 +1,6 @@
 package it.gov.pagopa.apiconfig.core.model.creditorinstitution;
 
 import com.opencsv.bean.CsvBindByName;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

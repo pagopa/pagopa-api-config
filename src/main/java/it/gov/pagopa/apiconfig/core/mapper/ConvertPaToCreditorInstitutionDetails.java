@@ -1,14 +1,12 @@
 package it.gov.pagopa.apiconfig.core.mapper;
 
-import javax.validation.Valid;
-
-import org.modelmapper.Converter;
-import org.modelmapper.spi.MappingContext;
-
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionAddress;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionDetails;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import javax.validation.Valid;
+import org.modelmapper.Converter;
+import org.modelmapper.spi.MappingContext;
 
 public class ConvertPaToCreditorInstitutionDetails
     implements Converter<Pa, CreditorInstitutionDetails> {

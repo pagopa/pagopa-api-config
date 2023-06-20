@@ -1,12 +1,10 @@
 package it.gov.pagopa.apiconfig.core.mapper;
 
-import javax.validation.Valid;
-
-import org.modelmapper.Converter;
-import org.modelmapper.spi.MappingContext;
-
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
+import javax.validation.Valid;
+import org.modelmapper.Converter;
+import org.modelmapper.spi.MappingContext;
 
 public class ConvertWfespPluginConfToWfespPluginConf
     implements Converter<

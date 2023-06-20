@@ -12,16 +12,10 @@ on:
 
   workflow_dispatch:
 
-env:
-  TEMPLATE_DIR: azure-dashboard
-
 permissions:
   id-token: write
   contents: read
-
-concurrency:
-  group: 'dashboard'
-  cancel-in-progress: false
+  deployments: write
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -44,43 +38,48 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Read terraform version
-        id: read-version
-        shell: bash
-        run: |
-          echo "TERRAFORM_VERSION=`cat .terraform-version`" >> $GITHUB_ENV
-      - name: Setup Terraform
-        # from https://github.com/hashicorp/setup-terraform/commits/main
-        uses: hashicorp/setup-terraform@8feba2b913ea459066180f9cb177f58a881cf146
+      # from https://github.com/pagopa/opex-dashboard-azure-action/
+      - uses: pagopa/opex-dashboard-azure-action@v1.1.2
         with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
-
-      - name: Login
-        id: login
-        # from https://github.com/Azure/login/commits/master
-        uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
-        with:
+          environment: ${{ matrix.environment }}
+          api-name: ${{ matrix.product }}
+          config: .opex/env/${{ matrix.environment }}/config.yaml
           client-id: ${{ secrets.CLIENT_ID }}
           tenant-id: ${{ secrets.TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+          # from https://github.com/pagopa/opex-dashboard-azure-action/pkgs/container/opex-dashboard-azure-action
+          docker-version: sha256:e4245954566cd3470e1b5527d33bb58ca132ce7493eac01be9e808fd25a11c8d
 
-      # this action create a folder named /azure-dashboard
-      - uses: pagopa/opex-dashboard-action@main
+  delete_github_deployments:
+    runs-on: ubuntu-latest
+    needs: dashboard
+    if: ${{ always() }}
+    steps:
+      - name: Delete Previous deployments
+        uses: actions/github-script@v6
+        env:
+          SHA_HEAD: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.sha) || github.sha}}
         with:
-          template: ${{ env.TEMPLATE_DIR }}
-          config: .opex/${{ matrix.product }}/env/${{ matrix.environment }}/config.yaml
+          script: |
+            const { SHA_HEAD } = process.env
 
-      # we need to set env variables in the folder /azure-dashboard
-      - name: Copy Environments
-        run: |
-          cp -R .opex/${{ matrix.product }}/env ./${TEMPLATE_DIR}
-      # now is possible to launch the command: terraform apply
-      - name: Terraform Apply
-        shell: bash
-        run: |
-          cd ./${TEMPLATE_DIR}
-          export ARM_CLIENT_ID="${{ secrets.CLIENT_ID }}"
-          export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-          export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
-          export ARM_USE_OIDC=true
-          bash ./terraform.sh apply ${{ matrix.environment }} -auto-approve
+            const deployments = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: SHA_HEAD
+            });
+            await Promise.all(
+              deployments.data.map(async (deployment) => {
+                await github.rest.repos.createDeploymentStatus({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  deployment_id: deployment.id,
+                  state: 'inactive'
+                });
+                return github.rest.repos.deleteDeployment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  deployment_id: deployment.id
+                });
+              })
+            );

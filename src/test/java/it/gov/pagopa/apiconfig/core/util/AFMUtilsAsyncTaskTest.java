@@ -10,6 +10,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.client.AFMUtilsClient;
+import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
+import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,12 +28,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.client.AFMUtilsClient;
-import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
-import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
 
 @SpringBootTest(classes = ApiConfig.class)
 class AFMUtilsAsyncTaskTest {
@@ -65,13 +64,13 @@ class AFMUtilsAsyncTaskTest {
 
     assertTrue(afmUtilsAsyncTask.executeSync(getMockCdiMaster()));
   }
-  
+
   @Test
   void executeAfmUtilsDeleteBundlesByIdCDI() {
     ResponseEntity<Void> voidResponse = new ResponseEntity<Void>(HttpStatus.OK);
     when(afmUtilsClient.deleteBundlesByIdCDI(any(), any(), any(), any())).thenReturn(voidResponse);
     afmUtilsAsyncTask.afmUtilsDeleteBundlesByIdCDI("123", "456");
-    Mockito.verify(afmUtilsClient, times(1)).deleteBundlesByIdCDI(any(), any(), eq("123"), eq("456"));
+    Mockito.verify(afmUtilsClient, times(1))
+        .deleteBundlesByIdCDI(any(), any(), eq("123"), eq("456"));
   }
-  
 }

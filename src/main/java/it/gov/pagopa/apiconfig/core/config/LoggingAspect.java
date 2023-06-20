@@ -1,5 +1,8 @@
 package it.gov.pagopa.apiconfig.core.config;
 
+import java.util.Arrays;
+import java.util.stream.StreamSupport;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,10 +15,6 @@ import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.stream.StreamSupport;
 
 @Aspect
 @Component
@@ -55,6 +54,7 @@ public class LoggingAspect {
   public void util() {
     // all util methods
   }
+
   @Pointcut("execution(* it.gov.pagopa.apiconfig.core.client..*.*(..))")
   public void client() {
     // all client methods

@@ -4,32 +4,6 @@ import static it.gov.pagopa.apiconfig.core.util.CommonUtil.mapXml;
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.syntaxValidation;
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.toTimestamp;
 
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.xml.stream.XMLStreamException;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CounterpartTable;
@@ -46,6 +20,29 @@ import it.gov.pagopa.apiconfig.starter.repository.InformativePaDetailRepository;
 import it.gov.pagopa.apiconfig.starter.repository.InformativePaFasceRepository;
 import it.gov.pagopa.apiconfig.starter.repository.InformativePaMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.xml.stream.XMLStreamException;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
 
 @Service
 @Validated
