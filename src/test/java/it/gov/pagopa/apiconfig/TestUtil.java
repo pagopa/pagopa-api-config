@@ -1010,10 +1010,17 @@ public class TestUtil {
     return mockPage(List.of(getMockCdiMasterValid()), 1, 0);
   }
 
-  public static IbanEnhanced getMockIbanEnhanced(
-      OffsetDateTime validityDate, OffsetDateTime dueDate) {
+  public static IbanEnhanced getMockIbanEnhanced(OffsetDateTime validityDate, OffsetDateTime dueDate) {
+    return mockIbanEnhancedBuilder("IT99C0222211111000000000000", validityDate, dueDate);
+  }
+
+  public static IbanEnhanced getMockPostalIbanEnhanced(OffsetDateTime validityDate, OffsetDateTime dueDate) {
+    return mockIbanEnhancedBuilder("IT99C0760111111000000000000", validityDate, dueDate);
+  }
+
+  private static IbanEnhanced mockIbanEnhancedBuilder(String ibanValue, OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return IbanEnhanced.builder()
-        .ibanValue("IT99C0222211111000000000000")
+        .ibanValue(ibanValue)
         .description("Riscossione tributi")
         .isActive(true)
         .validityDate(validityDate)

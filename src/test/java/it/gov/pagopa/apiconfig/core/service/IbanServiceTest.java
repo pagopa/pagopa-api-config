@@ -8,6 +8,7 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockPa2;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPostalIbanEnhanced;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +17,7 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -442,6 +444,34 @@ class IbanServiceTest {
   }
 
   @Test
+  void createPostalIban_existingRelationWithOneCI_409() {
+    // retrieving mock object
+    Pa creditorInstitution = getMockPa();
+    String organizationFiscalCode = creditorInstitution.getIdDominio();
+    IbanEnhanced iban = getMockPostalIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    Iban mockIban = getMockIban(iban, organizationFiscalCode);
+    IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
+    IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
+    List<IbanAttribute> ibanAttributes = getMockIbanAttributes();
+    // mocking responses from repositories
+    when(paRepository.findByIdDominio(organizationFiscalCode))
+        .thenReturn(Optional.of(creditorInstitution));
+    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.empty());
+    when(ibanRepository.save(any(Iban.class))).thenReturn(mockIban);
+    when(icaBinaryFileRepository.save(any(IcaBinaryFile.class))).thenReturn(mockIcaBinaryFile);
+    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), anyLong())).thenReturn(List.of());
+    when(ibanMasterRepository.save(any(IbanMaster.class))).thenReturn(mockIbanMaster);
+    when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
+    when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class)))
+        .then(returnsFirstArg());
+    when(ibanMasterRepository.findByFkIban(anyLong())).thenReturn(getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile));
+    AppException ex =
+        assertThrows(
+            AppException.class, () -> ibanService.createIban(organizationFiscalCode, iban));
+    assertEquals(HttpStatus.CONFLICT, ex.getHttpStatus());
+  }
+
+  @Test
   void createIban_invalidLabel_422() {
     // retrieving mock object
     Pa creditorInstitution = getMockPa();
@@ -578,6 +608,60 @@ class IbanServiceTest {
   }
 
   @Test
+  void updatePostalIbanByDifferentCI_200() { // retrieving mock object
+    IbanEnhanced iban = getMockPostalIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    Pa pa1 = getMockPa();
+    String fc1 = pa1.getIdDominio();
+    Pa pa2 = getMockPa2();
+    String fc2 = pa1.getIdDominio();
+    Iban mockIban = getMockIban(iban, fc1);
+    IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
+    // generating updated mock iban object
+    iban.setDescription("Edited description");
+    iban.setLabels(List.of(iban.getLabels().get(0)));
+    iban.setActive(false);
+    iban.setLabels(null);
+    List<IbanMaster> ibanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
+    IbanMaster updatedMockIbanMaster =
+        getMockIbanMaster(pa2, iban, mockIban, mockIcaBinaryFile);
+    updatedMockIbanMaster.setIbanStatus(IbanStatus.DISABLED);
+    List<IbanAttribute> ibanAttributes = getMockIbanAttributes();
+    // mocking responses from repositories
+    when(paRepository.findByIdDominio(fc1))
+        .thenReturn(Optional.of(pa1));
+    when(paRepository.findByIdDominio(fc2))
+        .thenReturn(Optional.of(pa2));
+    when(ibanRepository.save(any(Iban.class))).thenReturn(mockIban);
+    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(mockIban));
+    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa2.getObjId())))
+        .thenReturn(ibanMasters);
+    when(ibanMasterRepository.save(any(IbanMaster.class))).thenReturn(updatedMockIbanMaster);
+    when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
+    doNothing().when(ibanAttributeMasterRepository).deleteAll(any());
+    doNothing().when(ibanAttributeMasterRepository).flush();
+    when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class)))
+        .then(returnsFirstArg());
+    // executing logic and check assertions
+    IbanEnhanced result = ibanService.updateIban(fc2, iban.getIbanValue(), iban);
+    assertEquals(iban.isActive(), result.isActive());
+    assertEquals(iban.getIbanValue(), result.getIbanValue());
+    assertEquals(iban.getDescription(), result.getDescription());
+    assertEquals(pa2.getRagioneSociale(), result.getCompanyName());
+    assertEquals(pa1.getIdDominio(), result.getCiOwnerFiscalCode());
+    assertEquals(
+        iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC),
+        result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
+    assertEquals(
+        iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC),
+        result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
+    assertTrue(
+        result
+            .getPublicationDate()
+            .withOffsetSameLocal(ZoneOffset.UTC)
+            .isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
+  }
+
+  @Test
   void updateIban_genericConstraintViolation_400() {
     // retrieving mock object
     String organizationFiscalCode = "fakeCIFiscalCode";
@@ -665,6 +749,36 @@ class IbanServiceTest {
         assertThrows(
             AppException.class,
             () -> ibanService.updateIban(organizationFiscalCode, ibanValue, iban));
+    assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
+  }
+
+  @Test
+  void updatePostalIbanByDifferentCI_noIbanCIRelationFound_404() { // retrieving mock object
+    IbanEnhanced iban = getMockPostalIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    Pa pa1 = getMockPa();
+    String fc1 = pa1.getIdDominio();
+    Pa pa2 = getMockPa2();
+    Iban mockIban = getMockIban(iban, fc1);
+    IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
+    // generating updated mock iban object
+    iban.setDescription("Edited description");
+    iban.setLabels(List.of(iban.getLabels().get(0)));
+    iban.setActive(false);
+    iban.setLabels(null);
+    List<IbanMaster> ibanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
+    // mocking responses from repositories
+    when(paRepository.findByIdDominio(fc1))
+        .thenReturn(Optional.of(pa1));
+    when(ibanRepository.save(any(Iban.class))).thenReturn(mockIban);
+    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(mockIban));
+    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa2.getObjId()))).thenReturn(ibanMasters);
+    // return empty list because doesn't exist relation between pa1 and iban
+    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa1.getObjId()))).thenReturn(List.of());
+    // executing logic and check assertions
+    AppException ex =
+        assertThrows(
+            AppException.class,
+            () -> ibanService.updateIban(fc1, iban.getIbanValue(), iban));
     assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
   }
 
@@ -774,6 +888,8 @@ class IbanServiceTest {
                 .objId(100L)
                 .fkPa(creditorInstitution.getObjId())
                 .fkIban(ibanEntity.getObjId())
+                .fkIcaBinaryFile(icaBinaryFile.getObjId())
+                .icaBinaryFile(icaBinaryFile)
                 .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
                 .insertedDate(
                     CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
