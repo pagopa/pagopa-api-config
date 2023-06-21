@@ -651,7 +651,6 @@ create table NODO4_CFG.IBAN
     FISCAL_CODE      varchar(16) not null,
     DUE_DATE         timestamp(6) not null,
     DESCRIPTION      varchar(255),
-    DUE_DATE         timestamp(6) not null,
     constraint PK_IBAN
         primary key (OBJ_ID),
     constraint U_IBAN

@@ -33,7 +33,7 @@
     <feign-version>12.1</feign-version>
     <postgresql-version>42.5.1</postgresql-version>
     <azure.storage.table.version>8.6.6</azure.storage.table.version>
-    <starter.version>1.7.0</starter.version>
+    <starter.version>1.7.1</starter.version>
   </properties>
 
   <repositories>
