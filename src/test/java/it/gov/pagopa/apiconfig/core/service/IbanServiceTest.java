@@ -451,7 +451,8 @@ class IbanServiceTest {
     IbanEnhanced iban = getMockPostalIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IcaBinaryFile mockIcaBinaryFile = getEmptyMockIcaBinaryFile();
-    IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
+    IbanMaster mockIbanMaster =
+        getMockIbanMaster(creditorInstitution, iban, mockIban, mockIcaBinaryFile);
     List<IbanAttribute> ibanAttributes = getMockIbanAttributes();
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode))
@@ -464,7 +465,8 @@ class IbanServiceTest {
     when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
     when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class)))
         .then(returnsFirstArg());
-    when(ibanMasterRepository.findByFkIban(anyLong())).thenReturn(getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile));
+    when(ibanMasterRepository.findByFkIban(anyLong()))
+        .thenReturn(getMockIbanMasters(creditorInstitution, iban, mockIban, mockIcaBinaryFile));
     AppException ex =
         assertThrows(
             AppException.class, () -> ibanService.createIban(organizationFiscalCode, iban));
@@ -622,15 +624,12 @@ class IbanServiceTest {
     iban.setActive(false);
     iban.setLabels(null);
     List<IbanMaster> ibanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
-    IbanMaster updatedMockIbanMaster =
-        getMockIbanMaster(pa2, iban, mockIban, mockIcaBinaryFile);
+    IbanMaster updatedMockIbanMaster = getMockIbanMaster(pa2, iban, mockIban, mockIcaBinaryFile);
     updatedMockIbanMaster.setIbanStatus(IbanStatus.DISABLED);
     List<IbanAttribute> ibanAttributes = getMockIbanAttributes();
     // mocking responses from repositories
-    when(paRepository.findByIdDominio(fc1))
-        .thenReturn(Optional.of(pa1));
-    when(paRepository.findByIdDominio(fc2))
-        .thenReturn(Optional.of(pa2));
+    when(paRepository.findByIdDominio(fc1)).thenReturn(Optional.of(pa1));
+    when(paRepository.findByIdDominio(fc2)).thenReturn(Optional.of(pa2));
     when(ibanRepository.save(any(Iban.class))).thenReturn(mockIban);
     when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(mockIban));
     when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa2.getObjId())))
@@ -767,18 +766,18 @@ class IbanServiceTest {
     iban.setLabels(null);
     List<IbanMaster> ibanMasters = getMockIbanMasters(pa2, iban, mockIban, mockIcaBinaryFile);
     // mocking responses from repositories
-    when(paRepository.findByIdDominio(fc1))
-        .thenReturn(Optional.of(pa1));
+    when(paRepository.findByIdDominio(fc1)).thenReturn(Optional.of(pa1));
     when(ibanRepository.save(any(Iban.class))).thenReturn(mockIban);
     when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(mockIban));
-    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa2.getObjId()))).thenReturn(ibanMasters);
+    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa2.getObjId())))
+        .thenReturn(ibanMasters);
     // return empty list because doesn't exist relation between pa1 and iban
-    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa1.getObjId()))).thenReturn(List.of());
+    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa1.getObjId())))
+        .thenReturn(List.of());
     // executing logic and check assertions
     AppException ex =
         assertThrows(
-            AppException.class,
-            () -> ibanService.updateIban(fc1, iban.getIbanValue(), iban));
+            AppException.class, () -> ibanService.updateIban(fc1, iban.getIbanValue(), iban));
     assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
   }
 

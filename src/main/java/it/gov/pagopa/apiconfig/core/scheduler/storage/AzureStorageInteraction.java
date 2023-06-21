@@ -8,15 +8,15 @@ import com.microsoft.azure.storage.table.TableServiceEntity;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.scheduler.entity.CreditorInstitutionIcaFile;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.Map;
 import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 @NoArgsConstructor
@@ -28,7 +28,7 @@ public class AzureStorageInteraction {
   @Value("${creditor.institution.update.table}")
   private String icaTable;
 
-  public AzureStorageInteraction(String storageConnectionString, String icaTable){
+  public AzureStorageInteraction(String storageConnectionString, String icaTable) {
     this.storageConnectionString = storageConnectionString;
     this.icaTable = icaTable;
   }
@@ -36,20 +36,27 @@ public class AzureStorageInteraction {
   public Map<String, String> getUpdatedEC(String lastUpdate) throws AppException {
     Spliterator<CreditorInstitutionIcaFile> resultOrganizationIcaList = null;
     try {
-      CloudTable table = CloudStorageAccount.parse(storageConnectionString).createCloudTableClient()
-          .getTableReference(this.icaTable);
+      CloudTable table =
+          CloudStorageAccount.parse(storageConnectionString)
+              .createCloudTableClient()
+              .getTableReference(this.icaTable);
       resultOrganizationIcaList =
-          table.execute(TableQuery.from(CreditorInstitutionIcaFile.class)
-                  .where(TableQuery.generateFilterCondition("PublicationDate", TableQuery.QueryComparisons.GREATER_THAN, lastUpdate)))
+          table
+              .execute(
+                  TableQuery.from(CreditorInstitutionIcaFile.class)
+                      .where(
+                          TableQuery.generateFilterCondition(
+                              "PublicationDate",
+                              TableQuery.QueryComparisons.GREATER_THAN,
+                              lastUpdate)))
               .spliterator();
     } catch (InvalidKeyException | URISyntaxException | StorageException e) {
       // unexpected error
       throw new AppException(AppError.AZURE_STORAGE_ERROR);
     }
-    return StreamSupport.stream(resultOrganizationIcaList, false).collect(
-        Collectors.toMap(
-          TableServiceEntity::getRowKey,
-          CreditorInstitutionIcaFile::getPublicationDate)
-        );
+    return StreamSupport.stream(resultOrganizationIcaList, false)
+        .collect(
+            Collectors.toMap(
+                TableServiceEntity::getRowKey, CreditorInstitutionIcaFile::getPublicationDate));
   }
 }

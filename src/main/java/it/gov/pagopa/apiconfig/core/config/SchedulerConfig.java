@@ -9,6 +9,4 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 @ConditionalOnProperty(name = "cron.job.schedule.enabled", matchIfMissing = true)
-public class SchedulerConfig {
-
-}
+public class SchedulerConfig {}
