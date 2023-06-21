@@ -75,9 +75,18 @@ public class AzureStorageInteractionTest {
                         new CreditorInstitutionIcaFile(
                             "12345", LocalDateTime.now().plusDays(1).toString())))
                 .getResult();
+    CreditorInstitutionIcaFile insertedEntity2 =
+        (CreditorInstitutionIcaFile)
+            table
+                .execute(
+                    TableOperation.insert(
+                        new CreditorInstitutionIcaFile(
+                            "12345_2", LocalDateTime.now().minusDays(1).toString())))
+                .getResult();
     AzureStorageInteraction az = new AzureStorageInteraction(storageConnectionString, tableName);
     Map<String, String> result = az.getUpdatedEC(LocalDateTime.now().toString());
     assertEquals(insertedEntity.getPublicationDate(), result.get("12345"));
+    assertEquals(1, result.keySet().size());
   }
 
   @Test
