@@ -888,8 +888,6 @@ class IbanServiceTest {
                 .objId(100L)
                 .fkPa(creditorInstitution.getObjId())
                 .fkIban(ibanEntity.getObjId())
-                .fkIcaBinaryFile(icaBinaryFile.getObjId())
-                .icaBinaryFile(icaBinaryFile)
                 .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
                 .insertedDate(
                     CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
