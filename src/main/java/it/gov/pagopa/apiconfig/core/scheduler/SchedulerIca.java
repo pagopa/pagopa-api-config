@@ -46,13 +46,15 @@ public class SchedulerIca {
 
   @Autowired private AzureStorageInteraction azureStorageInteraction;
 
+  private static final String XML_ERROR = "Error in writing XML file %s";
+
   @Scheduled(cron = "${cron.job.schedule.expression}")
   @Async
   @Transactional
   public void updateIcaFile() {
     LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC).minusDays(1L);
     Map<String, String> updatedEcFiscalCodeIcas = azureStorageInteraction
-        .getUpdatedEC(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(currentDate).toString());
+        .getUpdatedEC(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(currentDate));
     List<Pa> creditorInstitutions = paRepository
         .findByIdDominioIn(new ArrayList<>(updatedEcFiscalCodeIcas.keySet()))
         .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTIONS_NOT_FOUND));
@@ -89,16 +91,16 @@ public class SchedulerIca {
       writeElement(xtw, "dataPubblicazione", publicationEcRelation.get(pa.getIdDominio()));
       writeElement(xtw, "dataInizioValidita", LocalDateTime.now().toString());
       xtw.writeStartElement("contiDiAccredito");
-      ibans.forEach(iban -> {
-        writeIbanElement(xtw, iban);
-      });
+      ibans.forEach(iban ->
+        writeIbanElement(xtw, iban)
+      );
       xtw.writeEndElement();
       xtw.writeEndElement();
       xtw.writeEndDocument();
       xtw.flush();
       xtw.close();
     } catch (XMLStreamException e){
-      log.error("Error in writing XML file %s", e.getMessage());
+      log.error(XML_ERROR, e.getMessage());
     }
     return outputStream.toByteArray();
   }
@@ -109,7 +111,7 @@ public class SchedulerIca {
       xtw.writeCharacters(elementValue);
       xtw.writeEndElement();
     } catch (XMLStreamException e){
-      log.error("Error in writing XML file %s", e.getMessage());
+      log.error(XML_ERROR, e.getMessage());
     }
   }
 
@@ -122,14 +124,14 @@ public class SchedulerIca {
       xtw.writeEmptyElement("idBancaSeller");
       xtw.writeEndElement();
     } catch (XMLStreamException e){
-      log.error("Error in writing XML file %s", e.getMessage());
+      log.error(XML_ERROR, e.getMessage());
     }
   }
 
   private byte[] getHash(byte[] input){
     byte[] hashedOutput = null;
     try{
-      MessageDigest md = MessageDigest.getInstance("MD5");
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
       hashedOutput = md.digest(input);
     } catch(NoSuchAlgorithmException e){
       log.error("No security algorithm was found %s", e.getMessage());

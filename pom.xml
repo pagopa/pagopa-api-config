@@ -151,6 +151,12 @@
     </dependency>
     <!-- End Azure -->
 
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Iban validation -->
     <dependency>
       <groupId>commons-validator</groupId>

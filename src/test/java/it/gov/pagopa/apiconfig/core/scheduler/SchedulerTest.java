@@ -20,6 +20,8 @@ import it.gov.pagopa.apiconfig.starter.repository.IcaBinaryFileRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ import java.util.Optional;
 
 import com.microsoft.azure.storage.StorageException;
 import lombok.extern.slf4j.Slf4j;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +71,9 @@ class SchedulerTest {
     schedulerIca.updateIcaFile();
 
     // Check che il file iban sia stato salvato
-    Thread.sleep(1000);
+    LocalDateTime currentDatePlusSeconds = LocalDateTime.now(ZoneOffset.UTC).plus(1, ChronoUnit.SECONDS);
+    Awaitility.await().until(() -> LocalDateTime.now(ZoneOffset.UTC).isAfter(currentDatePlusSeconds));
+
     IcaBinaryFile icaBinaryFile = icaBinaryFileRepository
         .findByIdDominio("00168480242")
         .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, "00168480242"));
