@@ -1,26 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
@@ -38,6 +17,24 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
@@ -68,9 +65,14 @@ public class IbanService {
         ibanRepository
             .findByIban(iban.getIbanValue())
             .orElseGet(() -> saveIban(iban, organizationFiscalCode));
-    // check if IBAN is a postal IBAN and if it is already related to an existing Creditor Institution
-    if (isPostalIban(iban) && !ibanMasterRepository.findByFkIban(ibanToBeCreated.getObjId()).isEmpty())
-      throw new AppException(AppError.POSTAL_IBAN_ALREADY_ASSOCIATED, iban.getIbanValue(), existingCreditorInstitution.getIdDominio());
+    // check if IBAN is a postal IBAN and if it is already related to an existing Creditor
+    // Institution
+    if (isPostalIban(iban)
+        && !ibanMasterRepository.findByFkIban(ibanToBeCreated.getObjId()).isEmpty())
+      throw new AppException(
+          AppError.POSTAL_IBAN_ALREADY_ASSOCIATED,
+          iban.getIbanValue(),
+          existingCreditorInstitution.getIdDominio());
     // check if IBAN was already associated to creditor institution. If already associated, throw an
     // exception
     getIbanMaster(ibanToBeCreated, existingCreditorInstitution)
@@ -82,8 +84,7 @@ public class IbanService {
                   existingCreditorInstitution.getIdDominio());
             });
     IbanMaster ibanCIRelationToBeCreated =
-        saveIbanCIRelation(
-            existingCreditorInstitution, iban, ibanToBeCreated);
+        saveIbanCIRelation(existingCreditorInstitution, iban, ibanToBeCreated);
     // generate the relation between iban and attributes
     List<IbanAttributeMaster> updatedIbanAttributes =
         saveIbanLabelRelation(iban, ibanCIRelationToBeCreated);
@@ -127,11 +128,7 @@ public class IbanService {
                         AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
     // generate a relation between iban and CI
     IbanMaster ibanCIRelationToBeUpdated =
-        saveIbanCIRelation(
-            existingIbanMaster,
-            existingCreditorInstitution,
-            iban,
-            existingIban);
+        saveIbanCIRelation(existingIbanMaster, existingCreditorInstitution, iban, existingIban);
     // remove all labels and save them again
     ibanAttributeMasterRepository.deleteAll(existingIbanMaster.getIbanAttributesMasters());
     ibanAttributeMasterRepository.flush();
@@ -216,7 +213,7 @@ public class IbanService {
       ibanRepository.delete(ibanToBeDeleted);
     }
     return String.format(
-    		"\"The Iban %s for the creditor institution %s has been deleted\"",
+        "\"The Iban %s for the creditor institution %s has been deleted\"",
         ibanValue, organizationFiscalCode);
   }
 
@@ -257,18 +254,12 @@ public class IbanService {
   }
 
   private IbanMaster saveIbanCIRelation(
-      Pa creditorInstitution,
-      IbanEnhanced iban,
-      Iban ibanToBeCreated) {
-    return saveIbanCIRelation(
-        new IbanMaster(), creditorInstitution, iban, ibanToBeCreated);
+      Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated) {
+    return saveIbanCIRelation(new IbanMaster(), creditorInstitution, iban, ibanToBeCreated);
   }
 
   private IbanMaster saveIbanCIRelation(
-      IbanMaster ibanMaster,
-      Pa creditorInstitution,
-      IbanEnhanced iban,
-      Iban ibanToBeCreated) {
+      IbanMaster ibanMaster, Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated) {
     ibanMaster.setFkPa(creditorInstitution.getObjId());
     ibanMaster.setFkIban(ibanToBeCreated.getObjId());
     ibanMaster.setIbanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED);
