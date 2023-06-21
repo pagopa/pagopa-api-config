@@ -2630,6 +2630,13 @@
             "type": "integer"
           },
           {
+            "description": "Filter by broker",
+            "in": "query",
+            "name": "brokercode",
+            "required": false,
+            "type": "string"
+          },
+          {
             "description": "Filter by code",
             "in": "query",
             "name": "code",
@@ -8853,7 +8860,6 @@
       ],
       "delete": {
         "produces": [
-          "text/plain",
           "application/json"
         ],
         "parameters": [
