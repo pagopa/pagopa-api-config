@@ -1,21 +1,27 @@
 package it.gov.pagopa.apiconfig.core.scheduler.storage;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.RetryNoRetry;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.table.CloudTable;
+import com.microsoft.azure.storage.table.CloudTableClient;
+import com.microsoft.azure.storage.table.TableOperation;
 import com.microsoft.azure.storage.table.TableQuery;
+import com.microsoft.azure.storage.table.TableRequestOptions;
 import com.microsoft.azure.storage.table.TableServiceEntity;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.scheduler.entity.CreditorInstitutionIcaFile;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +33,8 @@ public class AzureStorageInteraction {
 
   @Value("${creditor.institution.update.table}")
   private String icaTable;
+
+  private boolean debugAzurite = Boolean.parseBoolean(System.getenv("DEBUG_AZURITE"));
 
   public AzureStorageInteraction(String storageConnectionString, String icaTable) {
     this.storageConnectionString = storageConnectionString;
@@ -58,5 +66,42 @@ public class AzureStorageInteraction {
         .collect(
             Collectors.toMap(
                 TableServiceEntity::getRowKey, CreditorInstitutionIcaFile::getPublicationDate));
+  }
+
+  public void updateECIcaTable(String idDominio){
+    checkIfTableExists();
+    try {
+      CloudTable table = CloudStorageAccount.parse(storageConnectionString).createCloudTableClient()
+          .getTableReference(this.icaTable);
+      table.execute(TableOperation
+          .insertOrReplace(
+              new CreditorInstitutionIcaFile(
+                  idDominio,
+                  LocalDateTime.now().toString()
+              )
+          ));
+    } catch (InvalidKeyException | URISyntaxException | StorageException e) {
+      if (e instanceof StorageException && ((StorageException) e).getHttpStatusCode() == HttpStatus.CONFLICT.value()) {
+        throw new AppException(AppError.AZURE_STORAGE_ERROR);
+      }
+      // unexpected error
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private void checkIfTableExists() {
+    if (debugAzurite) {
+      try {
+        CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
+        CloudTableClient cloudTableClient = cloudStorageAccount.createCloudTableClient();
+        TableRequestOptions tableRequestOptions = new TableRequestOptions();
+        tableRequestOptions.setRetryPolicyFactory(RetryNoRetry.getInstance()); // disable retry to complete faster
+        cloudTableClient.setDefaultRequestOptions(tableRequestOptions);
+        CloudTable table = cloudTableClient.getTableReference(icaTable);
+        table.createIfNotExists();
+      } catch (URISyntaxException | StorageException | InvalidKeyException e) {
+        throw new AppException(AppError.AZURE_STORAGE_ERROR);
+      }
+    }
   }
 }

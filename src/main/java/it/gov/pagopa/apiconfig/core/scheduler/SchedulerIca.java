@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.xml.stream.XMLOutputFactory;
@@ -60,6 +61,7 @@ public class SchedulerIca {
             .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTIONS_NOT_FOUND));
     creditorInstitutions.forEach(
         ec -> {
+          icaBinaryFileRepository.deleteByIdDominio(ec.getIdDominio());
           List<IbanMaster> ibanAttributeMasters = ibanMasterRepository.findByFkPa(ec.getObjId());
           List<Iban> ibans =
               ibanRepository.findByObjIdIn(
