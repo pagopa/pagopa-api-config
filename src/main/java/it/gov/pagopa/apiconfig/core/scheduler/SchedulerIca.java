@@ -50,10 +50,10 @@ public class SchedulerIca {
   @Async
   @Transactional
   public void updateIcaFile() {
-    LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC).minusDays(1L);
+    LocalDateTime previousExecution = LocalDateTime.now(ZoneOffset.UTC).minusDays(1L);
     Map<String, String> updatedEcFiscalCodeIcas =
         azureStorageInteraction.getUpdatedEC(
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(currentDate));
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(previousExecution));
     List<Pa> creditorInstitutions =
         paRepository
             .findByIdDominioIn(new ArrayList<>(updatedEcFiscalCodeIcas.keySet()))
