@@ -80,6 +80,7 @@ microservice-chart:
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
+    SHOW_SQL: false
   envSecret:
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'
