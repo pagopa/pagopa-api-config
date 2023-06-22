@@ -105,4 +105,4 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: "0.45.3"
+        tag: "0.45.4-1-PAGOPA-1048-bug-creazione-psp"

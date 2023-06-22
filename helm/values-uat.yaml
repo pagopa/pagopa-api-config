@@ -21,7 +21,7 @@ basecache: &basecache
       create: true
       image:
         repository: pagopaucommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.45.3"
+        tag: "0.45.4-1-PAGOPA-1048-bug-creazione-psp"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
