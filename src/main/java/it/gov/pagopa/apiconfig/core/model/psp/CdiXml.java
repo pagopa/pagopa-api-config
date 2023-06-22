@@ -11,10 +11,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @XmlRootElement(name = "informativaPSP")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -52,7 +49,7 @@ public class CdiXml {
     private String urlInformazioniPSP;
     private Boolean stornoPagamento;
     private Boolean marcaBolloDigitale;
-    private String logoPSP;
+    @ToString.Exclude private String logoPSP;
   }
 
   @XmlRootElement
@@ -101,7 +98,7 @@ public class CdiXml {
   @Getter
   public static class IdentificazioneServizio {
     private String nomeServizio;
-    private String logoServizio;
+    @ToString.Exclude private String logoServizio;
   }
 
   @XmlRootElement
