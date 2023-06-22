@@ -1044,6 +1044,7 @@ public class TestUtil {
   public static IcaBinaryFile getMockIcaBinaryFile() {
     return IcaBinaryFile.builder()
         .objId(10L)
+        .idDominio("00168480242")
         .fileContent(new byte[] {1, 10, 20, 30, 40})
         .fileHash(new byte[] {100, 100})
         .fileSize(5L)

@@ -12,6 +12,12 @@ public enum AppError {
       HttpStatus.NOT_FOUND,
       "Creditor Institution not found",
       "No Creditor Institution found with code: %s"),
+
+  CREDITOR_INSTITUTIONS_NOT_FOUND(
+      HttpStatus.NOT_FOUND,
+      "Creditor Institution not found",
+      "No Creditor Institution found inside list"),
+
   CREDITOR_INSTITUTION_CONFLICT(
       HttpStatus.CONFLICT,
       "Creditor Institution conflict",
@@ -211,6 +217,16 @@ public enum AppError {
       "Postal IBAN already associated with one CI",
       "The postal IBAN with code %s was already associated to one CI, this type of IBAN cannot be"
           + " associated to an additional creditor institution %s"),
+
+  AZURE_STORAGE_ERROR(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Error with the azure table storage",
+      "Error when interacting with the azure table storage"),
+
+  ICA_XML_ERROR(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Error when writing the ica binary file",
+      "Error when writing the ica binary xml file"),
 
   UNKNOWN(null, null, null);
 
