@@ -380,7 +380,7 @@ public class IbanController {
             description = "Ok",
             content =
                 @Content(
-                    mediaType = MediaType.TEXT_PLAIN_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = String.class))),
         @ApiResponse(
             responseCode = "400",

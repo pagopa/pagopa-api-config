@@ -126,7 +126,7 @@ public class IbanService {
                 () ->
                     new AppException(
                         AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
-    // generate a relation between iban, CI and ICA file (this one already existing)
+    // generate a relation between iban and CI
     IbanMaster ibanCIRelationToBeUpdated =
         saveIbanCIRelation(existingIbanMaster, existingCreditorInstitution, iban, existingIban);
     // remove all labels and save them again
@@ -213,7 +213,7 @@ public class IbanService {
       ibanRepository.delete(ibanToBeDeleted);
     }
     return String.format(
-        "The Iban %s for the creditor institution %s has been deleted",
+        "\"The Iban %s for the creditor institution %s has been deleted\"",
         ibanValue, organizationFiscalCode);
   }
 
@@ -241,6 +241,7 @@ public class IbanService {
         Iban.builder()
             .iban(iban.getIbanValue())
             .fiscalCode(organizationFiscalCode)
+            .dueDate(CommonUtil.toTimestamp(iban.getDueDate()))
             .description(iban.getDescription())
             .build();
     return saveIban(iban, ibanToBeCreated);
@@ -248,6 +249,7 @@ public class IbanService {
 
   private Iban saveIban(IbanEnhanced iban, Iban existingIban) {
     existingIban.setDescription(iban.getDescription());
+    existingIban.setDueDate(CommonUtil.toTimestamp(iban.getDueDate()));
     return ibanRepository.save(existingIban);
   }
 
