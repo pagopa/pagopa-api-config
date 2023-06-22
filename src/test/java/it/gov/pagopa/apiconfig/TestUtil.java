@@ -238,8 +238,6 @@ public class TestUtil {
         .progressivo(2L)
         .quartoModello(true)
         .segregazione(3L)
-        .stazioneAvv(false)
-        .stazioneNodo(false)
         .build();
   }
 
@@ -408,13 +406,8 @@ public class TestUtil {
         .idPsp("50")
         .enabled(true)
         .fkIntQuadrature(IntermediariPsp.builder().objId(1L).build())
-        .pspAvv(true)
-        .emailRepoCommissioneCaricoPa("email@email.com")
-        .flagRepoCommissioneCaricoPa(false)
-        .pspNodo(true)
         .marcaBolloDigitale(true)
         .ragioneSociale("Poste Italiane")
-        .stornoPagamento(false)
         .vatNumber("123123123")
         .build();
   }
@@ -455,8 +448,6 @@ public class TestUtil {
         .id(1L)
         .enabled(true)
         .descrizione("Canale")
-        .canaleAvv(false)
-        .canaleNodo(true)
         .fkCanaliNodo(getMockCanaliNodo())
         .idCanale("1234")
         .fkIntermediarioPsp(getMockIntermediariePsp())
@@ -608,7 +599,6 @@ public class TestUtil {
         .pspCode("1234ABC12345")
         .bic("435")
         .stamp(true)
-        .transfer(false)
         .vatNumber("123432")
         .myBankCode("mbank01")
         .taxCode("1")
@@ -1010,15 +1000,18 @@ public class TestUtil {
     return mockPage(List.of(getMockCdiMasterValid()), 1, 0);
   }
 
-  public static IbanEnhanced getMockIbanEnhanced(OffsetDateTime validityDate, OffsetDateTime dueDate) {
+  public static IbanEnhanced getMockIbanEnhanced(
+      OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return mockIbanEnhancedBuilder("IT99C0222211111000000000000", validityDate, dueDate);
   }
 
-  public static IbanEnhanced getMockPostalIbanEnhanced(OffsetDateTime validityDate, OffsetDateTime dueDate) {
+  public static IbanEnhanced getMockPostalIbanEnhanced(
+      OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return mockIbanEnhancedBuilder("IT99C0760111111000000000000", validityDate, dueDate);
   }
 
-  private static IbanEnhanced mockIbanEnhancedBuilder(String ibanValue, OffsetDateTime validityDate, OffsetDateTime dueDate) {
+  private static IbanEnhanced mockIbanEnhancedBuilder(
+      String ibanValue, OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return IbanEnhanced.builder()
         .ibanValue(ibanValue)
         .description("Riscossione tributi")
