@@ -3,6 +3,7 @@ package it.gov.pagopa.apiconfig.core.scheduler;
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
@@ -61,7 +62,6 @@ public class SchedulerIca {
             .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTIONS_NOT_FOUND));
     creditorInstitutions.forEach(
         ec -> {
-          icaBinaryFileRepository.deleteByIdDominio(ec.getIdDominio());
           List<IbanMaster> ibanAttributeMasters = ibanMasterRepository.findByFkPa(ec.getObjId());
           List<Iban> ibans =
               ibanRepository.findByObjIdIn(
@@ -69,15 +69,25 @@ public class SchedulerIca {
                       .map(IbanMaster::getObjId)
                       .collect(Collectors.toList()));
           byte[] icaBinaryFileXml = createXml(ec, ibans, updatedEcFiscalCodeIcas);
-          IcaBinaryFile icaBinaryFile =
-              IcaBinaryFile.builder()
-                  .fileContent(icaBinaryFileXml)
-                  .idDominio(ec.getIdDominio())
-                  .fileSize((long) icaBinaryFileXml.length)
-                  .fileHash(getHash(icaBinaryFileXml))
-                  .build();
-          icaBinaryFileRepository.save(icaBinaryFile);
+          Optional<IcaBinaryFile> oldIcaBinaryFile = icaBinaryFileRepository.findByIdDominio(ec.getIdDominio());
+          if(oldIcaBinaryFile.isEmpty()){
+            IcaBinaryFile newIcaBinaryFile =
+                IcaBinaryFile.builder()
+                    .idDominio(ec.getIdDominio())
+                    .build();
+            setIcaBinaryFileFields(newIcaBinaryFile, icaBinaryFileXml);
+            icaBinaryFileRepository.save(newIcaBinaryFile);
+          } else {
+            setIcaBinaryFileFields(oldIcaBinaryFile.get(), icaBinaryFileXml);
+            icaBinaryFileRepository.save(oldIcaBinaryFile.get());
+          }
         });
+  }
+
+  private void setIcaBinaryFileFields(IcaBinaryFile icaBinaryFile, byte[] icaBinaryFileXml){
+    icaBinaryFile.setFileContent(icaBinaryFileXml);
+    icaBinaryFile.setFileSize((long) icaBinaryFileXml.length);
+    icaBinaryFile.setFileHash(getHash(icaBinaryFileXml));
   }
 
   private byte[] createXml(Pa pa, List<Iban> ibans, Map<String, String> publicationEcRelation) {
