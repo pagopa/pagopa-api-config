@@ -223,6 +223,11 @@ public enum AppError {
       "Error with the azure table storage",
       "Error when interacting with the azure table storage"),
 
+  ICA_XML_ERROR(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "Error when writing the ica binary file",
+      "Error when writing the ica binary xml file"),
+
   UNKNOWN(null, null, null);
 
   public final HttpStatus httpStatus;

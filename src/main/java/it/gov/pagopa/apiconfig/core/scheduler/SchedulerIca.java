@@ -46,8 +46,6 @@ public class SchedulerIca {
 
   @Autowired private AzureStorageInteraction azureStorageInteraction;
 
-  private static final String XML_ERROR = "Error in writing XML file %s";
-
   @Scheduled(cron = "${cron.job.schedule.expression}")
   @Async
   @Transactional
@@ -107,7 +105,7 @@ public class SchedulerIca {
       xtw.flush();
       xtw.close();
     } catch (XMLStreamException e) {
-      log.error(XML_ERROR, e.getMessage());
+      throw new AppException(AppError.ICA_XML_ERROR);
     }
     return outputStream.toByteArray();
   }
@@ -118,7 +116,7 @@ public class SchedulerIca {
       xtw.writeCharacters(elementValue);
       xtw.writeEndElement();
     } catch (XMLStreamException e) {
-      log.error(XML_ERROR, e.getMessage());
+      throw new AppException(AppError.ICA_XML_ERROR);
     }
   }
 
@@ -131,7 +129,7 @@ public class SchedulerIca {
       xtw.writeEmptyElement("idBancaSeller");
       xtw.writeEndElement();
     } catch (XMLStreamException e) {
-      log.error(XML_ERROR, e.getMessage());
+      throw new AppException(AppError.ICA_XML_ERROR);
     }
   }
 
@@ -141,7 +139,7 @@ public class SchedulerIca {
       MessageDigest md = MessageDigest.getInstance("SHA-256");
       hashedOutput = md.digest(input);
     } catch (NoSuchAlgorithmException e) {
-      log.error("No security algorithm was found %s", e.getMessage());
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
     }
     return hashedOutput;
   }
