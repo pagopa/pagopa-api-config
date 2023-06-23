@@ -30,8 +30,6 @@ public class AzureStorageInteraction {
   @Value("${creditor.institution.update.table}")
   private String icaTable;
 
-  private boolean debugAzurite = Boolean.parseBoolean(System.getenv("DEBUG_AZURITE"));
-
   public AzureStorageInteraction(String storageConnectionString, String icaTable) {
     this.storageConnectionString = storageConnectionString;
     this.icaTable = icaTable;
