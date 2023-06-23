@@ -3,7 +3,6 @@ package it.gov.pagopa.apiconfig.core.scheduler;
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;

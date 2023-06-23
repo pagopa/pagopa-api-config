@@ -69,7 +69,6 @@ public class AzureStorageInteraction {
   }
 
   public void updateECIcaTable(String idDominio){
-    checkIfTableExists();
     try {
       CloudTable table = CloudStorageAccount.parse(storageConnectionString).createCloudTableClient()
           .getTableReference(this.icaTable);
@@ -86,22 +85,6 @@ public class AzureStorageInteraction {
       }
       // unexpected error
       throw new AppException(AppError.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  private void checkIfTableExists() {
-    if (debugAzurite) {
-      try {
-        CloudStorageAccount cloudStorageAccount = CloudStorageAccount.parse(storageConnectionString);
-        CloudTableClient cloudTableClient = cloudStorageAccount.createCloudTableClient();
-        TableRequestOptions tableRequestOptions = new TableRequestOptions();
-        tableRequestOptions.setRetryPolicyFactory(RetryNoRetry.getInstance()); // disable retry to complete faster
-        cloudTableClient.setDefaultRequestOptions(tableRequestOptions);
-        CloudTable table = cloudTableClient.getTableReference(icaTable);
-        table.createIfNotExists();
-      } catch (URISyntaxException | StorageException | InvalidKeyException e) {
-        throw new AppException(AppError.AZURE_STORAGE_ERROR);
-      }
     }
   }
 }
