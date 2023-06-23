@@ -40,7 +40,6 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IcaBinaryFileRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import java.io.IOException;
 import java.time.OffsetDateTime;

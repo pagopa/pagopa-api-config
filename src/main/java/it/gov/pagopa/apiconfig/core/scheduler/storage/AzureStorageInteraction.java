@@ -64,17 +64,15 @@ public class AzureStorageInteraction {
                 TableServiceEntity::getRowKey, CreditorInstitutionIcaFile::getPublicationDate));
   }
 
-  public void updateECIcaTable(String idDominio){
+  public void updateECIcaTable(String idDominio) {
     try {
-      CloudTable table = CloudStorageAccount.parse(storageConnectionString).createCloudTableClient()
-          .getTableReference(this.icaTable);
-      table.execute(TableOperation
-          .insertOrReplace(
-              new CreditorInstitutionIcaFile(
-                  idDominio,
-                  LocalDateTime.now().toString()
-              )
-          ));
+      CloudTable table =
+          CloudStorageAccount.parse(storageConnectionString)
+              .createCloudTableClient()
+              .getTableReference(this.icaTable);
+      table.execute(
+          TableOperation.insertOrReplace(
+              new CreditorInstitutionIcaFile(idDominio, LocalDateTime.now().toString())));
     } catch (InvalidKeyException | URISyntaxException | StorageException e) {
       throw new AppException(AppError.AZURE_STORAGE_ERROR);
     }

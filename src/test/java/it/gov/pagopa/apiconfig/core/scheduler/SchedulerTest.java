@@ -93,7 +93,6 @@ class SchedulerTest {
     // Inserimento ica binary file
     icaBinaryFileRepository.save(getMockIcaBinaryFile_2());
 
-
     // Funzione schedulata chiamata staticamente
     schedulerIca.updateIcaFile();
 

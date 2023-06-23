@@ -69,7 +69,7 @@ public class AzureStorageInteractionTest {
 
   @AfterEach
   void destroy() throws StorageException {
-    if(null != table){
+    if (null != table) {
       table.delete();
     }
   }
@@ -133,11 +133,9 @@ public class AzureStorageInteractionTest {
   @Test
   void updateExistingEc() throws Exception {
     AzureStorageInteraction az = new AzureStorageInteraction(storageConnectionString, tableName);
-    table
-        .execute(
-            TableOperation.insert(
-                new CreditorInstitutionIcaFile(
-                    "123456", LocalDateTime.now().minusDays(2).toString())));
+    table.execute(
+        TableOperation.insert(
+            new CreditorInstitutionIcaFile("123456", LocalDateTime.now().minusDays(2).toString())));
     az.updateECIcaTable("123456");
     Map<String, String> result = az.getUpdatedEC(LocalDateTime.now().minusDays(1).toString());
     assertEquals(1, result.keySet().size());
