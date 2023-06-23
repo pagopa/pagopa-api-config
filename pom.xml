@@ -13,7 +13,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-  <version>0.49.0</version>
+  <version>0.45.4-4-PAGOPA-867-analisi-export-enti-associati-astazione-ko</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
@@ -32,9 +32,7 @@
     <commons-validator>1.7</commons-validator>
     <feign-version>12.1</feign-version>
     <postgresql-version>42.5.1</postgresql-version>
-    <azure.storage.table.version>8.6.6</azure.storage.table.version>
-    <testcontainer.version>1.17.6</testcontainer.version>
-    <starter.version>1.8.0</starter.version>
+    <starter.version>1.7.0</starter.version>
   </properties>
 
   <repositories>
@@ -142,27 +140,6 @@
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
       <version>${opencsv-version}</version>
-    </dependency>
-
-    <!-- Start Azure -->
-    <dependency>
-      <groupId>com.microsoft.azure</groupId>
-      <artifactId>azure-storage</artifactId>
-      <version>${azure.storage.table.version}</version>
-    </dependency>
-    <!-- End Azure -->
-
-    <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>${testcontainer.version}</version>
-      <scope>test</scope>
     </dependency>
 
     <!-- Iban validation -->
