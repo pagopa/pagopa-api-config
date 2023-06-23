@@ -23,6 +23,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
@@ -677,6 +678,7 @@ public class ChannelsController {
   @GetMapping(
       value = "/{channelcode}/paymentserviceproviders/csv",
       produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
+  @Cacheable(value = "getChannelPaymentServiceProvidersCSV")
   public ResponseEntity<Resource> getChannelPaymentServiceProvidersCSV(
       @Size(max = 50)
           @Parameter(description = "Channel code", required = true)
