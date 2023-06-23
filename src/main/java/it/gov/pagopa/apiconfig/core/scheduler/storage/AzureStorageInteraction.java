@@ -1,13 +1,10 @@
 package it.gov.pagopa.apiconfig.core.scheduler.storage;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.RetryNoRetry;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.table.CloudTable;
-import com.microsoft.azure.storage.table.CloudTableClient;
 import com.microsoft.azure.storage.table.TableOperation;
 import com.microsoft.azure.storage.table.TableQuery;
-import com.microsoft.azure.storage.table.TableRequestOptions;
 import com.microsoft.azure.storage.table.TableServiceEntity;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
@@ -21,7 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -80,11 +76,7 @@ public class AzureStorageInteraction {
               )
           ));
     } catch (InvalidKeyException | URISyntaxException | StorageException e) {
-      if (e instanceof StorageException && ((StorageException) e).getHttpStatusCode() == HttpStatus.CONFLICT.value()) {
-        throw new AppException(AppError.AZURE_STORAGE_ERROR);
-      }
-      // unexpected error
-      throw new AppException(AppError.INTERNAL_SERVER_ERROR);
+      throw new AppException(AppError.AZURE_STORAGE_ERROR);
     }
   }
 }
