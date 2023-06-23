@@ -94,12 +94,14 @@ basecache: &basecache
     NODO_MONITORING_HOST: 'https://api.dev.platform.pagopa.it/nodo/monitoring/v1'
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
+    ICA_STORAGE_TABLE_NAME: "pagopauweuapiconfigsaicatable"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-u-connection-string'
     AFM_MARKETPLACE_SUBSCRIPTION_KEY: 'afm-marketplace-subscription-key'
     AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
+    ICA_STORAGE_CONNECTION_STRING: 'api-config-ica-u-sa-connection-string'
   keyvault:
     name: "pagopa-u-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
