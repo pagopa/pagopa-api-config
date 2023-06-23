@@ -28,6 +28,7 @@ import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
+import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
@@ -73,7 +74,7 @@ class IbanServiceTest {
 
   @MockBean private IbanAttributeMasterRepository ibanAttributeMasterRepository;
 
-  @MockBean private IcaBinaryFileRepository icaBinaryFileRepository;
+  @MockBean private AzureStorageInteraction azureStorageInteraction;
 
   @Autowired private IbanService ibanService;
 
