@@ -137,7 +137,7 @@ public class AzureStorageInteractionTest {
         .execute(
             TableOperation.insert(
                 new CreditorInstitutionIcaFile(
-                    "12345", LocalDateTime.now().minusDays(1).toString())));
+                    "123456", LocalDateTime.now().minusDays(2).toString())));
     az.updateECIcaTable("123456");
     Map<String, String> result = az.getUpdatedEC(LocalDateTime.now().minusDays(1).toString());
     assertEquals(1, result.keySet().size());
