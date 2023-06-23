@@ -1010,15 +1010,18 @@ public class TestUtil {
     return mockPage(List.of(getMockCdiMasterValid()), 1, 0);
   }
 
-  public static IbanEnhanced getMockIbanEnhanced(OffsetDateTime validityDate, OffsetDateTime dueDate) {
+  public static IbanEnhanced getMockIbanEnhanced(
+      OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return mockIbanEnhancedBuilder("IT99C0222211111000000000000", validityDate, dueDate);
   }
 
-  public static IbanEnhanced getMockPostalIbanEnhanced(OffsetDateTime validityDate, OffsetDateTime dueDate) {
+  public static IbanEnhanced getMockPostalIbanEnhanced(
+      OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return mockIbanEnhancedBuilder("IT99C0760111111000000000000", validityDate, dueDate);
   }
 
-  private static IbanEnhanced mockIbanEnhancedBuilder(String ibanValue, OffsetDateTime validityDate, OffsetDateTime dueDate) {
+  private static IbanEnhanced mockIbanEnhancedBuilder(
+      String ibanValue, OffsetDateTime validityDate, OffsetDateTime dueDate) {
     return IbanEnhanced.builder()
         .ibanValue(ibanValue)
         .description("Riscossione tributi")
@@ -1041,6 +1044,7 @@ public class TestUtil {
   public static IcaBinaryFile getMockIcaBinaryFile() {
     return IcaBinaryFile.builder()
         .objId(10L)
+        .idDominio("00168480242")
         .fileContent(new byte[] {1, 10, 20, 30, 40})
         .fileHash(new byte[] {100, 100})
         .fileSize(5L)

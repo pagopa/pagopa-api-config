@@ -9,7 +9,7 @@ microservice-chart:
       maxSurge: 1
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.45.3"
+    tag: "0.46.2"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -80,7 +80,6 @@ microservice-chart:
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
-    SHOW_SQL: false
   envSecret:
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'
@@ -105,4 +104,4 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: "0.45.4-1-PAGOPA-1048-bug-creazione-psp"
+        tag: "0.46.2"

@@ -21,13 +21,13 @@ basecache: &basecache
       create: true
       image:
         repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.45.4-1-PAGOPA-1048-bug-creazione-psp"
+        tag: "0.46.2"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
   image:
     repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.45.3"
+    tag: "0.46.2"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -94,7 +94,6 @@ basecache: &basecache
     NODO_MONITORING_HOST: 'https://api.dev.platform.pagopa.it/nodo/monitoring/v1'
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
-    SHOW_SQL: false
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
