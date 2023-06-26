@@ -22,6 +22,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
@@ -29,15 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping(path = "/stations")
@@ -57,53 +50,65 @@ public class StationsController {
    * @return OK. (status code 200) or Service unavailable (status code 500)
    */
   @Operation(
-      summary = "Get paginated list of stations",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {
-        "Creditor Institutions",
-      })
+    summary = "Get paginated list of stations",
+    security = {
+      @SecurityRequirement(name = "ApiKey"),
+      @SecurityRequirement(name = "Authorization")
+    },
+    tags = {
+      "Creditor Institutions",
+    }
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = Stations.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = Stations.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "Bad Request",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @GetMapping(
-      value = "",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+    value = "",
+    produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
   public ResponseEntity<Stations> getStations(
       @Positive
           @Parameter(description = "Number of elements on one page. Default = 50")
@@ -141,57 +146,70 @@ public class StationsController {
    *     code 500)
    */
   @Operation(
-      summary = "Get station details",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {
-        "Creditor Institutions",
-      })
+    summary = "Get station details",
+    security = {
+      @SecurityRequirement(name = "ApiKey"),
+      @SecurityRequirement(name = "Authorization")
+    },
+    tags = {
+      "Creditor Institutions",
+    }
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = StationDetails.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = StationDetails.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "Bad Request",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "404",
+        description = "Not Found",
+        content = @Content(schema = @Schema(implementation = ProblemJson.class))
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @GetMapping(
-      value = "/{stationcode}",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+    value = "/{stationcode}",
+    produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
   public ResponseEntity<StationDetails> getStation(
       @Size(max = 50)
           @Parameter(description = "station code.", required = true)
@@ -201,58 +219,72 @@ public class StationsController {
   }
 
   @Operation(
-      summary = "Create a station",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {"Creditor Institutions"})
+    summary = "Create a station",
+    security = {
+      @SecurityRequirement(name = "ApiKey"),
+      @SecurityRequirement(name = "Authorization")
+    },
+    tags = {"Creditor Institutions"}
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Created",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = StationDetails.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "409",
-            description = "Conflict",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "201",
+        description = "Created",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = StationDetails.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "Bad Request",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "409",
+        description = "Conflict",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @PostMapping(
-      value = "",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+    value = "",
+    produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
   public ResponseEntity<StationDetails> createStation(
       @RequestBody @Valid @NotNull StationDetails stationDetails) {
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -260,66 +292,81 @@ public class StationsController {
   }
 
   @Operation(
-      summary = "Update a station",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {"Creditor Institutions"})
+    summary = "Update a station",
+    security = {
+      @SecurityRequirement(name = "ApiKey"),
+      @SecurityRequirement(name = "Authorization")
+    },
+    tags = {"Creditor Institutions"}
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = StationDetails.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = StationDetails.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "Bad Request",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "404",
+        description = "Not Found",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @PutMapping(
-      value = "/{stationcode}",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+    value = "/{stationcode}",
+    produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
   public ResponseEntity<StationDetails> updateStation(
       @Size(max = 50)
           @Parameter(description = "station code", required = true)
           @PathVariable("stationcode")
           String stationCode,
       @io.swagger.v3.oas.annotations.parameters.RequestBody(
-              description = "The values to update of the station",
-              required = true)
+            description = "The values to update of the station",
+            required = true
+          )
           @RequestBody
           @Valid
           @NotNull
@@ -328,55 +375,68 @@ public class StationsController {
   }
 
   @Operation(
-      summary = "Delete a station",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {"Creditor Institutions"})
+    summary = "Delete a station",
+    security = {
+      @SecurityRequirement(name = "ApiKey"),
+      @SecurityRequirement(name = "Authorization")
+    },
+    tags = {"Creditor Institutions"}
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "Bad Request",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "404",
+        description = "Not Found",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @DeleteMapping(
-      value = "/{stationcode}",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+    value = "/{stationcode}",
+    produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
   public ResponseEntity<Void> deleteStation(
       @Size(max = 50)
           @Parameter(description = "station code", required = true)
@@ -394,57 +454,70 @@ public class StationsController {
    *     code 500)
    */
   @Operation(
-      summary = "Get station creditor institution list",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {
-        "Creditor Institutions",
-      })
+    summary = "Get station creditor institution list",
+    security = {
+      @SecurityRequirement(name = "ApiKey"),
+      @SecurityRequirement(name = "Authorization")
+    },
+    tags = {
+      "Creditor Institutions",
+    }
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = StationCreditorInstitutions.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = StationCreditorInstitutions.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "Bad Request",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "404",
+        description = "Not Found",
+        content = @Content(schema = @Schema(implementation = ProblemJson.class))
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @GetMapping(
-      value = "/{stationcode}/creditorinstitutions",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+    value = "/{stationcode}/creditorinstitutions",
+    produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
   public ResponseEntity<StationCreditorInstitutions> getStationCreditorInstitutions(
       @Size(max = 50)
           @Parameter(description = "station code.", required = true)
@@ -463,57 +536,71 @@ public class StationsController {
   }
 
   @Operation(
-      summary = "Download a CSV with station creditor institution list",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {
-        "Creditor Institutions",
-      })
+    summary = "Download a CSV with station creditor institution list",
+    security = {
+      @SecurityRequirement(name = "ApiKey"),
+      @SecurityRequirement(name = "Authorization")
+    },
+    tags = {
+      "Creditor Institutions",
+    }
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = Resource.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = Resource.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "Bad Request",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "404",
+        description = "Not Found",
+        content = @Content(schema = @Schema(implementation = ProblemJson.class))
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @GetMapping(
-      value = "/{stationcode}/creditorinstitutions/csv",
-      produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    value = "/{stationcode}/creditorinstitutions/csv",
+    produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE}
+  )
+  @Cacheable(value = "getStationCreditorInstitutionsCSV")
   public ResponseEntity<Resource> getStationCreditorInstitutionsCSV(
       @Size(max = 50)
           @Parameter(description = "station code.", required = true)
@@ -536,57 +623,70 @@ public class StationsController {
    *     code 500)
    */
   @Operation(
-      summary = "Get station creditor institution relation",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {
-        "Creditor Institutions",
-      })
+    summary = "Get station creditor institution relation",
+    security = {
+      @SecurityRequirement(name = "ApiKey"),
+      @SecurityRequirement(name = "Authorization")
+    },
+    tags = {
+      "Creditor Institutions",
+    }
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = StationCreditorInstitutions.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = StationCreditorInstitutions.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "400",
+        description = "Bad Request",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "404",
+        description = "Not Found",
+        content = @Content(schema = @Schema(implementation = ProblemJson.class))
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @GetMapping(
-      value = "/{stationcode}/creditorinstitutions/{creditorinstitutioncode}",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
+    value = "/{stationcode}/creditorinstitutions/{creditorinstitutioncode}",
+    produces = {MediaType.APPLICATION_JSON_VALUE}
+  )
   public ResponseEntity<StationCreditorInstitution> getStationCreditorInstitutionRelation(
       @Size(max = 50)
           @Parameter(description = "station code.", required = true)
@@ -594,8 +694,9 @@ public class StationsController {
           String stationCode,
       @Size(min = 1, max = 50)
           @Parameter(
-              description = "Organization fiscal code, the fiscal code of the Organization.",
-              required = true)
+            description = "Organization fiscal code, the fiscal code of the Organization.",
+            required = true
+          )
           @PathVariable("creditorinstitutioncode")
           String creditorInstitutionCode) {
     return ResponseEntity.ok(
@@ -609,43 +710,50 @@ public class StationsController {
    * @return OK. (status code 200) or Service unavailable (status code 500)
    */
   @Operation(
-      summary = "Download a CSV with all the stations in the system",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      })
+    summary = "Download a CSV with all the stations in the system",
+    security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")}
+  )
   @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = Resource.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
+    value = {
+      @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = Resource.class)
+            )
+      ),
+      @ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "403",
+        description = "Forbidden",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "429",
+        description = "Too many requests",
+        content = @Content(schema = @Schema())
+      ),
+      @ApiResponse(
+        responseCode = "500",
+        description = "Service unavailable",
+        content =
+            @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ProblemJson.class)
+            )
+      )
+    }
+  )
   @GetMapping(
-      value = "/csv",
-      produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    value = "/csv",
+    produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_VALUE}
+  )
   public ResponseEntity<Resource> getStationsCSV() {
     byte[] file = stationsService.getStationsCSV();
     return ResponseEntity.ok()
