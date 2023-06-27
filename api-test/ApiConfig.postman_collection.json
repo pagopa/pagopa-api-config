@@ -3121,7 +3121,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": true,\n    \"business_name\": \"Poste Italiane\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": false,\n    \"stamp\": false,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880000\"\n}",
+							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": true,\n    \"business_name\": \"Poste Italiane\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n     \"stamp\": false,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880000\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3494,7 +3494,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": false,\n    \"business_name\": \"Nuovo nome\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": true,\n    \"stamp\": true,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880001\"\n}",
+							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": false,\n    \"business_name\": \"Nuovo nome\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"stamp\": true,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880001\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4602,7 +4602,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": false,\n    \"business_name\": \"Nuovo nome\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": true,\n    \"stamp\": true,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880001\"\n}",
+							"raw": "{\n    \"psp_code\": \"{{psp_code}}\",\n    \"enabled\": false,\n    \"business_name\": \"Nuovo nome\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n  \"stamp\": true,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880001\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4737,7 +4737,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"psp_code\": \"BPPIITRRZZZ\",\n    \"enabled\": true,\n    \"business_name\": \"Poste Italiane\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"transfer\": false,\n    \"stamp\": false,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880000\"\n}",
+							"raw": "{\n    \"psp_code\": \"BPPIITRRZZZ\",\n    \"enabled\": true,\n    \"business_name\": \"Poste Italiane\",\n    \"abi\": \"01600\",\n    \"bic\": \"BPPIITRRZZZ\",\n    \"stamp\": false,\n    \"agid_psp\": false,\n    \"tax_code\": \"17103880000\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

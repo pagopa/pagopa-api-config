@@ -32,7 +32,7 @@
     <commons-validator>1.7</commons-validator>
     <feign-version>12.1</feign-version>
     <postgresql-version>42.5.1</postgresql-version>
-    <starter.version>1.8.0</starter.version>
+    <starter.version>1.9.0</starter.version>
   </properties>
 
   <repositories>
