@@ -3,6 +3,29 @@ package it.gov.pagopa.apiconfig.core.service;
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.deNull;
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getSort;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.configuration.PaymentType;
@@ -16,7 +39,11 @@ import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvider;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
 import it.gov.pagopa.apiconfig.core.specification.PspSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import it.gov.pagopa.apiconfig.starter.entity.*;
+import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.Canali;
+import it.gov.pagopa.apiconfig.starter.entity.Psp;
+import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
+import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
 import it.gov.pagopa.apiconfig.starter.repository.CanaleTipoVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
@@ -24,27 +51,6 @@ import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoReposit
 import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
 import it.gov.pagopa.apiconfig.starter.repository.TipiVersamentoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.WfespPluginConfRepository;
-import java.util.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
