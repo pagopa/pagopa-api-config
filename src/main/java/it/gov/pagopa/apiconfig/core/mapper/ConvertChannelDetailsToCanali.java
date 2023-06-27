@@ -34,8 +34,6 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
         .targetHostNmp(source.getTargetHostNmp())
         .targetPortNmp(source.getTargetPortNmp())
         .targetPathNmp(source.getTargetPathNmp())
-        .canaleNodo(true)
-        .canaleAvv(false)
         .fkCanaliNodo(buildCanaliNodo(source))
         .timeout(120L)
         .numThread(source.getThreadNumber())

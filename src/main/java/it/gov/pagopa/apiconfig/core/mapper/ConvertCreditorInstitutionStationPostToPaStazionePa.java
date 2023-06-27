@@ -21,8 +21,6 @@ public class ConvertCreditorInstitutionStationPostToPaStazionePa
         .auxDigit(source.getAuxDigit())
         .pa(source.getFkPa())
         .fkStazione(source.getFkStazioni())
-        .stazioneAvv(false) // default
-        .stazioneNodo(true) // default
         .build();
   }
 }

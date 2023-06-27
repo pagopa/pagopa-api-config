@@ -43,8 +43,6 @@ create table NODO4_CFG.PA
     DESCRIZIONE                       varchar(70),
     RAGIONE_SOCIALE                   varchar(70),
     FK_INT_QUADRATURE                 numeric,
-    FLAG_REPO_COMMISSIONE_CARICO_PA   boolean     not null,
-    EMAIL_REPO_COMMISSIONE_CARICO_PA  varchar(255),
     INDIRIZZO_DOMICILIO_FISCALE       varchar(255),
     CAP_DOMICILIO_FISCALE             varchar(5),
     SIGLA_PROVINCIA_DOMICILIO_FISCALE varchar(2),
@@ -53,7 +51,6 @@ create table NODO4_CFG.PA
     PAGAMENTO_PRESSO_PSP              boolean     not null,
     RENDICONTAZIONE_FTP               boolean     not null,
     RENDICONTAZIONE_ZIP               boolean     not null,
-    REVOCA_PAGAMENTO                  numeric     not null default 0,
     constraint PK_PA
         primary key (OBJ_ID),
     constraint UQ_ID_DOMINIO
@@ -123,8 +120,6 @@ create table NODO4_CFG.PA_STAZIONE_PA
     AUX_DIGIT      numeric,
     SEGREGAZIONE   numeric,
     QUARTO_MODELLO char not null,
-    STAZIONE_NODO  char not null default 'N',
-    STAZIONE_AVV   char not null default 'N',
     BROADCAST      char    not null default 'N',
     PAGAMENTO_SPONTANEO char    not null default 'N',
     constraint PK_PA_STAZIONE_PA
@@ -293,8 +288,6 @@ create table NODO4_CFG.INTERMEDIARI_PSP
     ID_INTERMEDIARIO_PSP varchar(35) not null,
     ENABLED              char(1)     not null,
     CODICE_INTERMEDIARIO varchar(255),
-    INTERMEDIARIO_AVV    char(1)     not null default 'N',
-    INTERMEDIARIO_NODO   char(1)     not null default 'N',
     FAULT_BEAN_ESTESO    char(1)     not null default 'N',
     constraint PK_INTERMEDIARI_PSP
         primary key (OBJ_ID),
@@ -312,14 +305,9 @@ create table NODO4_CFG.PSP
     DESCRIZIONE                      varchar(70),
     RAGIONE_SOCIALE                  varchar(70),
     FK_INT_QUADRATURE                numeric(19),
-    STORNO_PAGAMENTO                 numeric(19) not null default '0',
-    FLAG_REPO_COMMISSIONE_CARICO_PA  char(1),
-    EMAIL_REPO_COMMISSIONE_CARICO_PA varchar(255),
     CODICE_MYBANK                    varchar(35),
     MARCA_BOLLO_DIGITALE             numeric     not null,
     AGID_PSP                         char(1)     not null,
-    PSP_NODO                         char(1)     not null default 'N',
-    PSP_AVV                          char(1)     not null default 'N',
     CODICE_FISCALE                   varchar(16),
     VAT_NUMBER                       varchar(20),
     constraint PK_PSP
@@ -396,8 +384,6 @@ create table NODO4_CFG.CANALI
                                   PROXY_PASSWORD varchar(15),
                                   PROXY_PORT numeric,
                                   PROXY_USERNAME varchar(15),
-                                  CANALE_NODO char(1) not null default 'N',
-                                  CANALE_AVV char(1) not null default 'N',
                                   FK_CANALI_NODO numeric,
                                   TIMEOUT numeric not null default 120,
                                   NUM_THREAD numeric not null,

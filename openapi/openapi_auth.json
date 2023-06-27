@@ -18362,9 +18362,6 @@
           "tax_code": {
             "type": "string"
           },
-          "transfer": {
-            "type": "boolean"
-          },
           "vat_number": {
             "type": "string"
           }
