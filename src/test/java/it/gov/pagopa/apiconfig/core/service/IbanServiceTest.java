@@ -28,6 +28,7 @@ import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
+import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
@@ -39,7 +40,6 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IcaBinaryFileRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -73,7 +73,7 @@ class IbanServiceTest {
 
   @MockBean private IbanAttributeMasterRepository ibanAttributeMasterRepository;
 
-  @MockBean private IcaBinaryFileRepository icaBinaryFileRepository;
+  @MockBean private AzureStorageInteraction azureStorageInteraction;
 
   @Autowired private IbanService ibanService;
 

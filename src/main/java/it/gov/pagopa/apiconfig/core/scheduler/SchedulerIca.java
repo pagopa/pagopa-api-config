@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.xml.stream.XMLOutputFactory;
@@ -67,15 +68,24 @@ public class SchedulerIca {
                       .map(IbanMaster::getObjId)
                       .collect(Collectors.toList()));
           byte[] icaBinaryFileXml = createXml(ec, ibans, updatedEcFiscalCodeIcas);
-          IcaBinaryFile icaBinaryFile =
-              IcaBinaryFile.builder()
-                  .fileContent(icaBinaryFileXml)
-                  .idDominio(ec.getIdDominio())
-                  .fileSize((long) icaBinaryFileXml.length)
-                  .fileHash(getHash(icaBinaryFileXml))
-                  .build();
-          icaBinaryFileRepository.save(icaBinaryFile);
+          Optional<IcaBinaryFile> oldIcaBinaryFile =
+              icaBinaryFileRepository.findByIdDominio(ec.getIdDominio());
+          if (oldIcaBinaryFile.isEmpty()) {
+            IcaBinaryFile newIcaBinaryFile =
+                IcaBinaryFile.builder().idDominio(ec.getIdDominio()).build();
+            setIcaBinaryFileFields(newIcaBinaryFile, icaBinaryFileXml);
+            icaBinaryFileRepository.save(newIcaBinaryFile);
+          } else {
+            setIcaBinaryFileFields(oldIcaBinaryFile.get(), icaBinaryFileXml);
+            icaBinaryFileRepository.save(oldIcaBinaryFile.get());
+          }
         });
+  }
+
+  private void setIcaBinaryFileFields(IcaBinaryFile icaBinaryFile, byte[] icaBinaryFileXml) {
+    icaBinaryFile.setFileContent(icaBinaryFileXml);
+    icaBinaryFile.setFileSize((long) icaBinaryFileXml.length);
+    icaBinaryFile.setFileHash(getHash(icaBinaryFileXml));
   }
 
   private byte[] createXml(Pa pa, List<Iban> ibans, Map<String, String> publicationEcRelation) {
