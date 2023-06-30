@@ -30,9 +30,6 @@ public class PaymentServiceProviderDetails extends PaymentServiceProvider {
   @JsonProperty("bic")
   private String bic;
 
-  @JsonProperty("transfer")
-  private Boolean transfer;
-
   @JsonProperty("my_bank_code")
   @Schema(description = "MyBank code")
   private String myBankCode;

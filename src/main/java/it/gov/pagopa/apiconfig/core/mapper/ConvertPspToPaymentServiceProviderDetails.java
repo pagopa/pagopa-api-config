@@ -17,7 +17,6 @@ public class ConvertPspToPaymentServiceProviderDetails
         PaymentServiceProviderDetails.builder()
             .abi(source.getAbi())
             .bic(source.getBic())
-            .transfer(source.getStornoPagamento())
             .myBankCode(source.getCodiceMybank())
             .stamp(source.getMarcaBolloDigitale())
             .agidPsp(source.getAgidPsp())

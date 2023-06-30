@@ -24,7 +24,6 @@ public class ConvertCreditorInstitutionDetailsToPa
         .pagamentoPressoPsp(source.getPspPayment())
         .rendicontazioneFtp(source.getReportingFtp())
         .rendicontazioneZip(source.getReportingZip())
-        .flagRepoCommissioneCaricoPa(false)
         .build();
   }
 }

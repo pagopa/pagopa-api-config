@@ -17,15 +17,11 @@ public class ConvertPaymentServiceProviderDetailsToPsp
         .ragioneSociale(source.getBusinessName())
         .abi(source.getAbi())
         .bic(source.getBic())
-        .stornoPagamento(source.getTransfer())
         .codiceMybank(source.getMyBankCode())
         .marcaBolloDigitale(source.getStamp())
         .agidPsp(source.getAgidPsp())
         .codiceFiscale(source.getTaxCode())
         .vatNumber(source.getVatNumber())
-        .pspNodo(true)
-        .pspAvv(false)
-        .flagRepoCommissioneCaricoPa(false)
         .build();
   }
 }
