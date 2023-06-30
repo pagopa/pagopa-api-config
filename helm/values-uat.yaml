@@ -94,6 +94,7 @@ basecache: &basecache
     NODO_MONITORING_HOST: 'https://api.dev.platform.pagopa.it/nodo/monitoring/v1'
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
+    SHOW_SQL: "false"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-u-connection-string'
