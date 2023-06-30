@@ -81,6 +81,7 @@ microservice-chart:
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
     ICA_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
+    SHOW_SQL: "false"
   envSecret:
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'

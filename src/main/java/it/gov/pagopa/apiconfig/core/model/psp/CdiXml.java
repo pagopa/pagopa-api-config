@@ -4,17 +4,9 @@ import it.gov.pagopa.apiconfig.core.util.XMLDateAdapter;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @XmlRootElement(name = "informativaPSP")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -52,7 +44,7 @@ public class CdiXml {
     private String urlInformazioniPSP;
     private Boolean stornoPagamento;
     private Boolean marcaBolloDigitale;
-    private String logoPSP;
+    @ToString.Exclude private String logoPSP;
   }
 
   @XmlRootElement
@@ -101,7 +93,7 @@ public class CdiXml {
   @Getter
   public static class IdentificazioneServizio {
     private String nomeServizio;
-    private String logoServizio;
+    @ToString.Exclude private String logoServizio;
   }
 
   @XmlRootElement
