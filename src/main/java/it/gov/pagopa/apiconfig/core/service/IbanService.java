@@ -5,6 +5,7 @@ import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
+import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
@@ -56,10 +57,14 @@ public class IbanService {
 
   @Autowired private ModelMapper modelMapper;
 
+  @Autowired private AzureStorageInteraction azureStorageInteraction;
+
   public IbanEnhanced createIban(
       @NotBlank String organizationFiscalCode, @Valid @NotNull IbanEnhanced iban) {
     // retrieve the creditor institution and throw exception if not found
     Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
+    // Update Ica Table
+    azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
     // retrieve an existing iban or generate a new one if not defined
     Iban ibanToBeCreated =
         ibanRepository
@@ -109,6 +114,8 @@ public class IbanService {
     }
     // retrieve the creditor institution and throw exception if not found
     Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
+    // Update Ica Table
+    azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
     // retrieve the iban and throw exception if not found. If creditor institution is the owner, it
     // can update the IBAN object
     Iban existingIban =
@@ -195,6 +202,9 @@ public class IbanService {
 
     // Get pa entity
     Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
+
+    // Update Ica Table
+    azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
 
     // Get all ibanMaster relations
     List<IbanMaster> ibanMastersToBeDeleted =

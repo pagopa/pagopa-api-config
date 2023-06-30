@@ -1041,6 +1041,16 @@ public class TestUtil {
         .build();
   }
 
+  public static IcaBinaryFile getMockIcaBinaryFile_2() {
+    return IcaBinaryFile.builder()
+        .objId(11L)
+        .idDominio("00168480243")
+        .fileContent(new byte[] {1, 10, 20, 30, 40})
+        .fileHash(new byte[] {100, 100})
+        .fileSize(5L)
+        .build();
+  }
+
   public static List<IbanAttribute> getMockIbanAttributes() {
     return List.of(
         IbanAttribute.builder()

@@ -13,7 +13,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-  <version>0.49.0</version>
+  <version>0.49.1</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
@@ -151,12 +151,6 @@
       <version>${azure.storage.table.version}</version>
     </dependency>
     <!-- End Azure -->
-
-    <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
