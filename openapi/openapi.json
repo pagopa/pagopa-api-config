@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.49.0-3-PAGOPA-867-analisi-export-enti-associati-astazione-ko"
+    "version": "0.49.2"
   },
   "servers": [
     {
@@ -18361,9 +18361,6 @@
           },
           "tax_code": {
             "type": "string"
-          },
-          "transfer": {
-            "type": "boolean"
           },
           "vat_number": {
             "type": "string"

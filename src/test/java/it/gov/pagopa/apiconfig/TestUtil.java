@@ -238,8 +238,6 @@ public class TestUtil {
         .progressivo(2L)
         .quartoModello(true)
         .segregazione(3L)
-        .stazioneAvv(false)
-        .stazioneNodo(false)
         .build();
   }
 
@@ -408,13 +406,8 @@ public class TestUtil {
         .idPsp("50")
         .enabled(true)
         .fkIntQuadrature(IntermediariPsp.builder().objId(1L).build())
-        .pspAvv(true)
-        .emailRepoCommissioneCaricoPa("email@email.com")
-        .flagRepoCommissioneCaricoPa(false)
-        .pspNodo(true)
         .marcaBolloDigitale(true)
         .ragioneSociale("Poste Italiane")
-        .stornoPagamento(false)
         .vatNumber("123123123")
         .build();
   }
@@ -455,8 +448,6 @@ public class TestUtil {
         .id(1L)
         .enabled(true)
         .descrizione("Canale")
-        .canaleAvv(false)
-        .canaleNodo(true)
         .fkCanaliNodo(getMockCanaliNodo())
         .idCanale("1234")
         .fkIntermediarioPsp(getMockIntermediariePsp())
@@ -608,7 +599,6 @@ public class TestUtil {
         .pspCode("1234ABC12345")
         .bic("435")
         .stamp(true)
-        .transfer(false)
         .vatNumber("123432")
         .myBankCode("mbank01")
         .taxCode("1")
@@ -1045,6 +1035,16 @@ public class TestUtil {
     return IcaBinaryFile.builder()
         .objId(10L)
         .idDominio("00168480242")
+        .fileContent(new byte[] {1, 10, 20, 30, 40})
+        .fileHash(new byte[] {100, 100})
+        .fileSize(5L)
+        .build();
+  }
+
+  public static IcaBinaryFile getMockIcaBinaryFile_2() {
+    return IcaBinaryFile.builder()
+        .objId(11L)
+        .idDominio("00168480243")
         .fileContent(new byte[] {1, 10, 20, 30, 40})
         .fileHash(new byte[] {100, 100})
         .fileSize(5L)

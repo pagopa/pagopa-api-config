@@ -9,7 +9,7 @@ microservice-chart:
       maxSurge: 1
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.46.2"
+    tag: "0.49.2"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -80,6 +80,7 @@ microservice-chart:
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
+    ICA_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
     SHOW_SQL: "false"
   envSecret:
     # required
@@ -88,6 +89,7 @@ microservice-chart:
     AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
     SPRING_DATASOURCE_PASSWORD: 'db-cfg-password'
+    ICA_STORAGE_CONNECTION_STRING: 'api-config-ica-p-sa-connection-string'
   keyvault:
     name: "pagopa-p-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
@@ -105,4 +107,4 @@ microservice-chart:
   canaryDelivery:
     deployment:
       image:
-        tag: "0.46.2"
+        tag: "0.49.2"

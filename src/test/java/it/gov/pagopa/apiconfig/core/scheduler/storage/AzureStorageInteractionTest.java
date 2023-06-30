@@ -1,5 +1,6 @@
 package it.gov.pagopa.apiconfig.core.scheduler.storage;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -15,6 +16,7 @@ import it.gov.pagopa.apiconfig.core.scheduler.entity.CreditorInstitutionIcaFile;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,6 +67,13 @@ public class AzureStorageInteractionTest {
     }
   }
 
+  @AfterEach
+  void destroy() throws StorageException {
+    if (null != table) {
+      table.delete();
+    }
+  }
+
   @Test
   void getCreditorInstitutionIcaFile() throws Exception {
     CreditorInstitutionIcaFile insertedEntity =
@@ -109,5 +118,27 @@ public class AzureStorageInteractionTest {
     } catch (Exception e) {
       fail();
     }
+  }
+
+  @Test
+  void insertNewEc() throws Exception {
+    AzureStorageInteraction az = new AzureStorageInteraction(storageConnectionString, tableName);
+    Map<String, String> result_1 = az.getUpdatedEC(LocalDateTime.now().toString());
+    az.updateECIcaTable("123456");
+    Map<String, String> result_2 = az.getUpdatedEC(LocalDateTime.now().minusDays(1).toString());
+    assertEquals(0, result_1.keySet().size());
+    assertEquals(1, result_2.keySet().size());
+  }
+
+  @Test
+  void updateExistingEc() throws Exception {
+    AzureStorageInteraction az = new AzureStorageInteraction(storageConnectionString, tableName);
+    table.execute(
+        TableOperation.insert(
+            new CreditorInstitutionIcaFile("123456", LocalDateTime.now().minusDays(2).toString())));
+    az.updateECIcaTable("123456");
+    Map<String, String> result = az.getUpdatedEC(LocalDateTime.now().minusDays(1).toString());
+    assertEquals(1, result.keySet().size());
+    assertTrue(result.get("123456").contains(LocalDateTime.now().toLocalDate().toString()));
   }
 }

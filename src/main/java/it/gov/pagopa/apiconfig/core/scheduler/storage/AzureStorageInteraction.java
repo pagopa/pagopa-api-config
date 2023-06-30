@@ -3,6 +3,7 @@ package it.gov.pagopa.apiconfig.core.scheduler.storage;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.table.CloudTable;
+import com.microsoft.azure.storage.table.TableOperation;
 import com.microsoft.azure.storage.table.TableQuery;
 import com.microsoft.azure.storage.table.TableServiceEntity;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
@@ -10,6 +11,7 @@ import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.scheduler.entity.CreditorInstitutionIcaFile;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Spliterator;
 import java.util.stream.Collectors;
@@ -58,5 +60,19 @@ public class AzureStorageInteraction {
         .collect(
             Collectors.toMap(
                 TableServiceEntity::getRowKey, CreditorInstitutionIcaFile::getPublicationDate));
+  }
+
+  public void updateECIcaTable(String idDominio) {
+    try {
+      CloudTable table =
+          CloudStorageAccount.parse(storageConnectionString)
+              .createCloudTableClient()
+              .getTableReference(this.icaTable);
+      table.execute(
+          TableOperation.insertOrReplace(
+              new CreditorInstitutionIcaFile(idDominio, LocalDateTime.now().toString())));
+    } catch (InvalidKeyException | URISyntaxException | StorageException e) {
+      throw new AppException(AppError.AZURE_STORAGE_ERROR);
+    }
   }
 }

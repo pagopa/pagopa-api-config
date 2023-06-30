@@ -17,8 +17,6 @@ public class ConvertBrokerPspDetailsToIntermediariPsp
         .idIntermediarioPsp(source.getBrokerPspCode())
         .codiceIntermediario(source.getDescription())
         .faultBeanEsteso(source.getExtendedFaultBean())
-        .intermediarioAvv(false)
-        .intermediarioNodo(true)
         .build();
   }
 }

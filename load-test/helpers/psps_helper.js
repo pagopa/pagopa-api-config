@@ -26,7 +26,6 @@ export function createPaymentServiceProvider(rootUrl, params, id) {
 		"business_name": "PSP Business name",
 		"abi": "01600",
 		"bic": "BPPIITRRZZZ",
-		"transfer": false,
 		"stamp": false,
 		"agid_psp": false,
 		"tax_code": "17103880000"
@@ -42,7 +41,6 @@ export function updatePaymentServiceProvider(rootUrl, params, id) {
 		"business_name": "PSP Business name",
 		"abi": "01600",
 		"bic": "BPPIITRRZZZ",
-		"transfer": false,
 		"stamp": false,
 		"agid_psp": false,
 		"tax_code": "17103880000"
