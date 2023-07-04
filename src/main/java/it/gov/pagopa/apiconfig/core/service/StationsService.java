@@ -288,7 +288,7 @@ public class StationsService {
 
   private Page<Stazioni> queryStazioni(
       Long fkIntermediario, Long fkPa, String brokerDescription, FilterAndOrder filterAndOrder, Pageable pageable) {
-    if (brokerDescription == null) {
+    if ("".equals(brokerDescription)) { // avoiding unnecessary table join
       return queryStazioni(fkIntermediario, fkPa, filterAndOrder, pageable);
     } else {
       if (fkPa != null) {
