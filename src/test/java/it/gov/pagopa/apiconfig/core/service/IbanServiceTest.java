@@ -780,7 +780,7 @@ class IbanServiceTest {
         .objId(100L)
         .iban(iban.getIbanValue())
         .fiscalCode(organizationFiscalCode)
-        .description(iban.getDescription())
+        .description("iban")
         .dueDate(CommonUtil.toTimestamp(iban.getDueDate()))
         .build();
   }
@@ -796,6 +796,7 @@ class IbanServiceTest {
         .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
         .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
         .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
+        .description(iban.getDescription())
         .build();
   }
 
@@ -840,6 +841,7 @@ class IbanServiceTest {
                 .insertedDate(
                     CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
                 .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
+                .description(iban.getDescription())
                 .build());
     ibanMasters.get(0).setIbanAttributesMasters(getMockIbanAttributeMasters(ibanMasters.get(0)));
 
