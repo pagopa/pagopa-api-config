@@ -62,13 +62,42 @@ class StationsServiceTest {
     when(stazioniRepository.findAllByFilters(
             anyLong(), anyLong(), anyString(), any(Pageable.class)))
         .thenReturn(page);
+    when(stazioniRepository.findAllByFilters(
+        anyLong(), anyString(), anyString(), any(Pageable.class)))
+        .thenReturn(page);
+    when(stazioniRepository.findAllByFilters(
+        anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
+        .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
         .thenReturn(Optional.ofNullable(getMockIntermediariePa()));
 
     Stations result =
         stationsService.getStations(
-            50, 0, "1234", "4321", null, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+            50, 0, "1234", null, "4321", getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+    String actual = TestUtil.toJson(result);
+    String expected = TestUtil.readJsonFromFile("response/get_stations_ok1.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @Test
+  void getStations_withBrokerDescription() throws IOException, JSONException {
+    Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
+    when(stazioniRepository.findAllByFilters(
+        anyLong(), anyLong(), anyString(), any(Pageable.class)))
+        .thenReturn(page);
+    when(stazioniRepository.findAllByFilters(
+        anyLong(), anyString(), anyString(), any(Pageable.class)))
+        .thenReturn(page);
+    when(stazioniRepository.findAllByFilters(
+        anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
+        .thenReturn(page);
+    when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
+    when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
+        .thenReturn(Optional.ofNullable(getMockIntermediariePa()));
+
+    Stations result = stationsService.getStations(
+        50, 0, "1234", "some_description", "4321", getMockFilterAndOrder(Order.CreditorInstitution.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_stations_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

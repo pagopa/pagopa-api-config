@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -288,7 +289,7 @@ public class StationsService {
 
   private Page<Stazioni> queryStazioni(
       Long fkIntermediario, Long fkPa, String brokerDescription, FilterAndOrder filterAndOrder, Pageable pageable) {
-    if ("".equals(brokerDescription)) { // avoiding unnecessary table join
+    if (StringUtils.isEmpty(brokerDescription)) { // avoiding unnecessary table join
       return queryStazioni(fkIntermediario, fkPa, filterAndOrder, pageable);
     } else {
       if (fkPa != null) {
