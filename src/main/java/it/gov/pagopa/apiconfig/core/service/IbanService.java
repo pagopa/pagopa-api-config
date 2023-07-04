@@ -252,13 +252,11 @@ public class IbanService {
             .iban(iban.getIbanValue())
             .fiscalCode(organizationFiscalCode)
             .dueDate(CommonUtil.toTimestamp(iban.getDueDate()))
-            .description(iban.getDescription())
             .build();
     return saveIban(iban, ibanToBeCreated);
   }
 
   private Iban saveIban(IbanEnhanced iban, Iban existingIban) {
-    existingIban.setDescription(iban.getDescription());
     existingIban.setDueDate(CommonUtil.toTimestamp(iban.getDueDate()));
     return ibanRepository.save(existingIban);
   }
@@ -278,6 +276,7 @@ public class IbanService {
             ? ibanMaster.getInsertedDate()
             : CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)));
     ibanMaster.setValidityDate(CommonUtil.toTimestamp(iban.getValidityDate()));
+    ibanMaster.setDescription(iban.getDescription());
     ibanMaster.setPa(creditorInstitution); // setting CI object reference
     ibanMaster.setIban(ibanToBeCreated); // setting IBAN object reference
     return ibanMasterRepository.save(ibanMaster);
@@ -322,7 +321,7 @@ public class IbanService {
     return IbanEnhanced.builder()
         .companyName(creditorInstitution.getRagioneSociale())
         .ibanValue(iban.getIban())
-        .description(iban.getDescription())
+        .description(ibanCIRelation.getDescription())
         .labels(
             Optional.of(
                     ibanAttributes.stream()
