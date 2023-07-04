@@ -13,7 +13,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-  <version>0.49.4-4-PAGOPA-1012-ricerca-stazioni-per-nome-intermediario</version>
+  <version>0.49.6</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>

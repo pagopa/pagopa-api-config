@@ -666,6 +666,7 @@ create table NODO4_CFG.IBAN_MASTER
     STATE               varchar(16) not null,
     INSERTED_DATE       timestamp(6) not null,
     VALIDITY_DATE       timestamp(6) not null,
+    DESCRIPTION         varchar(255),
     FK_PA               numeric not null,
     FK_IBAN             numeric not null,
     constraint PK_IBAN_MASTER
