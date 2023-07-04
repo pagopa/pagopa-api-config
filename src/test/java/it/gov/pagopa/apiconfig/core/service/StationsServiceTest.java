@@ -68,7 +68,7 @@ class StationsServiceTest {
 
     Stations result =
         stationsService.getStations(
-            50, 0, "1234", "4321", getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+            50, 0, "1234", "4321", null, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_stations_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

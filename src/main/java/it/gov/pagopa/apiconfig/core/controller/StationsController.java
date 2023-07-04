@@ -121,6 +121,9 @@ public class StationsController {
       @Parameter(description = "Filter by broker")
           @RequestParam(name = "brokercode", required = false)
           String brokerCode,
+      @Parameter(description = "Filter by broker description")
+          @RequestParam(required = false, name = "brokerdescription")
+          String brokerDescription,
       @Parameter(description = "Filter by creditor institution")
           @RequestParam(name = "creditorinstitutioncode", required = false)
           String creditorInstitutionCode,
@@ -134,6 +137,7 @@ public class StationsController {
             limit,
             page,
             brokerCode,
+            brokerDescription,
             creditorInstitutionCode,
             CommonUtil.getFilterAndOrder(filterByCode, null, Order.Station.CODE, ordering)));
   }

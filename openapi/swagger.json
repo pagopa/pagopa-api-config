@@ -12494,6 +12494,13 @@
             "type": "string"
           },
           {
+            "description": "Filter by broker description",
+            "in": "query",
+            "name": "brokerdescription",
+            "required": false,
+            "type": "string"
+          },
+          {
             "description": "Filter by creditor institution",
             "in": "query",
             "name": "creditorinstitutioncode",
