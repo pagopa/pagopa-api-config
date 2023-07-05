@@ -186,7 +186,7 @@ class CdiServiceTest {
 
     assertThrows(AppException.class, () -> cdiService.createCdi(file));
   }
-  
+
   @Test
   void createCdi_CHARITY() throws IOException {
     File xml = TestUtil.readFile("file/cdi_valid_charity.xml");
