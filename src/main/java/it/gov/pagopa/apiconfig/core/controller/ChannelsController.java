@@ -109,6 +109,9 @@ public class ChannelsController {
       @Parameter(description = "Filter by broker", required = false)
           @RequestParam(name = "brokercode", required = false)
           String brokerCode,
+      @Parameter(description = "Filter by broker description")
+          @RequestParam(required = false, name = "brokerdescription")
+          String brokerDescription,
       @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code")
           String filterByCode,
       @RequestParam(required = false, name = "ordering", defaultValue = "DESC")
@@ -119,6 +122,7 @@ public class ChannelsController {
             limit,
             page,
             brokerCode,
+            brokerDescription,
             getFilterAndOrder(filterByCode, null, Order.Channel.CODE, ordering)));
   }
 

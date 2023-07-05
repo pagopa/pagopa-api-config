@@ -43,7 +43,7 @@ class ChannelsControllerTest {
 
   @BeforeEach
   void setUp() {
-    when(channelsService.getChannels(anyInt(), anyInt(), any(), any(FilterAndOrder.class)))
+    when(channelsService.getChannels(anyInt(), anyInt(), any(), any(), any(FilterAndOrder.class)))
         .thenReturn(getMockChannels());
     when(channelsService.getChannel(anyString())).thenReturn(getMockChannelDetails());
     when(channelsService.createChannel(any(ChannelDetails.class)))

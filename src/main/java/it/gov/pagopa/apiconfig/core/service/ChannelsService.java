@@ -14,6 +14,7 @@ import it.gov.pagopa.apiconfig.core.model.psp.ChannelPspList;
 import it.gov.pagopa.apiconfig.core.model.psp.Channels;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvider;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
+import it.gov.pagopa.apiconfig.core.specification.CanaliSpecification;
 import it.gov.pagopa.apiconfig.core.specification.PspSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
@@ -77,17 +78,15 @@ public class ChannelsService {
       @NotNull Integer limit,
       @NotNull Integer pageNumber,
       String brokerCode,
+      String brokerDescription,
       @Valid FilterAndOrder filterAndOrder) {
     Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
-    var broker = intermediariPspRepository.findByIdIntermediarioPsp(brokerCode).orElse(null);
-
-    var filters =
-        CommonUtil.getFilters(
-            Canali.builder()
-                .idCanale(filterAndOrder.getFilter().getCode())
-                .fkIntermediarioPsp(broker)
-                .build());
-    Page<Canali> page = canaliRepository.findAll(filters, pageable);
+    Page<Canali> page = canaliRepository.findAll(
+        CanaliSpecification.filterChannelsByCodeAndBrokerDescriptionFilters(
+            brokerCode,
+            brokerDescription,
+            filterAndOrder.getFilter().getCode()
+        ), pageable);
     return Channels.builder()
         .channelList(getChannelList(page))
         .pageInfo(CommonUtil.buildPageInfo(page))
