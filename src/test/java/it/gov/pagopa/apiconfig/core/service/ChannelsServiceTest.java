@@ -41,6 +41,8 @@ import java.util.Optional;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -51,6 +53,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -70,25 +73,23 @@ class ChannelsServiceTest {
 
   @Autowired @InjectMocks private ChannelsService channelsService;
 
-  @Test
-  void getChannels() throws IOException, JSONException {
+  private static final String nullS = null;
+
+  @ParameterizedTest
+  @CsvSource(
+      value = {
+        "null, null",
+        "1234, null",
+        "null, broker_description",
+      },
+      nullValues = {"null"})
+  void getChannels(String brokerCode, String brokerDescription) throws IOException, JSONException {
     Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
-    when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+    when(canaliRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
     Channels result =
-        channelsService.getChannels(50, 0, null, getMockFilterAndOrder(Order.Channel.CODE));
-    String actual = TestUtil.toJson(result);
-    String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
-    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
-  }
-
-  @Test
-  void getChannels_FilterByBroker() throws IOException, JSONException {
-    Page<Canali> page = TestUtil.mockPage(Lists.newArrayList(getMockCanali()), 50, 0);
-    when(canaliRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
-
-    Channels result =
-        channelsService.getChannels(50, 0, "1234", getMockFilterAndOrder(Order.Channel.CODE));
+        channelsService.getChannels(
+            50, 0, brokerCode, brokerDescription, getMockFilterAndOrder(Order.Channel.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_channels_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
