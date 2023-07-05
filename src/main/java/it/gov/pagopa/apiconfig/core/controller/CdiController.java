@@ -219,11 +219,11 @@ public class CdiController {
                     schema = @Schema(implementation = ProblemJson.class))),
         @ApiResponse(
             responseCode = "422",
-        	description = "Unprocessable Content",
-        	content =
-        		@Content(
-        			mediaType = MediaType.APPLICATION_JSON_VALUE,
-        			schema = @Schema(implementation = ProblemJson.class))),
+            description = "Unprocessable Content",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
         @ApiResponse(
             responseCode = "429",
             description = "Too many requests",

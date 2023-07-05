@@ -226,10 +226,9 @@ class CdiServiceTest {
     when(afmUtilsAsyncTask.executeSync(any())).thenReturn(true);
 
     try {
-    	cdiService.createCdi(file);
-    	fail();
-    }
-    catch (AppException e) {
+      cdiService.createCdi(file);
+      fail();
+    } catch (AppException e) {
       assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, e.getHttpStatus());
     } catch (Exception e) {
       fail(e);
