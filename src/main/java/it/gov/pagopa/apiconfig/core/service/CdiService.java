@@ -92,6 +92,8 @@ public class CdiService {
 
   @Value("${xsd.cdi}")
   private String xsdCdi;
+  
+  private static final String CHARITY_PREFIX = "CHARITY";
 
   @Transactional(readOnly = true)
   public Cdis getCdis(
@@ -137,24 +139,28 @@ public class CdiService {
 
     // map file into model class
     CdiXml xml = mapXml(file, CdiXml.class);
+    
+    //PAGOPA-936: skip the CDI creation for the CHARITY_PREFIX
+    if (!xml.getIdentificativoPSP().startsWith(CHARITY_PREFIX) && !xml.getIdentificativoFlusso().startsWith(CHARITY_PREFIX)) {
 
-    var psp = getPspIfExists(xml.getIdentificativoPSP());
-
-    // save BINARY_FILE and CDI_MASTER
-    var binaryFile = saveBinaryFile(file);
-    var master = saveCdiMaster(xml, psp, binaryFile);
-    // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
-    for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
-      var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
-
-      var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
-      saveCdiInformazioniServizio(xmlDetail, detail);
-      saveCdiFasciaCostiServizio(xmlDetail, detail);
-      saveCdiPreferences(xml, xmlDetail, detail);
+	    var psp = getPspIfExists(xml.getIdentificativoPSP());
+	
+	    // save BINARY_FILE and CDI_MASTER
+	    var binaryFile = saveBinaryFile(file);
+	    var master = saveCdiMaster(xml, psp, binaryFile);
+	    // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
+	    for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
+	      var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
+	
+	      var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
+	      saveCdiInformazioniServizio(xmlDetail, detail);
+	      saveCdiFasciaCostiServizio(xmlDetail, detail);
+	      saveCdiPreferences(xml, xmlDetail, detail);
+	    }
+	
+	    // send CDI to AFM Utils
+	    afmUtilsAsyncTask.executeSync(master);
     }
-
-    // send CDI to AFM Utils
-    afmUtilsAsyncTask.executeSync(master);
   }
 
   @Transactional
