@@ -186,6 +186,49 @@ class CdiServiceTest {
 
     assertThrows(AppException.class, () -> cdiService.createCdi(file));
   }
+  
+  @Test
+  void createCdi_CHARITY() throws IOException {
+    File xml = TestUtil.readFile("file/cdi_valid_charity.xml");
+    MockMultipartFile file =
+        new MockMultipartFile(
+            "file", xml.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(xml));
+
+    Psp psp = getMockPsp();
+    psp.setIdPsp("CHARITYNEXI");
+    psp.setAbi("03069");
+    psp.setBic("BCITITMM");
+
+    Canali channel = getMockCanali();
+    channel.setIdCanale("CHARITYNEXI");
+    channel.getFkIntermediarioPsp().setIdIntermediarioPsp("CHARITYNEXI");
+
+    PspCanaleTipoVersamento paymentMethod = getMockPspCanaleTipoVersamento();
+    paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setDescrizione("BP");
+    paymentMethod.getCanaleTipoVersamento().getTipoVersamento().setTipoVersamento("BP");
+
+    when(pspRepository.findByIdPsp(anyString())).thenReturn(Optional.of(psp));
+    CdiMaster mockCdiMaster = getMockCdiMaster();
+    mockCdiMaster.setCdiDetail(List.of(getMockCdiDetail()));
+    when(cdiMasterRepository.save(any())).thenReturn(mockCdiMaster);
+    when(canaliRepository.findByIdCanale(anyString())).thenReturn(Optional.of(channel));
+    when(pspCanaleTipoVersamentoRepository.findByFkPspAndCanaleTipoVersamento_FkCanale(
+            anyLong(), anyLong()))
+        .thenReturn(List.of(paymentMethod));
+
+    when(binaryFileRepository.save(any())).thenReturn(getMockBinaryFile());
+    when(cdiMasterRepository.save(any())).thenReturn(mockCdiMaster);
+    when(pspCanaleTipoVersamentoRepository
+            .findByFkPspAndCanaleTipoVersamento_CanaleIdCanaleAndCanaleTipoVersamento_TipoVersamentoTipoVersamento(
+                anyLong(), anyString(), anyString()))
+        .thenReturn(Optional.of(getMockPspCanaleTipoVersamento()));
+
+    when(afmUtilsAsyncTask.executeSync(any())).thenReturn(true);
+
+    cdiService.createCdi(file);
+
+    verify(afmUtilsAsyncTask, times(0)).executeSync(mockCdiMaster);
+  }
 
   @Test
   void deleteCdi() {
