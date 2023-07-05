@@ -47,3 +47,4 @@ k6-script.js
 **/.terraform/
 **/charts/
 .cache_ggshield
+.settings/*
