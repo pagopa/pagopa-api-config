@@ -2637,6 +2637,13 @@
             "type": "string"
           },
           {
+            "description": "Filter by broker description",
+            "in": "query",
+            "name": "brokerdescription",
+            "required": false,
+            "type": "string"
+          },
+          {
             "description": "Filter by code",
             "in": "query",
             "name": "code",
@@ -7083,8 +7090,8 @@
       },
       "get": {
         "produces": [
-          "application/json",
-          "application/xml"
+          "application/xml",
+          "application/json"
         ],
         "parameters": [
           {
