@@ -81,12 +81,11 @@ public class ChannelsService {
       String brokerDescription,
       @Valid FilterAndOrder filterAndOrder) {
     Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
-    Page<Canali> page = canaliRepository.findAll(
-        CanaliSpecification.filterChannelsByCodeAndBrokerDescriptionFilters(
-            brokerCode,
-            brokerDescription,
-            filterAndOrder.getFilter().getCode()
-        ), pageable);
+    Page<Canali> page =
+        canaliRepository.findAll(
+            CanaliSpecification.filterChannelsByCodeAndBrokerDescriptionFilters(
+                brokerCode, brokerDescription, filterAndOrder.getFilter().getCode()),
+            pageable);
     return Channels.builder()
         .channelList(getChannelList(page))
         .pageInfo(CommonUtil.buildPageInfo(page))
