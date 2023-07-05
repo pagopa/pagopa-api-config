@@ -75,7 +75,8 @@ public class StationsService {
             .map(elem -> getPaIfExists(elem).getObjId())
             .orElse(null);
 
-    Page<Stazioni> page = queryStazioni(fkIntermediario, fkPa, brokerDescription, filterAndOrder, pageable);
+    Page<Stazioni> page =
+        queryStazioni(fkIntermediario, fkPa, brokerDescription, filterAndOrder, pageable);
     return Stations.builder()
         .stationsList(getStationsList(page))
         .pageInfo(CommonUtil.buildPageInfo(page))
@@ -288,13 +289,21 @@ public class StationsService {
   }
 
   private Page<Stazioni> queryStazioni(
-      Long fkIntermediario, Long fkPa, String brokerDescription, FilterAndOrder filterAndOrder, Pageable pageable) {
+      Long fkIntermediario,
+      Long fkPa,
+      String brokerDescription,
+      FilterAndOrder filterAndOrder,
+      Pageable pageable) {
     if (StringUtils.isEmpty(brokerDescription)) { // avoiding unnecessary table join
       return queryStazioni(fkIntermediario, fkPa, filterAndOrder, pageable);
     } else {
       if (fkPa != null) {
         return stazioniRepository.findAllByFilters(
-            fkIntermediario, fkPa, filterAndOrder.getFilter().getCode(), brokerDescription, pageable);
+            fkIntermediario,
+            fkPa,
+            filterAndOrder.getFilter().getCode(),
+            brokerDescription,
+            pageable);
       } else {
         return stazioniRepository.findAllByFilters(
             fkIntermediario, filterAndOrder.getFilter().getCode(), brokerDescription, pageable);

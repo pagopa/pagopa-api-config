@@ -65,10 +65,10 @@ class StationsServiceTest {
             anyLong(), anyLong(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-        anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyString(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-        anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
@@ -86,20 +86,26 @@ class StationsServiceTest {
   void getStations_withBrokerDescription() throws IOException, JSONException {
     Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
     when(stazioniRepository.findAllByFilters(
-        anyLong(), anyLong(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-        anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyString(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-        anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
         .thenReturn(Optional.ofNullable(getMockIntermediariePa()));
 
-    Stations result = stationsService.getStations(
-        50, 0, "1234", "some_description", "4321", getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+    Stations result =
+        stationsService.getStations(
+            50,
+            0,
+            "1234",
+            "some_description",
+            "4321",
+            getMockFilterAndOrder(Order.CreditorInstitution.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_stations_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -109,33 +115,48 @@ class StationsServiceTest {
   void getStations_invalidCI() throws IOException, JSONException {
     Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
     when(stazioniRepository.findAllByFilters(
-        anyLong(), anyLong(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-        anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyString(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-        anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.empty());
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
         .thenReturn(Optional.ofNullable(getMockIntermediariePa()));
 
-    assertThrows(AppException.class, () -> stationsService.getStations(50, 0, "1234", "some_description", "4321", getMockFilterAndOrder(Order.CreditorInstitution.CODE)));
+    assertThrows(
+        AppException.class,
+        () ->
+            stationsService.getStations(
+                50,
+                0,
+                "1234",
+                "some_description",
+                "4321",
+                getMockFilterAndOrder(Order.CreditorInstitution.CODE)));
   }
 
   @Test
   void getStations_nullBrokerAndCI() throws IOException, JSONException {
     Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
     when(stazioniRepository.findAllByFilters(
-        isNull(), anyString(), anyString(), any(Pageable.class)))
+            isNull(), anyString(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.empty());
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
         .thenReturn(Optional.ofNullable(getMockIntermediariePa()));
 
-    Stations result = stationsService.getStations(
-        50, 0, null, "some_description", null, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+    Stations result =
+        stationsService.getStations(
+            50,
+            0,
+            null,
+            "some_description",
+            null,
+            getMockFilterAndOrder(Order.CreditorInstitution.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_stations_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
