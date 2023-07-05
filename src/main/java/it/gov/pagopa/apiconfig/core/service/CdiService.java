@@ -162,6 +162,9 @@ public class CdiService {
 
       // send CDI to AFM Utils
       afmUtilsAsyncTask.executeSync(master);
+    } else {
+      throw new AppException(
+          AppError.CHARITY_ERROR, String.format("%s", xml.getIdentificativoPSP()));
     }
   }
 
