@@ -41,7 +41,7 @@ class StationsControllerTest {
   @BeforeEach
   void setUp() {
     when(stationsService.getStations(
-            anyInt(), anyInt(), isNull(), isNull(), any(FilterAndOrder.class)))
+            anyInt(), anyInt(), isNull(), isNull(), isNull(), any(FilterAndOrder.class)))
         .thenReturn(getMockStations());
     when(stationsService.getStation(anyString())).thenReturn(getMockStationDetails());
     when(stationsService.createStation(any(StationDetails.class)))

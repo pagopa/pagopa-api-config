@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.49.6"
+    "version": "0.49.6-1-PAGOPA-1012-ricerca-stazioni-per-nome-intermediario"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -12490,6 +12490,13 @@
             "description": "Filter by broker",
             "in": "query",
             "name": "brokercode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Filter by broker description",
+            "in": "query",
+            "name": "brokerdescription",
             "required": false,
             "type": "string"
           },

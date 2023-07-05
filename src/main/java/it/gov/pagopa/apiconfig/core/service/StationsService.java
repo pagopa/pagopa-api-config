@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class StationsService {
       @NotNull Integer limit,
       @NotNull Integer pageNumber,
       @Nullable String brokerCode,
+      @Nullable String brokerDescription,
       @Nullable String creditorInstitutionCode,
       @Valid FilterAndOrder filterAndOrder) {
     Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
@@ -73,7 +75,8 @@ public class StationsService {
             .map(elem -> getPaIfExists(elem).getObjId())
             .orElse(null);
 
-    Page<Stazioni> page = queryStazioni(fkIntermediario, fkPa, filterAndOrder, pageable);
+    Page<Stazioni> page =
+        queryStazioni(fkIntermediario, fkPa, brokerDescription, filterAndOrder, pageable);
     return Stations.builder()
         .stationsList(getStationsList(page))
         .pageInfo(CommonUtil.buildPageInfo(page))
@@ -283,6 +286,29 @@ public class StationsService {
         .orElseThrow(
             () ->
                 new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, creditorInstitutionCode));
+  }
+
+  private Page<Stazioni> queryStazioni(
+      Long fkIntermediario,
+      Long fkPa,
+      String brokerDescription,
+      FilterAndOrder filterAndOrder,
+      Pageable pageable) {
+    if (StringUtils.isEmpty(brokerDescription)) { // avoiding unnecessary table join
+      return queryStazioni(fkIntermediario, fkPa, filterAndOrder, pageable);
+    } else {
+      if (fkPa != null) {
+        return stazioniRepository.findAllByFilters(
+            fkIntermediario,
+            fkPa,
+            filterAndOrder.getFilter().getCode(),
+            brokerDescription,
+            pageable);
+      } else {
+        return stazioniRepository.findAllByFilters(
+            fkIntermediario, filterAndOrder.getFilter().getCode(), brokerDescription, pageable);
+      }
+    }
   }
 
   /**
