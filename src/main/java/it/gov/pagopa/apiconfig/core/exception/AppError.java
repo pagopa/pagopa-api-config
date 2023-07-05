@@ -228,6 +228,11 @@ public enum AppError {
       "Error when writing the ica binary file",
       "Error when writing the ica binary xml file"),
 
+  CHARITY_ERROR(
+      HttpStatus.UNPROCESSABLE_ENTITY,
+      "CHARITY prefix found in the PSP ID field",
+      "Requests prefixed with CHARITY in the PSP ID field are rejected [IdentificativoPSP=%s]"),
+
   UNKNOWN(null, null, null);
 
   public final HttpStatus httpStatus;

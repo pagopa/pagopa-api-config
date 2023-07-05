@@ -93,6 +93,8 @@ public class CdiService {
   @Value("${xsd.cdi}")
   private String xsdCdi;
 
+  private static final String CHARITY_PREFIX = "CHARITY";
+
   @Transactional(readOnly = true)
   public Cdis getCdis(
       @NotNull Integer limit, @NotNull Integer pageNumber, String idCdi, String pspCode) {
@@ -138,23 +140,32 @@ public class CdiService {
     // map file into model class
     CdiXml xml = mapXml(file, CdiXml.class);
 
-    var psp = getPspIfExists(xml.getIdentificativoPSP());
+    // PAGOPA-936: skip the CDI creation for the CHARITY_PREFIX:
+    // it was chosen to use only the check on the 'identificativoPSP' because the one on the
+    // 'identificativoFlusso' is unnecessary
+    if (!xml.getIdentificativoPSP().startsWith(CHARITY_PREFIX)) {
 
-    // save BINARY_FILE and CDI_MASTER
-    var binaryFile = saveBinaryFile(file);
-    var master = saveCdiMaster(xml, psp, binaryFile);
-    // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
-    for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
-      var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
+      var psp = getPspIfExists(xml.getIdentificativoPSP());
 
-      var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
-      saveCdiInformazioniServizio(xmlDetail, detail);
-      saveCdiFasciaCostiServizio(xmlDetail, detail);
-      saveCdiPreferences(xml, xmlDetail, detail);
+      // save BINARY_FILE and CDI_MASTER
+      var binaryFile = saveBinaryFile(file);
+      var master = saveCdiMaster(xml, psp, binaryFile);
+      // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
+      for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
+        var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
+
+        var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
+        saveCdiInformazioniServizio(xmlDetail, detail);
+        saveCdiFasciaCostiServizio(xmlDetail, detail);
+        saveCdiPreferences(xml, xmlDetail, detail);
+      }
+
+      // send CDI to AFM Utils
+      afmUtilsAsyncTask.executeSync(master);
+    } else {
+      throw new AppException(
+          AppError.CHARITY_ERROR, String.format("%s", xml.getIdentificativoPSP()));
     }
-
-    // send CDI to AFM Utils
-    afmUtilsAsyncTask.executeSync(master);
   }
 
   @Transactional
