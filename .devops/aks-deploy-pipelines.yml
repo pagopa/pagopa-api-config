@@ -202,7 +202,7 @@ stages:
                 version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
                 echo "##vso[task.setvariable variable=next;isOutput=true]$version"
               failOnStderr: true
-                      
+
           - task: Docker@2
             displayName: "docker login"
             inputs:
@@ -218,6 +218,7 @@ stages:
                 echo "[INFO] Image version: $(pomversion.next)"
                 
                 echo $(GITHUB_TOKEN) > ./secrets
+                echo $(GITHUB_TOKEN_READ_PACKAGES) >> ./secrets
                 DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(imageRepository):$(pomversion.next) --secret id=GH_TOKEN,src=./secrets .
                 DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(imageRepository):latest --secret id=GH_TOKEN,src=./secrets .
                 DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(imageRepository):$(Build.BuildId) --secret id=GH_TOKEN,src=./secrets .
