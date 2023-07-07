@@ -19,13 +19,26 @@ Given('ApiConfig running', async () => {
   assert.strictEqual(response.status, 200);
 });
 
-When('the client creates the Iban', async () => {
-      body = buildIbanCreate();
-      responseToCheck = await createNewIban(creditorInstitution, body);
-    });
+When('the client creates the Iban {string}', async (iban) => {
+    body = buildIbanCreate(iban);
+    responseToCheck = await createNewIban(creditorInstitution, body);    
+  });
 
-Then('the {string} of the iban', async (method) => {
-  let iban = body['iban']
+When('the client {string} Iban {string}', async (method, iban) => {
+  switch (method) {
+    case 'delete':
+      responseToCheck = await deleteIban(creditorInstitution, iban);
+      break;
+    case 'update':
+      body = buildIbanUpdate();
+      responseToCheck = await updateIban(creditorInstitution, iban, body);
+      break;
+    case 'get':
+      break;
+  }
+})
+
+Then('the client {string} the iban {string}', async (method, iban) => {
   switch (method) {
     case 'delete':
       responseToCheck = await deleteIban(creditorInstitution, iban);

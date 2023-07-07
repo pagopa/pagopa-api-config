@@ -1,9 +1,9 @@
-function buildIbanCreate() {
+function buildIbanCreate(iban) {
     today = new Date()
     today.setYear(today.getYear() + 1)
     return {
         "description": "Testing",
-        "iban": "IT99C0222211111000000003333",
+        "iban": iban,
         "is_active": true,
         "labels": [
           {
@@ -33,6 +33,7 @@ function buildIbanUpdate() {
         "due_date": today
       }
 }
+
 
 module.exports = {
     buildIbanCreate,
