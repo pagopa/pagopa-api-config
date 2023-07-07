@@ -190,7 +190,7 @@ stages:
     variables:
       current_version: $[ stageDependencies.Release.make_release.outputs['current_version.value'] ]
     jobs: 
-      - job: Build And Push
+      - job: Build_And_Push
         steps:
           - task: Docker@2
             displayName: "docker login"
