@@ -27,7 +27,7 @@ basecache: &basecache
       envSecret: {}
   image:
     repository: pagopapcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.50.3"
+    tag: "0.50.3-1-main"
     pullPolicy: Always
   livenessProbe:
     httpGet:
