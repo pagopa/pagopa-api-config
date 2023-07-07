@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.50.3-4-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
+    "version": "0.50.3-5-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
