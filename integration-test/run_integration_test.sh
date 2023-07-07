@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# example: sh ./run_integration_test.sh <local|dev|uat|prod> <sub-key>
+# example: sh ./run_integration_test.sh <local|dev|uat|prod>
 
 set -e
 
