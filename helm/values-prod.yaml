@@ -27,7 +27,7 @@ basecache: &basecache
       envSecret: {}
   image:
     repository: pagopapcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.50.3-3-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
+    tag: "0.50.3-4-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
     pullPolicy: Always
   livenessProbe:
     httpGet:

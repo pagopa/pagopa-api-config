@@ -13,7 +13,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-  <version>0.50.3-3-PAGOPA-970-bug-caricamento-massivo-jdbc-connection</version>
+  <version>0.50.3-4-PAGOPA-970-bug-caricamento-massivo-jdbc-connection</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
