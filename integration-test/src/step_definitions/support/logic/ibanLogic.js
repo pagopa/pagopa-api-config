@@ -1,4 +1,4 @@
-const {post, del, put} = require("../common");
+const {post, del, put, get} = require("../common");
 
 const app_host = process.env.APP_HOST;
 
@@ -14,9 +14,14 @@ async function updateIban(creditorInstitution, iban, body) {
     return put(app_host + `/creditorinstitutions/${creditorInstitution}/ibans/${iban}`, body)
 }
 
+async function getIbanEnhanced(creditorInstitution) {
+    return get(app_host + `/creditorinstitutions/${creditorInstitution}/ibans/enhanced`)
+}
+
 
 module.exports = {
     createNewIban,
     deleteIban,
-    updateIban
+    updateIban,
+    getIbanEnhanced
 }

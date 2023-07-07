@@ -12,6 +12,10 @@ Feature: feat
     And the response "description" is equal to "Updated description testing"
     Then the client "delete" the iban "IT99C0222211111000000003333"
     And the client receives status code 200
+  
+  Scenario: getting Ibans of creditor creditorInstitution
+    When the client gets the Ibans for an EC 
+    Then the client receives status code 200 
 
   Scenario: Iban update not found
     When the client "update" Iban "IT99C0222211111000000003333"

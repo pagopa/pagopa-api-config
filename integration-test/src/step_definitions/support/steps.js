@@ -1,6 +1,6 @@
 const {Given, When, Then} = require('@cucumber/cucumber')
 const assert = require("assert");
-const {createNewIban, deleteIban, updateIban} = require("./logic/ibanLogic")
+const {createNewIban, deleteIban, updateIban, getIbanEnhanced} = require("./logic/ibanLogic")
 const {buildIbanCreate, buildIbanUpdate} = require("./builder/buildIban")
 const {get} = require("./common");
 
@@ -20,9 +20,9 @@ Given('ApiConfig running', async () => {
 });
 
 When('the client creates the Iban {string}', async (iban) => {
-    body = buildIbanCreate(iban);
-    responseToCheck = await createNewIban(creditorInstitution, body);    
-  });
+  body = buildIbanCreate(iban);
+  responseToCheck = await createNewIban(creditorInstitution, body);    
+});
 
 When('the client {string} Iban {string}', async (method, iban) => {
   switch (method) {
@@ -36,7 +36,12 @@ When('the client {string} Iban {string}', async (method, iban) => {
     case 'get':
       break;
   }
-})
+});
+
+When('the client gets the Ibans for an EC', async () => {
+  responseToCheck = await getIbanEnhanced(creditorInstitution);
+  console.log(responseToCheck.data)
+});
 
 Then('the client {string} the iban {string}', async (method, iban) => {
   switch (method) {
@@ -54,8 +59,8 @@ Then('the client {string} the iban {string}', async (method, iban) => {
 
 Then('the client receives status code {int}', (statusCode) =>{
   assert.strictEqual(responseToCheck.status, statusCode);
-})
+});
 
 Then('the response {string} is equal to {string}', (field, description) =>{
   assert.strictEqual(responseToCheck.data[field], description);
-})
+});
