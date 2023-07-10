@@ -20,13 +20,13 @@ basecache: &basecache
     deployment:
       create: true
       image:
-        repository: pagopapcommonacr.azurecr.io/pagopaapiconfig
+        repository: ghcr.io/pagopa/pagopa-api-config
         tag: "0.50.3-13-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
   image:
-    repository: pagopapcommonacr.azurecr.io/pagopaapiconfig
+    repository: ghcr.io/pagopa/pagopa-api-config
     tag: "0.50.3-8-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
     pullPolicy: Always
   livenessProbe:
