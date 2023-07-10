@@ -96,6 +96,8 @@ basecache: &basecache
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
     ICA_STORAGE_TABLE_NAME: "pagopadweuapiconfigsaicatable"
     SHOW_SQL: "false"
+    CRON_JOB_ICA_SCHEDULE_ENABLED: "false"
+    CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
