@@ -21,13 +21,13 @@ basecache: &basecache
       create: true
       image:
         repository: ghcr.io/pagopa/pagopa-api-config
-        tag: "0.50.3-15-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
+        tag: "0.50.3-16-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.50.3"
+    tag: "0.50.3-16-PAGOPA-970-bug-caricamento-massivo-jdbc-connection"
     pullPolicy: Always
   livenessProbe:
     httpGet:
