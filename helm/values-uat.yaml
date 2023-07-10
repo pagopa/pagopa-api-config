@@ -98,6 +98,7 @@ basecache: &basecache
     SHOW_SQL: "false"
     CRON_JOB_ICA_SCHEDULE_ENABLED: "false"
     CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
+    AZURE_STORAGE_TABLE_NAME: "pagopauweuapiconfigsaicatable"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-u-connection-string'
@@ -105,6 +106,7 @@ basecache: &basecache
     AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
     ICA_STORAGE_CONNECTION_STRING: 'api-config-ica-u-sa-connection-string'
+    AZURE_STORAGE_CONNECTION_STRING: 'api-config-ica-u-sa-connection-string'
   keyvault:
     name: "pagopa-u-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
