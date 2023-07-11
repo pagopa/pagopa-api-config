@@ -1071,10 +1071,10 @@ public class TestUtil {
         .build();
   }
 
-  public static it.gov.pagopa.apiconfig.starter.entity.Iban getMockIbanEntity() {
+  public static it.gov.pagopa.apiconfig.starter.entity.Iban getMockIbanEntity(String ibanCode) {
     return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
         .objId(1L)
-        .iban("IT99C0222211111000000000000")
+        .iban(ibanCode)
         .fiscalCode("1234")
         .description("Iban description")
         .build();
