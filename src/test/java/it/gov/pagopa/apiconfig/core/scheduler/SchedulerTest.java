@@ -60,7 +60,8 @@ class SchedulerTest {
     Map<String, String> mockMap = new HashMap<>();
     mockMap.put("00168480242", LocalDateTime.now().plusMinutes(10).toString());
     when(azureStorageInteraction.getUpdatedEC(anyString())).thenReturn(mockMap);
-    when(ibanRepository.findByObjIdIn(any(List.class))).thenReturn(List.of(getMockIbanEntity("IT99C0222211111000000000000")));
+    when(ibanRepository.findByObjIdIn(any(List.class)))
+        .thenReturn(List.of(getMockIbanEntity("IT99C0222211111000000000000")));
     when(ibanMasterRepository.findByFkPa(any(Long.class)))
         .thenReturn(List.of(getMockIbanMaster_2()));
 
@@ -86,7 +87,8 @@ class SchedulerTest {
     Map<String, String> mockMap = new HashMap<>();
     mockMap.put("00168480243", LocalDateTime.now().plusMinutes(10).toString());
     when(azureStorageInteraction.getUpdatedEC(anyString())).thenReturn(mockMap);
-    when(ibanRepository.findByObjIdIn(any(List.class))).thenReturn(List.of(getMockIbanEntity("IT99C0222211111000000000000")));
+    when(ibanRepository.findByObjIdIn(any(List.class)))
+        .thenReturn(List.of(getMockIbanEntity("IT99C0222211111000000000000")));
     when(ibanMasterRepository.findByFkPa(any(Long.class)))
         .thenReturn(List.of(getMockIbanMaster_2()));
 

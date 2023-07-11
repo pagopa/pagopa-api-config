@@ -29,9 +29,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,7 +64,9 @@ public class IbanService {
 
   @Autowired private AzureStorageInteraction azureStorageInteraction;
 
-  public IbanEnhanced createIban(@Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid") @NotBlank String organizationFiscalCode,
+  public IbanEnhanced createIban(
+      @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid") @NotBlank
+          String organizationFiscalCode,
       @Valid @NotNull IbanEnhanced iban) {
     // retrieve the creditor institution and throw exception if not found
     Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
@@ -99,14 +101,20 @@ public class IbanService {
     List<IbanAttributeMaster> updatedIbanAttributes =
         saveIbanLabelRelation(iban, ibanCIRelationToBeCreated);
     // create encoding for postal iban
-    if(isPostalIban(iban.getIbanValue())) {
-        String ibanValue = iban.getIbanValue();
-        Encoding encoding = Encoding.builder()
-            .codeType(CodeTypeEnum.BARCODE_128_AIM)
-            .encodingCode(ibanValue.substring(ibanValue.length()-12)) // for BARCODE-128-AIM encoding code equals to last 12 characters of iban value
-            .build();
+    if (isPostalIban(iban.getIbanValue())) {
+      String ibanValue = iban.getIbanValue();
+      Encoding encoding =
+          Encoding.builder()
+              .codeType(CodeTypeEnum.BARCODE_128_AIM)
+              .encodingCode(
+                  ibanValue.substring(
+                      ibanValue.length()
+                          - 12)) // for BARCODE-128-AIM encoding code equals to last 12 characters
+                                 // of iban value
+              .build();
 
-        encodingsService.createCreditorInstitutionEncoding(existingCreditorInstitution.getIdDominio(), encoding);
+      encodingsService.createCreditorInstitutionEncoding(
+          existingCreditorInstitution.getIdDominio(), encoding);
     }
 
     // return final object
@@ -118,8 +126,13 @@ public class IbanService {
   }
 
   public IbanEnhanced updateIban(
-      @NotBlank @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid") String organizationFiscalCode,
-      @NotBlank @Pattern(regexp = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid") String ibanCode,
+      @NotBlank @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid")
+          String organizationFiscalCode,
+      @NotBlank
+          @Pattern(
+              regexp = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}",
+              message = "IBAN code not valid")
+          String ibanCode,
       @Valid @NotNull IbanEnhanced iban) {
     if (!ibanCode.equals(iban.getIbanValue())) {
       throw new AppException(
@@ -166,7 +179,9 @@ public class IbanService {
   }
 
   public IbansEnhanced getCreditorInstitutionsIbansByLabel(
-      @NotNull @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid") String organizationFiscalCode, String label) {
+      @NotNull @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid")
+          String organizationFiscalCode,
+      String label) {
     List<IbanEnhanced> ibanEnhancedList = new ArrayList<>();
     Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
     Pa pa =
@@ -175,45 +190,50 @@ public class IbanService {
                 new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
 
     List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
-    ibanMasters
-        .forEach(
-            ibanMaster -> {
-              Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getFkIban());
-              Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND));
-              Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
-              Pa ciOwner =
-                  ciOwnerOpt.orElseThrow(
-                      () ->
-                          new AppException(
-                              AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
+    ibanMasters.forEach(
+        ibanMaster -> {
+          Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getFkIban());
+          Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND));
+          Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
+          Pa ciOwner =
+              ciOwnerOpt.orElseThrow(
+                  () ->
+                      new AppException(
+                          AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
 
-              if (label == null || label.isEmpty()) {
-                IbanEnhanced ibanEnhanced =
-                    convertEntitiesToModel(
-                        ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
-                ibanEnhancedList.add(ibanEnhanced);
-              } else {
-                boolean labelMatch =
-                    ibanMaster.getIbanAttributesMasters().stream()
-                        .map(
-                            ibanAttributeMaster ->
-                                ibanAttributeMaster.getIbanAttribute().getAttributeName())
-                        .anyMatch(name -> name.equalsIgnoreCase(label));
+          if (label == null || label.isEmpty()) {
+            IbanEnhanced ibanEnhanced =
+                convertEntitiesToModel(
+                    ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+            ibanEnhancedList.add(ibanEnhanced);
+          } else {
+            boolean labelMatch =
+                ibanMaster.getIbanAttributesMasters().stream()
+                    .map(
+                        ibanAttributeMaster ->
+                            ibanAttributeMaster.getIbanAttribute().getAttributeName())
+                    .anyMatch(name -> name.equalsIgnoreCase(label));
 
-                if (labelMatch) {
-                  IbanEnhanced ibanEnhanced =
-                      convertEntitiesToModel(
-                          ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
-                  ibanEnhancedList.add(ibanEnhanced);
-                }
-              }
-            });
+            if (labelMatch) {
+              IbanEnhanced ibanEnhanced =
+                  convertEntitiesToModel(
+                      ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+              ibanEnhancedList.add(ibanEnhanced);
+            }
+          }
+        });
 
     return IbansEnhanced.builder().ibanEnhancedList(ibanEnhancedList).build();
   }
 
-  public String deleteIban(@NotBlank @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid") String organizationFiscalCode,
-      @NotNull @Pattern(regexp = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid") String ibanValue) {
+  public String deleteIban(
+      @NotBlank @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid")
+          String organizationFiscalCode,
+      @NotNull
+          @Pattern(
+              regexp = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}",
+              message = "IBAN code not valid")
+          String ibanValue) {
     // Get iban entity to be deleted
     Iban ibanToBeDeleted = getIbanIfExists(ibanValue);
 
@@ -234,8 +254,7 @@ public class IbanService {
             ibanMastersToBeDeleted.stream().map(IbanMaster::getObjId).collect(Collectors.toList()));
 
     // Delete related encoding if postal iban
-    if(isPostalIban(ibanToBeDeleted.getIban()))
-      deleteEncoding(organizationFiscalCode, ibanValue);
+    if (isPostalIban(ibanToBeDeleted.getIban())) deleteEncoding(organizationFiscalCode, ibanValue);
 
     // Delete all relations listed before
     ibanAttributeMasterRepository.deleteAll(ibanAttributeMastersToBeDeleted);
@@ -337,13 +356,16 @@ public class IbanService {
 
   private void deleteEncoding(String organizationFiscalCode, String ibanValue) {
     // check the relation between encoding and CI and delete CI encoding
-    @NotNull @Valid List<Encoding> encodings = encodingsService.getCreditorInstitutionEncodings(organizationFiscalCode).getEncodings();
-    String econdingToDelete = ibanValue.substring(ibanValue.length()-12);
-    boolean existEncoding = encodings
-        .stream()
-        .map(encoding -> encoding.getEncodingCode())
-        .anyMatch(encodingCode -> encodingCode.equals(econdingToDelete));
-    if(existEncoding)
+    @NotNull
+    @Valid
+    List<Encoding> encodings =
+        encodingsService.getCreditorInstitutionEncodings(organizationFiscalCode).getEncodings();
+    String econdingToDelete = ibanValue.substring(ibanValue.length() - 12);
+    boolean existEncoding =
+        encodings.stream()
+            .map(encoding -> encoding.getEncodingCode())
+            .anyMatch(encodingCode -> encodingCode.equals(econdingToDelete));
+    if (existEncoding)
       encodingsService.deleteCreditorInstitutionEncoding(organizationFiscalCode, econdingToDelete);
   }
 

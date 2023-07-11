@@ -277,10 +277,16 @@ class IbanServiceTest {
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban);
     List<IbanAttribute> ibanAttributes = getMockIbanAttributes();
-    Encoding encoding = Encoding.builder()
-        .codeType(CodeTypeEnum.BARCODE_128_AIM)
-        .encodingCode(iban.getIbanValue().substring(iban.getIbanValue().length()-12)) // for BARCODE-128-AIM encoding code equals to last 12 characters of iban value
-        .build();
+    Encoding encoding =
+        Encoding.builder()
+            .codeType(CodeTypeEnum.BARCODE_128_AIM)
+            .encodingCode(
+                iban.getIbanValue()
+                    .substring(
+                        iban.getIbanValue().length()
+                            - 12)) // for BARCODE-128-AIM encoding code equals to last 12 characters
+                                   // of iban value
+            .build();
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode))
         .thenReturn(Optional.of(creditorInstitution));
@@ -291,11 +297,13 @@ class IbanServiceTest {
     when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
     when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class)))
         .then(returnsFirstArg());
-    when(encodingsService.createCreditorInstitutionEncoding(creditorInstitution.getIdDominio(), encoding)).thenReturn(encoding);
+    when(encodingsService.createCreditorInstitutionEncoding(
+            creditorInstitution.getIdDominio(), encoding))
+        .thenReturn(encoding);
     // executing logic and check assertions
     ibanService.createIban(organizationFiscalCode, iban);
-    Mockito.verify(encodingsService, times(1)).createCreditorInstitutionEncoding(creditorInstitution.getIdDominio(), encoding);
-
+    Mockito.verify(encodingsService, times(1))
+        .createCreditorInstitutionEncoding(creditorInstitution.getIdDominio(), encoding);
   }
 
   @Test
@@ -685,7 +693,9 @@ class IbanServiceTest {
     AppException ex =
         assertThrows(
             AppException.class,
-            () -> ibanService.updateIban(organizationFiscalCode, "IT99C9999999999999999999999", iban));
+            () ->
+                ibanService.updateIban(
+                    organizationFiscalCode, "IT99C9999999999999999999999", iban));
     assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
   }
 
@@ -839,7 +849,8 @@ class IbanServiceTest {
 
   @Test
   void deleteIban() {
-    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(getMockIbanEntity("IT99C0222211111000000000000")));
+    when(ibanRepository.findByIban(anyString()))
+        .thenReturn(Optional.of(getMockIbanEntity("IT99C0222211111000000000000")));
     when(paRepository.findByIdDominio(any())).thenReturn(Optional.of(getMockPa()));
     when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any()))
         .thenReturn(List.of(getMockIbanMaster_2()));
@@ -859,18 +870,21 @@ class IbanServiceTest {
     String organizationFiscalCode = getMockPa().getIdDominio();
     Iban iban = getMockIbanEntity("IT99C0760111111000000000000");
     String ibanCode = iban.getIban();
-    String encodingCode = ibanCode.substring(ibanCode.length()-12);
-    Encoding encoding = Encoding.builder()
-        .codeType(CodeTypeEnum.BARCODE_128_AIM)
-        .encodingCode(encodingCode)
-        .build();
+    String encodingCode = ibanCode.substring(ibanCode.length() - 12);
+    Encoding encoding =
+        Encoding.builder()
+            .codeType(CodeTypeEnum.BARCODE_128_AIM)
+            .encodingCode(encodingCode)
+            .build();
     when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(iban));
     when(paRepository.findByIdDominio(any())).thenReturn(Optional.of(getMockPa()));
     when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any()))
         .thenReturn(List.of(getMockIbanMaster_2()));
     when(ibanAttributeMasterRepository.findByFkIbanMasterIn(any()))
         .thenReturn(List.of(getMockIbanAttributeMaster()));
-    doNothing().when(encodingsService).deleteCreditorInstitutionEncoding(organizationFiscalCode, encodingCode);
+    doNothing()
+        .when(encodingsService)
+        .deleteCreditorInstitutionEncoding(organizationFiscalCode, encodingCode);
     when(encodingsService.getCreditorInstitutionEncodings(organizationFiscalCode))
         .thenReturn(CreditorInstitutionEncodings.builder().encodings(List.of(encoding)).build());
     ibanService.deleteIban(organizationFiscalCode, ibanCode);
@@ -878,8 +892,10 @@ class IbanServiceTest {
     Mockito.verify(paRepository, times(1)).findByIdDominio(organizationFiscalCode);
     Mockito.verify(ibanMasterRepository, times(1)).findByFkIbanAndFkPa(1L, 1L);
     Mockito.verify(ibanAttributeMasterRepository, times(1)).findByFkIbanMasterIn(List.of(1L));
-    Mockito.verify(encodingsService, times(1)).getCreditorInstitutionEncodings(organizationFiscalCode);
-    Mockito.verify(encodingsService, times(1)).deleteCreditorInstitutionEncoding(organizationFiscalCode, encodingCode);
+    Mockito.verify(encodingsService, times(1))
+        .getCreditorInstitutionEncodings(organizationFiscalCode);
+    Mockito.verify(encodingsService, times(1))
+        .deleteCreditorInstitutionEncoding(organizationFiscalCode, encodingCode);
   }
 
   @Test
