@@ -57,32 +57,40 @@ variables:
   ${{ if eq(parameters['ENV'], 'dev') }}:
     dockerRegistryServiceConnection: $(DEV_CONTAINER_REGISTRY_SERVICE_CONN)
     dockerRegistryFqdn: $(DEV_CONTAINER_NAMESPACE)
+    dockerNamespace: $(DEV_CONTAINER_NAMESPACE)
     kubernetesServiceConnection: '$(DEV_KUBERNETES_SERVICE_CONN)'
     poolImage: 'pagopa-dev-linux'
     appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_DEV)"
     appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_DEV)"
     springDatasourceUrl: "jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
+    GITHUB_TOKEN_READ_PACKAGES: $(GITHUB_TOKEN_READ_PACKAGES_DEV)
   ${{ if eq(parameters['ENV'], 'uat') }}:
     dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY_SERVICE_CONN)
     dockerRegistryFqdn: $(UAT_CONTAINER_NAMESPACE)
+    dockerNamespace: $(UAT_CONTAINER_NAMESPACE)
     kubernetesServiceConnection: '$(UAT_KUBERNETES_SERVICE_CONN)'
     poolImage: 'pagopa-uat-linux'
     appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_UAT)"
     appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_UAT)"
     springDatasourceUrl: "jdbc:postgresql://pagopa-u-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
+    GITHUB_TOKEN_READ_PACKAGES: $(GITHUB_TOKEN_READ_PACKAGES_UAT)
   ${{ if eq(parameters['ENV'], 'prod') }}:
     dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY_SERVICE_CONN)
     dockerRegistryFqdn: $(PROD_CONTAINER_NAMESPACE)
+    dockerNamespace: $(PROD_CONTAINER_NAMESPACE)
     kubernetesServiceConnection: '$(PROD_KUBERNETES_SERVICE_CONN)'
     poolImage: 'pagopa-prod-linux'
     appInsightsServiceConn: "$(TF_APPINSIGHTS_SERVICE_CONN_PROD)"
     appInsightsResourceId: "$(TF_APPINSIGHTS_RESOURCE_ID_PROD)"
     springDatasourceUrl: "jdbc:postgresql://pagopa-p-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg"
+    GITHUB_TOKEN_READ_PACKAGES: $(GITHUB_TOKEN_READ_PACKAGES_PROD)
 
   ${{ if eq(variables['Build.SourceBranchName'], 'merge') }}:
     sourceBranch: "main" # force to main branch
   ${{ if ne(variables['Build.SourceBranchName'], 'merge') }}:
     sourceBranch: ${{ variables['Build.SourceBranchName'] }}
+
+  GITHUB_TOKEN: '$(GITHUB_TOKEN_READ_PACKAGES)'
 
   usePostgresql: ${{ eq( parameters.DB, 'postgresql') }}
   useOracle: ${{ eq( parameters.DB, 'oracle') }}
@@ -156,27 +164,67 @@ stages:
           - template: templates/maven-github-current-version/template.yaml@pagopaCommons
 
   # Build and Push Docker Image
+  # - stage: Build
+  #   dependsOn: Release
+  #   variables:
+  #     current_version: $[ stageDependencies.Release.make_release.outputs['current_version.value'] ]
+  #   jobs:
+  #     - job: "build"
+  #       steps:
+  #         - checkout: self
+  #           persistCredentials: true
+
+  #         - script: |
+  #             git checkout $(sourceBranch)
+  #           displayName: Checkout and update branch
+
+  #         - template: templates/docker-release/template.yaml@pagopaCommons
+  #           parameters:
+  #             CONTAINER_REGISTRY_SERVICE_CONN: $(dockerRegistryServiceConnection)
+  #             CONTAINER_REGISTRY_FQDN: $(dockerRegistryFqdn)
+  #             DOCKER_IMAGE_NAME: $(imageRepository)
+  #             DOCKER_IMAGE_TAG: $(current_version)
+  #             FORCE_REPLACE_DOCKER_IMAGE: ${{ parameters.FORCE_REPLACE_DOCKER_IMAGE }}
+
+
   - stage: Build
     dependsOn: Release
     variables:
       current_version: $[ stageDependencies.Release.make_release.outputs['current_version.value'] ]
-    jobs:
-      - job: "build"
+    jobs: 
+      - job: Build_And_Push
         steps:
-          - checkout: self
-            persistCredentials: true
+          - task: Bash@3
+            name: pomversion
+            inputs:
+              targetType: "inline"
+              script: |
+                version=$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)
+                echo "##vso[task.setvariable variable=next;isOutput=true]$version"
+              failOnStderr: true
 
-          - script: |
-              git checkout $(sourceBranch)
-            displayName: Checkout and update branch
+          - task: Docker@2
+            displayName: "docker login"
+            inputs:
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+              command: "login"
 
-          - template: templates/docker-release/template.yaml@pagopaCommons
-            parameters:
-              CONTAINER_REGISTRY_SERVICE_CONN: $(dockerRegistryServiceConnection)
-              CONTAINER_REGISTRY_FQDN: $(dockerRegistryFqdn)
-              DOCKER_IMAGE_NAME: $(imageRepository)
-              DOCKER_IMAGE_TAG: $(current_version)
-              FORCE_REPLACE_DOCKER_IMAGE: ${{ parameters.FORCE_REPLACE_DOCKER_IMAGE }}
+          - task: Bash@3
+            displayName: "docker build and push"
+            inputs:
+              targetType: "inline"
+              script: |
+                # docker will return 0 on success or 1 on failure.
+                echo "[INFO] Image version: $(pomversion.next)"
+                
+                echo $(GITHUB_TOKEN) > ./secrets
+                echo $(GITHUB_TOKEN_READ_PACKAGES) >> ./secrets
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(imageRepository):$(pomversion.next) --secret id=GH_TOKEN,src=./secrets .
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(imageRepository):latest --secret id=GH_TOKEN,src=./secrets .
+                DOCKER_BUILDKIT=1 docker build -t $(dockerNamespace)/$(imageRepository):$(Build.BuildId) --secret id=GH_TOKEN,src=./secrets .
+                docker push $(dockerNamespace)/$(imageRepository):$(pomversion.next)
+                docker push $(dockerNamespace)/$(imageRepository):latest
+                docker push $(dockerNamespace)/$(imageRepository):$(Build.BuildId)
 
   # Testing the docker image
 #  - stage: Smoke_Test
