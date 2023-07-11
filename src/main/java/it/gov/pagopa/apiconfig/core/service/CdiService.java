@@ -1,8 +1,6 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getExceptionErrors;
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.mapXml;
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.syntaxValidation;
+import static it.gov.pagopa.apiconfig.core.util.CommonUtil.*;
 
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
@@ -12,34 +10,13 @@ import it.gov.pagopa.apiconfig.core.model.psp.CdiXml;
 import it.gov.pagopa.apiconfig.core.model.psp.Cdis;
 import it.gov.pagopa.apiconfig.core.util.AFMUtilsAsyncTask;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import it.gov.pagopa.apiconfig.starter.entity.BinaryFile;
-import it.gov.pagopa.apiconfig.starter.entity.Canali;
-import it.gov.pagopa.apiconfig.starter.entity.CdiDetail;
-import it.gov.pagopa.apiconfig.starter.entity.CdiFasciaCostoServizio;
-import it.gov.pagopa.apiconfig.starter.entity.CdiInformazioniServizio;
-import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
-import it.gov.pagopa.apiconfig.starter.entity.CdiPreference;
-import it.gov.pagopa.apiconfig.starter.entity.Psp;
-import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
-import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiDetailRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiFasciaCostoServizioRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiInformazioniServizioRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiMasterRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiPreferenceRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
+import it.gov.pagopa.apiconfig.starter.entity.*;
+import it.gov.pagopa.apiconfig.starter.repository.*;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -128,7 +105,8 @@ public class CdiService {
     List<CheckItem> checks = verifyCdi(file);
 
     Optional<CheckItem> check =
-        checks.stream()
+        checks
+            .stream()
             .filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
             .findFirst();
     if (check.isPresent()) {
@@ -140,6 +118,8 @@ public class CdiService {
     // map file into model class
     CdiXml xml = mapXml(file, CdiXml.class);
 
+    log.trace("XML Mapped {}", xml.toString());
+
     // PAGOPA-936: skip the CDI creation for the CHARITY_PREFIX:
     // it was chosen to use only the check on the 'identificativoPSP' because the one on the
     // 'identificativoFlusso' is unnecessary
@@ -150,8 +130,11 @@ public class CdiService {
       // save BINARY_FILE and CDI_MASTER
       var binaryFile = saveBinaryFile(file);
       var master = saveCdiMaster(xml, psp, binaryFile);
+      log.trace("Master Saved {}", master);
       // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
       for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
+        log.trace("Details Saved {}", xmlDetail);
+
         var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
 
         var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
@@ -160,6 +143,7 @@ public class CdiService {
         saveCdiPreferences(xml, xmlDetail, detail);
       }
 
+      log.trace("Master Result {}", master.toString());
       // send CDI to AFM Utils
       afmUtilsAsyncTask.executeSync(master);
     } else {
@@ -337,7 +321,8 @@ public class CdiService {
             : "PO";
 
     CheckItem.Validity validity =
-        paymentMethods.stream()
+        paymentMethods
+                .stream()
                 .anyMatch(
                     pm ->
                         pm.getCanaleTipoVersamento()
@@ -373,9 +358,12 @@ public class CdiService {
     final boolean[] duplicate = {false};
 
     Map<String, Long> frequencyMap =
-        languages.stream()
+        languages
+            .stream()
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-    frequencyMap.entrySet().stream()
+    frequencyMap
+        .entrySet()
+        .stream()
         .filter(item -> item.getValue() > 1)
         .forEach(
             item -> {
@@ -525,7 +513,10 @@ public class CdiService {
         && costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio() != null) {
       // sort by importoMassimo and create fascia costi servizio
       var importi =
-          costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().stream()
+          costiServizio
+              .getListaFasceCostoServizio()
+              .getFasciaCostoServizio()
+              .stream()
               .map(CdiXml.FasciaCostoServizio::getImportoMassimoFascia)
               .sorted(Double::compareTo)
               .distinct()
@@ -537,7 +528,8 @@ public class CdiService {
         var fascia = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i);
         // importoMinimo is equals to previous importoMassimo (equals to 0 for the first element)
         var prev =
-            importi.stream()
+            importi
+                .stream()
                 .filter(elem -> elem < fascia.getImportoMassimoFascia())
                 .max(Double::compareTo)
                 .orElse(0.0);
@@ -617,7 +609,9 @@ public class CdiService {
       // join list of ParolaChiave in a string semicolon separated ([tag1, tag2,tag3] ->
       // "tag1;tag2;tag3")
       String tags =
-          detail.getListaParoleChiave().stream()
+          detail
+              .getListaParoleChiave()
+              .stream()
               .filter(Objects::nonNull)
               .reduce((a, b) -> a + ";" + b)
               .orElse(null);
