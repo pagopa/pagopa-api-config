@@ -65,7 +65,7 @@ public class IbanService {
   @Autowired private AzureStorageInteraction azureStorageInteraction;
 
   public IbanEnhanced createIban(
-      @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid") @NotBlank
+      @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid") @NotBlank
           String organizationFiscalCode,
       @Valid @NotNull IbanEnhanced iban) {
     // retrieve the creditor institution and throw exception if not found
@@ -126,11 +126,11 @@ public class IbanService {
   }
 
   public IbanEnhanced updateIban(
-      @NotBlank @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid")
+      @NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
           String organizationFiscalCode,
       @NotBlank
           @Pattern(
-              regexp = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}",
+              regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}",
               message = "IBAN code not valid")
           String ibanCode,
       @Valid @NotNull IbanEnhanced iban) {
@@ -179,7 +179,7 @@ public class IbanService {
   }
 
   public IbansEnhanced getCreditorInstitutionsIbansByLabel(
-      @NotNull @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid")
+      @NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
           String organizationFiscalCode,
       String label) {
     List<IbanEnhanced> ibanEnhancedList = new ArrayList<>();
@@ -227,11 +227,11 @@ public class IbanService {
   }
 
   public String deleteIban(
-      @NotBlank @Pattern(regexp = "[0-9]{11}", message = "CI fiscal code not valid")
+      @NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
           String organizationFiscalCode,
       @NotNull
           @Pattern(
-              regexp = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}",
+              regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}",
               message = "IBAN code not valid")
           String ibanValue) {
     // Get iban entity to be deleted
@@ -363,7 +363,7 @@ public class IbanService {
     String econdingToDelete = ibanValue.substring(ibanValue.length() - 12);
     boolean existEncoding =
         encodings.stream()
-            .map(encoding -> encoding.getEncodingCode())
+            .map(Encoding::getEncodingCode)
             .anyMatch(encodingCode -> encodingCode.equals(econdingToDelete));
     if (existEncoding)
       encodingsService.deleteCreditorInstitutionEncoding(organizationFiscalCode, econdingToDelete);

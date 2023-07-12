@@ -30,7 +30,7 @@ public class IbanEnhanced {
 
   @JsonProperty("iban")
   @Schema(example = "IT99C0222211111000000000000", required = true, description = "The iban code")
-  @Pattern(regexp = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid")
+  @Pattern(regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid")
   @Size(max = 35)
   @NotNull
   private String ibanValue;
