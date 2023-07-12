@@ -132,6 +132,7 @@ public class CdiService {
       var master = saveCdiMaster(xml, psp, binaryFile);
       log.trace("Master Saved {}", master);
       // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
+      List<CdiDetail> cdiDetailList = new ArrayList<>();
       for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
         log.trace("Details Saved {}", xmlDetail);
 
@@ -141,17 +142,15 @@ public class CdiService {
         saveCdiInformazioniServizio(xmlDetail, detail);
         saveCdiFasciaCostiServizio(xmlDetail, detail);
         saveCdiPreferences(xml, xmlDetail, detail);
+
+        cdiDetailList.add(detail);
       }
 
-      var masterEntity =
-          cdiMasterRepository
-              .findById(master.getId())
-              .orElseThrow(() -> new AppException(AppError.CDI_NOT_FOUND, master.getId()));
-
-      log.trace("Master Result {}", masterEntity);
-      log.trace("Master Details {}", masterEntity.getCdiDetail());
+      master.setCdiDetail(cdiDetailList);
+      log.trace("Master Result {}", master);
+      log.trace("Master Details {}", master.getCdiDetail());
       // send CDI to AFM Utils
-      afmUtilsAsyncTask.executeSync(masterEntity);
+      afmUtilsAsyncTask.executeSync(master);
     } else {
       throw new AppException(
           AppError.CHARITY_ERROR, String.format("%s", xml.getIdentificativoPSP()));
