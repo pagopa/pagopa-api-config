@@ -48,3 +48,4 @@ k6-script.js
 **/charts/
 .cache_ggshield
 .settings/*
+**/.terraform.lock.hcl
