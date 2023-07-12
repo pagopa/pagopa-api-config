@@ -1,4 +1,4 @@
-Feature: feat
+Feature: Testing the IBAN CRUD operations
 
   Background:
     Given ApiConfig running
