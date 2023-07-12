@@ -1,7 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.*;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
@@ -12,18 +10,6 @@ import it.gov.pagopa.apiconfig.core.util.AFMUtilsAsyncTask;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.repository.*;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.xml.stream.XMLStreamException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +25,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static it.gov.pagopa.apiconfig.core.util.CommonUtil.*;
 
 @Service
 @Validated
@@ -143,7 +144,8 @@ public class CdiService {
         saveCdiPreferences(xml, xmlDetail, detail);
       }
 
-      log.trace("Master Result {}", master.toString());
+      log.trace("Master Result {}", master);
+      log.trace("Master Details {}", master.getCdiDetail());
       // send CDI to AFM Utils
       afmUtilsAsyncTask.executeSync(master);
     } else {

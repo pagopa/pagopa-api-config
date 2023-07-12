@@ -14,6 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Getter
+@ToString
 public class CdiXml {
 
   private String identificativoFlusso;
@@ -64,6 +65,7 @@ public class CdiXml {
   @Builder
   @Getter
   @NotNull
+  @ToString
   public static class InformativaDetail {
     private String identificativoIntermediario;
     private String identificativoCanale;
