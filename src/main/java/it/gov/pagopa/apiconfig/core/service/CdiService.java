@@ -100,6 +100,7 @@ public class CdiService {
     return cdiMaster.getFkBinaryFile().getFileContent();
   }
 
+  @Transactional
   public void createCdi(MultipartFile file) {
     List<CheckItem> checks = verifyCdi(file);
 
