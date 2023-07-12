@@ -367,8 +367,7 @@ public class CdiService {
       languages.add(informazioniServizio.getCodiceLingua());
     }
 
-    List<String> languagesTarget =
-        Stream.of("IT", "EN", "DE", "FR", "SL").collect(Collectors.toList());
+    List<String> languagesTarget = Stream.of("IT").collect(Collectors.toList());
     languagesTarget.removeAll(languages);
 
     final boolean[] duplicate = {false};
