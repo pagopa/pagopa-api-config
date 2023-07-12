@@ -285,7 +285,7 @@ class IbanServiceTest {
                     .substring(
                         iban.getIbanValue().length()
                             - 12)) // for BARCODE-128-AIM encoding code equals to last 12 characters
-                                   // of iban value
+            // of iban value
             .build();
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode))
