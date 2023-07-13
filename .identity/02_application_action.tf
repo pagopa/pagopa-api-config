@@ -1,28 +1,96 @@
-resource "azuread_application" "action" {
-  display_name = "github-${local.github.org}-${local.github.repository}-${var.env}"
+module "github_runner_app" {
+  source = "git::https://github.com/pagopa/github-actions-tf-modules.git//app-github-runner-creator?ref=main"
+
+  app_name = local.app_name
+
+  subscription_id = data.azurerm_subscription.current.id
+
+  github_org              = local.github.org
+  github_repository       = local.github.repository
+  github_environment_name = var.env
+
+  container_app_github_runner_env_rg = local.container_app_environment.resource_group
 }
 
-resource "azuread_service_principal" "action" {
-  application_id = azuread_application.action.application_id
+resource "null_resource" "github_runner_app_permissions_to_namespace" {
+  triggers = {
+    aks_id               = data.azurerm_kubernetes_cluster.aks.id
+    service_principal_id = module.github_runner_app.client_id
+    namespace            = local.domain
+    version              = "v2"
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      az role assignment create --role "Azure Kubernetes Service RBAC Admin" \
+      --assignee ${self.triggers.service_principal_id} \
+      --scope ${self.triggers.aks_id}/namespaces/${self.triggers.namespace}
+
+      az role assignment list --role "Azure Kubernetes Service RBAC Admin"  \
+      --scope ${self.triggers.aks_id}/namespaces/${self.triggers.namespace}
+    EOT
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOT
+      az role assignment delete --role "Azure Kubernetes Service RBAC Admin" \
+      --assignee ${self.triggers.service_principal_id} \
+      --scope ${self.triggers.aks_id}/namespaces/${self.triggers.namespace}
+    EOT
+  }
 }
 
-resource "azuread_application_federated_identity_credential" "environment" {
-  application_object_id = azuread_application.action.object_id
-  display_name          = "github-federated"
-  description           = "github-federated"
-  audiences             = ["api://AzureADTokenExchange"]
-  issuer                = "https://token.actions.githubusercontent.com"
-  subject               = "repo:${local.github.org}/${local.github.repository}:environment:${var.env}"
+resource "azurerm_role_assignment" "environment_terraform_storage_account" {
+  scope                = data.azurerm_storage_account.tf_storage_account.id
+  role_definition_name = "Contributor"
+  principal_id         = module.github_runner_app.object_id
 }
 
-output "azure_action_client_id" {
-  value = azuread_service_principal.action.application_id
+resource "azurerm_role_assignment" "environment_terraform_resource_group_apim" {
+  scope                = data.azurerm_resource_group.apim_resource_group.id
+  role_definition_name = "Contributor"
+  principal_id         = module.github_runner_app.object_id
 }
 
-output "azure_action_application_id" {
-  value = azuread_service_principal.action.application_id
+resource "azurerm_role_assignment" "environment_terraform_resource_group_dashboards" {
+  scope                = data.azurerm_resource_group.dashboards.id
+  role_definition_name = "Contributor"
+  principal_id         = module.github_runner_app.object_id
 }
 
-output "azure_action_object_id" {
-  value = azuread_service_principal.action.object_id
+resource "azurerm_role_assignment" "environment_key_vault" {
+  scope                = data.azurerm_key_vault.key_vault.id
+  role_definition_name = "Reader"
+  principal_id         = module.github_runner_app.object_id
+}
+
+resource "azurerm_role_assignment" "environment_key_vault_domain" {
+  scope                = data.azurerm_key_vault.domain_key_vault.id
+  role_definition_name = "Reader"
+  principal_id         = module.github_runner_app.object_id
+}
+
+resource "azurerm_key_vault_access_policy" "ad_kv_group_policy" {
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = module.github_runner_app.object_id
+
+  key_permissions         = []
+  secret_permissions      = ["Get", "List"]
+  storage_permissions     = []
+  certificate_permissions = []
+}
+
+resource "azurerm_key_vault_access_policy" "ad_domain_kv_group_policy" {
+  key_vault_id = data.azurerm_key_vault.domain_key_vault.id
+
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = module.github_runner_app.object_id
+
+  key_permissions         = []
+  secret_permissions      = ["Get", "List"]
+  storage_permissions     = []
+  certificate_permissions = []
 }

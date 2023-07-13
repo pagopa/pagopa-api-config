@@ -63,7 +63,7 @@ jobs:
           cluster_name: ${{ vars.CLUSTER_NAME }}
           resource_group: ${{ vars.CLUSTER_RESOURCE_GROUP }}
           app_name: ${{ env.APP_NAME }}
-          helm_upgrade_options: "--debug"
+          helm_upgrade_options: "--debug  --set postgresql.enabled=\"true\" --set oracle.enabled=\"true\""
 
   cleanup_runner:
     name: Cleanup Runner
