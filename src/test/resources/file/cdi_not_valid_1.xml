@@ -32,13 +32,6 @@
             </identificazioneServizio>
             <listaInformazioniServizio>
                 <informazioniServizio>
-                    <codiceLingua>IT</codiceLingua>
-                    <descrizioneServizio>Clienti e non delle Banche possono disporre
-                        pagamenti con carte di pagamento VISA-MASTERCARD
-                    </descrizioneServizio>
-                    <disponibilitaServizio>7/7-24H</disponibilitaServizio>
-                </informazioniServizio>
-                <informazioniServizio>
                     <codiceLingua>EN</codiceLingua>
                     <descrizioneServizio>Both customers and non-customers may make card
                         payments with VISA-MASTERCARD

@@ -13,6 +13,7 @@ import it.gov.pagopa.apiconfig.core.util.OffsetDateTimeDeserializer;
 import java.time.OffsetDateTime;
 import java.util.List;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,6 +30,7 @@ public class IbanEnhanced {
 
   @JsonProperty("iban")
   @Schema(example = "IT99C0222211111000000000000", required = true, description = "The iban code")
+  @Pattern(regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid")
   @Size(max = 35)
   @NotNull
   private String ibanValue;

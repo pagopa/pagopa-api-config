@@ -60,7 +60,8 @@ class SchedulerTest {
     Map<String, String> mockMap = new HashMap<>();
     mockMap.put("00168480242", LocalDateTime.now().plusMinutes(10).toString());
     when(azureStorageInteraction.getUpdatedEC(anyString())).thenReturn(mockMap);
-    when(ibanRepository.findByObjIdIn(any(List.class))).thenReturn(List.of(getMockIbanEntity()));
+    when(ibanRepository.findByObjIdIn(any(List.class)))
+        .thenReturn(List.of(getMockIbanEntity("IT99C0222211111000000000000")));
     when(ibanMasterRepository.findByFkPa(any(Long.class)))
         .thenReturn(List.of(getMockIbanMaster_2()));
 
@@ -75,7 +76,7 @@ class SchedulerTest {
                 () -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, "00168480242"));
     String xml = new String(icaBinaryFile.getFileContent());
     assertThat(xml, containsString(LocalDateTime.now().toLocalDate().toString()));
-    assertThat(xml, containsString(getMockIbanEntity().getIban()));
+    assertThat(xml, containsString(getMockIbanEntity("IT99C0222211111000000000000").getIban()));
   }
 
   @Test
@@ -86,7 +87,8 @@ class SchedulerTest {
     Map<String, String> mockMap = new HashMap<>();
     mockMap.put("00168480243", LocalDateTime.now().plusMinutes(10).toString());
     when(azureStorageInteraction.getUpdatedEC(anyString())).thenReturn(mockMap);
-    when(ibanRepository.findByObjIdIn(any(List.class))).thenReturn(List.of(getMockIbanEntity()));
+    when(ibanRepository.findByObjIdIn(any(List.class)))
+        .thenReturn(List.of(getMockIbanEntity("IT99C0222211111000000000000")));
     when(ibanMasterRepository.findByFkPa(any(Long.class)))
         .thenReturn(List.of(getMockIbanMaster_2()));
 
@@ -105,7 +107,7 @@ class SchedulerTest {
     String xml = new String(icaBinaryFile.getFileContent());
     assertThat(xml, containsString("00168480243"));
     assertThat(xml, containsString(LocalDateTime.now().toLocalDate().toString()));
-    assertThat(xml, containsString(getMockIbanEntity().getIban()));
+    assertThat(xml, containsString(getMockIbanEntity("IT99C0222211111000000000000").getIban()));
   }
 
   @Test
