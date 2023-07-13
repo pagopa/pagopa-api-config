@@ -1,5 +1,7 @@
 package it.gov.pagopa.apiconfig.core.util;
 
+import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
+
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
@@ -10,6 +12,13 @@ import it.gov.pagopa.apiconfig.core.model.afm.CdiCosmos;
 import it.gov.pagopa.apiconfig.core.model.afm.CdiDetailCosmos;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +28,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
-import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
 
 @Component
 @Slf4j
@@ -91,7 +90,9 @@ public class AFMUtilsAsyncTask {
     }
     log.info("mapToCosmosEntity2");
     var cdiDetails =
-        master.getCdiDetail().stream()
+        master
+            .getCdiDetail()
+            .stream()
             .filter(Objects::nonNull)
             .map(this::mapDetails)
             .collect(Collectors.toList());
@@ -114,7 +115,7 @@ public class AFMUtilsAsyncTask {
 
   private CdiDetailCosmos mapDetails(@NotNull CdiDetail detail) {
     @NotNull
-    Canali canale = detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale();
+    Canali canale = detail.getPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale();
     return CdiDetailCosmos.builder()
         .idChannel(canale.getIdCanale())
         .name(detail.getNomeServizio())
@@ -122,7 +123,7 @@ public class AFMUtilsAsyncTask {
         .channelApp(detail.getCanaleApp() == 1L)
         .paymentType(
             detail
-                .getFkPspCanaleTipoVersamento()
+                .getPspCanaleTipoVersamento()
                 .getCanaleTipoVersamento()
                 .getTipoVersamento()
                 .getTipoVersamento())
@@ -130,7 +131,9 @@ public class AFMUtilsAsyncTask {
         .channelCardsCart(
             canale.getFkCanaliNodo() != null ? canale.getFkCanaliNodo().getCarrelloCarte() : null)
         .serviceAmount(
-            detail.getCdiFasciaCostoServizio().stream()
+            detail
+                .getCdiFasciaCostoServizio()
+                .stream()
                 .map(
                     elem ->
                         ServiceAmountCosmos.builder()
@@ -143,7 +146,9 @@ public class AFMUtilsAsyncTask {
   }
 
   private static String getDescription(@NotNull CdiDetail detail) {
-    return detail.getCdiInformazioniServizio().stream()
+    return detail
+        .getCdiInformazioniServizio()
+        .stream()
         .filter(item -> "IT".equals(item.getCodiceLingua()))
         .findFirst()
         .map(CdiInformazioniServizio::getDescrizioneServizio)
