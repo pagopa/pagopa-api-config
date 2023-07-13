@@ -128,6 +128,7 @@ public class CdiService {
       // save BINARY_FILE and CDI_MASTER
       var binaryFile = saveBinaryFile(file);
       var master = saveCdiMaster(xml, psp, binaryFile);
+      var list = new ArrayList<CdiDetail>();
       // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
       for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
         var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
@@ -136,18 +137,13 @@ public class CdiService {
         saveCdiInformazioniServizio(xmlDetail, detail);
         saveCdiFasciaCostiServizio(xmlDetail, detail);
         saveCdiPreferences(xml, xmlDetail, detail);
+        list.add(detail);
       }
-
-      CdiMaster masterEntity =
-          cdiMasterRepository
-              .findByIdInformativaPspAndFkPsp_IdPsp(master.getIdInformativaPsp(), psp.getIdPsp())
-              .orElseThrow(
-                  () -> new AppException(AppError.CDI_NOT_FOUND, master.getIdInformativaPsp()));
-
-      log.info("Master Entity {}", masterEntity);
-      log.info("Detail Entity {}", masterEntity.getCdiDetail());
+      master.setCdiDetail(list);
+      log.info("Master Entity {}", master);
+      log.info("Detail Entity {}", master.getCdiDetail());
       // send CDI to AFM Utils
-      afmUtilsAsyncTask.executeSync(masterEntity);
+      afmUtilsAsyncTask.executeSync(master);
     } else {
       throw new AppException(
           AppError.CHARITY_ERROR, String.format("%s", xml.getIdentificativoPSP()));
@@ -483,6 +479,7 @@ public class CdiService {
   private void saveCdiPreferences(
       @NotNull CdiXml xml, @NotNull CdiXml.InformativaDetail xmlDetail, @NotNull CdiDetail detail) {
     if (xmlDetail.getListaConvenzioni() != null) {
+      var list = new ArrayList<CdiPreference>();
       xmlDetail
           .getListaConvenzioni()
           .forEach(
@@ -492,14 +489,17 @@ public class CdiService {
                             && xmlDetail.getCostiServizio().getCostoConvenzione() != null
                         ? xmlDetail.getCostiServizio().getCostoConvenzione()
                         : 0;
-                cdiPreferenceRepository.save(
-                    CdiPreference.builder()
-                        .cdiDetail(detail)
-                        .seller(xml.getMybankIDVS())
-                        .buyer(elem.getCodiceConvenzione())
-                        .costoConvenzione(costoConvenzione)
-                        .build());
+                var entity =
+                    cdiPreferenceRepository.save(
+                        CdiPreference.builder()
+                            .cdiDetail(detail)
+                            .seller(xml.getMybankIDVS())
+                            .buyer(elem.getCodiceConvenzione())
+                            .costoConvenzione(costoConvenzione)
+                            .build());
+                list.add(entity);
               });
+      detail.setCdiPreference(list);
     }
   }
 
@@ -513,6 +513,7 @@ public class CdiService {
     if (costiServizio != null
         && costiServizio.getListaFasceCostoServizio() != null
         && costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio() != null) {
+      var list = new ArrayList<CdiFasciaCostoServizio>();
       // sort by importoMassimo and create fascia costi servizio
       var importi =
           costiServizio
@@ -539,16 +540,20 @@ public class CdiService {
         if (fascia.getListaConvenzioniCosti() != null) {
           convenzione = fascia.getListaConvenzioniCosti().stream().findFirst().orElse(null);
         }
-        cdiFasciaCostoServizioRepository.save(
-            CdiFasciaCostoServizio.builder()
-                .importoMassimo(fascia.getImportoMassimoFascia())
-                .importoMinimo(prev)
-                .costoFisso(fascia.getCostoFisso())
-                .fkCdiDetail(detailEntity)
-                .valoreCommissione(fascia.getValoreCommissione())
-                .codiceConvenzione(convenzione != null ? convenzione.getCodiceConvenzione() : null)
-                .build());
+        var entity =
+            cdiFasciaCostoServizioRepository.save(
+                CdiFasciaCostoServizio.builder()
+                    .importoMassimo(fascia.getImportoMassimoFascia())
+                    .importoMinimo(prev)
+                    .costoFisso(fascia.getCostoFisso())
+                    .fkCdiDetail(detailEntity)
+                    .valoreCommissione(fascia.getValoreCommissione())
+                    .codiceConvenzione(
+                        convenzione != null ? convenzione.getCodiceConvenzione() : null)
+                    .build());
+        list.add(entity);
       }
+      detailEntity.setCdiFasciaCostoServizio(list);
     }
   }
 
@@ -560,23 +565,27 @@ public class CdiService {
       @NotNull CdiXml.InformativaDetail detail, @NotNull CdiDetail detailEntity) {
     if (detail.getListaInformazioniServizio() != null
         && detail.getListaInformazioniServizio().getInformazioniServizio() != null) {
+      var list = new ArrayList<CdiInformazioniServizio>();
       for (var info : detail.getListaInformazioniServizio().getInformazioniServizio()) {
-        cdiInformazioniServizioRepository.save(
-            CdiInformazioniServizio.builder()
-                .codiceLingua(info.getCodiceLingua() != null ? info.getCodiceLingua() : "IT")
-                .descrizioneServizio(
-                    info.getDescrizioneServizio() != null
-                        ? info.getDescrizioneServizio()
-                        : "Pagamento con CBILL")
-                .disponibilitaServizio(
-                    info.getDisponibilitaServizio() != null
-                        ? info.getDisponibilitaServizio()
-                        : "24/7/7")
-                .urlInformazioniCanale(info.getUrlInformazioniCanale())
-                .fkCdiDetail(detailEntity)
-                .limitazioniServizio(info.getLimitazioniServizio())
-                .build());
+        var entity =
+            cdiInformazioniServizioRepository.save(
+                CdiInformazioniServizio.builder()
+                    .codiceLingua(info.getCodiceLingua() != null ? info.getCodiceLingua() : "IT")
+                    .descrizioneServizio(
+                        info.getDescrizioneServizio() != null
+                            ? info.getDescrizioneServizio()
+                            : "Pagamento con CBILL")
+                    .disponibilitaServizio(
+                        info.getDisponibilitaServizio() != null
+                            ? info.getDisponibilitaServizio()
+                            : "24/7/7")
+                    .urlInformazioniCanale(info.getUrlInformazioniCanale())
+                    .fkCdiDetail(detailEntity)
+                    .limitazioniServizio(info.getLimitazioniServizio())
+                    .build());
+        list.add(entity);
       }
+      detailEntity.setCdiInformazioniServizio(list);
     }
   }
 
