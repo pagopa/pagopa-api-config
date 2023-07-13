@@ -84,14 +84,19 @@ public class AFMUtilsAsyncTask {
   }
 
   private CdiCosmos mapToCosmosEntity(CdiMaster master) {
+    log.info("mapToCosmosEntity1");
+
     if (master.getCdiDetail() == null) {
       throw new AppException(AppError.CDI_DETAILS_NOT_FOUND, master.getIdInformativaPsp());
     }
+    log.info("mapToCosmosEntity2");
     var cdiDetails =
         master.getCdiDetail().stream()
             .filter(Objects::nonNull)
             .map(this::mapDetails)
             .collect(Collectors.toList());
+    log.info("COSMOS ENTITY {}", cdiDetails);
+
     return CdiCosmos.builder()
         .id(master.getId().toString())
         .idPsp(master.getFkPsp().getIdPsp())
@@ -147,6 +152,7 @@ public class AFMUtilsAsyncTask {
 
   private void afmUtilsTrigger(List<CdiCosmos> cdis) {
     try {
+      log.info("afmUtilsTrigger");
       afmUtilsClient.syncPaymentTypes(
           afmUtilsSubscriptionKey, httpServletRequest.getHeader(HEADER_REQUEST_ID), cdis);
     } catch (Exception e) {
