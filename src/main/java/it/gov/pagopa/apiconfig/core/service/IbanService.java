@@ -110,7 +110,7 @@ public class IbanService {
                   ibanValue.substring(
                       ibanValue.length()
                           - 12)) // for BARCODE-128-AIM encoding code equals to last 12 characters
-                                 // of iban value
+              // of iban value
               .build();
 
       encodingsService.createCreditorInstitutionEncoding(
@@ -129,9 +129,7 @@ public class IbanService {
       @NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
           String organizationFiscalCode,
       @NotBlank
-          @Pattern(
-              regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}",
-              message = "IBAN code not valid")
+          @Pattern(regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid")
           String ibanCode,
       @Valid @NotNull IbanEnhanced iban) {
     if (!ibanCode.equals(iban.getIbanValue())) {
@@ -230,9 +228,7 @@ public class IbanService {
       @NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
           String organizationFiscalCode,
       @NotNull
-          @Pattern(
-              regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}",
-              message = "IBAN code not valid")
+          @Pattern(regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid")
           String ibanValue) {
     // Get iban entity to be deleted
     Iban ibanToBeDeleted = getIbanIfExists(ibanValue);
