@@ -40,7 +40,6 @@ When('the client {string} Iban {string}', async (method, iban) => {
 
 When('the client gets the Ibans for an EC', async () => {
   responseToCheck = await getIbanEnhanced(creditorInstitution);
-  console.log(responseToCheck.data)
 });
 
 Then('the client {string} the iban {string}', async (method, iban) => {

@@ -1,14 +1,14 @@
 function buildIbanCreate(iban) {
     today = new Date()
-    today.setYear(today.getYear() + 1)
+    today.setYear(today.getYear() + 1901)
     return {
         "description": "Testing",
         "iban": iban,
         "is_active": true,
         "labels": [
           {
-            "description": "The iban to use for CUP payments",
-            "name": "CUP"
+            "description": "Canone Unico Patrimoniale - CORPORATE (0201138TS)",
+            "name": "0201138TS"
           }
         ],
         "validity_date": today,
@@ -25,8 +25,8 @@ function buildIbanUpdate() {
         "is_active": true,
         "labels": [
           {
-            "description": "The iban to use for CUP payments",
-            "name": "CUP"
+            "description": "Canone Unico Patrimoniale - CORPORATE (0201138TS)",
+            "name": "0201138TS"
           }
         ],
         "validity_date": today,
