@@ -140,13 +140,8 @@ public class CdiService {
         list.add(detail);
       }
       master.setCdiDetail(list);
-      log.info("Master Entity {}", master);
-      log.info("Detail Entity1 {}", master.getCdiDetail());
-      log.info("Detail Entity2 {}", master.getCdiDetail());
-      log.info("DONE1");
       // send CDI to AFM Utils
       afmUtilsAsyncTask.executeSync(master);
-      log.info("DONE2");
 
     } else {
       throw new AppException(
