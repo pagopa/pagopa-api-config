@@ -20,14 +20,14 @@ basecache: &basecache
     deployment:
       create: true
       image:
-        repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-        tag: "0.50.3"
+        repository: ghcr.io/pagopa/pagopa-api-config
+        tag: "0.50.7"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
   image:
-    repository: pagopadcommonacr.azurecr.io/pagopaapiconfig
-    tag: "0.50.3"
+    repository: ghcr.io/pagopa/pagopa-api-config
+    tag: "0.50.7"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -96,6 +96,9 @@ basecache: &basecache
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
     ICA_STORAGE_TABLE_NAME: "pagopadweuapiconfigsaicatable"
     SHOW_SQL: "false"
+    CRON_JOB_ICA_SCHEDULE_ENABLED: "false"
+    CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
+    AZURE_STORAGE_TABLE_NAME: "pagopadweuapiconfigsaicatable"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
@@ -103,6 +106,7 @@ basecache: &basecache
     AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
     ICA_STORAGE_CONNECTION_STRING: 'api-config-ica-d-sa-connection-string'
+    AZURE_STORAGE_CONNECTION_STRING: 'api-config-ica-d-sa-connection-string'
   keyvault:
     name: "pagopa-d-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"

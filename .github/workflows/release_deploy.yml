@@ -107,13 +107,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.semver != 'skip' }}
     steps:
-#      - name: Build and Push
-#        id: semver
-#        uses: pagopa/github-actions-template/ghcr-build-push@v1.5.4
-#        with:
-#          branch: ${{ github.ref_name}}
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          tag: ${{ needs.release.outputs.version }}
+      #      - name: Build and Push
+      #        id: semver
+      #        uses: pagopa/github-actions-template/ghcr-build-push@v1.5.4
+      #        with:
+      #          branch: ${{ github.ref_name}}
+      #          github_token: ${{ secrets.GITHUB_TOKEN }}
+      #          tag: ${{ needs.release.outputs.version }}
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.ref_name }}
@@ -174,5 +174,6 @@ jobs:
           notification_title: 'New Release on Production ${{ needs.release.outputs.version }} has {status_message}'
           message_format: '{emoji} <{run_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
           footer: 'Linked to <{workflow_url}| workflow file>'
+          icon_success: ':white_check_mark:'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

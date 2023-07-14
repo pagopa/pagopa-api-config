@@ -26,6 +26,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionEncodings;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
@@ -74,6 +77,8 @@ class IbanServiceTest {
   @MockBean private IbanAttributeMasterRepository ibanAttributeMasterRepository;
 
   @MockBean private AzureStorageInteraction azureStorageInteraction;
+
+  @MockBean private EncodingsService encodingsService;
 
   @Autowired private IbanService ibanService;
 
@@ -214,7 +219,7 @@ class IbanServiceTest {
   @Test
   void getIbansEnhanced_noCIFound_404() throws JsonProcessingException, JSONException {
     // retrieving mock object
-    String organizationFiscalCode = "fakeCIFiscalCode";
+    String organizationFiscalCode = "13229677908";
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
     // executing logic and check assertions
@@ -261,6 +266,44 @@ class IbanServiceTest {
             .getPublicationDate()
             .withOffsetSameLocal(ZoneOffset.UTC)
             .isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
+  }
+
+  @Test
+  void createPostalIban_200() {
+    // retrieving mock object
+    Pa creditorInstitution = getMockPa();
+    String organizationFiscalCode = creditorInstitution.getIdDominio();
+    IbanEnhanced iban = getMockPostalIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    Iban mockIban = getMockIban(iban, organizationFiscalCode);
+    IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban);
+    List<IbanAttribute> ibanAttributes = getMockIbanAttributes();
+    Encoding encoding =
+        Encoding.builder()
+            .codeType(CodeTypeEnum.BARCODE_128_AIM)
+            .encodingCode(
+                iban.getIbanValue()
+                    .substring(
+                        iban.getIbanValue().length()
+                            - 12)) // for BARCODE-128-AIM encoding code equals to last 12 characters
+            // of iban value
+            .build();
+    // mocking responses from repositories
+    when(paRepository.findByIdDominio(organizationFiscalCode))
+        .thenReturn(Optional.of(creditorInstitution));
+    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.empty());
+    when(ibanRepository.save(any(Iban.class))).thenReturn(mockIban);
+    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), anyLong())).thenReturn(List.of());
+    when(ibanMasterRepository.save(any(IbanMaster.class))).thenReturn(mockIbanMaster);
+    when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
+    when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class)))
+        .then(returnsFirstArg());
+    when(encodingsService.createCreditorInstitutionEncoding(
+            creditorInstitution.getIdDominio(), encoding))
+        .thenReturn(encoding);
+    // executing logic and check assertions
+    ibanService.createIban(organizationFiscalCode, iban);
+    Mockito.verify(encodingsService, times(1))
+        .createCreditorInstitutionEncoding(creditorInstitution.getIdDominio(), encoding);
   }
 
   @Test
@@ -348,9 +391,9 @@ class IbanServiceTest {
   }
 
   @Test
-  void createIban_400() {
+  void createIban_400_1() {
     // retrieving mock object
-    String organizationFiscalCode = "fakeCIFiscalCode";
+    String organizationFiscalCode = "13229677908";
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     iban.setIbanValue(null);
     iban.setValidityDate(null);
@@ -361,9 +404,35 @@ class IbanServiceTest {
   }
 
   @Test
+  void createIban_400_2() {
+    // retrieving mock object
+    String organizationFiscalCode = "bad_fiscal_code_format";
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    iban.setIbanValue("IT99C0222211111000000000000");
+    iban.setValidityDate(OffsetDateTime.now());
+    // executing logic and check assertions
+    assertThrows(
+        ConstraintViolationException.class,
+        () -> ibanService.createIban(organizationFiscalCode, iban));
+  }
+
+  @Test
+  void createIban_400_3() {
+    // retrieving mock object
+    String organizationFiscalCode = "13229677908";
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    iban.setIbanValue("bad_iban_value_format");
+    iban.setValidityDate(OffsetDateTime.now());
+    // executing logic and check assertions
+    assertThrows(
+        ConstraintViolationException.class,
+        () -> ibanService.createIban(organizationFiscalCode, iban));
+  }
+
+  @Test
   void createIban_noCIFound_404() {
     // retrieving mock object
-    String organizationFiscalCode = "fakeCIFiscalCode";
+    String organizationFiscalCode = "13229677908";
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
@@ -577,59 +646,9 @@ class IbanServiceTest {
   }
 
   @Test
-  void updatePostalIbanByDifferentCI_200() { // retrieving mock object
-    IbanEnhanced iban = getMockPostalIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
-    Pa pa1 = getMockPa();
-    String fc1 = pa1.getIdDominio();
-    Pa pa2 = getMockPa2();
-    String fc2 = pa1.getIdDominio();
-    Iban mockIban = getMockIban(iban, fc1);
-    // generating updated mock iban object
-    iban.setDescription("Edited description");
-    iban.setLabels(List.of(iban.getLabels().get(0)));
-    iban.setActive(false);
-    iban.setLabels(null);
-    List<IbanMaster> ibanMasters = getMockIbanMasters(pa2, iban, mockIban);
-    IbanMaster updatedMockIbanMaster = getMockIbanMaster(pa2, iban, mockIban);
-    updatedMockIbanMaster.setIbanStatus(IbanStatus.DISABLED);
-    List<IbanAttribute> ibanAttributes = getMockIbanAttributes();
-    // mocking responses from repositories
-    when(paRepository.findByIdDominio(fc1)).thenReturn(Optional.of(pa1));
-    when(paRepository.findByIdDominio(fc2)).thenReturn(Optional.of(pa2));
-    when(ibanRepository.save(any(Iban.class))).thenReturn(mockIban);
-    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(mockIban));
-    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), eq(pa2.getObjId())))
-        .thenReturn(ibanMasters);
-    when(ibanMasterRepository.save(any(IbanMaster.class))).thenReturn(updatedMockIbanMaster);
-    when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
-    doNothing().when(ibanAttributeMasterRepository).deleteAll(any());
-    doNothing().when(ibanAttributeMasterRepository).flush();
-    when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class)))
-        .then(returnsFirstArg());
-    // executing logic and check assertions
-    IbanEnhanced result = ibanService.updateIban(fc2, iban.getIbanValue(), iban);
-    assertEquals(iban.isActive(), result.isActive());
-    assertEquals(iban.getIbanValue(), result.getIbanValue());
-    assertEquals(iban.getDescription(), result.getDescription());
-    assertEquals(pa2.getRagioneSociale(), result.getCompanyName());
-    assertEquals(pa1.getIdDominio(), result.getCiOwnerFiscalCode());
-    assertEquals(
-        iban.getDueDate().withOffsetSameLocal(ZoneOffset.UTC),
-        result.getDueDate().withOffsetSameLocal(ZoneOffset.UTC));
-    assertEquals(
-        iban.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC),
-        result.getValidityDate().withOffsetSameLocal(ZoneOffset.UTC));
-    assertTrue(
-        result
-            .getPublicationDate()
-            .withOffsetSameLocal(ZoneOffset.UTC)
-            .isBefore(OffsetDateTime.now().withOffsetSameLocal(ZoneOffset.UTC)));
-  }
-
-  @Test
-  void updateIban_genericConstraintViolation_400() {
+  void updateIban_genericConstraintViolation_400_1() {
     // retrieving mock object
-    String organizationFiscalCode = "fakeCIFiscalCode";
+    String organizationFiscalCode = "13229677908";
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     iban.setIbanValue(null);
     iban.setValidityDate(null);
@@ -640,22 +659,50 @@ class IbanServiceTest {
   }
 
   @Test
-  void updateIban_ibanCodesConstraintViolation_400() {
+  void updateIban_genericConstraintViolation_400_2() {
     // retrieving mock object
-    String organizationFiscalCode = "fakeCIFiscalCode";
+    String organizationFiscalCode = "bad_fiscal_code_format";
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    iban.setIbanValue("IT99C0222211111000000000000");
+    iban.setValidityDate(OffsetDateTime.now());
+    // executing logic and check assertions
+    assertThrows(
+        ConstraintViolationException.class,
+        () -> ibanService.updateIban(organizationFiscalCode, "IT99C0222211111000000000000", iban));
+  }
+
+  @Test
+  void updateIban_genericConstraintViolation_400_3() {
+    // retrieving mock object
+    String organizationFiscalCode = "13229677908";
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    iban.setIbanValue("bad_iban_value_format");
+    iban.setValidityDate(OffsetDateTime.now());
+    // executing logic and check assertions
+    assertThrows(
+        ConstraintViolationException.class,
+        () -> ibanService.updateIban(organizationFiscalCode, "bad_iban_code", iban));
+  }
+
+  @Test
+  void updateIban_ibanCodesConstraintViolation_400() {
+    // retrieving mock object with ibanValue different from ibanCode
+    String organizationFiscalCode = "13229677908";
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     // executing logic and check assertions
     AppException ex =
         assertThrows(
             AppException.class,
-            () -> ibanService.updateIban(organizationFiscalCode, "fakeiban", iban));
+            () ->
+                ibanService.updateIban(
+                    organizationFiscalCode, "IT99C9999999999999999999999", iban));
     assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
   }
 
   @Test
   void updateIban_noCIFound_404() {
     // retrieving mock object
-    String organizationFiscalCode = "fakeCIFiscalCode";
+    String organizationFiscalCode = "13229677908";
     String ibanValue = "IT99C0222211111000000000000";
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     // mocking responses from repositories
@@ -671,7 +718,7 @@ class IbanServiceTest {
   @Test
   void updateIban_noIbanFound_404() {
     // retrieving mock object
-    String organizationFiscalCode = "fakeCIFiscalCode";
+    String organizationFiscalCode = "13229677908";
     String ibanValue = "IT99C0222211111000000000000";
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
     Pa creditorInstitution = getMockPa();
@@ -802,7 +849,8 @@ class IbanServiceTest {
 
   @Test
   void deleteIban() {
-    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(getMockIbanEntity()));
+    when(ibanRepository.findByIban(anyString()))
+        .thenReturn(Optional.of(getMockIbanEntity("IT99C0222211111000000000000")));
     when(paRepository.findByIdDominio(any())).thenReturn(Optional.of(getMockPa()));
     when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any()))
         .thenReturn(List.of(getMockIbanMaster_2()));
@@ -818,15 +866,64 @@ class IbanServiceTest {
   }
 
   @Test
+  void deletePostalIban() {
+    String organizationFiscalCode = getMockPa().getIdDominio();
+    Iban iban = getMockIbanEntity("IT99C0760111111000000000000");
+    String ibanCode = iban.getIban();
+    String encodingCode = ibanCode.substring(ibanCode.length() - 12);
+    Encoding encoding =
+        Encoding.builder()
+            .codeType(CodeTypeEnum.BARCODE_128_AIM)
+            .encodingCode(encodingCode)
+            .build();
+    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(iban));
+    when(paRepository.findByIdDominio(any())).thenReturn(Optional.of(getMockPa()));
+    when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any()))
+        .thenReturn(List.of(getMockIbanMaster_2()));
+    when(ibanAttributeMasterRepository.findByFkIbanMasterIn(any()))
+        .thenReturn(List.of(getMockIbanAttributeMaster()));
+    doNothing()
+        .when(encodingsService)
+        .deleteCreditorInstitutionEncoding(organizationFiscalCode, encodingCode);
+    when(encodingsService.getCreditorInstitutionEncodings(organizationFiscalCode))
+        .thenReturn(CreditorInstitutionEncodings.builder().encodings(List.of(encoding)).build());
+    ibanService.deleteIban(organizationFiscalCode, ibanCode);
+    Mockito.verify(ibanRepository, times(1)).findByIban(ibanCode);
+    Mockito.verify(paRepository, times(1)).findByIdDominio(organizationFiscalCode);
+    Mockito.verify(ibanMasterRepository, times(1)).findByFkIbanAndFkPa(1L, 1L);
+    Mockito.verify(ibanAttributeMasterRepository, times(1)).findByFkIbanMasterIn(List.of(1L));
+    Mockito.verify(encodingsService, times(1))
+        .getCreditorInstitutionEncodings(organizationFiscalCode);
+    Mockito.verify(encodingsService, times(1))
+        .deleteCreditorInstitutionEncoding(organizationFiscalCode, encodingCode);
+  }
+
+  @Test
   void deleteIban_NotFound() {
     when(ibanRepository.findByIban(anyString())).thenReturn(Optional.empty());
     try {
-      ibanService.deleteIban("1234", "IT99C0222211111000000000000");
+      ibanService.deleteIban("13229677908", "IT99C0222211111000000000000");
     } catch (AppException e) {
       assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
     } catch (Exception e) {
       fail();
     }
+  }
+
+  @Test
+  void deleteIban_400_1() {
+    // executing logic and check assertions
+    assertThrows(
+        ConstraintViolationException.class,
+        () -> ibanService.deleteIban("bad_fiscal_code_format", "IT99C9999999999999999999999"));
+  }
+
+  @Test
+  void deleteIban_400_2() {
+    // executing logic and check assertions
+    assertThrows(
+        ConstraintViolationException.class,
+        () -> ibanService.deleteIban("13229677908", "bad_iban_value_format"));
   }
 
   public static List<IbanMaster> getMockIbanMasters(
