@@ -1,0 +1,19 @@
+{
+  "name": "pagopa-api-config",
+  "license": "MIT",
+  "version": "1.0.0",
+  "scripts": {
+    "test:local": "dotenv -e ./config/.env.local yarn cucumber",
+    "test:dev": "dotenv -e ./config/.env.dev yarn cucumber",
+    "test:uat": "dotenv -e ./config/.env.uat yarn cucumber",
+    "test:prod": "dotenv -e ./config/.env.prod yarn cucumber",
+    "cucumber": "npx cucumber-js --publish -r step_definitions"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^8.4.0",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.2",
+    "dotenv-cli": "^3.2.0",
+    "npx": "^10.2.2"
+  }
+}
