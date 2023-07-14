@@ -2,14 +2,14 @@ import jaydebeapi
 import csv
 
 connection  = jaydebeapi.connect(
-    "placeholder",
-    "placeholder",
-    ["placeholder", "placeholder"],
-    "placeholder")
+    "org.postgresql.Driver",
+    "placeholder_url",
+    ["placeholder_username", "placeholder_password"],
+    "placeholder_driver_path")
 cursor = connection.cursor()
 counter = 0
-with open('/Users/federico.ruzzier/Desktop/IbanCsv/export_IBAN_output.csv') as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=';')
+with open('path/to/output/ibanmaster/csv/file.csv') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
     next(csv_reader)
     for row in csv_reader:
         cursor.execute(f"Select * from cfg.pa p where p.id_dominio = '{row[1]}'")
