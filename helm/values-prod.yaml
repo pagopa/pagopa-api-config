@@ -27,7 +27,7 @@ basecache: &basecache
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.50.3-16-fix-cdi"
+    tag: "0.50.4"
     pullPolicy: Always
   livenessProbe:
     httpGet:
