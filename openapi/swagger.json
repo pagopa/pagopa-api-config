@@ -2120,6 +2120,18 @@
               "$ref": "#/definitions/ProblemJson"
             }
           },
+          "422": {
+            "description": "Unprocessable Content",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
           "429": {
             "description": "Too many requests",
             "headers": {
@@ -7090,8 +7102,8 @@
       },
       "get": {
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -13822,9 +13834,6 @@
         "new_fault_code": {
           "type": "boolean"
         },
-        "new_password": {
-          "type": "string"
-        },
         "nmp_service": {
           "type": "string"
         },
@@ -14643,6 +14652,7 @@
           "example": "IT99C0222211111000000000000",
           "maxLength": 35,
           "minLength": 0,
+          "pattern": "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}",
           "type": "string"
         },
         "is_active": {
@@ -15431,9 +15441,6 @@
           "type": "string"
         },
         "ip_4mod": {
-          "type": "string"
-        },
-        "new_password": {
           "type": "string"
         },
         "password": {
