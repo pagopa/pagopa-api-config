@@ -17,7 +17,6 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
         .idCanale(source.getChannelCode())
         .enabled(source.getEnabled())
         .ip(source.getIp())
-        .newPassword(source.getNewPassword())
         .password(source.getPassword())
         .porta(source.getPort())
         .protocollo(getProtocol(source.getProtocol()))

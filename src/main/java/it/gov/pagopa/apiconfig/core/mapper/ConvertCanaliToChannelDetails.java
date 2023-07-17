@@ -18,7 +18,6 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
             .enabled(source.getEnabled())
             .brokerDescription(source.getFkIntermediarioPsp().getCodiceIntermediario())
             .ip(source.getIp())
-            .newPassword(source.getNewPassword())
             .password(source.getPassword())
             .port(source.getPorta())
             .protocol(Protocol.fromValue(source.getProtocollo()))
