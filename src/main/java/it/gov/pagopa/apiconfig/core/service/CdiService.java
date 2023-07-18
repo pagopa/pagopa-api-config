@@ -602,7 +602,7 @@ public class CdiService {
             .modelloPagamento(
                 detail.getModelloPagamento() != null ? detail.getModelloPagamento() : 4L)
             .fkCdiMaster(master)
-            .fkPspCanaleTipoVersamento(pspCanaleTipoVersamento)
+            .pspCanaleTipoVersamento(pspCanaleTipoVersamento)
             .canaleApp(detail.getCanaleApp() != null ? detail.getCanaleApp() : 0L);
     var identificazioneServizio = detail.getIdentificazioneServizio();
     if (identificazioneServizio != null) {

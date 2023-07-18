@@ -452,7 +452,6 @@ public class TestUtil {
         .idCanale("1234")
         .fkIntermediarioPsp(getMockIntermediariePsp())
         .ip("1.1.1.1")
-        .newPassword("new-pass")
         .password("pass")
         .protocollo("HTTP")
         .numThread(4L)
@@ -526,7 +525,7 @@ public class TestUtil {
         .canaleApp(1L)
         .nomeServizio("service")
         .modelloPagamento(1L)
-        .fkPspCanaleTipoVersamento(getMockPspCanaleTipoVersamento())
+        .pspCanaleTipoVersamento(getMockPspCanaleTipoVersamento())
         .cdiInformazioniServizio(List.of(getMockCdiInformazioniServizio()))
         .cdiFasciaCostoServizio(List.of(getMockCdiFasciaCostoServizio()))
         .build();

@@ -3,7 +3,6 @@
   "enabled": true,
   "broker_description": "Regione Lazio",
   "password": "pass",
-  "new_password": "new-pass",
   "protocol": "HTTP",
   "ip": "1.1.1.1",
   "port": 80,

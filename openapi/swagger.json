@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.50.7"
+    "version": "0.50.7-1-PAGOPA-1076-eliminazione-campo-new-password-da-stazioni-e-canali"
   },
   "host": "127.0.0.1:8080",
   "basePath": "/apiconfig/api/v1",
@@ -2110,6 +2110,18 @@
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
@@ -7090,8 +7102,8 @@
       },
       "get": {
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -13822,9 +13834,6 @@
         "new_fault_code": {
           "type": "boolean"
         },
-        "new_password": {
-          "type": "string"
-        },
         "nmp_service": {
           "type": "string"
         },
@@ -14643,6 +14652,7 @@
           "example": "IT99C0222211111000000000000",
           "maxLength": 35,
           "minLength": 0,
+          "pattern": "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}",
           "type": "string"
         },
         "is_active": {
@@ -15431,9 +15441,6 @@
           "type": "string"
         },
         "ip_4mod": {
-          "type": "string"
-        },
-        "new_password": {
           "type": "string"
         },
         "password": {

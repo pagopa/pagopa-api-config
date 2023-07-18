@@ -108,7 +108,7 @@ public class AFMUtilsAsyncTask {
 
   private CdiDetailCosmos mapDetails(@NotNull CdiDetail detail) {
     @NotNull
-    Canali canale = detail.getFkPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale();
+    Canali canale = detail.getPspCanaleTipoVersamento().getCanaleTipoVersamento().getCanale();
     return CdiDetailCosmos.builder()
         .idChannel(canale.getIdCanale())
         .name(detail.getNomeServizio())
@@ -116,7 +116,7 @@ public class AFMUtilsAsyncTask {
         .channelApp(detail.getCanaleApp() == 1L)
         .paymentType(
             detail
-                .getFkPspCanaleTipoVersamento()
+                .getPspCanaleTipoVersamento()
                 .getCanaleTipoVersamento()
                 .getTipoVersamento()
                 .getTipoVersamento())
