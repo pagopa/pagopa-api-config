@@ -77,7 +77,6 @@ create table NODO4_CFG.STAZIONI
     ENABLED     CHAR(1 char
 ) not null,
     IP                    VARCHAR2(100 char),
-    NEW_PASSWORD          VARCHAR2(15 char),
     PASSWORD              VARCHAR2(15 char),
     PORTA                 NUMBER                 not null,
     PROTOCOLLO            VARCHAR2(255 char)     not null,
@@ -161,13 +160,13 @@ INSERT INTO NODO4_CFG.PA (OBJ_ID, ID_DOMINIO, ENABLED, DESCRIZIONE, RAGIONE_SOCI
 VALUES (190, '00168480242', 'Y', 'Comune di Bassano del Grappa', 'Comune di Bassano del Grappa', null, 'N', null, null,
         null, null, null, null, 'Y', 'N', 'N', 0);
 
-INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO,
+INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORTA, PROTOCOLLO,
                                 REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING, SERVIZIO, RT_ENABLED,
                                 SERVIZIO_POF, FK_INTERMEDIARIO_PA, REDIRECT_PROTOCOLLO, PROTOCOLLO_4MOD, IP_4MOD,
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, PROTOCOLLO_AVV, IP_AVV, PORTA_AVV, SERVIZIO_AVV, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP)
-VALUES (2, '80007580279_01', 'Y', 'NodoDeiPagamentiDellaPATest.sia.eu', null, 'password', 80, 'HTTP',
+VALUES (2, '80007580279_01', 'Y', 'NodoDeiPagamentiDellaPATest.sia.eu', 'password', 80, 'HTTP',
         'paygov.collaudo.regione.veneto.it', 'nodo-regionale-fesp/paaInviaRispostaPagamento.html', 443, null,
         'openspcoop/PD/RT6TPDREGVENETO', 'Y', 'openspcoop/PD/CCP6TPDREGVENETO', 2, 'HTTPS', 'HTTP', null, null, null,
         'Y', '10.101.1.95', 8080, null, null, 'HTTP', null, null, null, 120, 2, 15, 30, 120, 'Y', 1, null);

@@ -3,7 +3,6 @@
   "enabled": true,
   "version": 1,
   "ip": "NodoDeiPagamentiDellaPATest.sia.eu",
-  "new_password": "",
   "password": "password",
   "port": 80,
   "protocol": "HTTPS",

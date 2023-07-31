@@ -18,26 +18,26 @@ INSERT INTO NODO4_CFG.PA (OBJ_ID, ID_DOMINIO, ENABLED, DESCRIZIONE, RAGIONE_SOCI
 VALUES (191, '1110001', 'Y', 'Comune di Roma', 'Comune di Roma', null, null,
         null, null, null, null, 'Y', 'N', 'N');
 
-INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO,
+INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORTA, PROTOCOLLO,
                                 REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING, SERVIZIO, RT_ENABLED,
                                 SERVIZIO_POF, FK_INTERMEDIARIO_PA, REDIRECT_PROTOCOLLO, PROTOCOLLO_4MOD, IP_4MOD,
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP, INVIO_RT_ISTANTANEO,
                                 TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE)
-VALUES (2, '80007580279_01', 'Y', 'NodoDeiPagamentiDellaPATest.sia.eu', null, 'password', 80, 'HTTP',
+VALUES (2, '80007580279_01', 'Y', 'NodoDeiPagamentiDellaPATest.sia.eu', 'password', 80, 'HTTP',
         'paygov.collaudo.regione.veneto.it', 'nodo-regionale-fesp/paaInviaRispostaPagamento.html', 443, null,
         'openspcoop/PD/RT6TPDREGVENETO', 'Y', 'openspcoop/PD/CCP6TPDREGVENETO', 2, 'HTTPS', 'HTTP', null, null, null,
         'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 1);
 
-INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO,
+INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORTA, PROTOCOLLO,
                                 REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING, SERVIZIO, RT_ENABLED,
                                 SERVIZIO_POF, FK_INTERMEDIARIO_PA, REDIRECT_PROTOCOLLO, PROTOCOLLO_4MOD, IP_4MOD,
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP, INVIO_RT_ISTANTANEO,
                                 TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE)
-VALUES (3, '1123', 'Y', 'site.eu', null, 'password', 80, 'HTTP',
+VALUES (3, '1123', 'Y', 'site.eu', 'password', 80, 'HTTP',
         'site.it', 'page.html', 443, null,
         'service/', 'Y', 'service/', 2, 'HTTPS', 'HTTP', null, null, null,
         'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 2);
@@ -133,19 +133,19 @@ values (2, null, null, null, null, 'MODELLO_PAGAMENTO', 'N', null, 'N', null, 'H
 
 
 
-insert into NODO4_CFG.CANALI (OBJ_ID, ID_CANALE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO, SERVIZIO,
+insert into NODO4_CFG.CANALI (OBJ_ID, ID_CANALE, ENABLED, IP, PASSWORD, PORTA, PROTOCOLLO, SERVIZIO,
                               DESCRIZIONE, FK_INTERMEDIARIO_PSP, PROXY_ENABLED, PROXY_HOST, PROXY_PASSWORD, PROXY_PORT,
                               PROXY_USERNAME, FK_CANALI_NODO, TIMEOUT, NUM_THREAD,
                               USE_NEW_FAULT_CODE, TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, SERVIZIO_NMP, TARGET_HOST, TARGET_PORT, TARGET_PATH,
                               TARGET_HOST_NMP, TARGET_PORT_NMP, TARGET_PATH_NMP)
-values (1, '00001060966_01', 'Y', '1.1.1.1', null, 'FakePay', 443, 'HTTPS', 'basepath/services/fake', null, 6, 'Y',
+values (1, '00001060966_01', 'Y', '1.1.1.1', 'FakePay', 443, 'HTTPS', 'basepath/services/fake', null, 6, 'Y',
         '2.2.2.2', null, 8080, null, 1, 120, 2, 'Y', 15, 30, 120, null, 'localhost', 443, '/', 'localhost', 443, '/');
-insert into NODO4_CFG.CANALI (OBJ_ID, ID_CANALE, ENABLED, IP, NEW_PASSWORD, PASSWORD, PORTA, PROTOCOLLO, SERVIZIO,
+insert into NODO4_CFG.CANALI (OBJ_ID, ID_CANALE, ENABLED, IP, PASSWORD, PORTA, PROTOCOLLO, SERVIZIO,
                               DESCRIZIONE, FK_INTERMEDIARIO_PSP, PROXY_ENABLED, PROXY_HOST, PROXY_PASSWORD, PROXY_PORT,
                               PROXY_USERNAME, FK_CANALI_NODO, TIMEOUT, NUM_THREAD,
                               USE_NEW_FAULT_CODE, TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, SERVIZIO_NMP, TARGET_HOST, TARGET_PORT, TARGET_PATH,
                               TARGET_HOST_NMP, TARGET_PORT_NMP, TARGET_PATH_NMP)
-values (2, '00001060966_02', 'Y', '1.1.1.1', null, 'FakePay', 443, 'HTTPS', 'basepath/services/fake', null, 7, 'Y',
+values (2, '00001060966_02', 'Y', '1.1.1.1', 'FakePay', 443, 'HTTPS', 'basepath/services/fake', null, 7, 'Y',
         '2.2.2.2', null, 8080, null, 2, 120, 2, 'Y', 15, 30, 120, null, 'localhost', 443, '/', 'localhost', 443, '/');
 
 insert into NODO4_CFG.ELENCO_SERVIZI (OBJ_ID, PSP_ID, FLUSSO_ID, PSP_RAG_SOC, PSP_FLAG_STORNO, PSP_FLAG_BOLLO, INTM_ID,

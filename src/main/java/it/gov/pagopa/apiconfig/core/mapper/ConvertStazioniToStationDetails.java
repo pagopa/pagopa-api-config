@@ -17,7 +17,6 @@ public class ConvertStazioniToStationDetails implements Converter<Stazioni, Stat
         .stationCode(source.getIdStazione())
         .enabled(source.getEnabled())
         .version(source.getVersione())
-        .newPassword(CommonUtil.deNull(source.getNewPassword()))
         .password(CommonUtil.deNull(source.getPassword()))
         .protocol(Protocol.fromValue(source.getProtocollo()))
         .ip(CommonUtil.deNull(source.getIp()))

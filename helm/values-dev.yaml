@@ -21,13 +21,13 @@ basecache: &basecache
       create: true
       image:
         repository: ghcr.io/pagopa/pagopa-api-config
-        tag: "0.50.7"
+        tag: "0.50.10"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.50.7"
+    tag: "0.50.10"
     pullPolicy: Always
   livenessProbe:
     httpGet:
