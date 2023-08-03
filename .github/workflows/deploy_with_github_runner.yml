@@ -42,7 +42,6 @@ jobs:
           container_app_environment_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_NAME }}
           resource_group_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_RESOURCE_GROUP_NAME }} # RG of the runner
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
-          self_hosted_runner_image_tag: "v1.4.1"
 
   deploy:
     needs: [ create_runner ]
