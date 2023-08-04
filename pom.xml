@@ -193,6 +193,11 @@
       <version>${feign-version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>co.elastic.logging</groupId>
+      <artifactId>logback-ecs-encoder</artifactId>
+      <version>1.5.0</version>
+    </dependency>
   </dependencies>
 
   <build>

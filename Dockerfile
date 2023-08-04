@@ -13,6 +13,9 @@ RUN java -Djarmode=layertools -jar application.jar extract
 
 
 FROM ghcr.io/pagopa/docker-base-springboot-openjdk11:v1.0.1@sha256:bbbe948e91efa0a3e66d8f308047ec255f64898e7f9250bdb63985efd3a95dbf
+ADD --chown=spring:spring https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.25.1/opentelemetry-javaagent.jar .
+ADD --chown=spring:spring https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.19.0/jmx_prometheus_javaagent-0.19.0.jar .
+
 COPY --chown=spring:spring  --from=builder dependencies/ ./
 COPY --chown=spring:spring  --from=builder snapshot-dependencies/ ./
 # https://github.com/moby/moby/issues/37965#issuecomment-426853382
@@ -21,3 +24,5 @@ COPY --chown=spring:spring  --from=builder spring-boot-loader/ ./
 COPY --chown=spring:spring  --from=builder application/ ./
 
 EXPOSE 8080
+
+ENTRYPOINT ["java","-javaagent:opentelemetry-javaagent.jar","-javaagent:jmx_prometheus_javaagent-0.19.0.jar","--enable-preview","org.springframework.boot.loader.JarLauncher"]
