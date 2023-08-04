@@ -13,7 +13,6 @@ on:
         type: string
 
 env:
-  NAMESPACE: apiconfig
   APP_NAME: pagopaapiconfig
 
 
@@ -58,7 +57,7 @@ jobs:
           subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.TENANT_ID }}
           env: ${{ inputs.environment }}
-          namespace: ${{ env.NAMESPACE }}
+          namespace: ${{ vars.NAMESPACE }}
           cluster_name: ${{ vars.CLUSTER_NAME }}
           resource_group: ${{ vars.CLUSTER_RESOURCE_GROUP }}
           app_name: ${{ env.APP_NAME }}
@@ -82,3 +81,45 @@ jobs:
           resource_group_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_RESOURCE_GROUP_NAME }}
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+
+#  update_openapi:
+#    needs: [ deploy ]
+#    runs-on: ubuntu-latest
+#    name: Update OpenAPI
+#    if: ${{ inputs.target == inputs.environment || inputs.target == 'all' }}
+#    environment: ${{ inputs.environment }}
+#    steps:
+#      - name: Checkout
+#        id: checkout
+#        # from https://github.com/actions/checkout/commits/main
+#        uses: actions/checkout@1f9a0c22da41e6ebfa534300ef656657ea2c6707
+#        with:
+#          persist-credentials: false
+#
+#      - name: Setup Terraform
+#        # from https://github.com/hashicorp/setup-terraform/commits/main
+#        uses: hashicorp/setup-terraform@8feba2b913ea459066180f9cb177f58a881cf146
+#        with:
+#          terraform_version: "1.3.6"
+#
+#      - name: Login
+#        id: login
+#        # from https://github.com/Azure/login/commits/master
+#        uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+#        with:
+#          client-id: ${{ secrets.CLIENT_ID }}
+#          tenant-id: ${{ secrets.TENANT_ID }}
+#          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+#
+#
+#      - name: Terraform Apply
+#        shell: bash
+#        run: |
+#          cd ./infra
+#          export ARM_CLIENT_ID="${{ secrets.CLIENT_ID }}"
+#          export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+#          export ARM_TENANT_ID=$(az account show --query tenantId --output tsv)
+#          export ARM_USE_OIDC=true
+#          export ARM_ACCESS_KEY=$(az storage account keys list --resource-group io-infra-rg --account-name pagopainfraterraform${{inputs.environment}} --query '[0].value' -o tsv)
+#          bash ./terraform.sh init weu-${{ inputs.environment }}
+#          bash ./terraform.sh apply weu-${{ inputs.environment }} -auto-approve
