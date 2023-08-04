@@ -67,7 +67,7 @@ basecache: &basecache
       memory: "1Gi"
       cpu: "0.40"
     limits:
-      memory: "1Gi"
+      memory: "6Gi"
       cpu: "0.5"
   autoscaling:
     enable: true
@@ -99,6 +99,7 @@ basecache: &basecache
     CRON_JOB_ICA_SCHEDULE_ENABLED: "false"
     CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
     AZURE_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
+    JAVA_OPTS: "-XX:+PrintFlagsFinal -XX:MaxHeapSize=4g"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'
