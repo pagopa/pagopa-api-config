@@ -1,26 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getMockBinaryFile;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCanali;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCdiDetail;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCdiMaster;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCdiMasterValid;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPsp;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPspCanaleTipoVersamento;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import feign.FeignException;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
@@ -28,30 +7,8 @@ import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
 import it.gov.pagopa.apiconfig.core.model.psp.Cdis;
 import it.gov.pagopa.apiconfig.core.util.AFMUtilsAsyncTask;
-import it.gov.pagopa.apiconfig.starter.entity.Canali;
-import it.gov.pagopa.apiconfig.starter.entity.CdiDetail;
-import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
-import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
-import it.gov.pagopa.apiconfig.starter.entity.CdiPreference;
-import it.gov.pagopa.apiconfig.starter.entity.Psp;
-import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
-import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiDetailRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiFasciaCostoServizioRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiInformazioniServizioRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiMasterRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiPreferenceRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import it.gov.pagopa.apiconfig.starter.entity.*;
+import it.gov.pagopa.apiconfig.starter.repository.*;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,6 +26,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static it.gov.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CdiServiceTest {
@@ -154,6 +124,7 @@ class CdiServiceTest {
         .thenReturn(Optional.of(getMockPspCanaleTipoVersamento()));
 
     when(afmUtilsAsyncTask.executeSync(any())).thenReturn(true);
+    when(cdiDetailRepository.save(any(CdiDetail.class))).thenReturn(getMockCdiDetail());
 
     cdiService.createCdi(file);
 
@@ -331,7 +302,7 @@ class CdiServiceTest {
     List<CheckItem> checkItemList = cdiService.verifyCdi(file);
 
     assertEquals(
-        1,
+        2,
         checkItemList.stream()
             .filter(item -> item.getValid().equals(CheckItem.Validity.VALID))
             .count());

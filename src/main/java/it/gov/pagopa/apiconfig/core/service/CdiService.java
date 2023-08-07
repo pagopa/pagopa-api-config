@@ -399,7 +399,8 @@ public class CdiService {
             .getCostiServizio()
             .getListaFasceCostoServizio()
             .getFasciaCostoServizio()) {
-      if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
+      if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())
+          && maxServiceAmount.getListaConvenzioniCosti() == null) {
         checkItemList.add(
             CheckItem.builder()
                 .title("Maximum amount range")
