@@ -67,7 +67,7 @@ basecache: &basecache
       memory: "1Gi"
       cpu: "0.40"
     limits:
-      memory: "6Gi"
+      memory: "2Gi"
       cpu: "0.5"
   autoscaling:
     enable: true
@@ -99,7 +99,12 @@ basecache: &basecache
     CRON_JOB_ICA_SCHEDULE_ENABLED: "false"
     CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
     AZURE_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
-    JAVA_OPTS: "-XX:+PrintFlagsFinal -XX:MaxHeapSize=4g"
+    JAVA_OPTS: "-XX:+PrintFlagsFinal -XX:MaxHeapSize=2g"
+    OTEL_SERVICE_NAME: "pagopa-api-config"
+    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=azure-dev"
+    OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
+    OTEL_LOGS_EXPORTER: none
+    OTEL_TRACES_SAMPLER: "always_on"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'
@@ -108,6 +113,7 @@ basecache: &basecache
     COSMOS_KEY: 'afm-cosmos-key'
     ICA_STORAGE_CONNECTION_STRING: 'api-config-ica-p-sa-connection-string'
     AZURE_STORAGE_CONNECTION_STRING: 'api-config-ica-p-sa-connection-string'
+    OTEL_EXPORTER_OTLP_HEADERS: elastic-apm-secret-token
   keyvault:
     name: "pagopa-p-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
