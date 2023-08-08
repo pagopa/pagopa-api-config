@@ -29,14 +29,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Iban {
 
   @JsonProperty("iban")
-  @Schema(example = "IT99C0222211111000000000000", required = true)
+  @Schema(example = "IT99C0222211111000000000000", required = true, description = "The iban code value")
   @Size(max = 35)
   private String ibanValue;
 
   @JsonProperty("validity_date")
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
-  @Schema(required = true)
+  @Schema(required = true, description = "The date until which the iban is valid")
   @NotNull
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime validityDate;
@@ -44,8 +44,7 @@ public class Iban {
   @JsonProperty("publication_date")
   @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
   @JsonSerialize(using = OffsetDateTimeSerializer.class)
-  @Schema(required = true)
-  @NotNull
+  @Schema(description = "The publication date of the iban")
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime publicationDate;
 }
