@@ -29,7 +29,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Iban {
 
   @JsonProperty("iban")
-  @Schema(example = "IT99C0222211111000000000000", required = true, description = "The iban code value")
+  @Schema(
+      example = "IT99C0222211111000000000000",
+      required = true,
+      description = "The iban code value")
   @Size(max = 35)
   private String ibanValue;
 
