@@ -105,7 +105,8 @@ public class CdiService {
     List<CheckItem> checks = verifyCdi(file);
 
     Optional<CheckItem> check =
-        checks.stream()
+        checks
+            .stream()
             .filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
             .findFirst();
     if (check.isPresent()) {
@@ -317,7 +318,8 @@ public class CdiService {
             : "PO";
 
     CheckItem.Validity validity =
-        paymentMethods.stream()
+        paymentMethods
+                .stream()
                 .anyMatch(
                     pm ->
                         pm.getCanaleTipoVersamento()
@@ -353,9 +355,12 @@ public class CdiService {
     final boolean[] duplicate = {false};
 
     Map<String, Long> frequencyMap =
-        languages.stream()
+        languages
+            .stream()
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-    frequencyMap.entrySet().stream()
+    frequencyMap
+        .entrySet()
+        .stream()
         .filter(item -> item.getValue() > 1)
         .forEach(
             item -> {
@@ -508,10 +513,13 @@ public class CdiService {
     if (costiServizio != null
         && costiServizio.getListaFasceCostoServizio() != null
         && costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio() != null) {
-      var list = new ArrayList<CdiFasciaCostoServizio>();
+      List<CdiFasciaCostoServizio> list = null;
       // sort by importoMassimo and create fascia costi servizio
       var importi =
-          costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().stream()
+          costiServizio
+              .getListaFasceCostoServizio()
+              .getFasciaCostoServizio()
+              .stream()
               .map(CdiXml.FasciaCostoServizio::getImportoMassimoFascia)
               .sorted(Double::compareTo)
               .distinct()
@@ -523,26 +531,30 @@ public class CdiService {
         var fascia = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i);
         // importoMinimo is equals to previous importoMassimo (equals to 0 for the first element)
         var prev =
-            importi.stream()
+            importi
+                .stream()
                 .filter(elem -> elem < fascia.getImportoMassimoFascia())
                 .max(Double::compareTo)
                 .orElse(0.0);
-        CdiXml.ConvenzioniCosti convenzione = null;
         if (fascia.getListaConvenzioniCosti() != null) {
-          convenzione = fascia.getListaConvenzioniCosti().stream().findFirst().orElse(null);
+          list =
+              fascia
+                  .getListaConvenzioniCosti()
+                  .stream()
+                  .map(
+                      elem ->
+                          cdiFasciaCostoServizioRepository.save(
+                              CdiFasciaCostoServizio.builder()
+                                  .importoMassimo(fascia.getImportoMassimoFascia())
+                                  .importoMinimo(prev)
+                                  .costoFisso(fascia.getCostoFisso())
+                                  .fkCdiDetail(detailEntity)
+                                  .valoreCommissione(fascia.getValoreCommissione())
+                                  .codiceConvenzione(
+                                      elem != null ? elem.getCodiceConvenzione() : null)
+                                  .build()))
+                  .collect(Collectors.toList());
         }
-        var entity =
-            cdiFasciaCostoServizioRepository.save(
-                CdiFasciaCostoServizio.builder()
-                    .importoMassimo(fascia.getImportoMassimoFascia())
-                    .importoMinimo(prev)
-                    .costoFisso(fascia.getCostoFisso())
-                    .fkCdiDetail(detailEntity)
-                    .valoreCommissione(fascia.getValoreCommissione())
-                    .codiceConvenzione(
-                        convenzione != null ? convenzione.getCodiceConvenzione() : null)
-                    .build());
-        list.add(entity);
       }
       detailEntity.setCdiFasciaCostoServizio(list);
     }
@@ -611,7 +623,9 @@ public class CdiService {
       // join list of ParolaChiave in a string semicolon separated ([tag1, tag2,tag3] ->
       // "tag1;tag2;tag3")
       String tags =
-          detail.getListaParoleChiave().stream()
+          detail
+              .getListaParoleChiave()
+              .stream()
               .filter(Objects::nonNull)
               .reduce((a, b) -> a + ";" + b)
               .orElse(null);
