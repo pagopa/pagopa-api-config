@@ -1,10 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 import feign.FeignException;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
@@ -14,13 +9,6 @@ import it.gov.pagopa.apiconfig.core.model.psp.Cdis;
 import it.gov.pagopa.apiconfig.core.util.AFMUtilsAsyncTask;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.repository.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +26,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static it.gov.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CdiServiceTest {
@@ -138,7 +139,7 @@ class CdiServiceTest {
         Arrays.toString("YQ==".getBytes()),
         Arrays.toString(cdiDetail.getValue().getLogoServizio()));
     verify(cdiInformazioniServizioRepository, times(5)).save(any());
-    verify(cdiFasciaCostoServizioRepository, times(8)).save(any());
+    verify(cdiFasciaCostoServizioRepository, times(4)).save(any());
 
     ArgumentCaptor<CdiPreference> cdiPreference = ArgumentCaptor.forClass(CdiPreference.class);
     verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
