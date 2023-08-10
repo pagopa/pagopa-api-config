@@ -19,6 +19,7 @@ import lombok.ToString;
 public class CdiCosmos {
   private String id;
   private String idPsp;
+  private String pspBusinessName;
   private String idCdi;
   private String abi;
   private String cdiStatus;

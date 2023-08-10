@@ -2,24 +2,15 @@ package it.gov.pagopa.apiconfig.core.util;
 
 import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
 
-import feign.Feign;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
-import it.gov.pagopa.apiconfig.core.client.AFMUtilsClient;
-import it.gov.pagopa.apiconfig.core.exception.AppError;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.afm.CdiCosmos;
-import it.gov.pagopa.apiconfig.core.model.afm.CdiDetailCosmos;
-import it.gov.pagopa.apiconfig.starter.entity.*;
-import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
-import lombok.extern.slf4j.Slf4j;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +19,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import feign.Feign;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
+import it.gov.pagopa.apiconfig.core.client.AFMUtilsClient;
+import it.gov.pagopa.apiconfig.core.exception.AppError;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.afm.CdiCosmos;
+import it.gov.pagopa.apiconfig.core.model.afm.CdiDetailCosmos;
+import it.gov.pagopa.apiconfig.starter.entity.Canali;
+import it.gov.pagopa.apiconfig.starter.entity.CdiDetail;
+import it.gov.pagopa.apiconfig.starter.entity.CdiInformazioniServizio;
+import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
+import it.gov.pagopa.apiconfig.starter.entity.CdiMasterValid;
+import it.gov.pagopa.apiconfig.starter.entity.ServiceAmountCosmos;
+import it.gov.pagopa.apiconfig.starter.repository.CdiMasterValidRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -95,6 +103,7 @@ public class AFMUtilsAsyncTask {
     return CdiCosmos.builder()
         .id(master.getId().toString())
         .idPsp(master.getFkPsp().getIdPsp())
+        .pspBusinessName(master.getFkPsp().getRagioneSociale())
         .abi(master.getFkPsp().getAbi())
         .idCdi(master.getIdInformativaPsp())
         .cdiStatus("NEW")
