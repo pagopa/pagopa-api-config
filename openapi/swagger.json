@@ -14595,23 +14595,25 @@
     "Iban": {
       "properties": {
         "iban": {
+          "description": "The iban code value",
           "example": "IT99C0222211111000000000000",
           "maxLength": 35,
           "minLength": 0,
           "type": "string"
         },
         "publication_date": {
+          "description": "The publication date of the iban",
           "format": "date-time",
           "type": "string"
         },
         "validity_date": {
+          "description": "The date until which the iban is valid",
           "format": "date-time",
           "type": "string"
         }
       },
       "required": [
         "iban",
-        "publication_date",
         "validity_date"
       ],
       "type": "object"
