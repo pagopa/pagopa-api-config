@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.50.13-3-fix-cdi"
+    "version": "0.50.14"
   },
   "servers": [
     {
@@ -18101,7 +18101,6 @@
       "Iban": {
         "required": [
           "iban",
-          "publication_date",
           "validity_date"
         ],
         "type": "object",
@@ -18110,14 +18109,17 @@
             "maxLength": 35,
             "minLength": 0,
             "type": "string",
+            "description": "The iban code value",
             "example": "IT99C0222211111000000000000"
           },
           "publication_date": {
             "type": "string",
+            "description": "The publication date of the iban",
             "format": "date-time"
           },
           "validity_date": {
             "type": "string",
+            "description": "The date until which the iban is valid",
             "format": "date-time"
           }
         }
