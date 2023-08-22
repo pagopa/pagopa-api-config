@@ -10,7 +10,3 @@ repos:
         language_version: python3
         stages: [ commit ]
 
-  - repo: https://github.com/maltzj/google-style-precommit-hook
-    rev: b7e9e7fcba4a5aea463e72fe9964c14877bd8130
-    hooks:
-      - id: google-style-java

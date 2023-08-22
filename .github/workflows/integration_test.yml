@@ -54,7 +54,7 @@ jobs:
       - name: Run Integration Tests
         shell: bash
         run: |
-          export subkey=${{ secrets.SUBKEY }}
+          export SUBKEY=${{ secrets.SUBKEY }}
           export CANARY=${{ inputs.canary }}
           export CUCUMBER_PUBLISH_TOKEN=${{ secrets.CUCUMBER_PUBLISH_TOKEN }}
 

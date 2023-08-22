@@ -13,7 +13,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-  <version>0.50.14-1-PAGOPA-1160-cdi-codici-convezioni-non-salvati-a-db</version>
+  <version>0.51.0</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
     Pagamenti
   </description>
@@ -193,6 +193,11 @@
       <version>${feign-version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>co.elastic.logging</groupId>
+      <artifactId>logback-ecs-encoder</artifactId>
+      <version>1.5.0</version>
+    </dependency>
   </dependencies>
 
   <build>
