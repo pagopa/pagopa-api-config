@@ -30,16 +30,26 @@ jobs:
         with:
           java-version: 11
 
-#      - name: Update OpenApi/Swagger file
-#        run: |
-#          cd ./openapi
-#          sh ./generate_openapi_and_swagger.sh
+      - name: Update OpenApi/Swagger file
+        run: |
+          cd ./openapi
+          chmod +x ./generate_openapi.sh
+          ./generate_openapi.sh
 
       - name: Formatting
-        uses: axel-op/googlejavaformat-action@v3
+        id: format
+        uses: findologic/intellij-format-action@main
         with:
-          args: "--replace"
-          commit-message: "Google Java format"
+          path: .
+          fail-on-changes: false
+
+      - name: Commit files
+        run: |
+          git config --local user.email "pagopa-github-bot@pagopa.it"
+          git config --local user.name "pagopa-github-bot"
+          git commit -a -m "Formatting"
+          git push
+
 
   notify:
     needs: [ update ]

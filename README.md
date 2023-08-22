@@ -117,13 +117,8 @@ Using the spring profile `local`, the Spring application connects to the docker 
 
 ### Spring Profiles
 
-- **azure-d**: used in Azure develop environment
-- **azure-u**: used in Azure uat environment
-- **azure-p**: used in Azure production environment
-- **azure-t**: to run with H2 for testing purposing
-- **local**: to develop locally using the docker DB.
-- **h2**: to develop locally using the H2 DB.
-- **docker**: profile used by the app inside the container (see: `/.env` file)
+- **local**: to develop locally using the H2 DB.
+- __default__: used in Azure
 
 
 ### Oracle Docker Container
