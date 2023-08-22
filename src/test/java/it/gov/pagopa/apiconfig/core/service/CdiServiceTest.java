@@ -139,7 +139,7 @@ class CdiServiceTest {
         Arrays.toString("YQ==".getBytes()),
         Arrays.toString(cdiDetail.getValue().getLogoServizio()));
     verify(cdiInformazioniServizioRepository, times(5)).save(any());
-    verify(cdiFasciaCostoServizioRepository, times(4)).save(any());
+    verify(cdiFasciaCostoServizioRepository, times(8)).save(any());
 
     ArgumentCaptor<CdiPreference> cdiPreference = ArgumentCaptor.forClass(CdiPreference.class);
     verify(cdiPreferenceRepository, times(1)).save(cdiPreference.capture());
