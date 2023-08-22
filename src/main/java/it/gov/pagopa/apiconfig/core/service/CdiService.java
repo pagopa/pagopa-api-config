@@ -513,7 +513,7 @@ public class CdiService {
     if (costiServizio != null
         && costiServizio.getListaFasceCostoServizio() != null
         && costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio() != null) {
-      List<CdiFasciaCostoServizio> list = null;
+      List<CdiFasciaCostoServizio> list = new ArrayList<>();
       // sort by importoMassimo and create fascia costi servizio
       var importi =
           costiServizio
@@ -522,7 +522,6 @@ public class CdiService {
               .stream()
               .map(CdiXml.FasciaCostoServizio::getImportoMassimoFascia)
               .sorted(Double::compareTo)
-              .distinct()
               .collect(Collectors.toList());
       // for each fascia save an element in the database
       for (int i = 0;
@@ -530,30 +529,43 @@ public class CdiService {
           i++) {
         var fascia = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i);
         // importoMinimo is equals to previous importoMassimo (equals to 0 for the first element)
-        var prev =
+        var previous =
             importi
                 .stream()
                 .filter(elem -> elem < fascia.getImportoMassimoFascia())
                 .max(Double::compareTo)
                 .orElse(0.0);
-        if (fascia.getListaConvenzioniCosti() != null) {
-          list =
+
+        if (fascia.getListaConvenzioniCosti() == null) {
+          list.add(
+              cdiFasciaCostoServizioRepository.save(
+                  CdiFasciaCostoServizio.builder()
+                      .importoMassimo(fascia.getImportoMassimoFascia())
+                      .importoMinimo(previous)
+                      .costoFisso(fascia.getCostoFisso())
+                      .fkCdiDetail(detailEntity)
+                      .valoreCommissione(fascia.getValoreCommissione())
+                      .codiceConvenzione(null)
+                      .build()));
+        } else {
+          List<CdiFasciaCostoServizio> fasciaCostoServizioList =
               fascia
                   .getListaConvenzioniCosti()
                   .stream()
+                  .filter(Objects::nonNull)
                   .map(
                       elem ->
                           cdiFasciaCostoServizioRepository.save(
                               CdiFasciaCostoServizio.builder()
                                   .importoMassimo(fascia.getImportoMassimoFascia())
-                                  .importoMinimo(prev)
+                                  .importoMinimo(previous)
                                   .costoFisso(fascia.getCostoFisso())
                                   .fkCdiDetail(detailEntity)
                                   .valoreCommissione(fascia.getValoreCommissione())
-                                  .codiceConvenzione(
-                                      elem != null ? elem.getCodiceConvenzione() : null)
+                                  .codiceConvenzione(elem.getCodiceConvenzione())
                                   .build()))
                   .collect(Collectors.toList());
+          list.addAll(fasciaCostoServizioList);
         }
       }
       detailEntity.setCdiFasciaCostoServizio(list);
