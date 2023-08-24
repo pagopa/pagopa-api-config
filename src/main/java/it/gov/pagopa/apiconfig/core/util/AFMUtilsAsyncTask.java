@@ -100,6 +100,7 @@ public class AFMUtilsAsyncTask {
         return CdiCosmos.builder()
                 .id(master.getId().toString())
                 .idPsp(master.getFkPsp().getIdPsp())
+                .pspBusinessName(master.getFkPsp().getRagioneSociale())
                 .abi(master.getFkPsp().getAbi())
                 .idCdi(master.getIdInformativaPsp())
                 .cdiStatus("NEW")
