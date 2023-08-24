@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -8,19 +8,14 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.7.7</version>
-    <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
   <version>0.52.0</version>
-  <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei
-    Pagamenti
-  </description>
+  <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti</description>
 
   <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
     <java.version>11</java.version>
 
     <ojdbc8-version>21.4.0.0</ojdbc8-version>
@@ -54,6 +49,13 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -242,15 +244,23 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>zip</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
     </plugins>
-
     <testResources>
       <testResource>
         <directory>src/test/resources</directory>
         <filtering>true</filtering>
       </testResource>
     </testResources>
-
   </build>
 
 </project>

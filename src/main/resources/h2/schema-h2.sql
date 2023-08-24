@@ -372,6 +372,7 @@ create table NODO4_CFG.CANALI
     ENABLED                                      char(1)      not null,
     IP                                           varchar(100),
     PASSWORD                                     varchar(15),
+    NEW_PASSWORD                                     varchar(15),
     PORTA                                        numeric      not null,
     PROTOCOLLO                                   varchar(255) not null,
     SERVIZIO                                     varchar(100),
