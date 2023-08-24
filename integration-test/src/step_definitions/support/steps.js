@@ -2,6 +2,7 @@ const {Given, When, Then} = require('@cucumber/cucumber')
 const assert = require("assert");
 const {createNewIban, deleteIban, updateIban, getIbanEnhanced} = require("./logic/ibanLogic")
 const {buildIbanCreate, buildIbanUpdate} = require("./builder/buildIban")
+const {buildCDI} = require("./builder/buildCDI")
 const {get} = require("./common");
 
 const app_host = process.env.APP_HOST;
@@ -63,3 +64,14 @@ Then('the client receives status code {int}', (statusCode) =>{
 Then('the response {string} is equal to {string}', (field, description) =>{
   assert.strictEqual(responseToCheck.data[field], description);
 });
+
+When('The client creates a CDI with an IdentificativoFlusso valued as {string} and an IdentificativoPSP valued as {string}', async (identificativoFlusso, identificativoPSP) => {
+  body = buildCDI(identificativoFlusso, identificativoPSP);
+  responseToCheck = await createCDI(body);    
+});
+
+
+When('The client deletes the created CDI with an IdentificativoFlusso valued as {string} and an IdentificativoPSP valued as {string}', async (identificativoFlusso, identificativoPSP) => {
+	responseToCheck = await deleteCDI(identificativoFlusso, identificativoPSP);   
+});	
+
