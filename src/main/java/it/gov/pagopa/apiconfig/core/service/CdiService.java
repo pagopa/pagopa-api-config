@@ -103,51 +103,41 @@ public class CdiService {
 
   @Transactional
   public void createCdi(MultipartFile file) {
-    List<CheckItem> checks = verifyCdi(file);
+	  List<CheckItem> checks = verifyCdi(file);
 
-    Optional<CheckItem> check =
-        checks
-            .stream()
-            .filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
-            .findFirst();
-    if (check.isPresent()) {
-      throw new AppException(
-          AppError.CDI_BAD_REQUEST,
-          String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
-    }
+	  Optional<CheckItem> check =
+			  checks
+			  .stream()
+			  .filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
+			  .findFirst();
+	  if (check.isPresent()) {
+		  throw new AppException(
+				  AppError.CDI_BAD_REQUEST,
+				  String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
+	  }
 
-    // map file into model class
-    CdiXml xml = mapXml(file, CdiXml.class);
+	  // map file into model class
+	  CdiXml xml = mapXml(file, CdiXml.class);
 
-    // PAGOPA-936: skip the CDI creation for the CHARITY_PREFIX:
-    // it was chosen to use only the check on the 'identificativoPSP' because the one on the
-    // 'identificativoFlusso' is unnecessary
-    if (!xml.getIdentificativoPSP().startsWith(CHARITY_PREFIX)) {
+	  var psp = getPspIfExists(xml.getIdentificativoPSP());
 
-      var psp = getPspIfExists(xml.getIdentificativoPSP());
+	  // save BINARY_FILE and CDI_MASTER
+	  var binaryFile = saveBinaryFile(file);
+	  var master = saveCdiMaster(xml, psp, binaryFile);
+	  var list = new ArrayList<CdiDetail>();
+	  // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
+	  for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
+		  var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
 
-      // save BINARY_FILE and CDI_MASTER
-      var binaryFile = saveBinaryFile(file);
-      var master = saveCdiMaster(xml, psp, binaryFile);
-      var list = new ArrayList<CdiDetail>();
-      // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
-      for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
-        var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
-
-        var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
-        saveCdiInformazioniServizio(xmlDetail, detail);
-        saveCdiFasciaCostiServizio(xmlDetail, detail);
-        saveCdiPreferences(xml, xmlDetail, detail);
-        list.add(detail);
-      }
-      master.setCdiDetail(list);
-      // send CDI to AFM Utils
-      afmUtilsAsyncTask.executeSync(master);
-
-    } else {
-      throw new AppException(
-          AppError.CHARITY_ERROR, String.format("%s", xml.getIdentificativoPSP()));
-    }
+		  var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
+		  saveCdiInformazioniServizio(xmlDetail, detail);
+		  saveCdiFasciaCostiServizio(xmlDetail, detail);
+		  saveCdiPreferences(xml, xmlDetail, detail);
+		  list.add(detail);
+	  }
+	  master.setCdiDetail(list);
+	  // send CDI to AFM Utils
+	  afmUtilsAsyncTask.executeSync(master);
   }
 
   @Transactional
@@ -188,105 +178,114 @@ public class CdiService {
 
   @Transactional(readOnly = true)
   public List<CheckItem> verifyCdi(MultipartFile file) {
-    // checks are described here
-    // https://pagopa.atlassian.net/wiki/spaces/ACN/pages/467435579/Verifica+CDI
+	  // checks are described here
+	  // https://pagopa.atlassian.net/wiki/spaces/ACN/pages/467435579/Verifica+CDI
 
-    List<CheckItem> checkItemList = new ArrayList<>();
-    // syntax checks
-    String detail;
-    try {
-      syntaxValidation(file, xsdCdi);
-      detail = "XML is valid against the XSD schema.";
-      checkItemList.add(
-          CheckItem.builder()
-              .title("XSD Schema")
-              .value(xsdCdi)
-              .valid(CheckItem.Validity.VALID)
-              .note(detail)
-              .build());
-    } catch (SAXException | IOException | XMLStreamException e) {
-      detail = getExceptionErrors(e.getMessage());
-      checkItemList.add(
-          CheckItem.builder()
-              .title("XSD Schema")
-              .value(xsdCdi)
-              .valid(CheckItem.Validity.NOT_VALID)
-              .note(detail)
-              .build());
-      return checkItemList;
-    }
+	  List<CheckItem> checkItemList = new ArrayList<>();
+	  // syntax checks
+	  String detail;
+	  try {
+		  syntaxValidation(file, xsdCdi);
+		  detail = "XML is valid against the XSD schema.";
+		  checkItemList.add(
+				  CheckItem.builder()
+				  .title("XSD Schema")
+				  .value(xsdCdi)
+				  .valid(CheckItem.Validity.VALID)
+				  .note(detail)
+				  .build());
+	  } catch (SAXException | IOException | XMLStreamException e) {
+		  detail = getExceptionErrors(e.getMessage());
+		  checkItemList.add(
+				  CheckItem.builder()
+				  .title("XSD Schema")
+				  .value(xsdCdi)
+				  .valid(CheckItem.Validity.NOT_VALID)
+				  .note(detail)
+				  .build());
+		  return checkItemList;
+	  }
 
-    // map file into model class
-    CdiXml xml = mapXml(file, CdiXml.class);
+	  // map file into model class
+	  CdiXml xml = mapXml(file, CdiXml.class);
 
-    // check psp
-    String pspId = xml.getIdentificativoPSP();
-    Psp psp = null;
-    try {
-      psp = getPspIfExists(pspId);
-      checkItemList.addAll(checkPsp(psp, pspId, xml));
+	  // PAGOPA-936: skip the CDI creation for the CHARITY_PREFIX:
+	  // it was chosen to use only the check on the 'identificativoPSP' because the one on the
+	  // 'identificativoFlusso' is unnecessary
+	  if (!xml.getIdentificativoPSP().startsWith(CHARITY_PREFIX)) {
+		  // check psp
+		  String pspId = xml.getIdentificativoPSP();
+		  Psp psp = null;
+		  try {
+			  psp = getPspIfExists(pspId);
+			  checkItemList.addAll(checkPsp(psp, pspId, xml));
 
-      // check marca da bollo (stamp)
-      CheckItem checkItem =
-          CommonUtil.checkData(
-              "Stamp",
-              xml.getInformativaMaster().getMarcaBolloDigitale(),
-              psp.getMarcaBolloDigitale(),
-              "Stamp not consistent");
-      checkItemList.add(checkItem);
-    } catch (AppException e) {
-      checkItemList.add(
-          CheckItem.builder()
-              .title("PSP Identifier")
-              .value(pspId)
-              .valid(CheckItem.Validity.NOT_VALID)
-              .note("PSP identifier not consistent")
-              .build());
-    }
+			  // check marca da bollo (stamp)
+			  CheckItem checkItem =
+					  CommonUtil.checkData(
+							  "Stamp",
+							  xml.getInformativaMaster().getMarcaBolloDigitale(),
+							  psp.getMarcaBolloDigitale(),
+							  "Stamp not consistent");
+			  checkItemList.add(checkItem);
+		  } catch (AppException e) {
+			  checkItemList.add(
+					  CheckItem.builder()
+					  .title("PSP Identifier")
+					  .value(pspId)
+					  .valid(CheckItem.Validity.NOT_VALID)
+					  .note("PSP identifier not consistent")
+					  .build());
+		  }
 
-    // check date
-    checkItemList.add(
-        CommonUtil.checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
+		  // check date
+		  checkItemList.add(
+				  CommonUtil.checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
 
-    // check flow id
-    if (psp != null) {
-      checkItemList.add(checkFlow(xml, psp));
-    }
+		  // check flow id
+		  if (psp != null) {
+			  checkItemList.add(checkFlow(xml, psp));
+		  }
 
-    for (CdiXml.InformativaDetail informativaDetail :
-        xml.getListaInformativaDetail().getInformativaDetail()) {
-      // check channel and paymentMethod
-      String channelId = informativaDetail.getIdentificativoCanale();
-      Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
-      if (channel.isEmpty()) {
-        checkItemList.add(
-            CheckItem.builder()
-                .title("Channel - Payment Method")
-                .value(channelId + " - " + informativaDetail.getTipoVersamento())
-                .valid(CheckItem.Validity.NOT_VALID)
-                .note("Channel not consistent")
-                .build());
-      } else if (psp != null) {
-        // check payment methods
-        checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
+		  for (CdiXml.InformativaDetail informativaDetail :
+			  xml.getListaInformativaDetail().getInformativaDetail()) {
+			  // check channel and paymentMethod
+			  String channelId = informativaDetail.getIdentificativoCanale();
+			  Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
+			  if (channel.isEmpty()) {
+				  checkItemList.add(
+						  CheckItem.builder()
+						  .title("Channel - Payment Method")
+						  .value(channelId + " - " + informativaDetail.getTipoVersamento())
+						  .valid(CheckItem.Validity.NOT_VALID)
+						  .note("Channel not consistent")
+						  .build());
+			  } else if (psp != null) {
+				  // check payment methods
+				  checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
 
-        if (informativaDetail.getModelloPagamento() == 4L) {
-          // check payment model
-          checkItemList.add(checkPaymentModel(informativaDetail));
-        }
+				  if (informativaDetail.getModelloPagamento() == 4L) {
+					  // check payment model
+					  checkItemList.add(checkPaymentModel(informativaDetail));
+				  }
 
-        // check broker psp
-        checkItemList.add(checkBrokerPsp(channel.get(), informativaDetail));
-      }
+				  // check broker psp
+				  checkItemList.add(checkBrokerPsp(channel.get(), informativaDetail));
+			  }
 
-      // check amount ranges
-      checkItemList.addAll(checkAmountRanges(informativaDetail));
+			  // check amount ranges
+			  checkItemList.addAll(checkAmountRanges(informativaDetail));
 
-      // check languages
-      checkItemList.addAll(checkLanguages(informativaDetail));
-    }
+			  // check languages
+			  checkItemList.addAll(checkLanguages(informativaDetail));
+		  }
 
-    return checkItemList;
+	  } else {
+		  throw new AppException(
+				  AppError.CHARITY_ERROR, String.format("%s", xml.getIdentificativoPSP()));
+	  }
+
+	  return checkItemList;
   }
 
   private List<CheckItem> checkPsp(Psp psp, String pspId, CdiXml xml) {
