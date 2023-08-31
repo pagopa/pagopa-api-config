@@ -1,4 +1,4 @@
-basecache: &basecache
+microservice-chart: &microservice-chart
   namespace: "apiconfig"
   nameOverride: ""
   fullnameOverride: ""
@@ -130,10 +130,10 @@ basecache: &basecache
                   - user
 # Configuration used to update image tag (stable or canary) by pipeline
 microservice-chart:
-  !!merge <<: *basecache
+  !!merge <<: *microservice-chart
 # Configuration for PostgreSQL
 postgresql:
-  !!merge <<: *basecache
+  !!merge <<: *microservice-chart
   ingress:
     !!merge <<: *ingress
     path: /pagopa-api-config-core-service/p/(.*)
@@ -152,7 +152,7 @@ postgresql:
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
 # Configuration for Oracle
 oracle:
-  !!merge <<: *basecache
+  !!merge <<: *microservice-chart
   ingress:
     !!merge <<: *ingress
     path: /pagopa-api-config-core-service/o/(.*)

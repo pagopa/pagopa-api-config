@@ -7,10 +7,6 @@ on:
         required: true
         description: The name of the environment where to deploy
         type: string
-      target:
-        required: true
-        description: The environment target of the job
-        type: string
 
 env:
   APP_NAME: pagopaapiconfig
@@ -26,7 +22,6 @@ jobs:
     runs-on: ubuntu-22.04
     environment:
       name: ${{ inputs.environment }}
-    if: ${{ inputs.target == inputs.environment || inputs.target == 'all' }}
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
@@ -45,7 +40,6 @@ jobs:
   deploy:
     needs: [ create_runner ]
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
-    if: ${{ inputs.target == inputs.environment || inputs.target == 'all' }}
     name: Deploy on AKS
     environment: ${{ inputs.environment }}
     steps:
@@ -66,7 +60,7 @@ jobs:
   cleanup_runner:
     name: Cleanup Runner
     needs: [ create_runner, deploy ]
-    if: ${{ success() || failure() && inputs.target == inputs.environment || inputs.target == 'all' }}
+    if: ${{ success() || failure() }}
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
     steps:
@@ -86,7 +80,7 @@ jobs:
 #    needs: [ deploy ]
 #    runs-on: ubuntu-latest
 #    name: Update OpenAPI
-#    if: ${{ inputs.target == inputs.environment || inputs.target == 'all' }}
+#    if: ${{ inputs.target == inputs.environment }}
 #    environment: ${{ inputs.environment }}
 #    steps:
 #      - name: Checkout
