@@ -4,7 +4,7 @@
     "title": "@project.artifactId@",
     "description": "@project.description@",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.53.2"
+    "version": "0.53.3"
   },
   "servers": [
     {
