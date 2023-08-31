@@ -21,7 +21,7 @@ basecache: &basecache
       create: true
       image:
         repository: ghcr.io/pagopa/pagopa-api-config
-        tag: "0.53.0"
+        tag: "0.53.0-1-PAGOPA-937-int-test-charity"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
