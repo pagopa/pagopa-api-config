@@ -12,7 +12,6 @@ fi
 mvn test -Dtest=OpenApiGenerationTest
 
 cp ./openapi/openapi.json ./openapi/openapi_auth.json
-jq '.servers[0].url = "http://localhost:8080/apiconfig/auth/api/v1"' ./openapi/openapi.json > ./openapi/openapi_auth.json
 
 if [ $(npm list -g | grep -c api-spec-converter) -eq 0 ]; then
   npm install -g api-spec-converter

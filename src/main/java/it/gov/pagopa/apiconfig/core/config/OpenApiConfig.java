@@ -1,7 +1,5 @@
 package it.gov.pagopa.apiconfig.core.config;
 
-import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
@@ -11,14 +9,17 @@ import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.servers.ServerVariable;
+import io.swagger.v3.oas.models.servers.ServerVariables;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.*;
+
+import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
 
 @Configuration
 public class OpenApiConfig {
@@ -29,6 +30,15 @@ public class OpenApiConfig {
       @Value("${info.application.description}") String appDescription,
       @Value("${info.application.version}") String appVersion) {
     return new OpenAPI()
+      .servers(List.of(new Server().url("http://localhost:8080"),
+          new Server().url("https://{host}/{basePath}")
+              .variables(new ServerVariables()
+                .addServerVariable("host",
+                  new ServerVariable()._enum(List.of("api.dev.platform.pagopa.it","api.uat.platform.pagopa.it","api.platform.pagopa.it"))
+                      ._default("api.dev.platform.pagopa.it"))
+                .addServerVariable("basePath", new ServerVariable()._enum(List.of("apiconfig/auth/api/v1", "apiconfig/api/v1"))
+                  ._default("apiconfig/auth/api/v1"))
+              )))
         .components(
             new Components()
                 .addSecuritySchemes(
