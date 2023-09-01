@@ -247,38 +247,7 @@ public class CdiService {
 			  checkItemList.add(checkFlow(xml, psp));
 		  }
 
-		  for (CdiXml.InformativaDetail informativaDetail :
-			  xml.getListaInformativaDetail().getInformativaDetail()) {
-			  // check channel and paymentMethod
-			  String channelId = informativaDetail.getIdentificativoCanale();
-			  Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
-			  if (channel.isEmpty()) {
-				  checkItemList.add(
-						  CheckItem.builder()
-						  .title("Channel - Payment Method")
-						  .value(channelId + " - " + informativaDetail.getTipoVersamento())
-						  .valid(CheckItem.Validity.NOT_VALID)
-						  .note("Channel not consistent")
-						  .build());
-			  } else if (psp != null) {
-				  // check payment methods
-				  checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
-
-				  if (informativaDetail.getModelloPagamento() == 4L) {
-					  // check payment model
-					  checkItemList.add(checkPaymentModel(informativaDetail));
-				  }
-
-				  // check broker psp
-				  checkItemList.add(checkBrokerPsp(channel.get(), informativaDetail));
-			  }
-
-			  // check amount ranges
-			  checkItemList.addAll(checkAmountRanges(informativaDetail));
-
-			  // check languages
-			  checkItemList.addAll(checkLanguages(informativaDetail));
-		  }
+		  this.checkInformativaDetail(checkItemList, xml, psp);
 
 	  } else {
 		  throw new AppException(
@@ -286,6 +255,41 @@ public class CdiService {
 	  }
 
 	  return checkItemList;
+  }
+
+  private void checkInformativaDetail(List<CheckItem> checkItemList, CdiXml xml, Psp psp) {
+	for (CdiXml.InformativaDetail informativaDetail :
+		  xml.getListaInformativaDetail().getInformativaDetail()) {
+		  // check channel and paymentMethod
+		  String channelId = informativaDetail.getIdentificativoCanale();
+		  Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
+		  if (channel.isEmpty()) {
+			  checkItemList.add(
+					  CheckItem.builder()
+					  .title("Channel - Payment Method")
+					  .value(channelId + " - " + informativaDetail.getTipoVersamento())
+					  .valid(CheckItem.Validity.NOT_VALID)
+					  .note("Channel not consistent")
+					  .build());
+		  } else if (psp != null) {
+			  // check payment methods
+			  checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
+
+			  if (informativaDetail.getModelloPagamento() == 4L) {
+				  // check payment model
+				  checkItemList.add(checkPaymentModel(informativaDetail));
+			  }
+
+			  // check broker psp
+			  checkItemList.add(checkBrokerPsp(channel.get(), informativaDetail));
+		  }
+
+		  // check amount ranges
+		  checkItemList.addAll(checkAmountRanges(informativaDetail));
+
+		  // check languages
+		  checkItemList.addAll(checkLanguages(informativaDetail));
+	  }
   }
 
   private List<CheckItem> checkPsp(Psp psp, String pspId, CdiXml xml) {
