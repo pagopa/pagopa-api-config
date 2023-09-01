@@ -23,6 +23,7 @@ on:
         options:
           - ''
           - skip
+          - promote
           - new_release
           - breaking_change
 
@@ -72,7 +73,7 @@ jobs:
       - if: ${{ github.ref_name != 'main' }}
         run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
 
-      - if: ${{ inputs.version == 'skip' }}
+      - if: ${{ inputs.version == 'skip' ||  inputs.version == 'promote' }}
         run: echo "SEMVER=skip" >> $GITHUB_ENV
 
       - id: get_semver
