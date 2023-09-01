@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 axios.defaults.headers.common['Content-Type'] = 'application/json'
-axios.defaults.headers.common['Ocp-Apim-Subscription-Key'] = process.env.subkey // for all requests
+axios.defaults.headers.common['Ocp-Apim-Subscription-Key'] = process.env.SUBKEY // for all requests
 if (process.env.canary) {
   axios.defaults.headers.common['X-Canary'] = 'canary' // for all requests
 }
@@ -16,8 +16,8 @@ function get(url) {
   });
 }
 
-function post(url, body) {
-  return axios.post(url, body)
+function post(url, body, config) {
+  return axios.post(url, body, config)
   .then(res => {
     return res;
   })
