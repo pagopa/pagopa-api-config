@@ -1,14 +1,18 @@
 import jaydebeapi
 import csv
+import sys
 
+host = "jdbc:oracle:thin:@" + sys.argv[1] + ":" + sys.argv[2] + "/" + sys.argv[3]
+username = sys.argv[4]
+password = sys.argv[5]
 connection  = jaydebeapi.connect(
     "oracle.jdbc.driver.OracleDriver",
-    "placeholder_url",
-    ["placeholder_username", "placeholder_password"],
-    "placeholder_driver_path")
+    host,
+    [username, password],
+    "/path/to/jar/file")
 cursor = connection.cursor()
 
-with open('path/to/output/iban/csv/file.csv') as csv_file:
+with open('./IbanCsv/Iban_output.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     next(csv_reader)
     for row in csv_reader:

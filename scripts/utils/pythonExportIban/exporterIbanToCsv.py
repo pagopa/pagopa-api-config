@@ -5,7 +5,7 @@ thisdictDate = {}
 thisdictPa = {}
 entries = []
 duplicate_entries = []
-with open('path/to/output/ibanmaster/csv/file.csv') as csv_file:
+with open('./IbanCsv/Iban_Master_output.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     for row in csv_reader:
@@ -23,7 +23,7 @@ with open('path/to/output/ibanmaster/csv/file.csv') as csv_file:
                 thisdictDate.update({row[2]: row[4]})
                 thisdictPa.update({row[2]: row[1]})
 
-with open('path/to/output/ibanmaster/csv/file.csv', 'r', newline='') as source, open('path/to/output/iban/csv/file.csv', 'w', newline='') as result:
+with open('./IbanCsv/Iban_Master_output.csv', 'r', newline='') as source, open('./IbanCsv/Iban_output.csv', 'w', newline='') as result:
     csvreader = csv.reader(source, delimiter=',')
     csvwriter = csv.writer(result, delimiter=',')
 

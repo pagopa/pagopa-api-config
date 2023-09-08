@@ -1,15 +1,19 @@
 import csv
 from datetime import datetime
 import jaydebeapi
+import sys
 
+host = "jdbc:oracle:thin:@" + sys.argv[1] + ":" + sys.argv[2] + "/" + sys.argv[3]
+username = sys.argv[4]
+password = sys.argv[5]
 connection  = jaydebeapi.connect(
     "oracle.jdbc.driver.OracleDriver",
-    "placeholder_url",
-    ["placeholder_username", "placeholder_password"],
-    "placeholder_driver_path")
+    host,
+    [username, password],
+    "/path/to/jar/file")
 cursor = connection.cursor()
 
-with open('path/to/input/csv/file.csv', 'r', newline='') as source, open('path/to/output/ibanmaster/csv/file.csv', 'w', newline='') as result:
+with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/Iban_Master_output.csv', 'w', newline='') as result:
     csvreader = csv.reader(source, delimiter=',')
     csvwriter = csv.writer(result, delimiter=',')
 
@@ -20,7 +24,7 @@ with open('path/to/input/csv/file.csv', 'r', newline='') as source, open('path/t
         cursor.execute(f"Select id_dominio from NODO4_CFG.pa where obj_id={row[0]}")
         result_set = cursor.fetchall()
         if(result_set == ''):
-            print(f"{row} does not have correct EC")
+            print(f"bad luck {row}")
         rowToWrite = [row[4], result_set[0][0], row[1], "ENABLED", row[2], row[3], row[4],]
         print(rowToWrite)
         csvwriter.writerow(rowToWrite)
