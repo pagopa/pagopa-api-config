@@ -7,7 +7,13 @@ DB_USERNAME=$4
 DB_PASSWORD=$5
 DB_DRIVER_PATH=$6
 
-python3 exporterViewToCsv.py DB_HOST_IPADDRESS DB_HOST_PORT DB_HOST_NAME DB_USERNAME DB_PASSWORD DB_DRIVER_PATH
+echo "Create file where View will be saved"
+
+mkdir ./IbanCsv
+
+touch ./IbanCsv/IbanView.csv
+
+python3 exporterViewToCsv.py $DB_HOST_IPADDRESS $DB_HOST_PORT $DB_HOST_NAME $DB_USERNAME $DB_PASSWORD $DB_DRIVER_PATH
 
 echo "Original data from existing view exported"
 
