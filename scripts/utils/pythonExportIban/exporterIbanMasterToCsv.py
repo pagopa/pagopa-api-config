@@ -29,3 +29,6 @@ with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/
         rowToWrite = [row[4], result_set[0][0], row[1], "ENABLED", row[2], row[3], row[4],]
         print(rowToWrite)
         csvwriter.writerow(rowToWrite)
+
+cursor.close()
+connection.close()
