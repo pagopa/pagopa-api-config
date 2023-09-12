@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Feign;
 import feign.FeignException;
+import it.gov.pagopa.apiconfig.core.client.CacheClient;
 import it.gov.pagopa.apiconfig.core.client.RefreshClient;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
@@ -26,9 +27,14 @@ public class RefreshService {
 
   public static final String SUCCESS = "SUCCESS";
   private RefreshClient client;
+  private CacheClient cacheClient;
 
-  public RefreshService(@Value("${service.nodo-monitoring.host}") String monitoringUrl) {
+  @Value("${info.properties.environment}")
+  String env;
+
+  public RefreshService(@Value("${service.nodo-monitoring.host}") String monitoringUrl, @Value("${service.cache.host}") String cacheUrl) {
     client = Feign.builder().target(RefreshClient.class, monitoringUrl);
+    cacheClient = Feign.builder().target(CacheClient.class, cacheUrl);
   }
 
   public String jobTrigger(JobTrigger jobType) {
@@ -38,7 +44,13 @@ public class RefreshService {
   public String refreshConfig(ConfigurationDomain domain) {
     String response;
     if (domain.equals(ConfigurationDomain.GLOBAL)) {
-      response = callJobTrigger(JobTrigger.REFRESH_CONFIGURATION);
+      if (env.equals("prod")){
+        response = callJobTrigger(JobTrigger.REFRESH_CONFIGURATION);
+      }
+      else {
+        cacheClient.refreshConfiguration();
+        response = "OK";
+      }
     } else {
       response = callRefreshConfigDomain(domain);
     }

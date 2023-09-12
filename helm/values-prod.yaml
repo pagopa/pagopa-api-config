@@ -92,6 +92,7 @@ microservice-chart: &microservice-chart
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
     NODO_MONITORING_HOST: 'https://api.platform.pagopa.it/nodo/monitoring/v1'
+    APICONFIG_CACHE_HOST: 'https://api.platform.pagopa.it/api-config-cache/o/v1'
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
     ICA_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
