@@ -1,13 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
+    "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.50.7"
+    "version": "0.53.4"
   },
-  "host": "127.0.0.1:8080",
-  "basePath": "/apiconfig/api/v1",
+  "host": "localhost:8080",
+  "basePath": "/",
   "schemes": [
     "http"
   ],
@@ -2110,6 +2110,18 @@
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
@@ -13822,9 +13834,6 @@
         "new_fault_code": {
           "type": "boolean"
         },
-        "new_password": {
-          "type": "string"
-        },
         "nmp_service": {
           "type": "string"
         },
@@ -14071,7 +14080,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_key": {
@@ -14093,7 +14102,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_value": {
@@ -14586,23 +14595,25 @@
     "Iban": {
       "properties": {
         "iban": {
+          "description": "The iban code value",
           "example": "IT99C0222211111000000000000",
           "maxLength": 35,
           "minLength": 0,
           "type": "string"
         },
         "publication_date": {
+          "description": "The publication date of the iban",
           "format": "date-time",
           "type": "string"
         },
         "validity_date": {
+          "description": "The date until which the iban is valid",
           "format": "date-time",
           "type": "string"
         }
       },
       "required": [
         "iban",
-        "publication_date",
         "validity_date"
       ],
       "type": "object"
@@ -14643,6 +14654,7 @@
           "example": "IT99C0222211111000000000000",
           "maxLength": 35,
           "minLength": 0,
+          "pattern": "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}",
           "type": "string"
         },
         "is_active": {
@@ -15431,9 +15443,6 @@
           "type": "string"
         },
         "ip_4mod": {
-          "type": "string"
-        },
-        "new_password": {
           "type": "string"
         },
         "password": {

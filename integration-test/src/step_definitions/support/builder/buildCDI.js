@@ -1,7 +1,108 @@
-<?xml version="1.0" encoding="UTF-8"?>
+
+// a valid CDI for DEV test
+function buildCDI(identificativoFlusso, identificativoPSP) {
+	return `<?xml version="1.0" encoding="UTF-8"?>
+<informativaPSP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:noNamespaceSchemaLocation="CatalogoDatiInformativi_1_0_11.xsd">
+  <identificativoFlusso>${identificativoFlusso}</identificativoFlusso>
+  <identificativoPSP>${identificativoPSP}</identificativoPSP>
+  <ragioneSociale>Poste Italiane</ragioneSociale>
+  <codiceABI>01600</codiceABI>
+  <codiceBIC>BPPIITRRZZZ</codiceBIC>
+  <mybankIDVS>MYBANK11</mybankIDVS>
+  <informativaMaster>
+    <dataPubblicazione>2023-04-13T00:01:00</dataPubblicazione>
+    <dataInizioValidita>2124-04-19T01:01:00</dataInizioValidita>
+    <urlInformazioniPSP>www.poste.it</urlInformazioniPSP>
+    <stornoPagamento>0</stornoPagamento>
+    <marcaBolloDigitale>0</marcaBolloDigitale>
+    <logoPSP>iVBORw0KGgoAAAANSUhEUgAAAZAAAACACAYAAAAlHj/jAAAAAXNSR0IArs4c6QAAH7BJREFUeAHtnQe41ETXxw9dem/Su4D0IkWkSxNeEAEREVGaivQiiggqrwpKU16x0EQEpAlKEwGp0gQBpUuHS++9fvPPZ67ZbHaTvZvbdv/nee7d3WQyyfyymzNz5pwzIhQSIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESIAESCC8CCc7vlwfh1WS2lgRIgARIwA0CCd2ohHWQAAmQAAmEHwEqkPC752wxCZAACbhCgArEFYyshARIgATCjwAVSPjdc7aYBEiABFwhQAXiCkZWQgIkQALhR4AKJPzuOVtMAiRAAq4QoAJxBSMrIQESIIHwI0AFEn73nC0mARIgAVcIUIG4gpGVkAAJkED4EaACCb97zhaTAAmQgCsEqEBcwchKSIAESCD8CFCBhN89Z4tJgARIwBUCVCCuYGQlJEACJBB+BKhAwu+es8UkQAIk4AoBKhBXMLISEiABEgg/AlQg4XfP2WISIAEScIUAFYgrGFkJCZAACYQfASqQ8LvnbDEJkAAJuEKACsQVjKyEBEiABMKPABVI+N1ztpgESIAEXCGQ2JVa4lglxy5kkcs3UgZ1VQkT3JeUyW5KiqQ3JVWyG5Isye2g6uPB8YNAxKVM8v3G2l4XWzbPHqlW+A+v7fFhw/Jd5WXHsQIel9q8/ArJmf60x7bz19LIlHUNPLbhw6M5DkjtYpu8tnMDCYSkAnl7TmeZt+UJV+9ujvRnpGDWY1Jc/ZiefHSDVCm4XRInvOfqOVhZ7BM4ei6LDPmhg9eFvFp7drxVID/+UU0mr2no0SYoRLMCOX05vWXb21ZdRAXiQY8fdAIhqUD0xrn5evxCZsHfyt1l5H/Lmkua5Nfk5erzpXvdGZLmoWtunop1kQAJkEC8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LGo7SY5jMTdSV6Xcb6VWi0NuJicC01EFNQ9hFLu5EkQyL+jVS5C8ctamWo7bjHO0q7pAWimvM6QOR1ZbODSYV/pDepNmZVdqZfV5Ihzbs950bd4noVrmFaKbV7QP//yrqeZa0IkxitVEOPbDHfyR7J7rbaRLfsV4aOR7PXgQnRl4K6HdJy0yKeN3Bq+6F5RZNWOqS9rxxVRSUmSzTmrIkYWEnWZpqpaULWVaotcqatx8nPEz2gpzoVHKme6vcR/e4/sP5xRkop6xsY4s3FbFp1s5FCNMty0eWya1FeuYylptvubY+Jzg/H4LF5LYuJIwPSdSYSOyG2t0X1RpnzFph+RreGBkS3NOSuT6W9xMX43U0kfOZRNkvEWwIfJxwSc/nTpfJtULxiQ5esNIgOeW9whcdg+dzS6nLmfUFPvtu4m1nh0S1eHBBlt5PuWDH2iw1VmVvh4KEU4ImH9Aenf0GFMmu6H57uOBlFutKhfTP2jEaGAZU8wJILIfnYCMKS9JlrQXNL52XDERHqEexIcVM3QC8IDCXyBKPLZ+TnBPxvcLSxogsBBLEehKI7auya3z4nuGdp25nE49NBNo392HM5wVjFjCVahAwvXOs90kQAIkECQBzoEECZCHkwAJkEC4EqACCdc7z3aTAAmQQJAEqECCBMjDSYAESCBcCVCBhOudZ7tJgARIIEgCVCBBAuThJEACJBCuBKhAwvXOs90kQAIkECQBKpAgAfJwEiABEghXAlQg4Xrn2W4SIAESCJIAFUiQAHk4CZAACYQrASqQcL3zbDcJkAAJBEmACiRIgDycBEiABMKVABVIuN55tpsESIAEgiRABRIkQB5OAiRAAuFKgAokXO88200CJEACQRKgAgkSIA8nARIggXAlQAUSrnee7SYBEiCBIAlQgQQJkIeTAAmQQLgSoAIJ1zvPdpMACZBAkASoQIIEyMNJgARIIFwJUIGE651nu0mABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABAIi8H8XC2+mirwMxQAAAABJRU5ErkJggg==</logoPSP>
+  </informativaMaster>
+  <listaInformativaDetail>
+    <informativaDetail>
+      <identificativoIntermediario>17103880000</identificativoIntermediario>
+      <identificativoCanale>00001060966_01</identificativoCanale>
+      <tipoVersamento>BBT</tipoVersamento>
+      <modelloPagamento>1</modelloPagamento>
+      <priorita>1</priorita>
+      <canaleApp>0</canaleApp>
+      <identificazioneServizio>
+        <nomeServizio>Conto BancoPosta Impresa</nomeServizio>
+        <logoServizio>iVBORw0KGgoAAAANSUhEUgAAAZAAAACACAYAAAAlHj/jAAAAAXNSR0IArs4c6QAAIZNJREFUeAHtnQmcXEWdx6te98yEkAsIkEBiwkzPlclMLuVYETmUlWVBUMIRjoAIK7AogoqCInFXFFRQEDlc+cgVcJFDFFhECIsu4cpBMpO5eibmgBDOBHLNTPer/f27p9687ulzpnsyib/3yaTq1fWqvvWv+2il+JAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZBAIQjo5EBCVbVfNso4yebp3o0xPQHlrA8EzJoJEyasff7553ekc0vz4UEgnzzWro4qZdYpFewYO7Zs7ZIlS3qGRyoYi2wE/PmMEr24s6VlZTY/tCeBfAj0a0AqKmt60CgE8wnE7xYBrtOOvs0dveevOpcs2ey3o354EBhEHkeVVmu10v9bElALWlpa/j48UsRYpCLgz2fH0VeE21puTOWOZiQwUAI5jzRy/YBRarLrmuvU5i1rQlU1C9AY9Wukcg2L7oYdgYAy6iDk6bk9UdWKCurmioaG/YZdLBkhEiCBISGQZaSh16LHuSFTTLRRJXAzAW72Sxq5jEVDck2oaloEdv+RKQza7UwCmfM4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ptCyXQjZHFYNSDEzk2GTAAnsugQyNSC7bqp2/ZgXZApr18fAFJAACZAACeRLgA1IvsTongRIgARIIEaADQgFgQRIgARIYEAE2IAMCBs9kQAJkAAJsAGhDJAACZAACQyIQBC/QZHy7MWAQqMnEiABEigUAUff1NnWcnksOO0swjGx93qDftl+Qn71Um3essm+Ux0iArgcF2dKauXULh8SIAESGNYEcPDzhmEdwX/QyHEK6x8045lsEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEiABEkgk8P+d21sqyetZmQAAAABJRU5ErkJggg==</logoServizio>
+      </identificazioneServizio>
+      <listaInformazioniServizio>
+        <informazioniServizio>
+          <codiceLingua>IT</codiceLingua>
+		  <descrizioneServizio>Il servizio consente ai correntisti BancoPostaImpresa pagamenti con bollettino tramite addebito in Conto.</descrizioneServizio>
+          <disponibilitaServizio>Il pagamento con addebito in conto BancoPostaImpresa e' disponibile dalle 06.00 alle 22.30.</disponibilitaServizio>
+        </informazioniServizio>
+      </listaInformazioniServizio>
+     <listaParoleChiave>
+        <paroleChiave>Maestro</paroleChiave>
+	 </listaParoleChiave>
+      <costiServizio>
+        <tipoCostoTransazione>1</tipoCostoTransazione>
+        <tipoCommissione>0</tipoCommissione>
+        <listaFasceCostoServizio>
+          <fasciaCostoServizio>
+            <importoMassimoFascia>5.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        <fasciaCostoServizio>
+            <importoMassimoFascia>10.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        <fasciaCostoServizio>
+            <importoMassimoFascia>30.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        <fasciaCostoServizio>
+            <importoMassimoFascia>50.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        <fasciaCostoServizio>
+            <importoMassimoFascia>100.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        <fasciaCostoServizio>
+            <importoMassimoFascia>150.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        <fasciaCostoServizio>
+            <importoMassimoFascia>200.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        <fasciaCostoServizio>
+            <importoMassimoFascia>250.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        <fasciaCostoServizio>
+            <importoMassimoFascia>300000.00</importoMassimoFascia>
+            <costoFisso>0.00</costoFisso>
+            <valoreCommissione>1.50</valoreCommissione>
+          </fasciaCostoServizio>
+        </listaFasceCostoServizio>
+      </costiServizio>
+    </informativaDetail>
+  </listaInformativaDetail>
+</informativaPSP>`
+	}
+
+
+
+// a valid CDI for local H2 test
+function buildCDIH2(identificativoFlusso, identificativoPSP) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
 <informativaPSP>
-    <identificativoFlusso>BPPIITRRZZZ_20-20-0817</identificativoFlusso>
-    <identificativoPSP>BPPIITRRZZZ</identificativoPSP>
+    <identificativoFlusso>${identificativoFlusso}</identificativoFlusso>
+    <identificativoPSP>${identificativoPSP}</identificativoPSP>
     <ragioneSociale>Poste Italiane</ragioneSociale>
     <codiceABI>01600</codiceABI>
     <codiceBIC>BPPIITRRZZZ</codiceBIC>
@@ -81,21 +182,11 @@
                         <valoreCommissione>0.50</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
-                        <importoMassimoFascia>50.00</importoMassimoFascia>
+                        <importoMassimoFascia>100.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>0.00</valoreCommissione>
                         <listaConvenzioniCosti>
                             <codiceConvenzione>02770891204-Z</codiceConvenzione>
-                            <codiceConvenzione>03119540130_A</codiceConvenzione>
-                            <codiceConvenzione>00857440242_A</codiceConvenzione>
-                        </listaConvenzioniCosti>
-                    </fasciaCostoServizio>
-                    <fasciaCostoServizio>
-                        <importoMassimoFascia>50.00</importoMassimoFascia>
-                        <costoFisso>0.00</costoFisso>
-                        <valoreCommissione>0.45</valoreCommissione>
-                        <listaConvenzioniCosti>
-                            <codiceConvenzione>02770891204-A</codiceConvenzione>
                         </listaConvenzioniCosti>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
@@ -104,22 +195,50 @@
                         <valoreCommissione>1.00</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
+                        <importoMassimoFascia>250.00</importoMassimoFascia>
+                        <costoFisso>0.00</costoFisso>
+                        <valoreCommissione>0.00</valoreCommissione>
+                        <listaConvenzioniCosti>
+                            <codiceConvenzione>02770891204-Z</codiceConvenzione>
+                        </listaConvenzioniCosti>
+                    </fasciaCostoServizio>
+                    <fasciaCostoServizio>
                         <importoMassimoFascia>500.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>1.50</valoreCommissione>
+                    </fasciaCostoServizio>
+                    <fasciaCostoServizio>
+                        <importoMassimoFascia>600.00</importoMassimoFascia>
+                        <costoFisso>0.00</costoFisso>
+                        <valoreCommissione>0.00</valoreCommissione>
+                        <listaConvenzioniCosti>
+                            <codiceConvenzione>02770891204-Z</codiceConvenzione>
+                        </listaConvenzioniCosti>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
                         <importoMassimoFascia>1500.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>2.50</valoreCommissione>
                     </fasciaCostoServizio>
+                    <fasciaCostoServizio>
+                        <importoMassimoFascia>2500.00</importoMassimoFascia>
+                        <costoFisso>0.00</costoFisso>
+                        <valoreCommissione>0.00</valoreCommissione>
+                        <listaConvenzioniCosti>
+                            <codiceConvenzione>02770891204-Z</codiceConvenzione>
+                        </listaConvenzioniCosti>
+                    </fasciaCostoServizio>
                 </listaFasceCostoServizio>
                 <costoConvenzione>1.00</costoConvenzione>
             </costiServizio>
             <listaConvenzioni>
                 <codiceConvenzione>12345</codiceConvenzione>
-                <codiceConvenzione>zzzzz</codiceConvenzione>
             </listaConvenzioni>
         </informativaDetail>
     </listaInformativaDetail>
-</informativaPSP>
+</informativaPSP>`;
+}
+
+module.exports = {
+    buildCDI
+}

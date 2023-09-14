@@ -1,4 +1,4 @@
-basecache: &basecache
+microservice-chart: &microservice-chart
   namespace: "apiconfig"
   nameOverride: ""
   fullnameOverride: ""
@@ -21,13 +21,13 @@ basecache: &basecache
       create: true
       image:
         repository: ghcr.io/pagopa/pagopa-api-config
-        tag: "0.50.7"
+        tag: "0.53.4"
         pullPolicy: Always
       envConfig: {}
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.50.7"
+    tag: "0.53.4"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -99,6 +99,11 @@ basecache: &basecache
     CRON_JOB_ICA_SCHEDULE_ENABLED: "false"
     CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
     AZURE_STORAGE_TABLE_NAME: "pagopadweuapiconfigsaicatable"
+    OTEL_SERVICE_NAME: "pagopa-api-config"
+    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=azure-dev"
+    OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
+    OTEL_LOGS_EXPORTER: none
+    OTEL_TRACES_SAMPLER: "always_on"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
@@ -107,6 +112,7 @@ basecache: &basecache
     COSMOS_KEY: 'afm-cosmos-key'
     ICA_STORAGE_CONNECTION_STRING: 'api-config-ica-d-sa-connection-string'
     AZURE_STORAGE_CONNECTION_STRING: 'api-config-ica-d-sa-connection-string'
+    OTEL_EXPORTER_OTLP_HEADERS: elastic-apm-secret-token
   keyvault:
     name: "pagopa-d-apiconfig-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
@@ -123,10 +129,10 @@ basecache: &basecache
                   - user
 # Configuration used to update image tag (stable or canary) by pipeline
 microservice-chart:
-  !!merge <<: *basecache
+  !!merge <<: *microservice-chart
 # Configuration for PostgreSQL
 postgresql:
-  !!merge <<: *basecache
+  !!merge <<: *microservice-chart
   ingress:
     !!merge <<: *ingress
     path: /pagopa-api-config-core-service/p/(.*)
@@ -145,7 +151,7 @@ postgresql:
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
 # Configuration for Oracle
 oracle:
-  !!merge <<: *basecache
+  !!merge <<: *microservice-chart
   ingress:
     !!merge <<: *ingress
     path: /pagopa-api-config-core-service/o/(.*)

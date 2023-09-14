@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <informativaPSP>
-    <identificativoFlusso>BPPIITRRZZZ_20-20-0817</identificativoFlusso>
+    <identificativoFlusso>01234567890_20-20-0817</identificativoFlusso>
     <identificativoPSP>BPPIITRRZZZ</identificativoPSP>
     <ragioneSociale>Poste Italiane</ragioneSociale>
     <codiceABI>01600</codiceABI>
@@ -81,21 +81,11 @@
                         <valoreCommissione>0.50</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
-                        <importoMassimoFascia>50.00</importoMassimoFascia>
+                        <importoMassimoFascia>100.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>0.00</valoreCommissione>
                         <listaConvenzioniCosti>
                             <codiceConvenzione>02770891204-Z</codiceConvenzione>
-                            <codiceConvenzione>03119540130_A</codiceConvenzione>
-                            <codiceConvenzione>00857440242_A</codiceConvenzione>
-                        </listaConvenzioniCosti>
-                    </fasciaCostoServizio>
-                    <fasciaCostoServizio>
-                        <importoMassimoFascia>50.00</importoMassimoFascia>
-                        <costoFisso>0.00</costoFisso>
-                        <valoreCommissione>0.45</valoreCommissione>
-                        <listaConvenzioniCosti>
-                            <codiceConvenzione>02770891204-A</codiceConvenzione>
                         </listaConvenzioniCosti>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
@@ -104,21 +94,44 @@
                         <valoreCommissione>1.00</valoreCommissione>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
+                        <importoMassimoFascia>250.00</importoMassimoFascia>
+                        <costoFisso>0.00</costoFisso>
+                        <valoreCommissione>0.00</valoreCommissione>
+                        <listaConvenzioniCosti>
+                            <codiceConvenzione>02770891204-Z</codiceConvenzione>
+                        </listaConvenzioniCosti>
+                    </fasciaCostoServizio>
+                    <fasciaCostoServizio>
                         <importoMassimoFascia>500.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>1.50</valoreCommissione>
+                    </fasciaCostoServizio>
+                    <fasciaCostoServizio>
+                        <importoMassimoFascia>600.00</importoMassimoFascia>
+                        <costoFisso>0.00</costoFisso>
+                        <valoreCommissione>0.00</valoreCommissione>
+                        <listaConvenzioniCosti>
+                            <codiceConvenzione>02770891204-Z</codiceConvenzione>
+                        </listaConvenzioniCosti>
                     </fasciaCostoServizio>
                     <fasciaCostoServizio>
                         <importoMassimoFascia>1500.00</importoMassimoFascia>
                         <costoFisso>0.00</costoFisso>
                         <valoreCommissione>2.50</valoreCommissione>
                     </fasciaCostoServizio>
+                    <fasciaCostoServizio>
+                        <importoMassimoFascia>2500.00</importoMassimoFascia>
+                        <costoFisso>0.00</costoFisso>
+                        <valoreCommissione>0.00</valoreCommissione>
+                        <listaConvenzioniCosti>
+                            <codiceConvenzione>02770891204-Z</codiceConvenzione>
+                        </listaConvenzioniCosti>
+                    </fasciaCostoServizio>
                 </listaFasceCostoServizio>
                 <costoConvenzione>1.00</costoConvenzione>
             </costiServizio>
             <listaConvenzioni>
                 <codiceConvenzione>12345</codiceConvenzione>
-                <codiceConvenzione>zzzzz</codiceConvenzione>
             </listaConvenzioni>
         </informativaDetail>
     </listaInformativaDetail>

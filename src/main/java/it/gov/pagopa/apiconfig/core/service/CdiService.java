@@ -1,9 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getExceptionErrors;
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.mapXml;
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.syntaxValidation;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
@@ -12,41 +8,8 @@ import it.gov.pagopa.apiconfig.core.model.psp.CdiXml;
 import it.gov.pagopa.apiconfig.core.model.psp.Cdis;
 import it.gov.pagopa.apiconfig.core.util.AFMUtilsAsyncTask;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import it.gov.pagopa.apiconfig.starter.entity.BinaryFile;
-import it.gov.pagopa.apiconfig.starter.entity.Canali;
-import it.gov.pagopa.apiconfig.starter.entity.CdiDetail;
-import it.gov.pagopa.apiconfig.starter.entity.CdiFasciaCostoServizio;
-import it.gov.pagopa.apiconfig.starter.entity.CdiInformazioniServizio;
-import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
-import it.gov.pagopa.apiconfig.starter.entity.CdiPreference;
-import it.gov.pagopa.apiconfig.starter.entity.Psp;
-import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
-import it.gov.pagopa.apiconfig.starter.repository.BinaryFileRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CanaliRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiDetailRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiFasciaCostoServizioRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiInformazioniServizioRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiMasterRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdiPreferenceRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IntermediariPspRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PspCanaleTipoVersamentoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PspRepository;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.xml.stream.XMLStreamException;
+import it.gov.pagopa.apiconfig.starter.entity.*;
+import it.gov.pagopa.apiconfig.starter.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +25,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static it.gov.pagopa.apiconfig.core.util.CommonUtil.*;
 
 @Service
 @Validated
@@ -125,47 +103,41 @@ public class CdiService {
 
   @Transactional
   public void createCdi(MultipartFile file) {
-    List<CheckItem> checks = verifyCdi(file);
+	  List<CheckItem> checks = verifyCdi(file);
 
-    Optional<CheckItem> check =
-        checks.stream()
-            .filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
-            .findFirst();
-    if (check.isPresent()) {
-      throw new AppException(
-          AppError.CDI_BAD_REQUEST,
-          String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
-    }
+	  Optional<CheckItem> check =
+			  checks
+			  .stream()
+			  .filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
+			  .findFirst();
+	  if (check.isPresent()) {
+		  throw new AppException(
+				  AppError.CDI_BAD_REQUEST,
+				  String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
+	  }
 
-    // map file into model class
-    CdiXml xml = mapXml(file, CdiXml.class);
+	  // map file into model class
+	  CdiXml xml = mapXml(file, CdiXml.class);
 
-    // PAGOPA-936: skip the CDI creation for the CHARITY_PREFIX:
-    // it was chosen to use only the check on the 'identificativoPSP' because the one on the
-    // 'identificativoFlusso' is unnecessary
-    if (!xml.getIdentificativoPSP().startsWith(CHARITY_PREFIX)) {
+	  var psp = getPspIfExists(xml.getIdentificativoPSP());
 
-      var psp = getPspIfExists(xml.getIdentificativoPSP());
+	  // save BINARY_FILE and CDI_MASTER
+	  var binaryFile = saveBinaryFile(file);
+	  var master = saveCdiMaster(xml, psp, binaryFile);
+	  var list = new ArrayList<CdiDetail>();
+	  // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
+	  for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
+		  var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
 
-      // save BINARY_FILE and CDI_MASTER
-      var binaryFile = saveBinaryFile(file);
-      var master = saveCdiMaster(xml, psp, binaryFile);
-      // for each detail save DETAIL, INFORMAZIONI_SERVIZIO, FASCE_COSTO, PREFERENCES
-      for (var xmlDetail : xml.getListaInformativaDetail().getInformativaDetail()) {
-        var pspCanaleTipoVersamento = findPspCanaleTipoVersamentoIfExists(psp, xmlDetail);
-
-        var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
-        saveCdiInformazioniServizio(xmlDetail, detail);
-        saveCdiFasciaCostiServizio(xmlDetail, detail);
-        saveCdiPreferences(xml, xmlDetail, detail);
-      }
-
-      // send CDI to AFM Utils
-      afmUtilsAsyncTask.executeSync(master);
-    } else {
-      throw new AppException(
-          AppError.CHARITY_ERROR, String.format("%s", xml.getIdentificativoPSP()));
-    }
+		  var detail = saveCdiDetail(master, xmlDetail, pspCanaleTipoVersamento);
+		  saveCdiInformazioniServizio(xmlDetail, detail);
+		  saveCdiFasciaCostiServizio(xmlDetail, detail);
+		  saveCdiPreferences(xml, xmlDetail, detail);
+		  list.add(detail);
+	  }
+	  master.setCdiDetail(list);
+	  // send CDI to AFM Utils
+	  afmUtilsAsyncTask.executeSync(master);
   }
 
   @Transactional
@@ -206,105 +178,118 @@ public class CdiService {
 
   @Transactional(readOnly = true)
   public List<CheckItem> verifyCdi(MultipartFile file) {
-    // checks are described here
-    // https://pagopa.atlassian.net/wiki/spaces/ACN/pages/467435579/Verifica+CDI
+	  // checks are described here
+	  // https://pagopa.atlassian.net/wiki/spaces/ACN/pages/467435579/Verifica+CDI
 
-    List<CheckItem> checkItemList = new ArrayList<>();
-    // syntax checks
-    String detail;
-    try {
-      syntaxValidation(file, xsdCdi);
-      detail = "XML is valid against the XSD schema.";
-      checkItemList.add(
-          CheckItem.builder()
-              .title("XSD Schema")
-              .value(xsdCdi)
-              .valid(CheckItem.Validity.VALID)
-              .note(detail)
-              .build());
-    } catch (SAXException | IOException | XMLStreamException e) {
-      detail = getExceptionErrors(e.getMessage());
-      checkItemList.add(
-          CheckItem.builder()
-              .title("XSD Schema")
-              .value(xsdCdi)
-              .valid(CheckItem.Validity.NOT_VALID)
-              .note(detail)
-              .build());
-      return checkItemList;
-    }
+	  List<CheckItem> checkItemList = new ArrayList<>();
+	  // syntax checks
+	  String detail;
+	  try {
+		  syntaxValidation(file, xsdCdi);
+		  detail = "XML is valid against the XSD schema.";
+		  checkItemList.add(
+				  CheckItem.builder()
+				  .title("XSD Schema")
+				  .value(xsdCdi)
+				  .valid(CheckItem.Validity.VALID)
+				  .note(detail)
+				  .build());
+	  } catch (SAXException | IOException | XMLStreamException e) {
+		  detail = getExceptionErrors(e.getMessage());
+		  checkItemList.add(
+				  CheckItem.builder()
+				  .title("XSD Schema")
+				  .value(xsdCdi)
+				  .valid(CheckItem.Validity.NOT_VALID)
+				  .note(detail)
+				  .build());
+		  return checkItemList;
+	  }
 
-    // map file into model class
-    CdiXml xml = mapXml(file, CdiXml.class);
+	  // map file into model class
+	  CdiXml xml = mapXml(file, CdiXml.class);
 
-    // check psp
-    String pspId = xml.getIdentificativoPSP();
-    Psp psp = null;
-    try {
-      psp = getPspIfExists(pspId);
-      checkItemList.addAll(checkPsp(psp, pspId, xml));
+	  // PAGOPA-936: skip the CDI creation for the CHARITY_PREFIX:
+	  // it was chosen to use only the check on the 'identificativoPSP' because the one on the
+	  // 'identificativoFlusso' is unnecessary
+	  if (!xml.getIdentificativoPSP().startsWith(CHARITY_PREFIX)) {
+		  // check psp
+		  String pspId = xml.getIdentificativoPSP();
+		  Psp psp = null;
+		  try {
+			  psp = getPspIfExists(pspId);
+			  checkItemList.addAll(checkPsp(psp, pspId, xml));
 
-      // check marca da bollo (stamp)
-      CheckItem checkItem =
-          CommonUtil.checkData(
-              "Stamp",
-              xml.getInformativaMaster().getMarcaBolloDigitale(),
-              psp.getMarcaBolloDigitale(),
-              "Stamp not consistent");
-      checkItemList.add(checkItem);
-    } catch (AppException e) {
-      checkItemList.add(
-          CheckItem.builder()
-              .title("PSP Identifier")
-              .value(pspId)
-              .valid(CheckItem.Validity.NOT_VALID)
-              .note("PSP identifier not consistent")
-              .build());
-    }
+			  // check marca da bollo (stamp)
+			  CheckItem checkItem =
+					  CommonUtil.checkData(
+							  "Stamp",
+							  xml.getInformativaMaster().getMarcaBolloDigitale(),
+							  psp.getMarcaBolloDigitale(),
+							  "Stamp not consistent");
+			  checkItemList.add(checkItem);
+		  } catch (AppException e) {
+			  checkItemList.add(
+					  CheckItem.builder()
+					  .title("PSP Identifier")
+					  .value(pspId)
+					  .valid(CheckItem.Validity.NOT_VALID)
+					  .note("PSP identifier not consistent")
+					  .build());
+		  }
 
-    // check date
-    checkItemList.add(
-        CommonUtil.checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
+		  // check date
+		  checkItemList.add(
+				  CommonUtil.checkValidityDate(xml.getInformativaMaster().getDataInizioValidita()));
 
-    // check flow id
-    if (psp != null) {
-      checkItemList.add(checkFlow(xml, psp));
-    }
+		  // check flow id
+		  if (psp != null) {
+			  checkItemList.add(checkFlow(xml, psp));
+		  }
 
-    for (CdiXml.InformativaDetail informativaDetail :
-        xml.getListaInformativaDetail().getInformativaDetail()) {
-      // check channel and paymentMethod
-      String channelId = informativaDetail.getIdentificativoCanale();
-      Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
-      if (channel.isEmpty()) {
-        checkItemList.add(
-            CheckItem.builder()
-                .title("Channel - Payment Method")
-                .value(channelId + " - " + informativaDetail.getTipoVersamento())
-                .valid(CheckItem.Validity.NOT_VALID)
-                .note("Channel not consistent")
-                .build());
-      } else if (psp != null) {
-        // check payment methods
-        checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
+		  this.checkInformativaDetail(checkItemList, xml, psp);
 
-        if (informativaDetail.getModelloPagamento() == 4L) {
-          // check payment model
-          checkItemList.add(checkPaymentModel(informativaDetail));
-        }
+	  } else {
+		  throw new AppException(
+				  AppError.CHARITY_ERROR, String.format("%s", xml.getIdentificativoPSP()));
+	  }
 
-        // check broker psp
-        checkItemList.add(checkBrokerPsp(channel.get(), informativaDetail));
-      }
+	  return checkItemList;
+  }
 
-      // check amount ranges
-      checkItemList.addAll(checkAmountRanges(informativaDetail));
+  private void checkInformativaDetail(List<CheckItem> checkItemList, CdiXml xml, Psp psp) {
+	for (CdiXml.InformativaDetail informativaDetail :
+		  xml.getListaInformativaDetail().getInformativaDetail()) {
+		  // check channel and paymentMethod
+		  String channelId = informativaDetail.getIdentificativoCanale();
+		  Optional<Canali> channel = canaliRepository.findByIdCanale(channelId);
+		  if (channel.isEmpty()) {
+			  checkItemList.add(
+					  CheckItem.builder()
+					  .title("Channel - Payment Method")
+					  .value(channelId + " - " + informativaDetail.getTipoVersamento())
+					  .valid(CheckItem.Validity.NOT_VALID)
+					  .note("Channel not consistent")
+					  .build());
+		  } else if (psp != null) {
+			  // check payment methods
+			  checkItemList.add(checkPaymentMethods(channel.get(), psp, informativaDetail));
 
-      // check languages
-      checkItemList.addAll(checkLanguages(informativaDetail));
-    }
+			  if (informativaDetail.getModelloPagamento() == 4L) {
+				  // check payment model
+				  checkItemList.add(checkPaymentModel(informativaDetail));
+			  }
 
-    return checkItemList;
+			  // check broker psp
+			  checkItemList.add(checkBrokerPsp(channel.get(), informativaDetail));
+		  }
+
+		  // check amount ranges
+		  checkItemList.addAll(checkAmountRanges(informativaDetail));
+
+		  // check languages
+		  checkItemList.addAll(checkLanguages(informativaDetail));
+	  }
   }
 
   private List<CheckItem> checkPsp(Psp psp, String pspId, CdiXml xml) {
@@ -337,7 +322,8 @@ public class CdiService {
             : "PO";
 
     CheckItem.Validity validity =
-        paymentMethods.stream()
+        paymentMethods
+                .stream()
                 .anyMatch(
                     pm ->
                         pm.getCanaleTipoVersamento()
@@ -373,9 +359,12 @@ public class CdiService {
     final boolean[] duplicate = {false};
 
     Map<String, Long> frequencyMap =
-        languages.stream()
+        languages
+            .stream()
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-    frequencyMap.entrySet().stream()
+    frequencyMap
+        .entrySet()
+        .stream()
         .filter(item -> item.getValue() > 1)
         .forEach(
             item -> {
@@ -414,7 +403,8 @@ public class CdiService {
             .getCostiServizio()
             .getListaFasceCostoServizio()
             .getFasciaCostoServizio()) {
-      if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())) {
+      if (maxServiceAmountList.contains(maxServiceAmount.getImportoMassimoFascia())
+          && maxServiceAmount.getListaConvenzioniCosti() == null) {
         checkItemList.add(
             CheckItem.builder()
                 .title("Maximum amount range")
@@ -493,6 +483,7 @@ public class CdiService {
   private void saveCdiPreferences(
       @NotNull CdiXml xml, @NotNull CdiXml.InformativaDetail xmlDetail, @NotNull CdiDetail detail) {
     if (xmlDetail.getListaConvenzioni() != null) {
+      var list = new ArrayList<CdiPreference>();
       xmlDetail
           .getListaConvenzioni()
           .forEach(
@@ -502,14 +493,17 @@ public class CdiService {
                             && xmlDetail.getCostiServizio().getCostoConvenzione() != null
                         ? xmlDetail.getCostiServizio().getCostoConvenzione()
                         : 0;
-                cdiPreferenceRepository.save(
-                    CdiPreference.builder()
-                        .cdiDetail(detail)
-                        .seller(xml.getMybankIDVS())
-                        .buyer(elem.getCodiceConvenzione())
-                        .costoConvenzione(costoConvenzione)
-                        .build());
+                var entity =
+                    cdiPreferenceRepository.save(
+                        CdiPreference.builder()
+                            .cdiDetail(detail)
+                            .seller(xml.getMybankIDVS())
+                            .buyer(elem)
+                            .costoConvenzione(costoConvenzione)
+                            .build());
+                list.add(entity);
               });
+      detail.setCdiPreference(list);
     }
   }
 
@@ -523,12 +517,15 @@ public class CdiService {
     if (costiServizio != null
         && costiServizio.getListaFasceCostoServizio() != null
         && costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio() != null) {
+      List<CdiFasciaCostoServizio> list = new ArrayList<>();
       // sort by importoMassimo and create fascia costi servizio
       var importi =
-          costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().stream()
+          costiServizio
+              .getListaFasceCostoServizio()
+              .getFasciaCostoServizio()
+              .stream()
               .map(CdiXml.FasciaCostoServizio::getImportoMassimoFascia)
               .sorted(Double::compareTo)
-              .distinct()
               .collect(Collectors.toList());
       // for each fascia save an element in the database
       for (int i = 0;
@@ -536,25 +533,46 @@ public class CdiService {
           i++) {
         var fascia = costiServizio.getListaFasceCostoServizio().getFasciaCostoServizio().get(i);
         // importoMinimo is equals to previous importoMassimo (equals to 0 for the first element)
-        var prev =
-            importi.stream()
+        var previous =
+            importi
+                .stream()
                 .filter(elem -> elem < fascia.getImportoMassimoFascia())
                 .max(Double::compareTo)
                 .orElse(0.0);
-        CdiXml.ConvenzioniCosti convenzione = null;
-        if (fascia.getListaConvenzioniCosti() != null) {
-          convenzione = fascia.getListaConvenzioniCosti().stream().findFirst().orElse(null);
+
+        if (fascia.getListaConvenzioniCosti() == null) {
+          list.add(
+              cdiFasciaCostoServizioRepository.save(
+                  CdiFasciaCostoServizio.builder()
+                      .importoMassimo(fascia.getImportoMassimoFascia())
+                      .importoMinimo(previous)
+                      .costoFisso(fascia.getCostoFisso())
+                      .fkCdiDetail(detailEntity)
+                      .valoreCommissione(fascia.getValoreCommissione())
+                      .codiceConvenzione(null)
+                      .build()));
+        } else {
+          List<CdiFasciaCostoServizio> fasciaCostoServizioList =
+              fascia
+                  .getListaConvenzioniCosti()
+                  .stream()
+                  .filter(Objects::nonNull)
+                  .map(
+                      elem ->
+                          cdiFasciaCostoServizioRepository.save(
+                              CdiFasciaCostoServizio.builder()
+                                  .importoMassimo(fascia.getImportoMassimoFascia())
+                                  .importoMinimo(previous)
+                                  .costoFisso(fascia.getCostoFisso())
+                                  .fkCdiDetail(detailEntity)
+                                  .valoreCommissione(fascia.getValoreCommissione())
+                                  .codiceConvenzione(elem)
+                                  .build()))
+                  .collect(Collectors.toList());
+          list.addAll(fasciaCostoServizioList);
         }
-        cdiFasciaCostoServizioRepository.save(
-            CdiFasciaCostoServizio.builder()
-                .importoMassimo(fascia.getImportoMassimoFascia())
-                .importoMinimo(prev)
-                .costoFisso(fascia.getCostoFisso())
-                .fkCdiDetail(detailEntity)
-                .valoreCommissione(fascia.getValoreCommissione())
-                .codiceConvenzione(convenzione != null ? convenzione.getCodiceConvenzione() : null)
-                .build());
       }
+      detailEntity.setCdiFasciaCostoServizio(list);
     }
   }
 
@@ -566,23 +584,27 @@ public class CdiService {
       @NotNull CdiXml.InformativaDetail detail, @NotNull CdiDetail detailEntity) {
     if (detail.getListaInformazioniServizio() != null
         && detail.getListaInformazioniServizio().getInformazioniServizio() != null) {
+      var list = new ArrayList<CdiInformazioniServizio>();
       for (var info : detail.getListaInformazioniServizio().getInformazioniServizio()) {
-        cdiInformazioniServizioRepository.save(
-            CdiInformazioniServizio.builder()
-                .codiceLingua(info.getCodiceLingua() != null ? info.getCodiceLingua() : "IT")
-                .descrizioneServizio(
-                    info.getDescrizioneServizio() != null
-                        ? info.getDescrizioneServizio()
-                        : "Pagamento con CBILL")
-                .disponibilitaServizio(
-                    info.getDisponibilitaServizio() != null
-                        ? info.getDisponibilitaServizio()
-                        : "24/7/7")
-                .urlInformazioniCanale(info.getUrlInformazioniCanale())
-                .fkCdiDetail(detailEntity)
-                .limitazioniServizio(info.getLimitazioniServizio())
-                .build());
+        var entity =
+            cdiInformazioniServizioRepository.save(
+                CdiInformazioniServizio.builder()
+                    .codiceLingua(info.getCodiceLingua() != null ? info.getCodiceLingua() : "IT")
+                    .descrizioneServizio(
+                        info.getDescrizioneServizio() != null
+                            ? info.getDescrizioneServizio()
+                            : "Pagamento con CBILL")
+                    .disponibilitaServizio(
+                        info.getDisponibilitaServizio() != null
+                            ? info.getDisponibilitaServizio()
+                            : "24/7/7")
+                    .urlInformazioniCanale(info.getUrlInformazioniCanale())
+                    .fkCdiDetail(detailEntity)
+                    .limitazioniServizio(info.getLimitazioniServizio())
+                    .build());
+        list.add(entity);
       }
+      detailEntity.setCdiInformazioniServizio(list);
     }
   }
 
@@ -602,7 +624,7 @@ public class CdiService {
             .modelloPagamento(
                 detail.getModelloPagamento() != null ? detail.getModelloPagamento() : 4L)
             .fkCdiMaster(master)
-            .fkPspCanaleTipoVersamento(pspCanaleTipoVersamento)
+            .pspCanaleTipoVersamento(pspCanaleTipoVersamento)
             .canaleApp(detail.getCanaleApp() != null ? detail.getCanaleApp() : 0L);
     var identificazioneServizio = detail.getIdentificazioneServizio();
     if (identificazioneServizio != null) {
@@ -617,7 +639,9 @@ public class CdiService {
       // join list of ParolaChiave in a string semicolon separated ([tag1, tag2,tag3] ->
       // "tag1;tag2;tag3")
       String tags =
-          detail.getListaParoleChiave().stream()
+          detail
+              .getListaParoleChiave()
+              .stream()
               .filter(Objects::nonNull)
               .reduce((a, b) -> a + ";" + b)
               .orElse(null);

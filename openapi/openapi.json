@@ -2,14 +2,33 @@
   "openapi": "3.0.1",
   "info": {
     "title": "core",
-    "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei",
+    "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.50.7"
+    "version": "0.53.4"
   },
   "servers": [
     {
-      "url": "http://127.0.0.1:8080/apiconfig/api/v1",
-      "description": "Generated server url"
+      "url": "http://localhost:8080"
+    },
+    {
+      "url": "https://{host}/{basePath}",
+      "variables": {
+        "host": {
+          "enum": [
+            "api.dev.platform.pagopa.it",
+            "api.uat.platform.pagopa.it",
+            "api.platform.pagopa.it"
+          ],
+          "default": "api.dev.platform.pagopa.it"
+        },
+        "basePath": {
+          "enum": [
+            "apiconfig/auth/api/v1",
+            "apiconfig/api/v1"
+          ],
+          "default": "apiconfig/auth/api/v1"
+        }
+      }
     }
   ],
   "tags": [
@@ -402,11 +421,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -416,11 +435,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -1141,11 +1160,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -1155,11 +1174,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -2696,6 +2715,24 @@
               }
             }
           },
+          "422": {
+            "description": "Unprocessable Content",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too many requests",
             "headers": {
@@ -3372,11 +3409,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -9139,11 +9176,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -9153,11 +9190,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -13547,11 +13584,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "CODE",
               "enum": [
                 "CODE",
                 "NAME"
-              ]
+              ],
+              "default": "CODE"
             }
           },
           {
@@ -13561,11 +13598,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -15568,14 +15605,14 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "IT",
               "enum": [
                 "IT",
                 "EN",
                 "FR",
                 "DE",
                 "SL"
-              ]
+              ],
+              "default": "IT"
             }
           },
           {
@@ -15769,11 +15806,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "DESC",
               "enum": [
                 "ASC",
                 "DESC"
-              ]
+              ],
+              "default": "DESC"
             }
           }
         ],
@@ -17063,9 +17100,6 @@
           "ip": {
             "type": "string"
           },
-          "new_password": {
-            "type": "string"
-          },
           "password": {
             "type": "string"
           },
@@ -17413,6 +17447,7 @@
           "iban": {
             "maxLength": 35,
             "minLength": 0,
+            "pattern": "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}",
             "type": "string",
             "description": "The iban code",
             "example": "IT99C0222211111000000000000"
@@ -17599,7 +17634,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validità token"
+            "example": " default millisecondi validitÃ  token"
           }
         }
       },
@@ -17699,9 +17734,6 @@
             "example": "Lorem ipsum dolor sit amet"
           },
           "password": {
-            "type": "string"
-          },
-          "new_password": {
             "type": "string"
           },
           "protocol": {
@@ -18103,7 +18135,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validità token"
+            "example": " default millisecondi validitÃ  token"
           },
           "config_category": {
             "type": "string",
@@ -18729,7 +18761,6 @@
       "Iban": {
         "required": [
           "iban",
-          "publication_date",
           "validity_date"
         ],
         "type": "object",
@@ -18738,14 +18769,17 @@
             "maxLength": 35,
             "minLength": 0,
             "type": "string",
+            "description": "The iban code value",
             "example": "IT99C0222211111000000000000"
           },
           "validity_date": {
             "type": "string",
+            "description": "The date until which the iban is valid",
             "format": "date-time"
           },
           "publication_date": {
             "type": "string",
+            "description": "The publication date of the iban",
             "format": "date-time"
           }
         }

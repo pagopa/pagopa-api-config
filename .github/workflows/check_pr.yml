@@ -28,43 +28,6 @@ jobs:
         with:
           configuration-path: '.github/auto_assign.yml'
 
-  check_labels:
-    name: Check Required Labels
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - name: Verify PR Labels
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'major') && !contains(github.event.pull_request.labels.*.name, 'minor') && !contains(github.event.pull_request.labels.*.name, 'patch') && !contains(github.event.pull_request.labels.*.name, 'skip') }}
-        uses: actions/github-script@v6.3.3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            var comments = await github.rest.issues.listComments({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo
-            });
-            for (const comment of comments.data) {
-              if (comment.body.includes('This pull request does not contain a valid label')){
-                github.rest.issues.deleteComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: comment.id
-                })
-              }
-            }
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'This pull request does not contain a valid label. Please add one of the following labels: `[patch, minor, major, skip]`'
-            })
-            core.setFailed('Missing required labels')
-
-
   check_format:
     name: Check Format
     runs-on: ubuntu-latest
@@ -75,9 +38,10 @@ jobs:
       - name: Formatting
         id: format
         continue-on-error: true
-        uses: axel-op/googlejavaformat-action@v3
+        uses: findologic/intellij-format-action@main
         with:
-          args: "--set-exit-if-changed"
+          path: .
+          fail-on-changes: false
 
       - uses: actions/github-script@v6.3.3
         if: steps.format.outcome != 'success'
@@ -152,6 +116,45 @@ jobs:
               console.log('ignored lines: ' + ignored + ' , consider changes: ' + changes);
             }
             
+            var labels = await github.rest.issues.listLabelsOnIssue({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            if (labels.data.find(label => label.name == 'size/large')){
+              github.rest.issues.removeLabel({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'size/large'
+              })
+            }
+            if (labels.data.find(label => label.name == 'size/small')){
+                github.rest.issues.removeLabel({
+                    issue_number: context.issue.number,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: 'size/small'
+                })
+            }
+            
+            var comments = await github.rest.issues.listComments({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo
+            });
+            for (const comment of comments.data) {
+              if (comment.body.includes('This PR exceeds the recommended size')){
+                github.rest.issues.deleteComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id
+                })
+              }
+            }
+            
             if (changes < 200){
               github.rest.issues.addLabels({
                 issue_number: context.issue.number,
@@ -159,22 +162,6 @@ jobs:
                 repo: context.repo.repo,
                 labels: ['size/small']
               })
-            
-            
-              var labels = await github.rest.issues.listLabelsOnIssue({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo
-              });
-
-              if (labels.data.find(label => label.name == 'size/large')){
-                github.rest.issues.removeLabel({
-                    issue_number: context.issue.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    name: 'size/large'
-                })
-              }
             }
 
             if (changes > 400){
@@ -185,43 +172,12 @@ jobs:
                 labels: ['size/large']
               })
             
-              var comments = await github.rest.issues.listComments({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo
-              });
-              for (const comment of comments.data) {
-                if (comment.body.includes('This PR exceeds the recommended size')){
-                  github.rest.issues.deleteComment({
-                    issue_number: context.issue.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    comment_id: comment.id
-                  })
-                }
-              }
-
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: 'This PR exceeds the recommended size of 400 lines. Please make sure you are NOT addressing multiple issues with one PR. _Note this PR might be rejected due to its size._'
               })
-            
-              var labels = await github.rest.issues.listLabelsOnIssue({
-                 issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo
-              });
-
-              if (labels.data.find(label => label.name == 'size/small')){
-                github.rest.issues.removeLabel({
-                    issue_number: context.issue.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    name: 'size/small'
-                })
-              }
             
             }
 

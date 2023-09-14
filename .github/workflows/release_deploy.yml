@@ -16,16 +16,21 @@ on:
           - dev
           - uat
           - prod
-          - all
+      version:
+        required: false
+        type: choice
+        description: Select the version
+        options:
+          - ''
+          - skip
+          - promote
+          - new_release
+          - breaking_change
+
       beta:
         required: false
         type: boolean
         description: deploy beta version on AKS
-        default: false
-      skip_release:
-        required: false
-        type: boolean
-        description: skip the release. Only deploy
         default: false
 
 
@@ -55,19 +60,20 @@ jobs:
       # Set Semvar
       - run: echo "SEMVER=patch" >> $GITHUB_ENV
 
-      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'breaking-change ')) }}
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'breaking-change')) }}
         run: echo "SEMVER=major" >> $GITHUB_ENV
 
-      - if: ${{ inputs.environment == 'uat' }}
+      # force semver if dev, !=main or skip release
+      - if: ${{ inputs.version == 'new_release' }}
         run: echo "SEMVER=minor" >> $GITHUB_ENV
 
-      - if: ${{ inputs.environment == 'prod' }}
-        run: echo "SEMVER=skip" >> $GITHUB_ENV
+      - if: ${{ inputs.version == 'breaking_change' }}
+        run: echo "SEMVER=major" >> $GITHUB_ENV
 
       - if: ${{ github.ref_name != 'main' }}
         run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
 
-      - if: ${{ inputs.skip_release }}
+      - if: ${{ inputs.version == 'skip' ||  inputs.version == 'promote' }}
         run: echo "SEMVER=skip" >> $GITHUB_ENV
 
       - id: get_semver
@@ -146,27 +152,41 @@ jobs:
           secrets: |
             GH_TOKEN=${{ secrets.READ_PACKAGES_TOKEN }}
 
-  deploy_aks:
-    name: Deploy on AKS
+  deploy_aks_dev:
+    name: Deploy on AKS DEV
     needs: [ setup, release, image ]
     if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
-    strategy:
-      matrix:
-        environment: [ dev, uat, prod ]
     uses: ./.github/workflows/deploy_with_github_runner.yml
     with:
-      environment: ${{ matrix.environment }}
-      target: ${{ needs.setup.outputs.environment }}
+      environment: ${{ needs.setup.outputs.environment }}
+    secrets: inherit
+
+  deploy_aks_uat:
+    name: Deploy on AKS UAT
+    needs: [ setup, release, image ]
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')  && needs.setup.outputs.environment != 'dev' }}
+    uses: ./.github/workflows/deploy_with_github_runner.yml
+    with:
+      environment: ${{ needs.setup.outputs.environment }}
+    secrets: inherit
+
+  deploy_aks_prod:
+    name: Deploy on AKS PROD
+    needs: [ setup, release, image ]
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')  && needs.setup.outputs.environment == 'prod' }}
+    uses: ./.github/workflows/deploy_with_github_runner.yml
+    with:
+      environment: ${{ needs.setup.outputs.environment }}
     secrets: inherit
 
   notify:
-    needs: [ setup, release, deploy_aks ]
+    needs: [ setup, release, deploy_aks_prod ]
     runs-on: ubuntu-latest
     name: Notify
     if: always()
     steps:
       - name: Report Status
-        if: ${{ needs.setup.outputs.environment == 'prod' || needs.setup.outputs.environment == 'all'  }}
+        if: ${{ needs.setup.outputs.environment == 'prod' }}
         uses: ravsamhq/notify-slack-action@v2
         with:
           status: ${{ needs.deploy_aks.result }}

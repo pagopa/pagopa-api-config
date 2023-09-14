@@ -30,10 +30,6 @@ public class StationDetails extends Station {
   private String ip;
 
   @ToString.Exclude
-  @JsonProperty("new_password")
-  private String newPassword;
-
-  @ToString.Exclude
   @JsonProperty("password")
   private String password;
 

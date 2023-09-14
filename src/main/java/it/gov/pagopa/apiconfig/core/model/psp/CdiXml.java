@@ -1,12 +1,13 @@
 package it.gov.pagopa.apiconfig.core.model.psp;
 
 import it.gov.pagopa.apiconfig.core.util.XMLDateAdapter;
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.*;
+
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import lombok.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @XmlRootElement(name = "informativaPSP")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -14,6 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Getter
+@ToString
 public class CdiXml {
 
   private String identificativoFlusso;
@@ -64,6 +66,7 @@ public class CdiXml {
   @Builder
   @Getter
   @NotNull
+  @ToString
   public static class InformativaDetail {
     private String identificativoIntermediario;
     private String identificativoCanale;
@@ -82,7 +85,9 @@ public class CdiXml {
     @XmlElements({@XmlElement(name = "paroleChiave", type = String.class)})
     private List<String> listaParoleChiave;
 
-    private List<ConvenzioniCosti> listaConvenzioni;
+    @XmlElementWrapper
+    @XmlElements({@XmlElement(name = "codiceConvenzione", type = String.class)})
+    private List<String> listaConvenzioni;
   }
 
   @XmlRootElement(name = "identificazioneServizio")
@@ -155,15 +160,10 @@ public class CdiXml {
     private Double costoFisso;
     private Double valoreCommissione;
 
-    private List<ConvenzioniCosti> listaConvenzioniCosti;
+    @XmlElementWrapper
+    @XmlElements({@XmlElement(name = "codiceConvenzione", type = String.class)})
+    private List<String> listaConvenzioniCosti;
   }
 
-  @XmlAccessorType(XmlAccessType.FIELD)
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Builder
-  @Getter
-  public static class ConvenzioniCosti {
-    private String codiceConvenzione;
-  }
+
 }

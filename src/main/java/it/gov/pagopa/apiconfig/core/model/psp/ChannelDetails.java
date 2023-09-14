@@ -37,9 +37,6 @@ public class ChannelDetails extends Channel {
   @JsonProperty("password")
   private String password;
 
-  @JsonProperty("new_password")
-  private String newPassword;
-
   @JsonProperty("protocol")
   @NotNull
   private Protocol protocol;
