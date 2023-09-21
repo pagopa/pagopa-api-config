@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.53.5"
+    "version": "0.53.6"
   },
   "host": "localhost:8080",
   "basePath": "/",
@@ -1967,7 +1967,6 @@
             "description": "filter by PSP",
             "in": "query",
             "name": "pspcode",
-            "pattern": "([A-Z0-9_]{6,14}|)",
             "required": false,
             "type": "string"
           }
