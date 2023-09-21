@@ -1967,7 +1967,6 @@
             "description": "filter by PSP",
             "in": "query",
             "name": "pspcode",
-            "pattern": "([A-Z0-9_]{6,14}|)",
             "required": false,
             "type": "string"
           }
@@ -14080,7 +14079,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validitÃ  token",
+          "example": " default millisecondi validità token",
           "type": "string"
         },
         "config_key": {
@@ -14102,7 +14101,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validitÃ  token",
+          "example": " default millisecondi validità token",
           "type": "string"
         },
         "config_value": {

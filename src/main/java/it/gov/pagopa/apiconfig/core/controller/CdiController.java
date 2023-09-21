@@ -103,9 +103,7 @@ public class CdiController {
           Integer page,
       @Parameter(description = "filter by Id CDI") @RequestParam(value = "idcdi", required = false)
           String idCdi,
-      @Pattern(regexp = "([A-Z0-9_]{6,14}|)")
-          @Parameter(description = "filter by PSP")
-          @RequestParam(value = "pspcode", required = false)
+      @Parameter(description = "filter by PSP") @RequestParam(value = "pspcode", required = false)
           String pspCode) {
     return ResponseEntity.ok(cdiService.getCdis(limit, page, idCdi, pspCode));
   }
