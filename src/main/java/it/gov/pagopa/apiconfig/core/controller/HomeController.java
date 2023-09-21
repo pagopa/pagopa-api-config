@@ -39,7 +39,7 @@ public class HomeController {
   @Hidden
   @GetMapping("")
   public RedirectView home() {
-    return new RedirectView("/apiconfig/api/v1/swagger-ui.html");
+    return new RedirectView("/swagger-ui.html");
   }
 
   /**

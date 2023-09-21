@@ -160,7 +160,7 @@ oracle:
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-oracle'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-oracle"
-    SPRING_DATASOURCE_URL: 'jdbc:oracle:thin:@db-nodo-pagamenti.p.db-nodo-pagamenti.com:1521/NDPSPCP_NODO4_CFG'
+    SPRING_DATASOURCE_URL: "jdbc:oracle:thin:@(DESCRIPTION=(ENABLE=BROKEN)(ADDRESS=(PROTOCOL=tcp)(PORT=1521)(HOST=db-nodo-pagamenti.p.db-nodo-pagamenti.com))(CONNECT_DATA=(SERVICE_NAME=NDPSPCP_NODO4_CFG))(SO_KEEPALIVE=true)(TCP_KEEPIDLE=60)(TCP_KEEPINTVL=30)(TCP_KEEPCNT=15))"
     SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
     SPRING_DATASOURCE_DRIVER: 'oracle.jdbc.OracleDriver'
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
