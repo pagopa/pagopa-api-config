@@ -18,7 +18,7 @@ with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/
     csvreader = csv.reader(source, delimiter=',')
     csvwriter = csv.writer(result, delimiter=',')
 
-    csvwriter.writerow(['denominazioneEnte','codiceFiscale','iban','stato','dataAttivazioneIban','dataPubblicazioneIban','descrizione','etichetta'])
+    csvwriter.writerow(['denominazioneEnte','codiceFiscale','iban','stato','dataAttivazioneIban','dataPubblicazioneIban','descrizione'])
     next(csvreader)
     # Process data rows
     for row in csvreader:
@@ -26,7 +26,7 @@ with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/
         result_set = cursor.fetchall()
         if(result_set == ''):
             print(f"bad luck {row}")
-        rowToWrite = [row[4], result_set[0][0], row[1], "ENABLED", row[2], row[3], row[4],]
+        rowToWrite = [row[4], result_set[0][0], row[1], "ENABLED", row[2], row[3], row[4]]
         print(rowToWrite)
         csvwriter.writerow(rowToWrite)
 

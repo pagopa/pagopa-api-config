@@ -11,6 +11,8 @@ connection  = jaydebeapi.connect(
     [username, password],
     driver)
 cursor = connection.cursor()
+cursor.execute("TRUNCATE TABLE NODO4_CFG.IBAN_ATTRIBUTES_MASTER")
+cursor.execute("TRUNCATE TABLE NODO4_CFG.IBAN_ATTRIBUTES")
 cursor.execute("TRUNCATE TABLE NODO4_CFG.IBAN_MASTER")
 cursor.execute("TRUNCATE TABLE NODO4_CFG.IBAN")
 cursor.close()

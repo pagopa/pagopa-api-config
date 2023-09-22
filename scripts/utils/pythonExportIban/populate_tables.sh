@@ -6,6 +6,7 @@ DB_HOST_NAME=$3
 DB_USERNAME=$4
 DB_PASSWORD=$5
 DB_DRIVER_PATH=$6
+PDA_CSV_FILE=$7
 
 echo "Create file where View will be saved"
 
@@ -33,7 +34,11 @@ echo "Populated Iban table"
 
 python3 exportingIbanMastertoDB.py DB_HOST_IPADDRESS DB_HOST_PORT DB_HOST_NAME DB_USERNAME DB_PASSWORD DB_DRIVER_PATH
 
-echo "Populated Iban Master table, goodbye"
+echo "Populated Iban Master table"
+
+python3 exportingIbanMastertoDB.py DB_HOST_IPADDRESS DB_HOST_PORT DB_HOST_NAME DB_USERNAME DB_PASSWORD DB_DRIVER_PATH PDA_CSV_FILE
+
+echo "Populated Iban Attributes and Iban Attributes Master table"
 
 
 
