@@ -40,5 +40,9 @@ python3 exportingIbanAttributestoDB.py $DB_HOST_IPADDRESS $DB_HOST_PORT $DB_HOST
 
 echo "Populated Iban Attributes and Iban Attributes Master table"
 
+python3 creatingView.py $DB_HOST_IPADDRESS $DB_HOST_PORT $DB_HOST_NAME $DB_USERNAME $DB_PASSWORD $DB_DRIVER_PATH
+
+echo "Created view"
+
 
 
