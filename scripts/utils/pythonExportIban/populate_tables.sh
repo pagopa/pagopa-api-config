@@ -23,20 +23,20 @@ sed -i '' "s/\'//g" ./IbanCsv/IbanView.csv
 echo "All ' eliminated"
 
 python3 exporterIbanMasterToCsv.py $DB_HOST_IPADDRESS $DB_HOST_PORT $DB_HOST_NAME $DB_USERNAME $DB_PASSWORD $DB_DRIVER_PATH
-$
+
 python3 exporterIbanToCsv.py
 
 echo "Pre process done"
 
 python3 exportingIbanToDB.py $DB_HOST_IPADDRESS $DB_HOST_PORT $DB_HOST_NAME $DB_USERNAME $DB_PASSWORD $DB_DRIVER_PATH
-$
+
 echo "Populated Iban table"
 
 python3 exportingIbanMastertoDB.py $DB_HOST_IPADDRESS $DB_HOST_PORT $DB_HOST_NAME $DB_USERNAME $DB_PASSWORD $DB_DRIVER_PATH
-$
+
 echo "Populated Iban Master table"
 
-python3 exportingIbanMastertoDB.py $DB_HOST_IPADDRESS $DB_HOST_PORT $DB_HOST_NAME $DB_USERNAME $DB_PASSWORD $DB_DRIVER_PATH $PDA_CSV_FILE
+python3 exportingIbanAttributestoDB.py $DB_HOST_IPADDRESS $DB_HOST_PORT $DB_HOST_NAME $DB_USERNAME $DB_PASSWORD $DB_DRIVER_PATH $PDA_CSV_FILE
 
 echo "Populated Iban Attributes and Iban Attributes Master table"
 

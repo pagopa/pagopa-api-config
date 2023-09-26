@@ -15,8 +15,8 @@ with open('./IbanCsv/Iban_Master_output.csv') as csv_file:
             line_count += 1
         else:
             if(thisdictDate.get(row[2]) != None):
-                print(row[2])
-                if(datetime.strptime(thisdictDate.get(row[2]), "%Y-%m-%d %H:%M:%S.%f") > datetime.strptime((row[4]), "%Y-%m-%d %H:%M:%S.%f")):
+                print(row)
+                if(datetime.strptime(thisdictDate.get(row[2]), "%Y-%m-%d %H:%M:%S") > datetime.strptime((row[4]), "%Y-%m-%d %H:%M:%S")):
                     thisdictDate.update({row[2]: row[4]})
                     thisdictPa.update({row[2]: row[1]})
             else:
@@ -33,8 +33,8 @@ with open('./IbanCsv/Iban_Master_output.csv', 'r', newline='') as source, open('
     for row in csvreader:
         new_date = ''
         if(row[4] != ''):
-            d = datetime.strptime(thisdictDate.get(row[2]), "%Y-%m-%d %H:%M:%S.%f")
-            new_date = d.strftime("%Y-%m-%d %H:%M:%S.%f")
+            d = datetime.strptime(thisdictDate.get(row[2]), "%Y-%m-%d %H:%M:%S")
+            new_date = d.strftime("%Y-%m-%d %H:%M:%S")
         if(thisdictPa.get(row[2]) != None):
             rowToWrite = [row[2], thisdictPa.get(row[2]), row[0], new_date]
             thisdictPa.pop(row[2], None)
