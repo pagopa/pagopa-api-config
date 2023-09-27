@@ -1,5 +1,4 @@
 import csv
-from datetime import datetime
 import jaydebeapi
 import sys
 
@@ -25,9 +24,8 @@ with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/
         cursor.execute(f"Select id_dominio from NODO4_CFG.pa where obj_id={row[0]}")
         result_set = cursor.fetchall()
         if(result_set == ''):
-            print(f"bad luck {row}")
+            print(f"Problem with {row[1]}")
         rowToWrite = [row[4], result_set[0][0], row[1], "ENABLED", row[2], row[3], row[4]]
-        print(rowToWrite)
         csvwriter.writerow(rowToWrite)
 
 cursor.close()

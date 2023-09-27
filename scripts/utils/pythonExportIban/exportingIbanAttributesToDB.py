@@ -23,7 +23,6 @@ with open(sys.argv[7]) as csv_file:
     for row in csv_reader:
         cursor.execute(f"Select obj_id from NODO4_CFG.iban_master where fk_pa=(Select obj_id from NODO4_CFG.pa where id_Dominio='{row[1]}') and fk_iban=(Select obj_id from NODO4_CFG.iban where iban='{row[3]}')")
         iban_master_element = cursor.fetchall()
-        print(iban_master_element)
         if(len(iban_master_element) == 1 and row[8] == '0201138TS'):
             cursor.execute(f"INSERT INTO NODO4_CFG.iban_attributes_master (FK_IBAN_MASTER, FK_IBAN_ATTRIBUTE) VALUES ('{iban_master_element[0][0]}', '{iban_attribute[0][0]}')")
 

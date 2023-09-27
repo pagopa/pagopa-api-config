@@ -9,13 +9,10 @@ with open('./IbanCsv/Iban_Master_output.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     for row in csv_reader:
-        print(row[2])
         if line_count == 0:
-            print(f'Column names are {", ".join(row)}')
             line_count += 1
         else:
             if(thisdictDate.get(row[2]) != None):
-                print(row)
                 if(datetime.strptime(thisdictDate.get(row[2]), "%Y-%m-%d %H:%M:%S") > datetime.strptime((row[4]), "%Y-%m-%d %H:%M:%S")):
                     thisdictDate.update({row[2]: row[4]})
                     thisdictPa.update({row[2]: row[1]})

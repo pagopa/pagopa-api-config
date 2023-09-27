@@ -1,5 +1,4 @@
 import jaydebeapi
-import csv
 import numpy as np
 import sys
 
@@ -19,7 +18,6 @@ result_set = cursor.fetchall()
 a = np.asarray(result_set)
 row_to_be_added = np.array(['FK_PA', 'IBAN_ACCREDITO', 'DATA_INIZIO_VALIDITA', 'DATA_PUBBLICAZIONE', 'RAGIONE_SOCIALE', 'ID_MERCHANT', 'ID_BANCA_SELLER', 'CHIAVE_AVVIO', 'CHIAVE_ESITO', 'OBJ_ID', 'MASTER_OBJ'])
 a = np.r_[[row_to_be_added], a]
-print(a)
 np.savetxt('./IbanCsv/IbanView.csv', a, delimiter=',', fmt='%s')
 
 cursor.close()
