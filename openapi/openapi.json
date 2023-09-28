@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.53.7-2-PAGOPA-1259-fixare-refresh-della-cache"
+    "version": "0.53.7-3-PAGOPA-1259-fixare-refresh-della-cache"
   },
   "servers": [
     {
