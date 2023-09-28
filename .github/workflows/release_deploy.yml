@@ -152,23 +152,23 @@ jobs:
           secrets: |
             GH_TOKEN=${{ secrets.READ_PACKAGES_TOKEN }}
 
-  deploy_aks_dev:
-    name: Deploy on AKS DEV
-    needs: [ setup, release, image ]
-    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
-    uses: ./.github/workflows/deploy_with_github_runner.yml
-    with:
-      environment: ${{ needs.setup.outputs.environment }}
-    secrets: inherit
-
-  deploy_aks_uat:
-    name: Deploy on AKS UAT
-    needs: [ setup, release, image ]
-    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')  && needs.setup.outputs.environment != 'dev' }}
-    uses: ./.github/workflows/deploy_with_github_runner.yml
-    with:
-      environment: ${{ needs.setup.outputs.environment }}
-    secrets: inherit
+#  deploy_aks_dev:
+#    name: Deploy on AKS DEV
+#    needs: [ setup, release, image ]
+#    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
+#    uses: ./.github/workflows/deploy_with_github_runner.yml
+#    with:
+#      environment: ${{ needs.setup.outputs.environment }}
+#    secrets: inherit
+#
+#  deploy_aks_uat:
+#    name: Deploy on AKS UAT
+#    needs: [ setup, release, image ]
+#    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')  && needs.setup.outputs.environment != 'dev' }}
+#    uses: ./.github/workflows/deploy_with_github_runner.yml
+#    with:
+#      environment: ${{ needs.setup.outputs.environment }}
+#    secrets: inherit
 
   deploy_aks_prod:
     name: Deploy on AKS PROD
