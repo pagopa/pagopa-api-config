@@ -47,6 +47,8 @@ public class RefreshService {
     String response;
     try {
       response = client.triggerJob(jobType.getValue());
+    } catch (FeignException.GatewayTimeout e) {
+      throw new AppException(AppError.REFRESH_CONFIG_TIMEOUT, e);
     } catch (FeignException e) {
       throw new AppException(AppError.REFRESH_CONFIG_EXCEPTION, e);
     }
