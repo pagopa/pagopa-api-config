@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.53.7-6-PAGOPA-1259-fixare-refresh-della-cache"
+    tag: "0.53.8"
     pullPolicy: Always
   livenessProbe:
     httpGet:
