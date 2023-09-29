@@ -1,8 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Feign;
 import feign.FeignException;
 import it.gov.pagopa.apiconfig.core.client.RefreshClient;
@@ -48,22 +45,12 @@ public class RefreshService {
 
   private String callJobTrigger(JobTrigger jobType) {
     String response;
-
     try {
       response = client.triggerJob(jobType.getValue());
     } catch (FeignException e) {
-      throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
-    }
-    log.debug("RefreshService job trigger: {}", response);
-    try {
-      JsonNode responseJson = new ObjectMapper().readValue(response, JsonNode.class);
-      if (!responseJson.get("success").asBoolean()) {
-        throw new AppException(AppError.REFRESH_CONFIG_EXCEPTION);
-      }
-    } catch (JsonProcessingException e) {
       throw new AppException(AppError.REFRESH_CONFIG_EXCEPTION, e);
     }
-
+    log.debug("RefreshService job trigger: {}", response);
     return response;
   }
 
