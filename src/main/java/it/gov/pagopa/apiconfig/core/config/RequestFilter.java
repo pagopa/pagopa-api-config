@@ -1,22 +1,19 @@
 package it.gov.pagopa.apiconfig.core.config;
 
-import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
-
-import java.io.IOException;
-import java.util.UUID;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.UUID;
+
+import static it.gov.pagopa.apiconfig.core.util.Constants.HEADER_REQUEST_ID;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -47,7 +44,6 @@ public class RequestFilter implements Filter {
 
       // set requestId in MDC
       MDC.put("requestId", requestId);
-      log.debug("{} {}", httRequest.getMethod(), httRequest.getRequestURI());
 
       // set requestId in the response header
       ((HttpServletResponse) response).setHeader(HEADER_REQUEST_ID, requestId);
