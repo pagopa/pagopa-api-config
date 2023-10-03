@@ -32,7 +32,7 @@ public class LoggingAspect {
   public static final String CODE = "httpCode";
   public static final String RESPONSE_TIME = "responseTime";
 
-  @Value("${info.application.artifactId}")
+  @Value("${info.application.name}")
   private String name;
 
   @Value("${info.application.version}")
