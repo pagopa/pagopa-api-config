@@ -100,7 +100,7 @@ microservice-chart: &microservice-chart
     CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
     AZURE_STORAGE_TABLE_NAME: "pagopauweuapiconfigsaicatable"
     OTEL_SERVICE_NAME: "pagopa-api-config"
-    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=azure-uat"
+    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=uat"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
