@@ -6,8 +6,6 @@ import it.gov.pagopa.apiconfig.core.model.configuration.CacheVersions;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Cache;
 import it.gov.pagopa.apiconfig.starter.repository.CacheRepository;
-import java.lang.reflect.Type;
-import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 @Service
 @Validated
@@ -37,7 +38,7 @@ public class CacheService {
   public CacheVersions getCacheVersions(Integer page, Integer limit) {
     Sort sortOrder = Sort.by(Sort.Direction.DESC, "time").and(Sort.by("version"));
     Pageable pageable = PageRequest.of(page, limit, sortOrder);
-    Page<Cache> data = cacheRepository.findAll(pageable);
+    Page<Cache> data = cacheRepository.findByVersionNotLike("GZIP_JSON-%", pageable);
 
     Type listType =
         new TypeToken<List<it.gov.pagopa.apiconfig.core.model.configuration.Cache>>() {}.getType();
