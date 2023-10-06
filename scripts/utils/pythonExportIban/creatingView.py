@@ -37,7 +37,7 @@ CREATE OR REPLACE VIEW IBAN_VALIDI_PER_PA AS
         JOIN iban det
           ON (( mas.fk_iban = det.obj_id ))
         JOIN PA p ON (( mas.FK_PA = p.OBJ_ID)) 
-          ); 
+          )
 """
 
 cursor.execute(sqlCommand)
