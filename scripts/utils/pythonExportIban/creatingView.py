@@ -19,11 +19,11 @@ CREATE OR REPLACE VIEW IBAN_VALIDI_PER_PA AS
 	   SELECT mas.fk_pa,
        det.iban          AS iban_accredito,
        mas.validity_date AS data_inizio_validita,
-       TO_TIMESTAMP(NULL, 'YYYY-MM-DD HH24:MI:SS') AS data_pubblicazione,
+       mas.INSERTED_DATE AS data_pubblicazione,
        -- NULL AS data_pubblicazione,
-       det.fiscal_code   AS ragione_sociale,
+       p.ID_DOMINIO   	 AS ragione_sociale,
        NULL              AS id_merchant,
-       NULL              AS id_banca_seller,
+       'NA'              AS id_banca_seller,
        NULL              AS chiave_avvio,
        NULL              AS chiave_esito,
        mas.OBJ_ID 		 AS obj_id,
@@ -35,7 +35,9 @@ CREATE OR REPLACE VIEW IBAN_VALIDI_PER_PA AS
                WHERE  ( iban_master.validity_date <= current_timestamp )
                ) right_id_by_pk ON (( mas.obj_id = right_id_by_pk.obj_id )))
         JOIN iban det
-          ON (( mas.fk_iban = det.obj_id )))
+          ON (( mas.fk_iban = det.obj_id ))
+        JOIN PA p ON (( mas.FK_PA = p.OBJ_ID)) 
+          ); 
 """
 
 cursor.execute(sqlCommand)
