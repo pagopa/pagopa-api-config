@@ -50,8 +50,6 @@ public class RequestFilter implements Filter {
       chain.doFilter(request, response);
     } catch (ClientAbortException e) {
       log.warn("the Client cancels the request");
-    } finally {
-      MDC.clear();
     }
   }
 }
