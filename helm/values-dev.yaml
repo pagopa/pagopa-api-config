@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.53.7-9-kibana-dashboard"
+    tag: "0.53.7-10-kibana-dashboard"
     pullPolicy: Always
   livenessProbe:
     httpGet:
