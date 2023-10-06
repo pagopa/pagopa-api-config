@@ -114,6 +114,10 @@ public class LoggingAspect {
         MDC.put(CODE, String.valueOf(httpResponse.getStatus()));
         MDC.put(RESPONSE_TIME, getExecutionTime());
         log.info("Successful API operation {} - result: {}", joinPoint.getSignature().getName(), result);
+        MDC.remove(STATUS);
+        MDC.remove(CODE);
+        MDC.remove(RESPONSE_TIME);
+        MDC.remove(START_TIME);
         return result;
     }
 
