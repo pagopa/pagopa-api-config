@@ -126,7 +126,7 @@ public class LoggingAspect {
         MDC.put(STATUS, "KO");
         MDC.put(CODE, String.valueOf(result.getStatusCodeValue()));
         MDC.put(RESPONSE_TIME, getExecutionTime());
-        log.info("Failed API operation {} - error: {}", joinPoint.getSignature().getName(), result);
+        log.info("Failed API operation {} - error: {}", MDC.get(METHOD), result);
         MDC.remove(STATUS);
         MDC.remove(CODE);
         MDC.remove(RESPONSE_TIME);
