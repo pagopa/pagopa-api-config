@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.53.7"
+    "version": "0.53.8"
   },
   "servers": [
     {
@@ -15446,6 +15446,24 @@
                 }
               }
             }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -17633,7 +17651,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validità token"
+            "example": " default millisecondi validitÃ  token"
           }
         }
       },
@@ -18134,7 +18152,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validità token"
+            "example": " default millisecondi validitÃ  token"
           },
           "config_category": {
             "type": "string",

@@ -194,6 +194,8 @@ public enum AppError {
 
   REFRESH_CONFIG_EXCEPTION(
       HttpStatus.INTERNAL_SERVER_ERROR, "Node Monitoring Error", "Refresh configuration failure"),
+  REFRESH_CONFIG_TIMEOUT(
+      HttpStatus.GATEWAY_TIMEOUT, "Node Monitoring Timeout", "Refresh configuration timeout"),
 
   IBAN_ALREADY_ASSOCIATED(
       HttpStatus.CONFLICT,

@@ -69,7 +69,14 @@ public class RefreshController {
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+              responseCode = "504",
+              description = "Gateway Timeout",
+              content =
+              @Content(
+                      mediaType = MediaType.APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
       value = "/job/{jobtype}",
