@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.53.9"
+    tag: "0.54.0"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -101,7 +101,7 @@ microservice-chart: &microservice-chart
     AZURE_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
     JAVA_OPTS: "-XX:+PrintFlagsFinal -XX:MaxHeapSize=1g"
     OTEL_SERVICE_NAME: "pagopa-api-config"
-    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=azure-prod"
+    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=prod"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
