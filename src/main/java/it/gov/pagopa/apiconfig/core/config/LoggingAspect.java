@@ -142,9 +142,12 @@ public class LoggingAspect {
     }
 
     private static String getExecutionTime() {
-        long endTime = System.currentTimeMillis();
-        long startTime = Long.parseLong(MDC.get(START_TIME));
-        long executionTime = endTime - startTime;
-        return String.valueOf(executionTime);
+        String startTime = MDC.get(START_TIME);
+        if (startTime != null) {
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - Long.parseLong(startTime);
+            return String.valueOf(executionTime);
+        }
+        return "1";
     }
 }
