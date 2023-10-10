@@ -56,15 +56,15 @@ public class LoggingAspect {
         // all rest controllers
     }
 
-  @Pointcut("@within(org.springframework.stereotype.Repository)")
-  public void repository() {
-    // all repository methods
-  }
+    @Pointcut("@within(org.springframework.stereotype.Repository)")
+    public void repository() {
+        // all repository methods
+    }
 
-  @Pointcut("@within(org.springframework.stereotype.Service)")
-  public void service() {
-    // all service methods
-  }
+    @Pointcut("@within(org.springframework.stereotype.Service)")
+    public void service() {
+        // all service methods
+    }
 
     /**
      * Log essential info of application during the startup.
