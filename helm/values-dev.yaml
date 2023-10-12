@@ -83,6 +83,7 @@ microservice-chart: &microservice-chart
           value: "75"
   envConfig: &envConfig
     ENV: "dev"
+    AZURE_INSIGHTS_ENABLED: "true"
     AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
     AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
