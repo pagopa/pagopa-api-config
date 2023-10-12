@@ -139,7 +139,6 @@ postgresql:
     path: /pagopa-api-config-core-service/p/(.*)
   envConfig:
     !!merge <<: *envConfig
-    WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
     SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:6432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
     SPRING_DATASOURCE_USERNAME: 'cfg'
@@ -158,7 +157,6 @@ oracle:
     path: /pagopa-api-config-core-service/o/(.*)
   envConfig:
     !!merge <<: *envConfig
-    WEBSITE_SITE_NAME: 'pagopaapiconfig-oracle'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-oracle"
     SPRING_DATASOURCE_URL: "jdbc:oracle:thin:@(DESCRIPTION=(ENABLE=BROKEN)(ADDRESS=(PROTOCOL=tcp)(PORT=1522)(HOST=db-nodo-pagamenti.d.db-nodo-pagamenti.com))(CONNECT_DATA=(SERVICE_NAME=NDPSPCT_PP_NODO4_CFG))(SO_KEEPALIVE=true)(TCP_KEEPIDLE=60)(TCP_KEEPINTVL=30)(TCP_KEEPCNT=15))"
     SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
