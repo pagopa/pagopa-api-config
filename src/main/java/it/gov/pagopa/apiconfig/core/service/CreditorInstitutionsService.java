@@ -2,42 +2,14 @@ package it.gov.pagopa.apiconfig.core.service;
 
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitution;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionDetails;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionList;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStation;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationEdit;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionStationList;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionView;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutions;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionsView;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
 import it.gov.pagopa.apiconfig.core.specification.PaStazionePaSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import it.gov.pagopa.apiconfig.starter.entity.Codifiche;
-import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
-import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
-import it.gov.pagopa.apiconfig.starter.entity.Pa;
-import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
-import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
-import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CodificheRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
-import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import it.gov.pagopa.apiconfig.starter.entity.*;
+import it.gov.pagopa.apiconfig.starter.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,6 +19,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -420,7 +401,11 @@ public class CreditorInstitutionsService {
    * @param pa Creditor Institution
    */
   private void checkAuxDigit(CreditorInstitutionStationEdit creditorInstitutionStationEdit, Pa pa) {
-    if (creditorInstitutionStationEdit.getAuxDigit() == 0) {
+    Long auxDigit = creditorInstitutionStationEdit.getAuxDigit();
+    if (auxDigit == null) {
+      return;
+    }
+    if (auxDigit == 0) {
       // check aux-digit, application and segregation codes are configured properly
       checkAuxDigit0(pa.getIdDominio(), creditorInstitutionStationEdit);
 
@@ -428,12 +413,12 @@ public class CreditorInstitutionsService {
       checkUniqueApplicationCode(creditorInstitutionStationEdit, pa);
       checkUniqueSegregationCode(creditorInstitutionStationEdit, pa);
 
-    } else if (creditorInstitutionStationEdit.getAuxDigit() == 1
-        || creditorInstitutionStationEdit.getAuxDigit() == 2) {
+    } else if (auxDigit == 1
+            || auxDigit == 2) {
       // check aux-digit, application and segregation codes are configured properly
       checkAuxDigit1or2(pa.getIdDominio(), creditorInstitutionStationEdit);
 
-    } else if (creditorInstitutionStationEdit.getAuxDigit() == 3) {
+    } else if (auxDigit == 3) {
       // check aux-digit, application and segregation codes are configured properly
       checkAuxDigit3(pa.getIdDominio(), creditorInstitutionStationEdit);
 
