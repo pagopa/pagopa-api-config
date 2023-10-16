@@ -2,11 +2,10 @@ microservice-chart: &microservice-chart
   namespace: "apiconfig"
   nameOverride: ""
   fullnameOverride: ""
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
+  image:
+    repository: ghcr.io/pagopa/pagopa-api-config
+    tag: "0.54.1-5-app-insights"
+    pullPolicy: Always
   canaryDelivery:
     create: false
     ingress:
@@ -15,20 +14,6 @@ microservice-chart: &microservice-chart
         headerName: X-Canary
         headerValue: canary
         weightPercent: 0
-    service:
-      create: true
-    deployment:
-      create: true
-      image:
-        repository: ghcr.io/pagopa/pagopa-api-config
-        tag: "0.54.1-1-app-insights"
-        pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
-  image:
-    repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.54.1-5-app-insights"
-    pullPolicy: Always
   livenessProbe:
     httpGet:
       path: /actuator/health/liveness
@@ -43,6 +28,21 @@ microservice-chart: &microservice-chart
     initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+    service:
+      create: true
+    deployment:
+      create: true
+      image:
+        repository: ghcr.io/pagopa/pagopa-api-config
+        tag: "0.54.1-1-app-insights"
+        pullPolicy: Always
+      envConfig: {}
+      envSecret: {}
   deployment:
     create: true
   service:
@@ -128,9 +128,6 @@ microservice-chart: &microservice-chart
                 operator: In
                 values:
                   - user
-# Configuration used to update image tag (stable or canary) by pipeline
-microservice-chart:
-  !!merge <<: *microservice-chart
 # Configuration for PostgreSQL
 postgresql:
   !!merge <<: *microservice-chart

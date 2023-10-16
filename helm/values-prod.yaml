@@ -128,9 +128,6 @@ microservice-chart: &microservice-chart
                 operator: In
                 values:
                   - user
-# Configuration used to update image tag (stable or canary) by pipeline
-microservice-chart:
-  !!merge <<: *microservice-chart
 # Configuration for PostgreSQL
 postgresql:
   !!merge <<: *microservice-chart
