@@ -12,7 +12,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-    <version>0.54.1-7-app-insights</version>
+    <version>0.54.1-8-app-insights</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti</description>
 
   <properties>
