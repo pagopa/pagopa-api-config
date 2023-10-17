@@ -30,9 +30,21 @@ IFS=$'\n'
 for line in $(echo "$config" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
     echo "$line" >> .env
 done
+config=$(yq  -r '.oracle.envConfig' ../helm/values-$ENV.yaml)
+IFS=$'\n'
+for line in $(echo "$config" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
+    echo "$line" >> .env
+done
 
 keyvault=$(yq  -r '."microservice-chart".keyvault.name' ../helm/values-$ENV.yaml)
 secret=$(yq  -r '."microservice-chart".envSecret' ../helm/values-$ENV.yaml)
+for line in $(echo "$secret" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
+  IFS='=' read -r -a array <<< "$line"
+  response=$(az keyvault secret show --vault-name $keyvault --name "${array[1]}")
+  value=$(echo "$response" | jq -r '.value')
+  echo "${array[0]}=$value" >> .env
+done
+secret=$(yq  -r '.oracle.envSecret' ../helm/values-$ENV.yaml)
 for line in $(echo "$secret" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
   IFS='=' read -r -a array <<< "$line"
   response=$(az keyvault secret show --vault-name $keyvault --name "${array[1]}")
@@ -45,7 +57,7 @@ stack_name=$(cd .. && basename "$PWD")
 #docker compose -p "${stack_name}" up -d --remove-orphans --force-recreate --build
 echo $GITHUB_TOKEN_READ_PACKAGES >> ./secrets
 DOCKER_BUILDKIT=1 docker build -t ${image} --secret id=GH_TOKEN,src=./secrets ..
-docker run -d -p8080:8080 --env-file .env ${image}
+docker run -d -p8080:8080 --name ${stack_name} --env-file .env ${image}
 
 # waiting the containers
 printf 'Waiting for the service'

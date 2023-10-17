@@ -51,3 +51,4 @@ k6-script.js
 **/.terraform.lock.hcl
 /docker/.env
 helm/Chart.lock
+/docker/secrets
