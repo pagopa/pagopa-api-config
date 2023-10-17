@@ -4,7 +4,7 @@ microservice-chart: &microservice-chart
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.54.1-10-app-insights"
+    tag: "0.54.1-11-app-insights"
     pullPolicy: Always
   canaryDelivery:
     create: false
