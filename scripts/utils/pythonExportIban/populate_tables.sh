@@ -30,7 +30,7 @@ python3 exportingIbanMastertoDB.py
 
 echo "Populated Iban Master table"
 
-python3 exportingIbanAttributestoDB.py $PDA_CSV_FILE
+python3 exportingIbanAttributesToDB.py $PDA_CSV_FILE
 
 echo "Populated Iban Attributes and Iban Attributes Master table"
 
