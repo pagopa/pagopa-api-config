@@ -26,7 +26,7 @@ jobs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
       - name: Create GitHub Runner
-        id: create_github_runner
+        id: create_runner
         # from https://github.com/pagopa/eng-github-actions-iac-template/tree/main/azure/github-self-hosted-runner-azure-create-action
         uses: pagopa/eng-github-actions-iac-template/azure/github-self-hosted-runner-azure-create-action@main
         with:

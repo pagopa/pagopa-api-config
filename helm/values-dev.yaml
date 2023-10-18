@@ -2,11 +2,10 @@ microservice-chart: &microservice-chart
   namespace: "apiconfig"
   nameOverride: ""
   fullnameOverride: ""
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
+  image:
+    repository: ghcr.io/pagopa/pagopa-api-config
+    tag: "0.54.1-13-app-insights"
+    pullPolicy: Always
   canaryDelivery:
     create: false
     ingress:
@@ -15,20 +14,6 @@ microservice-chart: &microservice-chart
         headerName: X-Canary
         headerValue: canary
         weightPercent: 0
-    service:
-      create: true
-    deployment:
-      create: true
-      image:
-        repository: ghcr.io/pagopa/pagopa-api-config
-        tag: "0.53.4"
-        pullPolicy: Always
-      envConfig: {}
-      envSecret: {}
-  image:
-    repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.54.1"
-    pullPolicy: Always
   livenessProbe:
     httpGet:
       path: /actuator/health/liveness
@@ -43,6 +28,21 @@ microservice-chart: &microservice-chart
     initialDelaySeconds: 90
     failureThreshold: 6
     periodSeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+    service:
+      create: true
+    deployment:
+      create: true
+      image:
+        repository: ghcr.io/pagopa/pagopa-api-config
+        tag: "0.54.1-1-app-insights"
+        pullPolicy: Always
+      envConfig: {}
+      envSecret: {}
   deployment:
     create: true
   service:
@@ -83,6 +83,7 @@ microservice-chart: &microservice-chart
           value: "75"
   envConfig: &envConfig
     ENV: "dev"
+    AZURE_INSIGHTS_ENABLED: "true"
     AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
     AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
@@ -127,9 +128,6 @@ microservice-chart: &microservice-chart
                 operator: In
                 values:
                   - user
-# Configuration used to update image tag (stable or canary) by pipeline
-microservice-chart:
-  !!merge <<: *microservice-chart
 # Configuration for PostgreSQL
 postgresql:
   !!merge <<: *microservice-chart
@@ -138,7 +136,6 @@ postgresql:
     path: /pagopa-api-config-core-service/p/(.*)
   envConfig:
     !!merge <<: *envConfig
-    WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
     SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:6432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
     SPRING_DATASOURCE_USERNAME: 'cfg'
@@ -157,7 +154,6 @@ oracle:
     path: /pagopa-api-config-core-service/o/(.*)
   envConfig:
     !!merge <<: *envConfig
-    WEBSITE_SITE_NAME: 'pagopaapiconfig-oracle'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-oracle"
     SPRING_DATASOURCE_URL: "jdbc:oracle:thin:@(DESCRIPTION=(ENABLE=BROKEN)(ADDRESS=(PROTOCOL=tcp)(PORT=1522)(HOST=db-nodo-pagamenti.d.db-nodo-pagamenti.com))(CONNECT_DATA=(SERVICE_NAME=NDPSPCT_PP_NODO4_CFG))(SO_KEEPALIVE=true)(TCP_KEEPIDLE=60)(TCP_KEEPINTVL=30)(TCP_KEEPCNT=15))"
     SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
