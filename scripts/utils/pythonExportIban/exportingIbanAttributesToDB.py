@@ -1,23 +1,21 @@
-import jaydebeapi
+import os
 import csv
+import oracledb
 import sys
 
-host = "jdbc:oracle:thin:@" + sys.argv[1] + ":" + sys.argv[2] + "/" + sys.argv[3]
-username = sys.argv[4]
-password = sys.argv[5]
-driver = sys.argv[6]
-connection  = jaydebeapi.connect(
-    "oracle.jdbc.driver.OracleDriver",
-    host,
-    [username, password],
-    driver)
+connection = oracledb.connect(
+    dsn="db-nodo-pagamenti.d.db-nodo-pagamenti.com/NDPSPCT_PP_NODO4_CFG",
+    port=1522,
+    user=os.environ['SPRING_DATASOURCE_USERNAME'],
+    password=os.environ['SPRING_DATASOURCE_PASSWORD']
+)
 cursor = connection.cursor()
 
 cursor.execute(f"INSERT INTO NODO4_CFG.iban_attributes (ATTRIBUTE_NAME, ATTRIBUTE_DESCRIPTION) VALUES ('0201138TS', 'Canone Unico Patrimoniale - CORPORATE (0201138TS)')")
 cursor.execute(f"Select obj_id from NODO4_CFG.iban_attributes where ATTRIBUTE_NAME = '0201138TS'")
 iban_attribute = cursor.fetchall()
 
-with open(sys.argv[7]) as csv_file:
+with open(sys.argv[1]) as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
     next(csv_reader)
     for row in csv_reader:
