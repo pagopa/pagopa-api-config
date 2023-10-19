@@ -12,7 +12,7 @@ connection = oracledb.connect(
 cursor = connection.cursor()
 data = []
 with open('./IbanCsv/Iban_output.csv') as csv_file:
-    data = list(csv.reader(csvfile))
+    data = list(csv.reader(csv_file))
 print(data)
 cursor.executemany("""
         INSERT INTO NODO4_CFG.IBAN (IBAN, FISCAL_CODE, DESCRIPTION, DUE_DATE)
