@@ -24,8 +24,6 @@ with open('./IbanCsv/Iban_Master_output.csv', 'r', newline='') as source, open('
     csvreader = csv.reader(source, delimiter=',')
     csvwriter = csv.writer(result, delimiter=',')
 
-    csvwriter.writerow(['iban', 'fiscal_code', 'description', 'publication_date'])
-    next(csvreader)
     # Process data rows
     for row in csvreader:
         new_date = ''

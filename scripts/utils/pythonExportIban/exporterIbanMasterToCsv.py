@@ -14,8 +14,6 @@ cursor = connection.cursor()
 with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/Iban_Master_output.csv', 'w', newline='') as result:
     csvreader = csv.reader(source, delimiter=',')
     csvwriter = csv.writer(result, delimiter=',')
-
-    csvwriter.writerow(['denominazioneEnte','codiceFiscale','iban','stato','dataAttivazioneIban','dataPubblicazioneIban','descrizione'])
     # Process data rows
     for row in csvreader:
         cursor.execute(f"Select id_dominio from NODO4_CFG.pa where obj_id={row[0]}")

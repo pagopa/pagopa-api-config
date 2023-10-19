@@ -10,11 +10,13 @@ connection = oracledb.connect(
     password=os.environ['SPRING_DATASOURCE_PASSWORD']
 )
 cursor = connection.cursor()
-
+data = []
 with open('./IbanCsv/Iban_output.csv') as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    next(csv_reader)
-    for row in csv_reader:
-        cursor.execute(f"INSERT INTO NODO4_CFG.IBAN (IBAN, FISCAL_CODE, DESCRIPTION, DUE_DATE) VALUES ('{row[0]}', '{row[1]}', '{row[2]}', to_timestamp('{row[3]}','YYYY-MM-DD HH24:MI:SS.FF6'))")
+    data = list(csv.reader(csvfile))
+print(data)
+cursor.executemany("""
+        INSERT INTO NODO4_CFG.IBAN (IBAN, FISCAL_CODE, DESCRIPTION, DUE_DATE)
+        VALUES (':1', ':2', ':3', to_timestamp(':4','YYYY-MM-DD HH24:MI:SS.FF6'))""", data)
+connection.commit()
 cursor.close()
 connection.close()
