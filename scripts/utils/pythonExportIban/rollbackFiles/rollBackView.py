@@ -11,5 +11,6 @@ connection = oracledb.connect(
 cursor = connection.cursor()
 cursor.execute("RENAME IBAN_VALIDI_PER_PA to IBAN_VALIDI_PER_PA_NEW")
 cursor.execute("RENAME IBAN_VALIDI_PER_PA_ORIG to IBAN_VALIDI_PER_PA")
+connection.commit()
 cursor.close()
 connection.close()
