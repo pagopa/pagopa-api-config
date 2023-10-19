@@ -40,6 +40,7 @@ CREATE OR REPLACE VIEW IBAN_VALIDI_PER_PA AS
 
 cursor.execute(sqlCommand)
 cursor.execute("DROP VIEW IBAN_VALIDI_PER_PA_NEW")
+connection.commit()
 
 cursor.close()
 connection.close()
