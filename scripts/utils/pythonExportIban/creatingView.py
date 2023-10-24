@@ -3,8 +3,8 @@ import os
 import oracledb
 
 connection = oracledb.connect(
-    dsn="db-nodo-pagamenti.d.db-nodo-pagamenti.com/NDPSPCT_PP_NODO4_CFG",
-    port=1522,
+    dsn=os.environ['SPRING_DATASOURCE_HOST'],
+    port=os.environ['SPRING_DATASOURCE_PORT'],
     user=os.environ['SPRING_DATASOURCE_USERNAME'],
     password=os.environ['SPRING_DATASOURCE_PASSWORD']
 )
