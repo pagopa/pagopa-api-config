@@ -34,9 +34,5 @@ python3 exportingIbanAttributesToDB.py $PDA_CSV_FILE
 
 echo "Populated Iban Attributes and Iban Attributes Master table"
 
-python3 creatingView.py
-
-echo "Created view"
-
 
 
