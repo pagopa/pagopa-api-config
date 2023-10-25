@@ -42,9 +42,6 @@ public class PaymentServiceProviderDetails extends PaymentServiceProvider {
   @Builder.Default
   private Boolean agidPsp = false;
 
-  @JsonProperty("tax_code")
-  private String taxCode;
-
   @JsonProperty("vat_number")
   private String vatNumber;
 }

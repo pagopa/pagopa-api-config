@@ -71,7 +71,8 @@ class PspControllerTest {
     "/paymentserviceproviders/1234ABC12345",
     "/paymentserviceproviders/1234ABC12345/channels",
     "/paymentserviceproviders/view?page=0",
-    "/paymentserviceproviders/view?page=0&pspCode=BPPIITRRHHH"
+    "/paymentserviceproviders/view?page=0&pspCode=BPPIITRRHHH",
+    "/paymentserviceproviders/view?page=0&pspCode=BPPIITRRHHH&fiscalCode=17103880000"
   })
   void getPsp(String url) throws Exception {
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))

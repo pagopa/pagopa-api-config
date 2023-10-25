@@ -15,6 +15,7 @@ public class ConvertPspToPaymentServiceProvider implements Converter<Psp, Paymen
         .pspCode(source.getIdPsp())
         .enabled(source.getEnabled())
         .businessName(CommonUtil.deNull(source.getRagioneSociale()))
+        .taxCode(CommonUtil.deNull(source.getCodiceFiscale()))
         .build();
   }
 }
