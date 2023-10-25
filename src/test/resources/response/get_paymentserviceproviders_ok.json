@@ -3,7 +3,8 @@
     {
       "psp_code": "50",
       "enabled": true,
-      "business_name": "Poste Italiane"
+      "business_name": "Poste Italiane",
+      "fiscal_code":"AAABBB000X1A"
     }
   ],
   "page_info": {

@@ -7,7 +7,7 @@
     "version": "0.54.1"
   },
   "host": "localhost:8080",
-  "basePath": "/",
+  "basePath": "/apiconfig/api/v1",
   "schemes": [
     "http"
   ],
@@ -7101,8 +7101,8 @@
       },
       "get": {
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -10752,6 +10752,13 @@
             "type": "string"
           },
           {
+            "description": "Filter by fiscal code",
+            "in": "query",
+            "name": "fiscalCode",
+            "required": false,
+            "type": "string"
+          },
+          {
             "default": "CODE",
             "description": "Order by code or name",
             "enum": [
@@ -12237,6 +12244,18 @@
           },
           "500": {
             "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
@@ -14841,6 +14860,9 @@
         "enabled": {
           "type": "boolean"
         },
+        "fiscal_code": {
+          "type": "string"
+        },
         "psp_code": {
           "pattern": "[A-Z0-9_]{6,14}",
           "type": "string"
@@ -14849,6 +14871,7 @@
       "required": [
         "business_name",
         "enabled",
+        "fiscal_code",
         "psp_code"
       ],
       "type": "object"
@@ -14871,6 +14894,9 @@
         "enabled": {
           "type": "boolean"
         },
+        "fiscal_code": {
+          "type": "string"
+        },
         "my_bank_code": {
           "description": "MyBank code",
           "type": "string"
@@ -14892,6 +14918,7 @@
       "required": [
         "business_name",
         "enabled",
+        "fiscal_code",
         "psp_code"
       ],
       "type": "object"

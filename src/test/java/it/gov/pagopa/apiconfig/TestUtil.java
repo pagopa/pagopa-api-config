@@ -708,6 +708,7 @@ public class TestUtil {
         .businessName("ciao")
         .enabled(true)
         .pspCode("12345ABC12345")
+        .fiscalCode("17103880000")
         .build();
   }
 

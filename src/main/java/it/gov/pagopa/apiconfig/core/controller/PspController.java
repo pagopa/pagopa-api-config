@@ -1,24 +1,5 @@
 package it.gov.pagopa.apiconfig.core.controller;
 
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getFilterAndOrder;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import it.gov.pagopa.apiconfig.core.model.ProblemJson;
-import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
-import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
-import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviders;
-import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvidersView;
-import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
-import it.gov.pagopa.apiconfig.core.model.psp.PspChannelList;
-import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
-import it.gov.pagopa.apiconfig.core.service.PspService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,6 +7,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -41,6 +23,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import it.gov.pagopa.apiconfig.core.model.ProblemJson;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviders;
+import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProvidersView;
+import it.gov.pagopa.apiconfig.core.model.psp.PspChannelCode;
+import it.gov.pagopa.apiconfig.core.model.psp.PspChannelList;
+import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
+import it.gov.pagopa.apiconfig.core.service.PspService;
+import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 
 @RestController()
 @RequestMapping(path = "/paymentserviceproviders")
@@ -111,15 +113,19 @@ public class PspController {
           String filterByCode,
       @RequestParam(required = false, name = "name") @Parameter(description = "Filter by name")
           String filterByName,
+      @RequestParam(required = false, name = "fiscalCode") @Parameter(description = "Filter by fiscal code")
+          String filterByFiscalCode,    
       @RequestParam(required = false, name = "orderby", defaultValue = "CODE")
           @Parameter(description = "Order by code or name")
           Order.Psp orderBy,
       @RequestParam(required = false, name = "ordering", defaultValue = "DESC")
           @Parameter(description = "Direction of ordering")
           Sort.Direction ordering) {
+	  FilterAndOrder filterAndOrder =  CommonUtil.getFilterAndOrder(filterByCode, filterByName, orderBy, ordering);
+	  filterAndOrder.getFilter().setFiscalCode(filterByFiscalCode);
     return ResponseEntity.ok(
         pspService.getPaymentServiceProviders(
-            limit, page, getFilterAndOrder(filterByCode, filterByName, orderBy, ordering)));
+            limit, page, filterAndOrder));
   }
 
   @Operation(
