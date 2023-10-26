@@ -43,7 +43,7 @@ jobs:
         with:
           environment: ${{ matrix.environment }}
           api-name: ${{ matrix.product }}
-          config: .opex/env/${{ matrix.environment }}/config.yaml
+          config: .opex/${{ matrix.product }}/env/${{ matrix.environment }}/config.yaml
           client-id: ${{ secrets.CLIENT_ID }}
           tenant-id: ${{ secrets.TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
