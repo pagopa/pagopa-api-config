@@ -72,6 +72,7 @@ public class PspService {
             Psp.builder()
                 .idPsp(filterAndOrder.getFilter().getCode())
                 .ragioneSociale(filterAndOrder.getFilter().getName())
+                .codiceFiscale(filterAndOrder.getFilter().getTaxCode())
                 .build());
     Page<Psp> page = pspRepository.findAll(filters, pageable);
     return PaymentServiceProviders.builder()

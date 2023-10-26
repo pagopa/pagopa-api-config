@@ -36,4 +36,7 @@ public class PaymentServiceProvider {
   @Schema(required = true)
   @NotNull
   private String businessName;
+  
+  @JsonProperty("tax_code")
+  private String taxCode;
 }
