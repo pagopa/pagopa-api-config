@@ -39,7 +39,7 @@ jobs:
           persist-credentials: false
 
       # from https://github.com/pagopa/opex-dashboard-azure-action/
-      - uses: pagopa/opex-dashboard-azure-action@v1.1.2
+      - uses: pagopa/opex-dashboard-azure-action@v1.2.1
         with:
           environment: ${{ matrix.environment }}
           api-name: ${{ matrix.product }}
