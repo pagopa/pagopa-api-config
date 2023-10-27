@@ -19,7 +19,6 @@ iban_attribute = cursor.fetchall()
 data = []
 with open(sys.argv[1]) as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
-    next(csv_reader)
     for row in csv_reader:
         cursor.execute("""
         Select obj_id from NODO4_CFG.iban_master where fk_pa=(Select obj_id from NODO4_CFG.pa where id_Dominio=:id_dominio) and fk_iban=(Select obj_id from NODO4_CFG.iban where iban=:iban)
