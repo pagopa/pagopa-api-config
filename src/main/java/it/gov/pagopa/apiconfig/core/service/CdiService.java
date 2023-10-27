@@ -71,6 +71,9 @@ public class CdiService {
   @Value("${xsd.cdi}")
   private String xsdCdi;
 
+  @Value("${sync.cdi}")
+  private Boolean syncCdi;
+
   private static final String CHARITY_PREFIX = "CHARITY";
 
   @Transactional(readOnly = true)
@@ -137,7 +140,10 @@ public class CdiService {
 	  }
 	  master.setCdiDetail(list);
 	  // send CDI to AFM Utils
-	  afmUtilsAsyncTask.executeSync(master);
+
+      if (Boolean.TRUE.equals(syncCdi)) {
+          afmUtilsAsyncTask.executeSync(master);
+      }
   }
 
   @Transactional
