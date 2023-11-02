@@ -1,7 +1,5 @@
 import csv
 from datetime import datetime
-import os
-import oracledb
 
 thisdictDate = {}
 thisdictPa = {}
@@ -22,13 +20,6 @@ with open('./IbanCsv/Iban_Master_output.csv') as csv_file:
                 thisdictDate.update({row[2]: row[4]})
                 thisdictPa.update({row[2]: row[1]})
 
-connection = oracledb.connect(
-    dsn=os.environ['SPRING_DATASOURCE_HOST'],
-    port=os.environ['SPRING_DATASOURCE_PORT'],
-    user=os.environ['SPRING_DATASOURCE_USERNAME'],
-    password=os.environ['SPRING_DATASOURCE_PASSWORD']
-)
-cursor = connection.cursor()
 
 with open('./IbanCsv/Iban_Master_output.csv', 'r', newline='') as source, open('./IbanCsv/Iban_output.csv', 'w', newline='') as result:
     csvreader = csv.reader(source, delimiter=',')
@@ -37,11 +28,7 @@ with open('./IbanCsv/Iban_Master_output.csv', 'r', newline='') as source, open('
     # Process data rows
     for row in csvreader:
         if(thisdictPa.get(row[2]) != None):
-            cursor.execute("""
-            Select descrizione from NODO4_CFG.pa where id_dominio=:id_dominio
-            """, id_dominio=row[1])
-            result_set = cursor.fetchall()
-            rowToWrite = [row[2], thisdictPa.get(row[2]), result_set[0][0]]
+            rowToWrite = [row[2], thisdictPa.get(row[2]), row[6]]
             thisdictPa.pop(row[2], None)
             csvwriter.writerow(rowToWrite)
 

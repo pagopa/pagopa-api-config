@@ -30,7 +30,7 @@ with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/
         if(result_set == ''):
             print(f"Problem with {row[1]}")
             continue
-        rowToWrite = [dictDescriptionIbanPa.get((result_set[0][0], row[1])), result_set[0][0], row[1], "N/A", row[2], row[3]]
+        rowToWrite = [dictDescriptionIbanPa.get((result_set[0][0], row[1])), result_set[0][0], row[1], "N/A", row[2], row[3], row[4]]
         csvwriter.writerow(rowToWrite)
 
 cursor.close()
