@@ -31,6 +31,3 @@ with open('./IbanCsv/Iban_Master_output.csv', 'r', newline='') as source, open('
             rowToWrite = [row[2], thisdictPa.get(row[2]), row[6]]
             thisdictPa.pop(row[2], None)
             csvwriter.writerow(rowToWrite)
-
-cursor.close()
-connection.close()
