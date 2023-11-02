@@ -23,12 +23,14 @@ with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/
     csvwriter = csv.writer(result, delimiter=',')
     # Process data rows
     for row in csvreader:
-        cursor.execute(f"Select id_dominio from NODO4_CFG.pa where obj_id={row[0]}")
+        cursor.execute("""
+        Select id_dominio from NODO4_CFG.pa where obj_id=:obj_id
+        """, obj_id=row[0])
         result_set = cursor.fetchall()
         if(result_set == ''):
             print(f"Problem with {row[1]}")
             continue
-        rowToWrite = [dictDescriptionIbanPa.get((result_set[0][0], row[1])), result_set[0][0], row[1], "ENABLED", row[2], row[3]]
+        rowToWrite = [dictDescriptionIbanPa.get((result_set[0][0], row[1])), result_set[0][0], row[1], "N/A", row[2], row[3]]
         csvwriter.writerow(rowToWrite)
 
 cursor.close()
