@@ -31,6 +31,6 @@ with open('./IbanCsv/Iban_Master_output.csv', 'r', newline='') as source, open('
             d = datetime.strptime(thisdictDate.get(row[2]), "%Y-%m-%d %H:%M:%S")
             new_date = d.strftime("%Y-%m-%d %H:%M:%S")
         if(thisdictPa.get(row[2]) != None):
-            rowToWrite = [row[2], thisdictPa.get(row[2]), row[0], new_date]
+            rowToWrite = [row[2], thisdictPa.get(row[2]), row[0]]
             thisdictPa.pop(row[2], None)
             csvwriter.writerow(rowToWrite)

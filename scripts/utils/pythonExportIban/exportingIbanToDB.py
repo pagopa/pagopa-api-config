@@ -15,7 +15,7 @@ with open('./IbanCsv/Iban_output.csv') as csv_file:
     data = list(csv.reader(csv_file))
 cursor.executemany("""
         INSERT INTO NODO4_CFG.IBAN (IBAN, FISCAL_CODE, DESCRIPTION, DUE_DATE)
-        VALUES (:1, :2, :3, to_timestamp(:4,'YYYY-MM-DD HH24:MI:SS.FF6'))""", data)
+        VALUES (:1, :2, :3, ADD_MONTHS(CURRENT_TIMESTAMP, 12))""", data)
 connection.commit()
 cursor.close()
 connection.close()

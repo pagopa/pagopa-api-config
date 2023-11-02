@@ -1,7 +1,14 @@
 import csv
 import os
+import sys
 
 import oracledb
+
+dictDescriptionIbanPa = {}
+with open(sys.argv[1]) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=';')
+    for row in csv_reader:
+        dictDescriptionIbanPa.update({(row[1], row[3]): row[7]})
 
 connection = oracledb.connect(
     dsn=os.environ['SPRING_DATASOURCE_HOST'],
@@ -20,7 +27,8 @@ with open('./IbanCsv/IbanView.csv', 'r', newline='') as source, open('./IbanCsv/
         result_set = cursor.fetchall()
         if(result_set == ''):
             print(f"Problem with {row[1]}")
-        rowToWrite = [row[4], result_set[0][0], row[1], "ENABLED", row[2], row[3]]
+            continue
+        rowToWrite = [dictDescriptionIbanPa.get((result_set[0][0], row[1])), result_set[0][0], row[1], "ENABLED", row[2], row[3]]
         csvwriter.writerow(rowToWrite)
 
 cursor.close()
