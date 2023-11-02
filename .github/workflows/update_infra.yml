@@ -30,7 +30,7 @@ jobs:
         with:
           source_folder: 'infra'
           destination_repo: 'pagopa/pagopa-infra'
-          destination_folder: 'src/core/api/apiconfig_api/v1'
+          destination_folder: 'src/domains/apiconfig-app/api/apiconfig_api/v1'
           destination_base_branch: 'main'
           destination_head_branch: 'ApiConfig-swagger-update'
           user_email: 'github-bot@pagopa.it'
