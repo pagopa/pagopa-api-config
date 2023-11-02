@@ -1,6 +1,8 @@
 import csv
 from datetime import datetime
 
+import oracledb
+
 thisdictDate = {}
 thisdictPa = {}
 entries = []
