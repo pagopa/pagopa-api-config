@@ -1,15 +1,10 @@
 #!/bin/bash
 
-DB_HOST_IPADDRESS=$1
-DB_HOST_PORT=$2
-DB_HOST_NAME=$3
-DB_USERNAME=$4
-DB_PASSWORD=$5
-DB_DRIVER_PATH=$6
+echo "Rollback all"
 
-python3 deleteAll.py DB_HOST_IPADDRESS DB_HOST_PORT DB_HOST_NAME DB_USERNAME DB_PASSWORD DB_DRIVER_PATH
+python3 rollback.py
 
-echo "Deleted all record in tables IBAN and IBAN_MASTER"
+echo "Deleted all record in tables IBAN, IBAN_MASTER, IBAN_ATTRIBUTES and IBAN_ATTRIBUTES_MASTER"
 
 
 

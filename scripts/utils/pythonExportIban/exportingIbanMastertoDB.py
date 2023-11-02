@@ -1,23 +1,21 @@
-import jaydebeapi
 import csv
-import sys
+import os
 
-host = "jdbc:oracle:thin:@" + sys.argv[1] + ":" + sys.argv[2] + "/" + sys.argv[3]
-username = sys.argv[4]
-password = sys.argv[5]
-driver = sys.argv[6]
-connection  = jaydebeapi.connect(
-    "oracle.jdbc.driver.OracleDriver",
-    host,
-    [username, password],
-    driver)
+import oracledb
+
+connection = oracledb.connect(
+    dsn=os.environ['SPRING_DATASOURCE_HOST'],
+    port=os.environ['SPRING_DATASOURCE_PORT'],
+    user=os.environ['SPRING_DATASOURCE_USERNAME'],
+    password=os.environ['SPRING_DATASOURCE_PASSWORD']
+)
 cursor = connection.cursor()
+data = []
 with open('./IbanCsv/Iban_Master_output.csv') as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    next(csv_reader)
-    for row in csv_reader:
-        print(row)
-        cursor.execute(f"INSERT INTO NODO4_CFG.iban_master (inserted_date, validity_date, state, fk_pa, fk_iban, description) VALUES (to_timestamp('{row[4]}','YYYY-MM-DD HH24:MI:SS.FF6'), to_timestamp('{row[5]}','YYYY-MM-DD HH24:MI:SS.FF6'), '{row[3]}', (Select obj_id from NODO4_CFG.pa where id_dominio = '{row[1]}'), (Select obj_id from NODO4_CFG.iban where iban = '{row[2]}'), '{row[6]}')")
-
+    data = list(csv.reader(csv_file))
+cursor.executemany("""
+        INSERT INTO NODO4_CFG.iban_master (description, fk_pa, fk_iban, state, validity_date, inserted_date)
+        VALUES (:1, (Select obj_id from NODO4_CFG.pa where id_dominio = :2), (Select obj_id from NODO4_CFG.iban where iban = :3), :4,to_timestamp(:5,'YYYY-MM-DD HH24:MI:SS'), to_timestamp(:6,'YYYY-MM-DD HH24:MI:SS'))""", data)
+connection.commit()
 cursor.close()
 connection.close()
