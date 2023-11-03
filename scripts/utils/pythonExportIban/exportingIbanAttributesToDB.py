@@ -1,7 +1,5 @@
 import os
-import csv
 import oracledb
-import sys
 
 connection = oracledb.connect(
     dsn=os.environ['SPRING_DATASOURCE_HOST'],
@@ -11,7 +9,7 @@ connection = oracledb.connect(
 )
 cursor = connection.cursor()
 
-cursor.execute(f"INSERT INTO NODO4_CFG.iban_attributes (ATTRIBUTE_NAME, ATTRIBUTE_DESCRIPTION) VALUES ('0201138TS', 'Canone Unico Patrimoniale - CORPORATE (0201138TS)')")
+cursor.execute("INSERT INTO NODO4_CFG.iban_attributes (ATTRIBUTE_NAME, ATTRIBUTE_DESCRIPTION) VALUES ('0201138TS', 'Canone Unico Patrimoniale - CORPORATE (0201138TS)')")
 connection.commit()
 
 cursor.close()

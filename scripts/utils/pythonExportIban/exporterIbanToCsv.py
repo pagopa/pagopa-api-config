@@ -3,11 +3,8 @@ from datetime import datetime
 
 thisdictDate = {}
 thisdictPa = {}
-entries = []
-duplicate_entries = []
 with open('./IbanCsv/Iban_Master_output.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
-    line_count = 0
     for row in csv_reader:
         if(thisdictDate.get(row[2]) != None):
             if(datetime.strptime(thisdictDate.get(row[2]), "%Y-%m-%d %H:%M:%S") > datetime.strptime((row[4]), "%Y-%m-%d %H:%M:%S")):
