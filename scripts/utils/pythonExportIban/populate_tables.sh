@@ -16,7 +16,7 @@ sed -i "s/[']//g" ./IbanCsv/IbanView.csv
 
 echo "All ' eliminated"
 
-python3 exporterIbanMasterToCsv.py
+python3 exporterIbanMasterToCsv.py $PDA_CSV_FILE
 
 python3 exporterIbanToCsv.py
 
@@ -30,7 +30,9 @@ python3 exportingIbanMastertoDB.py
 
 echo "Populated Iban Master table"
 
-python3 exportingIbanAttributesToDB.py $PDA_CSV_FILE
+python3 exportingIbanAttributesToDB.py
+
+python3 exportingIbanAttributesMasterToDB.py $PDA_CSV_FILE
 
 echo "Populated Iban Attributes and Iban Attributes Master table"
 
