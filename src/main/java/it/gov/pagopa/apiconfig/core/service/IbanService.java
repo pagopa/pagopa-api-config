@@ -285,7 +285,7 @@ public class IbanService {
       List<IbanMaster> activeIbans = pa.getIbanMasters().stream()
               .filter(ibanPa -> ibanPa.getValidityDate().after(Timestamp.valueOf(LocalDateTime.now())))
               .collect(Collectors.toList());
-      return activeIbans.isEmpty() ? null : activeIbans.stream().max(Comparator.comparing(ibanPa -> ibanPa.getInsertedDate())).get();
+      return activeIbans.stream().max(Comparator.comparing(IbanMaster::getInsertedDate)).orElse(null);
   }
 
   private Pa getCreditorInstitutionIfExists(String organizationFiscalCode) {
