@@ -227,8 +227,10 @@ public class IbanService {
         });
 
     if(ibanEnhancedList.isEmpty() && (label.equals(acaLabel) || label.equals(cupLabel))) {
-        IbanMaster x = getLastPublishedIban(pa);
-        ibanEnhancedList.add(convertEntitiesToModel(pa, x.getIban(), x.getIbanAttributesMasters(), x));
+        IbanMaster lastPublishedIban = getLastPublishedIban(pa);
+        if(lastPublishedIban != null) {
+            ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
+        }
     }
 
     return IbansEnhanced.builder().ibanEnhancedList(ibanEnhancedList).build();
@@ -283,7 +285,7 @@ public class IbanService {
       List<IbanMaster> activeIbans = pa.getIbanMasters().stream()
               .filter(ibanPa -> ibanPa.getValidityDate().after(Timestamp.valueOf(LocalDateTime.now())))
               .collect(Collectors.toList());
-      return activeIbans.stream().max(Comparator.comparing(ibanPa -> ibanPa.getInsertedDate())).get();
+      return activeIbans.isEmpty() ? null : activeIbans.stream().max(Comparator.comparing(ibanPa -> ibanPa.getInsertedDate())).get();
   }
 
   private Pa getCreditorInstitutionIfExists(String organizationFiscalCode) {

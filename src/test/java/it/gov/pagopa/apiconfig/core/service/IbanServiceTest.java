@@ -1,14 +1,6 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMaster;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMasters;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributes;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa2;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPostalIbanEnhanced;
+import static it.gov.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,9 +37,12 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.ConstraintViolationException;
@@ -822,31 +817,6 @@ class IbanServiceTest {
     assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
   }
 
-  private Iban getMockIban(IbanEnhanced iban, String organizationFiscalCode) {
-    return Iban.builder()
-        .objId(100L)
-        .iban(iban.getIbanValue())
-        .fiscalCode(organizationFiscalCode)
-        .description("iban")
-        .dueDate(CommonUtil.toTimestamp(iban.getDueDate()))
-        .build();
-  }
-
-  private IbanMaster getMockIbanMaster(
-      Pa creditorInstitution, IbanEnhanced iban, Iban ibanToBeCreated) {
-    return IbanMaster.builder()
-        .objId(100L)
-        .fkPa(creditorInstitution.getObjId())
-        .pa(creditorInstitution)
-        .fkIban(ibanToBeCreated.getObjId())
-        .iban(ibanToBeCreated)
-        .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
-        .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
-        .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
-        .description(iban.getDescription())
-        .build();
-  }
-
   @Test
   void deleteIban() {
     when(ibanRepository.findByIban(anyString()))
@@ -926,22 +896,63 @@ class IbanServiceTest {
         () -> ibanService.deleteIban("13229677908", "bad_iban_value_format"));
   }
 
-  public static List<IbanMaster> getMockIbanMasters(
-      Pa creditorInstitution, IbanEnhanced iban, Iban ibanEntity) {
-    List<IbanMaster> ibanMasters =
-        List.of(
-            IbanMaster.builder()
-                .objId(100L)
-                .fkPa(creditorInstitution.getObjId())
-                .fkIban(ibanEntity.getObjId())
-                .ibanStatus(iban.isActive() ? IbanStatus.ENABLED : IbanStatus.DISABLED)
-                .insertedDate(
-                    CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
-                .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
-                .description(iban.getDescription())
-                .build());
-    ibanMasters.get(0).setIbanAttributesMasters(getMockIbanAttributeMasters(ibanMasters.get(0)));
+    @Test
+    void getIbansEnhancedFilteredACA_200()
+            throws IOException,
+            JSONException,
+            org.springframework.boot.configurationprocessor.json.JSONException {
+        // retrieving mock object
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        Iban mockIban = getMockIban(organizationFiscalCode);
+        LocalDateTime nowTime = LocalDateTime.now();
+        IbanMaster element1 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.plusYears(1)), Timestamp.valueOf(nowTime.plusYears(1)));
+        IbanMaster element2 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.plusYears(1)), Timestamp.valueOf(nowTime.plusYears(2)));
+        element1.setIbanAttributesMasters(getMockIbanAttributeMasters(element1));
+        element2.setIbanAttributesMasters(getMockIbanAttributeMasters(element2));
+        List<IbanMaster> mockIbanMasters = Arrays.asList(element1, element2);
+        creditorInstitution.setIbanMasters(mockIbanMasters);
+        // mocking responses from repositories
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterRepository.findByFkPa(creditorInstitution.getObjId()))
+                .thenReturn(mockIbanMasters);
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        // executing logic and check assertions
+        IbansEnhanced result =
+                ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "testAca");
 
-    return ibanMasters;
-  }
+        assertEquals(1, result.getIbanEnhancedList().size());
+        assertEquals(nowTime.plusYears(2), result.getIbanEnhancedList().get(0).getPublicationDate().toLocalDateTime());
+        assertEquals("IT99C0222211111000000000004", result.getIbanEnhancedList().get(0).getIbanValue());
+    }
+
+    @Test
+    void getIbansEnhancedFilteredACANoValid_200()
+            throws IOException,
+            JSONException,
+            org.springframework.boot.configurationprocessor.json.JSONException {
+        // retrieving mock object
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        Iban mockIban = getMockIban(organizationFiscalCode);
+        LocalDateTime nowTime = LocalDateTime.now();
+        IbanMaster element1 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.minusYears(1)), Timestamp.valueOf(nowTime.plusYears(1)));
+        IbanMaster element2 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.minusYears(1)), Timestamp.valueOf(nowTime.plusYears(2)));
+        element1.setIbanAttributesMasters(getMockIbanAttributeMasters(element1));
+        element2.setIbanAttributesMasters(getMockIbanAttributeMasters(element2));
+        List<IbanMaster> mockIbanMasters = Arrays.asList(element1, element2);
+        creditorInstitution.setIbanMasters(mockIbanMasters);
+        // mocking responses from repositories
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterRepository.findByFkPa(creditorInstitution.getObjId()))
+                .thenReturn(mockIbanMasters);
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        // executing logic and check assertions
+        IbansEnhanced result =
+                ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "testAca");
+
+        assertEquals(0, result.getIbanEnhancedList().size());
+    }
 }

@@ -66,6 +66,7 @@ import it.gov.pagopa.apiconfig.core.model.psp.PspChannelList;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannelPaymentTypes;
 import it.gov.pagopa.apiconfig.core.model.psp.Service;
 import it.gov.pagopa.apiconfig.core.model.psp.Services;
+import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.BinaryFile;
 import it.gov.pagopa.apiconfig.starter.entity.Cache;
 import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
@@ -100,7 +101,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -1102,5 +1105,72 @@ public class TestUtil {
                     .build())
             .ibanMaster(ibanMaster)
             .build());
+  }
+
+  public static List<IbanMaster> getMockIbanMasters(
+          Pa creditorInstitution, IbanEnhanced iban, it.gov.pagopa.apiconfig.starter.entity.Iban ibanEntity) {
+      List<IbanMaster> ibanMasters =
+              List.of(
+                      IbanMaster.builder()
+                              .objId(100L)
+                              .fkPa(creditorInstitution.getObjId())
+                              .fkIban(ibanEntity.getObjId())
+                              .ibanStatus(iban.isActive() ? IbanMaster.IbanStatus.ENABLED : IbanMaster.IbanStatus.DISABLED)
+                              .insertedDate(
+                                      CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
+                              .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
+                              .description(iban.getDescription())
+                              .build());
+      ibanMasters.get(0).setIbanAttributesMasters(getMockIbanAttributeMasters(ibanMasters.get(0)));
+      return ibanMasters;
+  }
+
+  public it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(IbanEnhanced iban, String organizationFiscalCode) {
+      return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
+              .objId(100L)
+              .iban(iban.getIbanValue())
+              .fiscalCode(organizationFiscalCode)
+              .description("iban")
+              .dueDate(CommonUtil.toTimestamp(iban.getDueDate()))
+              .build();
+  }
+
+  public IbanMaster getMockIbanMaster(
+          Pa creditorInstitution, IbanEnhanced iban, it.gov.pagopa.apiconfig.starter.entity.Iban ibanToBeCreated) {
+      return IbanMaster.builder()
+              .objId(100L)
+              .fkPa(creditorInstitution.getObjId())
+              .pa(creditorInstitution)
+              .fkIban(ibanToBeCreated.getObjId())
+              .iban(ibanToBeCreated)
+              .ibanStatus(iban.isActive() ? IbanMaster.IbanStatus.ENABLED : IbanMaster.IbanStatus.DISABLED)
+              .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
+              .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
+              .description(iban.getDescription())
+              .build();
+  }
+
+  public it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(String organizationFiscalCode) {
+      return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
+              .objId(100L)
+              .iban("IT99C0222211111000000000004")
+              .fiscalCode(organizationFiscalCode)
+              .description("iban")
+              .dueDate(Timestamp.valueOf(LocalDateTime.now().plusYears(3)))
+              .build();
+    }
+  public IbanMaster getMockIbanMasterValidityDateInsertedDate(
+          Pa creditorInstitution, it.gov.pagopa.apiconfig.starter.entity.Iban ibanToBeCreated, Timestamp validityDate, Timestamp insertedDate) {
+      return IbanMaster.builder()
+              .objId(100L)
+              .fkPa(creditorInstitution.getObjId())
+              .pa(creditorInstitution)
+              .fkIban(ibanToBeCreated.getObjId())
+              .iban(ibanToBeCreated)
+              .ibanStatus(IbanMaster.IbanStatus.ENABLED)
+              .insertedDate(insertedDate)
+              .validityDate(validityDate)
+              .description(ibanToBeCreated.getDescription())
+              .build();
   }
 }
