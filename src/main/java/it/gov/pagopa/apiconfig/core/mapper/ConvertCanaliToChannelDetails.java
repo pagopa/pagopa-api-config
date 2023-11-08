@@ -3,9 +3,10 @@ package it.gov.pagopa.apiconfig.core.mapper;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Protocol;
 import it.gov.pagopa.apiconfig.core.model.psp.ChannelDetails;
 import it.gov.pagopa.apiconfig.starter.entity.Canali;
-import javax.validation.Valid;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import javax.validation.Valid;
 
 public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelDetails> {
 
@@ -57,7 +58,7 @@ public class ConvertCanaliToChannelDetails implements Converter<Canali, ChannelD
           .recovery(source.getFkCanaliNodo().getRecovery())
           .digitalStampBrand(source.getFkCanaliNodo().getMarcaBolloDigitale())
           .agid(source.getFkCanaliNodo().getAgidChannel())
-          .flagPspCp(source.getFkCanaliNodo().getFlagPspCp())
+          .flagPspCp(source.getFkCanaliNodo().getFlagTravaso())
           .primitiveVersion(source.getFkCanaliNodo().getVersionePrimitive())
           .flagIo(source.getFkCanaliNodo().getFlagIo());
       if (source.getFkCanaliNodo().getIdServPlugin() != null) {
