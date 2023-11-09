@@ -4,9 +4,10 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Protocol;
 import it.gov.pagopa.apiconfig.core.model.psp.ChannelDetails;
 import it.gov.pagopa.apiconfig.starter.entity.Canali;
 import it.gov.pagopa.apiconfig.starter.entity.CanaliNodo;
-import javax.validation.Valid;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
+
+import javax.validation.Valid;
 
 public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, Canali> {
 
@@ -63,7 +64,7 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
         .rptRtCompliant(true)
         .lento(false)
         .agidChannel(source.getAgid())
-        .flagPspCp(source.getFlagPspCp())
+        .flagTravaso(source.getFlagPspCp())
         .versionePrimitive(source.getPrimitiveVersion())
         .build();
   }
