@@ -31,6 +31,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
@@ -318,5 +322,23 @@ public class CommonUtil {
       return "";
     }
     return "." + env.toLowerCase();
+  }
+  
+  /**
+   * @param file Json to map
+   * @param clazz class of model result
+   * @return JSON mapped in the model
+   */
+  public static <T> T mapJSON(InputStream inputStream, Class<T> clazz) {
+    T model;
+    try {
+    	ObjectMapper mapper = new ObjectMapper()
+    			.registerModule(new JavaTimeModule())
+    			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    	model = mapper.readValue(inputStream, clazz);
+    } catch (Exception e) {
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
+    }
+    return model;
   }
 }

@@ -1,12 +1,51 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
+
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.CheckItem;
+import it.gov.pagopa.apiconfig.core.model.MassiveCheck;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
@@ -21,37 +60,27 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 @Service
 @Validated
 @Transactional
 public class IbanService {
+	
+  public static final String IBANS_BAD_REQUEST = "Bad request for the massive loading of IBANs";
 
   @Value("${iban.abi.poste}")
   private String postalIbanAbi;
-
+  
   @Value("${iban.labels.cup}")
   private String cupLabel;
 
   @Value("${iban.labels.aca}")
   private String acaLabel;
+  
+  @Value("${zip.entries}")
+  private int thresholdEntries; // Maximum number of entries allowed in the zip file
+
+  @Value("${zip.size}")
+  private int thresholdSize; // Max size of zip file content
 
   @Autowired private PaRepository paRepository;
 
@@ -411,5 +440,150 @@ public class IbanService {
     return ibanRepository
         .findByIban(ibanValue)
         .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, ibanValue));
+  }
+
+  public void createMassiveIcas(@NotNull MultipartFile file) {
+	  BiFunction<InputStream, Boolean, List<CheckItem>> func =
+			  (inputStream, k) -> {
+				  try {
+					  return createIbansByFile(inputStream, false);
+				  } catch (IOException | SAXException e) {
+					  throw new AppException(
+							  HttpStatus.BAD_REQUEST, IBANS_BAD_REQUEST, "Problem in the file examination", e);
+				  }
+			  };
+			  massiveRead(file, func, false);
+  }
+
+  private List<CheckItem> createIbansByFile(InputStream inputStream, boolean force) throws SAXException, IOException{
+	  List<CheckItem> checks = verifyIbansFile(inputStream, force);
+	  Optional<CheckItem> check =
+			  checks.stream()
+			  .filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
+			  .findFirst();
+	  if (check.isPresent()) {
+		  throw new AppException(
+				  AppError.IBANS_BAD_REQUEST,
+				  String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
+	  }
+	  // map file into model class
+	  inputStream.reset();
+	  IbansMassLoad ibansLoaded = CommonUtil.mapJSON(inputStream, IbansMassLoad.class);
+	  ArrayList<IbanMaster> ibanMasterList = new ArrayList<>();
+	  modelMapper.map(ibansLoaded, ibanMasterList);
+	  var pa = getPaIfExists(ibansLoaded.getCreditorInstitutionCode());
+	  return null;
+  }
+  
+  private List<CheckItem> verifyIbansFile(InputStream inputStream, boolean force) {
+	  List<CheckItem> checkItemList = new ArrayList<>();
+	  return checkItemList;
+  }
+
+/**
+   * Helper for the massive read
+   *
+   * @param file MultiPartFile to analyze
+   * @param callback function to apply to file
+   * @param force boolean to bypass date verification
+   * @return a List of massiveChecks corresponding to the zip entry.
+   */
+  @java.lang.SuppressWarnings("java:S5042")
+  private List<MassiveCheck> massiveRead(
+      MultipartFile file,
+      BiFunction<InputStream, Boolean, List<CheckItem>> callback,
+      boolean force) {
+    List<MassiveCheck> massiveChecks = new ArrayList<>();
+    try {
+      // bytes and number of files counter
+      var bytesCounter =
+          new Object() {
+            int totalBytes = 0;
+          };
+      int nOfZipFiles = 0;
+
+      // function to execute input callback during the analysis of zip files
+      BiFunction<InputStream, Integer, List<CheckItem>> callbackCaller =
+          (inputStream, nBytesOfEntries) -> {
+            bytesCounter.totalBytes += nBytesOfEntries;
+
+            if (bytesCounter.totalBytes > thresholdSize) {
+              throw new AppException(
+                  HttpStatus.BAD_REQUEST, IBANS_BAD_REQUEST, "Zip content too large");
+            }
+
+            return callback.apply(inputStream, force);
+          };
+
+      // unzip the input stream
+      ZipInputStream zis = new ZipInputStream(file.getInputStream());
+      ZipEntry zipEntry = zis.getNextEntry();
+      while (zipEntry != null) {
+        ++nOfZipFiles;
+        if (nOfZipFiles > thresholdEntries) {
+          throw new AppException(
+              HttpStatus.BAD_REQUEST,
+              IBANS_BAD_REQUEST,
+              "Zip content has too many entries (check for hidden files)");
+        }
+
+        List<CheckItem> listToAdd = zipReading(zipEntry, zis, callbackCaller);
+
+        // empty if file is a hidden one or a folder
+        if (!listToAdd.isEmpty()) {
+          massiveChecks.add(
+              MassiveCheck.builder().fileName(zipEntry.getName()).checkItems(listToAdd).build());
+        }
+        // go to next file inside zip
+        zipEntry = zis.getNextEntry();
+      }
+    } catch (IOException e) {
+      throw new AppException(
+              HttpStatus.BAD_REQUEST, IBANS_BAD_REQUEST, "Problem when unzipping file", e);
+    }
+    return massiveChecks;
+  }
+  
+  /**
+   * Open zipEntry content and put it on an outputstream
+   *
+   * @param zipEntry entry of the zipFile
+   * @param zis zip file content
+   * @return a List of checkItems corresponding to the zip entry.
+   */
+  // added to avoid sonar warning, we need to use tempFile to avoid to analyze hidden files and
+  // directories
+  @java.lang.SuppressWarnings({"javasecurity:S6096", "java:S5443"})
+  private List<CheckItem> zipReading(
+      ZipEntry zipEntry,
+      ZipInputStream zis,
+      BiFunction<InputStream, Integer, List<CheckItem>> callback)
+      throws IOException {
+    File tempFile = File.createTempFile(zipEntry.getName(), "xml");
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    int nBytes = 0;
+    if (!tempFile.isHidden() && !zipEntry.isDirectory()) {
+      for (int c = zis.read(); c != -1; c = zis.read()) {
+        baos.write(c);
+        ++nBytes;
+      }
+      Files.delete(tempFile.toPath());
+      return callback.apply(new ByteArrayInputStream(baos.toByteArray()), nBytes);
+    }
+    // remove temp file
+    Files.delete(tempFile.toPath());
+    return new ArrayList<>();
+  }
+  
+  /**
+   * @param creditorInstitutionCode = identificativo Dominio
+   * @return get the PA from DB using identificativoDominio
+   */
+  private Pa getPaIfExists(String creditorInstitutionCode) {
+    return paRepository
+        .findByIdDominio(creditorInstitutionCode)
+        .orElseThrow(
+            () ->
+                new AppException(AppError.IBANS_BAD_REQUEST, creditorInstitutionCode + " not found"));
   }
 }
