@@ -20,13 +20,12 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -47,6 +46,12 @@ public class IbanService {
 
   @Value("${iban.abi.poste}")
   private String postalIbanAbi;
+
+  @Value("${iban.labels.cup}")
+  private String cupLabel;
+
+  @Value("${iban.labels.aca}")
+  private String acaLabel;
 
   @Autowired private PaRepository paRepository;
 
@@ -221,6 +226,13 @@ public class IbanService {
           }
         });
 
+    if(ibanEnhancedList.isEmpty() && (label.equals(acaLabel) || label.equals(cupLabel))) {
+        IbanMaster lastPublishedIban = getLastPublishedIban(pa);
+        if(lastPublishedIban != null) {
+            ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
+        }
+    }
+
     return IbansEnhanced.builder().ibanEnhancedList(ibanEnhancedList).build();
   }
 
@@ -267,6 +279,13 @@ public class IbanService {
   public boolean isPostalIban(String ibanValue) {
     String abiCode = ibanValue.substring(5, 10);
     return abiCode.equals(postalIbanAbi);
+  }
+
+  private IbanMaster getLastPublishedIban(Pa pa) {
+      List<IbanMaster> activeIbans = pa.getIbanMasters().stream()
+              .filter(ibanPa -> ibanPa.getValidityDate().before(Timestamp.valueOf(LocalDateTime.now())))
+              .collect(Collectors.toList());
+      return activeIbans.stream().max(Comparator.comparing(IbanMaster::getInsertedDate)).orElse(null);
   }
 
   private Pa getCreditorInstitutionIfExists(String organizationFiscalCode) {
