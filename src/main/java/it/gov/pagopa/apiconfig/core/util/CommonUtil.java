@@ -247,13 +247,13 @@ public class CommonUtil {
     if (startValidityDate == null) {
       validity = CheckItem.Validity.NOT_VALID;
       value = "-";
-      note = "Not parsable";
+      note = "Validity Date not parsable";
     } else {
       validity =
           startValidityDate.toLocalDate().isBefore(tomorrow)
               ? CheckItem.Validity.NOT_VALID
               : CheckItem.Validity.VALID;
-      value = startValidityDate.toString();
+      value = "[validity date = "+startValidityDate.toString()+"]";
       note =
           validity.equals(CheckItem.Validity.VALID)
               ? ""
@@ -261,7 +261,48 @@ public class CommonUtil {
     }
 
     return CheckItem.builder()
-        .title("Validity date")
+        .title("Check validity date")
+        .value(value)
+        .valid(validity)
+        .note(note)
+        .build();
+  }
+  
+  /**
+   * check if the dueDate is after the validityDate
+   * @param validityDate
+   * @param dueDate
+   * @return item with validity info
+   */
+  public static CheckItem checkDueDate(LocalDateTime validityDate, LocalDateTime dueDate) {
+    String value;
+    String note;
+    CheckItem.Validity validity;
+
+    if (validityDate == null) {
+      validity = CheckItem.Validity.NOT_VALID;
+      value = "-";
+      note = "Validity Date not parsable";
+    } 
+    else if (dueDate == null) {
+        validity = CheckItem.Validity.NOT_VALID;
+        value = "-";
+        note = "Due Date not parsable";
+    } 
+    else {
+      validity =
+    		  dueDate.toLocalDate().isAfter(validityDate.toLocalDate())
+              ? CheckItem.Validity.VALID
+              : CheckItem.Validity.NOT_VALID;
+      value = "[validity date = "+validityDate.toString()+", due date = "+dueDate.toString()+"]";
+      note =
+          validity.equals(CheckItem.Validity.VALID)
+              ? ""
+              : "Due date must be greater than the validity date";
+    }
+
+    return CheckItem.builder()
+        .title("Check due date")
         .value(value)
         .valid(validity)
         .note(note)

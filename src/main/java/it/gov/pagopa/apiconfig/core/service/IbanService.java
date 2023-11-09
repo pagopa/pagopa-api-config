@@ -1,36 +1,22 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import it.gov.pagopa.apiconfig.core.exception.AppError;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
-import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
-import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import it.gov.pagopa.apiconfig.starter.entity.Iban;
-import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
-import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
-import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
-import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
-import it.gov.pagopa.apiconfig.starter.entity.Pa;
-import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +24,31 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import it.gov.pagopa.apiconfig.core.exception.AppError;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.CheckItem;
+import it.gov.pagopa.apiconfig.core.model.CheckItem.Validity;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
+import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
+import it.gov.pagopa.apiconfig.core.util.CommonUtil;
+import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
+import it.gov.pagopa.apiconfig.starter.entity.Iban;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
+import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
+import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 
 @Service
 @Validated
@@ -62,6 +73,8 @@ public class IbanService {
   @Autowired private IbanAttributeRepository ibanAttributeRepository;
 
   @Autowired private IbanAttributeMasterRepository ibanAttributeMasterRepository;
+  
+  @Autowired private CodifichePaRepository codifichePaRepository;
 
   @Autowired private EncodingsService encodingsService;
 
@@ -77,6 +90,25 @@ public class IbanService {
     Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
     // Update Ica Table
     azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
+    
+    // check validity date
+    CheckItem check = CommonUtil.checkValidityDate(iban.getValidityDate().toLocalDateTime());
+    if (check.getValid().equals(Validity.NOT_VALID)) {
+    	throw new AppException(
+    			HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
+    }
+    // check due date
+    check = CommonUtil.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
+    if (check.getValid().equals(Validity.NOT_VALID)) {
+    	throw new AppException(
+    			HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
+    }
+    
+    // checks if the PA is associated with a qr-code (if this is not the case, the association is created)
+    List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(existingCreditorInstitution.getObjId());
+    // check and if it doesn't exist create QR-CODE encoding
+    this.checkQrCode(existingCreditorInstitution, encodings);
+    
     // retrieve an existing iban or generate a new one if not defined
     Iban ibanToBeCreated =
         ibanRepository
@@ -105,21 +137,10 @@ public class IbanService {
     // generate the relation between iban and attributes
     List<IbanAttributeMaster> updatedIbanAttributes =
         saveIbanLabelRelation(iban, ibanCIRelationToBeCreated);
-    // create encoding for postal iban
+    
     if (isPostalIban(iban.getIbanValue())) {
-      String ibanValue = iban.getIbanValue();
-      Encoding encoding =
-          Encoding.builder()
-              .codeType(CodeTypeEnum.BARCODE_128_AIM)
-              .encodingCode(
-                  ibanValue.substring(
-                      ibanValue.length()
-                          - 12)) // for BARCODE-128-AIM encoding code equals to last 12 characters
-              // of iban value
-              .build();
-
-      encodingsService.createCreditorInstitutionEncoding(
-          existingCreditorInstitution.getIdDominio(), encoding);
+      // check and if it doesn't exist create BARCODE_128_AIM encoding
+      this.checkBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
     }
 
     // return final object
@@ -411,5 +432,50 @@ public class IbanService {
     return ibanRepository
         .findByIban(ibanValue)
         .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, ibanValue));
+  }
+  
+  /**
+   * @param pa check if PA has QR-CODE encodings
+   */
+  private void checkQrCode(Pa pa, List<CodifichePa> codifichePaList) {
+	  boolean hasQrcodeEncoding =
+			  codifichePaList.stream()
+			  .anyMatch(elem -> elem.getFkCodifica().getIdCodifica().equals("QR-CODE"));
+	  
+	  if (!hasQrcodeEncoding) {
+		  Encoding encoding =
+		          Encoding.builder()
+		              .codeType(CodeTypeEnum.QR_CODE)
+		              .encodingCode(pa.getIdDominio()) // for type QR-CODE = CF (11 characters - PA fiscal code)
+		              .build();
+		  encodingsService.createCreditorInstitutionEncoding(pa.getIdDominio(), encoding);
+	  }
+
+  }
+  
+  /**
+   * @param pa check if PA has Barcode encodings (only postal ibans) 
+   */
+  
+  private void checkBarcode(String ibanValue, Pa pa, List<CodifichePa> encodings) {
+	  String ibanEncoding = ibanValue.substring(ibanValue.length()- 12);
+	  boolean hasBarcodeEncoding =
+			  encodings.stream()
+			  .filter(
+					  encoding ->
+					  encoding
+					  .getFkCodifica()
+					  .getIdCodifica()
+					  .equals(Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue())) 
+			  .anyMatch(encoding -> encoding.getCodicePa().equals(ibanEncoding));
+	  
+	  if (!hasBarcodeEncoding) {
+	      Encoding encoding =
+	          Encoding.builder()
+	              .codeType(CodeTypeEnum.BARCODE_128_AIM)
+	              .encodingCode(ibanEncoding) // for type BARCODE-128-AIM = CCPost (last 12 characters of postal iban value)
+	              .build();
+	      encodingsService.createCreditorInstitutionEncoding(pa.getIdDominio(), encoding);
+	  }
   }
 }
