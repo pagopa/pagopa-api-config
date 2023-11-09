@@ -283,7 +283,7 @@ public class IbanService {
 
   private IbanMaster getLastPublishedIban(Pa pa) {
       List<IbanMaster> activeIbans = pa.getIbanMasters().stream()
-              .filter(ibanPa -> ibanPa.getValidityDate().after(Timestamp.valueOf(LocalDateTime.now())))
+              .filter(ibanPa -> ibanPa.getValidityDate().before(Timestamp.valueOf(LocalDateTime.now())))
               .collect(Collectors.toList());
       return activeIbans.stream().max(Comparator.comparing(IbanMaster::getInsertedDate)).orElse(null);
   }

@@ -906,8 +906,8 @@ class IbanServiceTest {
         String organizationFiscalCode = creditorInstitution.getIdDominio();
         Iban mockIban = getMockIban(organizationFiscalCode);
         LocalDateTime nowTime = LocalDateTime.now();
-        IbanMaster element1 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.plusYears(1)), Timestamp.valueOf(nowTime.plusYears(1)));
-        IbanMaster element2 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.plusYears(1)), Timestamp.valueOf(nowTime.plusYears(2)));
+        IbanMaster element1 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.minusYears(1)), Timestamp.valueOf(nowTime.minusYears(1)));
+        IbanMaster element2 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.minusYears(1)), Timestamp.valueOf(nowTime.minusYears(2)));
         element1.setIbanAttributesMasters(getMockIbanAttributeMasters(element1));
         element2.setIbanAttributesMasters(getMockIbanAttributeMasters(element2));
         List<IbanMaster> mockIbanMasters = Arrays.asList(element1, element2);
@@ -923,7 +923,7 @@ class IbanServiceTest {
                 ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "testAca");
 
         assertEquals(1, result.getIbanEnhancedList().size());
-        assertEquals(nowTime.plusYears(2), result.getIbanEnhancedList().get(0).getPublicationDate().toLocalDateTime());
+        assertEquals(nowTime.minusYears(1), result.getIbanEnhancedList().get(0).getPublicationDate().toLocalDateTime());
         assertEquals("IT99C0222211111000000000004", result.getIbanEnhancedList().get(0).getIbanValue());
     }
 
@@ -937,8 +937,8 @@ class IbanServiceTest {
         String organizationFiscalCode = creditorInstitution.getIdDominio();
         Iban mockIban = getMockIban(organizationFiscalCode);
         LocalDateTime nowTime = LocalDateTime.now();
-        IbanMaster element1 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.minusYears(1)), Timestamp.valueOf(nowTime.plusYears(1)));
-        IbanMaster element2 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.minusYears(1)), Timestamp.valueOf(nowTime.plusYears(2)));
+        IbanMaster element1 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.plusYears(1)), Timestamp.valueOf(nowTime.plusYears(1)));
+        IbanMaster element2 = getMockIbanMasterValidityDateInsertedDate(creditorInstitution, mockIban, Timestamp.valueOf(nowTime.plusYears(1)), Timestamp.valueOf(nowTime.plusYears(2)));
         element1.setIbanAttributesMasters(getMockIbanAttributeMasters(element1));
         element2.setIbanAttributesMasters(getMockIbanAttributeMasters(element2));
         List<IbanMaster> mockIbanMasters = Arrays.asList(element1, element2);
