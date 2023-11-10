@@ -12,10 +12,6 @@ python3 exporterViewToCsv.py
 
 echo "Original data from existing view exported"
 
-sed -i "s/[']//g" ./IbanCsv/IbanView.csv
-
-echo "All ' eliminated"
-
 python3 exporterIbanMasterToCsv.py $PDA_CSV_FILE
 
 python3 exporterIbanToCsv.py
