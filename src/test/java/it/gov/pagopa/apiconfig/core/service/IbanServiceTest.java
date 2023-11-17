@@ -577,7 +577,7 @@ class IbanServiceTest {
   @Test
   void updateIban_newIban_200() {
     // retrieving mock object
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(2));
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
@@ -627,7 +627,7 @@ class IbanServiceTest {
   @Test
   void updateIban_noLabelAssociated_200() {
     // retrieving mock object
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(2));
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
@@ -729,6 +729,44 @@ class IbanServiceTest {
                     organizationFiscalCode, "IT99C9999999999999999999999", iban));
     assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
   }
+  
+  @Test
+  void updateIban_IncorrectValidityDate_400() {
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now().plusDays(2));
+    Pa creditorInstitution = getMockPa();
+    String organizationFiscalCode = creditorInstitution.getIdDominio();
+    // mocking responses from repositories
+    when(paRepository.findByIdDominio(organizationFiscalCode))
+        .thenReturn(Optional.of(creditorInstitution));
+    // executing logic and check assertions
+    AppException ex =
+        assertThrows(
+            AppException.class,
+            () ->
+                ibanService.updateIban(
+                    organizationFiscalCode, "IT99C0222211111000000000000", iban));
+    assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+  }
+  
+  @Test
+  void updateIban_IncorrectDueDate_400() {
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(1));
+    Pa creditorInstitution = getMockPa();
+    String organizationFiscalCode = creditorInstitution.getIdDominio();
+    // mocking responses from repositories
+    when(paRepository.findByIdDominio(organizationFiscalCode))
+        .thenReturn(Optional.of(creditorInstitution));
+    
+    // executing logic and check assertions
+    AppException ex =
+        assertThrows(
+            AppException.class,
+            () ->
+                ibanService.updateIban(
+                    organizationFiscalCode, "IT99C0222211111000000000000", iban));
+    assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+  }
+ 
 
   @Test
   void updateIban_noCIFound_404() {
@@ -751,7 +789,7 @@ class IbanServiceTest {
     // retrieving mock object
     String organizationFiscalCode = "13229677908";
     String ibanValue = "IT99C0222211111000000000000";
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(2));
     Pa creditorInstitution = getMockPa();
     // mocking responses from repositories
     when(paRepository.findByIdDominio(organizationFiscalCode))
@@ -767,7 +805,7 @@ class IbanServiceTest {
 
   @Test
   void updateIban_noIbanCIRelationFound_404() { // retrieving mock object
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(2));
     String ibanValue = "IT99C0222211111000000000000";
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
@@ -795,7 +833,7 @@ class IbanServiceTest {
 
   @Test
   void updatePostalIbanByDifferentCI_noIbanCIRelationFound_404() { // retrieving mock object
-    IbanEnhanced iban = getMockPostalIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    IbanEnhanced iban = getMockPostalIbanEnhanced(OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(2));
     Pa pa1 = getMockPa();
     String fc1 = pa1.getIdDominio();
     Pa pa2 = getMockPa2();
@@ -828,7 +866,7 @@ class IbanServiceTest {
     Pa creditorInstitution = getMockPa();
     String ibanValue = "IT99C0222211111000000000000";
     String organizationFiscalCode = creditorInstitution.getIdDominio();
-    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+    IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(2));
     iban.getLabels().get(0).setName("FAKELABEL");
     Iban mockIban = getMockIban(iban, organizationFiscalCode);
     IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban);
