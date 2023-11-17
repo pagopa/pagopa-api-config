@@ -257,7 +257,7 @@ public class CommonUtil {
       note =
           validity.equals(CheckItem.Validity.VALID)
               ? ""
-              : "Validity start date must be greater than the today's date";
+              : "Validity date must be greater than the today's date";
     }
 
     return CheckItem.builder()
