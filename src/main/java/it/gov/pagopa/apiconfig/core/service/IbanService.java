@@ -186,27 +186,6 @@ public class IbanService {
         ibanCIRelationToBeUpdated);
   }
 
-private void checkAndSetup(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
-	// check validity date
-    CheckItem check = CommonUtil.checkValidityDate(iban.getValidityDate().toLocalDateTime());
-    if (check.getValid().equals(Validity.NOT_VALID)) {
-    	throw new AppException(
-    			HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
-    }
-    // check due date
-    check = CommonUtil.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
-    if (check.getValid().equals(Validity.NOT_VALID)) {
-    	throw new AppException(
-    			HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
-    }
-    // checks the PA is associated with a qr-code (if this is not the case, the association is created)
-    this.checkQrCode(existingCreditorInstitution, encodings);
-    if (isPostalIban(iban.getIbanValue())) {
-        // check and if it doesn't exist create BARCODE_128_AIM encoding
-        this.checkBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
-    }
-}
-
   public IbansEnhanced getCreditorInstitutionsIbansByLabel(
       @NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
           String organizationFiscalCode,
@@ -483,4 +462,25 @@ private void checkAndSetup(IbanEnhanced iban, Pa existingCreditorInstitution, Li
 	      encodingsService.createCreditorInstitutionEncoding(pa.getIdDominio(), encoding);
 	  }
   }
+  
+  private void checkAndSetup(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
+		// check validity date
+	    CheckItem check = CommonUtil.checkValidityDate(iban.getValidityDate().toLocalDateTime());
+	    if (check.getValid().equals(Validity.NOT_VALID)) {
+	    	throw new AppException(
+	    			HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
+	    }
+	    // check due date
+	    check = CommonUtil.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
+	    if (check.getValid().equals(Validity.NOT_VALID)) {
+	    	throw new AppException(
+	    			HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
+	    }
+	    // checks the PA is associated with a qr-code (if this is not the case, the association is created)
+	    this.checkQrCode(existingCreditorInstitution, encodings);
+	    if (isPostalIban(iban.getIbanValue())) {
+	        // check and if it doesn't exist create BARCODE_128_AIM encoding
+	        this.checkBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
+	    }
+	}
 }
