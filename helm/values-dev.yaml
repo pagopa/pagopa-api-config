@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.56.0"
+    tag: "0.56.0-1-test-uat-nodo4-cfg-user"
     pullPolicy: Always
   livenessProbe:
     httpGet:
