@@ -49,6 +49,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
@@ -474,10 +475,10 @@ public class IbanService {
 					AppError.IBANS_BAD_REQUEST,
 					String.format("[%s] %s", check.get().getValue(), check.get().getNote()));
 		}
-		ArrayList<IbanMaster> ibanMasterList = new ArrayList<>();
-		modelMapper.map(ibansLoaded, ibanMasterList);
+		IbansMaster ibanMaster = IbansMaster.builder().build();
+		modelMapper.map(ibansLoaded, ibanMaster);
 		var pa = this.getPaIfExists(ibansLoaded.getCreditorInstitutionCode());
-		this.saveIbans(ibanMasterList, pa);
+		this.saveIbans(ibanMaster.getIbanMasterList(), pa);
 		return checks;
 	}
 
@@ -617,10 +618,10 @@ public class IbanService {
 						new AppException(AppError.IBANS_BAD_REQUEST, creditorInstitutionCode + " not found"));
 	}
 
-	private void saveIbans(ArrayList<IbanMaster> ibanMasterList,  Pa pa) {	  
+	private void saveIbans(List<IbanMaster> ibanMasterList,  Pa pa) {	  
 
-		ArrayList<IbanMaster> ibanMasterToSaveList = new ArrayList<>();
-		ArrayList<Iban> ibanToSaveList = new ArrayList<>();
+		List<IbanMaster> ibanMasterToSaveList = new ArrayList<>();
+		List<Iban> ibanToSaveList = new ArrayList<>();
 
 		for (IbanMaster loadedIbanMaster: ibanMasterList) {
 			loadedIbanMaster.setPa(pa);
