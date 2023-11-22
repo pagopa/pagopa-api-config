@@ -13,7 +13,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,18 +37,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
 
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
+import it.gov.pagopa.apiconfig.core.model.CheckItem.Validity;
 import it.gov.pagopa.apiconfig.core.model.MassiveCheck;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IcaXml;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
@@ -58,8 +56,8 @@ import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
-import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
+import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
 import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
@@ -74,9 +72,7 @@ import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 @Transactional
 public class IbanService {
 
-	public static final String IBANS_BAD_REQUEST = "Bad request for the massive loading of IBANs";
-	public static final String ACTION_KEY = "action";
-	public static final String NOTE_KEY = "note";
+	public static final String FILE_BAD_REQUEST = "Bad request for the massive loading of IBANs";
 
 	@Value("${iban.abi.poste}")
 	private String postalIbanAbi;
@@ -121,6 +117,10 @@ public class IbanService {
 		Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
 		// Update Ica Table
 		azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
+
+		List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(existingCreditorInstitution.getObjId());
+		this.checkAndSetup(iban, existingCreditorInstitution, encodings);
+
 		// retrieve an existing iban or generate a new one if not defined
 		Iban ibanToBeCreated =
 				ibanRepository
@@ -149,22 +149,6 @@ public class IbanService {
 		// generate the relation between iban and attributes
 		List<IbanAttributeMaster> updatedIbanAttributes =
 				saveIbanLabelRelation(iban, ibanCIRelationToBeCreated);
-		// create encoding for postal iban
-		if (isPostalIban(iban.getIbanValue())) {
-			String ibanValue = iban.getIbanValue();
-			Encoding encoding =
-					Encoding.builder()
-					.codeType(CodeTypeEnum.BARCODE_128_AIM)
-					.encodingCode(
-							ibanValue.substring(
-									ibanValue.length()
-									- 12)) // for BARCODE-128-AIM encoding code equals to last 12 characters
-					// of iban value
-					.build();
-
-			encodingsService.createCreditorInstitutionEncoding(
-					existingCreditorInstitution.getIdDominio(), encoding);
-		}
 
 		// return final object
 		return convertEntitiesToModel(
@@ -192,6 +176,9 @@ public class IbanService {
 		Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
 		// Update Ica Table
 		azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
+		List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(existingCreditorInstitution.getObjId());
+		this.checkAndSetup(iban, existingCreditorInstitution, encodings);
+
 		// retrieve the iban and throw exception if not found. If creditor institution is the owner, it
 		// can update the IBAN object
 		Iban existingIban =
@@ -217,6 +204,7 @@ public class IbanService {
 		ibanAttributeMasterRepository.flush();
 		List<IbanAttributeMaster> updatedIbanAttributes =
 				saveIbanLabelRelation(iban, ibanCIRelationToBeUpdated);
+
 		// return final object
 		return convertEntitiesToModel(
 				existingCreditorInstitution,
@@ -320,6 +308,21 @@ public class IbanService {
 				ibanValue, organizationFiscalCode);
 	}
 
+	public void createMassiveIbans(@NotNull MultipartFile file) {
+		// parse the zip file
+		BiFunction<InputStream, Boolean, List<CheckItem>> func =
+				(inputStream, k) -> {
+					try {
+						return createIbansByFile(inputStream);
+					} catch (IOException e) {
+						throw new AppException(
+								HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem in the file examination", e);
+					}
+				};
+				massiveRead(file, func);
+	}
+	
+	
 	public boolean isPostalIban(String ibanValue) {
 		String abiCode = ibanValue.substring(5, 10);
 		return abiCode.equals(postalIbanAbi);
@@ -457,20 +460,7 @@ public class IbanService {
 				.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, ibanValue));
 	}
 
-	public void createMassiveIbans(@NotNull MultipartFile file) {
-		BiFunction<InputStream, Boolean, List<CheckItem>> func =
-				(inputStream, k) -> {
-					try {
-						return createIbansByFile(inputStream, false);
-					} catch (IOException | SAXException e) {
-						throw new AppException(
-								HttpStatus.BAD_REQUEST, IBANS_BAD_REQUEST, "Problem in the file examination", e);
-					}
-				};
-				massiveRead(file, func, false);
-	}
-
-	private List<CheckItem> createIbansByFile(InputStream inputStream, boolean force) throws SAXException, IOException{
+	private List<CheckItem> createIbansByFile(InputStream inputStream) throws IOException{
 		// map file into model class
 		inputStream.reset();
 		IbansMassLoad ibansLoaded = CommonUtil.mapJSON(inputStream, IbansMassLoad.class);
@@ -493,31 +483,29 @@ public class IbanService {
 
 	private List<CheckItem> verifyIbansLoaded(IbansMassLoad ibansLoaded) {
 		List<CheckItem> checkItemList = new ArrayList<>();
-		// check PA
 		String paFiscalCode = ibansLoaded.getCreditorInstitutionCode();
 		Pa pa = null;
 		List<CodifichePa> encodings = null;
 		try {
+			// check PA
 			pa = getPaIfExists(paFiscalCode);
 
-			// check qr-code
+			// checks if the PA is associated with a qr-code (if this is not the case, the association is created)
 			encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
-			checkItemList.add(checkQrCode(pa, encodings));
+			this.checkQrCode(pa, encodings);
 
 		} catch (AppException e) {
 			checkItemList.add(
 					CheckItem.builder()
-					.title("CI fiscal Code")
+					.title("Check QR-CODE")
 					.value(paFiscalCode)
 					.valid(CheckItem.Validity.NOT_VALID)
-					.note("CI fiscal code not consistent")
+					.note(e.getHttpStatus()+" : "+e.getMessage())
 					.build());
 		}
 
 		if (pa != null) {
-			// retrieve CI ibans
-			//List<IbanValidiPerPa> ibansPA = ibanValidiPerPaRepository.findAllByFkPa(pa.getObjId());
-			checkItemList.addAll(checkIbans(pa, ibansLoaded.getIbans(), pa.getIbans(), encodings));
+			checkItemList.addAll(checkIbans(pa, ibansLoaded.getIbans(), encodings));
 		}
 
 		return checkItemList;
@@ -534,8 +522,7 @@ public class IbanService {
 	@java.lang.SuppressWarnings("java:S5042")
 	private List<MassiveCheck> massiveRead(
 			MultipartFile file,
-			BiFunction<InputStream, Boolean, List<CheckItem>> callback,
-			boolean force) {
+			BiFunction<InputStream, Boolean, List<CheckItem>> callback) {
 		List<MassiveCheck> massiveChecks = new ArrayList<>();
 		try {
 			// bytes and number of files counter
@@ -552,10 +539,10 @@ public class IbanService {
 
 						if (bytesCounter.totalBytes > thresholdSize) {
 							throw new AppException(
-									HttpStatus.BAD_REQUEST, IBANS_BAD_REQUEST, "Zip content too large");
+									HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Zip content too large");
 						}
 
-						return callback.apply(inputStream, force);
+						return callback.apply(inputStream, false);
 					};
 
 					// unzip the input stream
@@ -566,7 +553,7 @@ public class IbanService {
 						if (nOfZipFiles > thresholdEntries) {
 							throw new AppException(
 									HttpStatus.BAD_REQUEST,
-									IBANS_BAD_REQUEST,
+									FILE_BAD_REQUEST,
 									"Zip content has too many entries (check for hidden files)");
 						}
 
@@ -582,7 +569,7 @@ public class IbanService {
 					}
 		} catch (IOException e) {
 			throw new AppException(
-					HttpStatus.BAD_REQUEST, IBANS_BAD_REQUEST, "Problem when unzipping file", e);
+					HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem when unzipping file", e);
 		}
 		return massiveChecks;
 	}
@@ -602,7 +589,7 @@ public class IbanService {
 			ZipInputStream zis,
 			BiFunction<InputStream, Integer, List<CheckItem>> callback)
 					throws IOException {
-		File tempFile = File.createTempFile(zipEntry.getName(), "xml");
+		File tempFile = File.createTempFile(zipEntry.getName(), "");
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		int nBytes = 0;
 		if (!tempFile.isHidden() && !zipEntry.isDirectory()) {
@@ -668,25 +655,73 @@ public class IbanService {
 
 	/**
 	 * @param pa check if PA has QR-CODE encodings
-	 * @param codifichePaList
 	 */
-	private CheckItem checkQrCode(Pa pa, List<CodifichePa> codifichePaList) {
+	private void checkQrCode(Pa pa, List<CodifichePa> codifichePaList) {
 		boolean hasQrcodeEncoding =
 				codifichePaList.stream()
 				.anyMatch(elem -> elem.getFkCodifica().getIdCodifica().equals("QR-CODE"));
 
-		return CheckItem.builder()
-				.title("QR Code")
-				.value(pa.getIdDominio())
-				.valid(hasQrcodeEncoding ? CheckItem.Validity.VALID : CheckItem.Validity.NOT_VALID)
-				.note(hasQrcodeEncoding ? "QR-Code already exists" : "QR-Code not present")
-				.action(hasQrcodeEncoding ? "" : "ADD_QRCODE")
-				.build();
+		if (!hasQrcodeEncoding) {
+			Encoding encoding =
+					Encoding.builder()
+					.codeType(CodeTypeEnum.QR_CODE)
+					.encodingCode(pa.getIdDominio()) // for type QR-CODE = CF (11 characters - PA fiscal code)
+					.build();
+			encodingsService.createCreditorInstitutionEncoding(pa.getIdDominio(), encoding);
+		}
+
+	}
+	
+	/**
+	 * @param pa check if PA has Barcode encodings (only postal ibans) 
+	 */
+
+	private void checkBarcode(String ibanValue, Pa pa, List<CodifichePa> encodings) {
+		String ibanEncoding = ibanValue.substring(ibanValue.length()- 12);
+		boolean hasBarcodeEncoding =
+				encodings.stream()
+				.filter(
+						encoding ->
+						encoding
+						.getFkCodifica()
+						.getIdCodifica()
+						.equals(Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue())) 
+				.anyMatch(encoding -> encoding.getCodicePa().equals(ibanEncoding));
+
+		if (!hasBarcodeEncoding) {
+			Encoding encoding =
+					Encoding.builder()
+					.codeType(CodeTypeEnum.BARCODE_128_AIM)
+					.encodingCode(ibanEncoding) // for type BARCODE-128-AIM = CCPost (last 12 characters of postal iban value)
+					.build();
+			encodingsService.createCreditorInstitutionEncoding(pa.getIdDominio(), encoding);
+		}
+	}
+
+	private void checkAndSetup(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
+		// check validity date
+		CheckItem check = CommonUtil.checkValidityDate(iban.getValidityDate().toLocalDateTime());
+		if (check.getValid().equals(Validity.NOT_VALID)) {
+			throw new AppException(
+					HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
+		}
+		// check due date
+		check = CommonUtil.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
+		if (check.getValid().equals(Validity.NOT_VALID)) {
+			throw new AppException(
+					HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
+		}
+		// checks the PA is associated with a qr-code (if this is not the case, the association is created)
+		this.checkQrCode(existingCreditorInstitution, encodings);
+		if (isPostalIban(iban.getIbanValue())) {
+			// check and if it doesn't exist create BARCODE_128_AIM encoding
+			this.checkBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
+		}
 	}
 
 	private List<CheckItem> checkIbans(Pa pa, 
-			List<it.gov.pagopa.apiconfig.core.model.massiveloading.Iban> ibansLoaded,
-			List<IbanValidiPerPa> ibansPA, List<CodifichePa> encodings) {
+			List<it.gov.pagopa.apiconfig.core.model.massiveloading.Iban> ibansLoaded, List<CodifichePa> encodings) {
+		
 		List<CheckItem> checkItemList = new ArrayList<>();
 		
 		ibansLoaded.forEach(item -> {
@@ -697,56 +732,35 @@ public class IbanService {
 		        // check due date
 		        checkItemList.add(CommonUtil.checkDueDate(validityDate, dueDate));
 		        // check iban
-				checkItemList.add(getIbanCheckItem(pa, item.getIbanValue(), ibansPA, encodings));
+				checkItemList.add(getIbanCheck(pa, item.getIbanValue(), encodings));
 			}
 		);
 		return checkItemList;
 	}
 
-	private CheckItem getIbanCheckItem(Pa pa,
-			String iban, List<IbanValidiPerPa> ibansPA, List<CodifichePa> encodings) {
+	private CheckItem getIbanCheck(Pa pa,
+			String iban, List<CodifichePa> encodings) {
 		boolean valid = IBANValidator.getInstance().isValid(iban);
-		String note = "Iban not valid";
-		String action = null;
+		String note = valid ? "":"Iban not valid";
+		String action = "";
 
-		if (valid) {
-			
-			// check if postal Iban
-			if (iban.substring(5, 10).equals(postalIbanAbi)) {
-				// check that, if postal IBAN, then is not already associated with another Creditor Institution
-				List<IbanValidiPerPa> ibans = ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(iban);
-				if (!ibans.isEmpty()) {
-					note = "Postal iban already associated with another Creditor Institution. ";
-					action = "Change the IBAN or change the Creditor Institution to which it has been associated. ";
-				}
+		// check if postal Iban
+		if (this.isPostalIban(iban)) {
+			// check that, if postal IBAN, then is not already associated with another Creditor Institution
+			List<IbanValidiPerPa> ibans = ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(iban);
+			if (!ibans.isEmpty()) {
+				note = "Postal iban already associated with another Creditor Institution. ";
+				action = "Change the IBAN or change the Creditor Institution to which it has been associated. ";
 			}
-			
-			
-			/*
-			// check if iban is already been added
-			boolean found = ibansPA.stream().anyMatch(i -> i.getIbanAccredito().equals(iban));
-			if (found) {
-				note = "Iban already added. ";
+			// check and if it doesn't exist create BARCODE_128_AIM encoding
+			try {
+				this.checkBarcode(iban, pa, encodings);
+			} catch (AppException e) {
+				valid = false;
+				note = e.getHttpStatus()+" : "+e.getMessage();
+			}
+		}
 
-				String abiCode = iban.substring(5, 10);
-				if (abiCode.equals(postalIbanAbi)) {
-					Map<String, String> result = checkPostalCode(iban.substring(15), encodings);
-					note += result.get(NOTE_KEY);
-					action = result.get(ACTION_KEY);
-				}
-			} else {
-				String abiCode = iban.substring(5, 10);
-				// check if postal iban and then check that the related barcode-128-aim encoding exists
-				note = "New Iban. ";
-				if (abiCode.equals(postalIbanAbi)) {
-					Map<String, String> result = checkPostalCode(iban.substring(15), encodings);
-					note += result.get(NOTE_KEY);
-					action = result.get(ACTION_KEY);
-				}
-			}
-			*/
-		} 
-		
 		return CheckItem.builder()
 				.title("Iban")
 				.value(iban)
@@ -756,19 +770,4 @@ public class IbanService {
 				.build();
 	}
 
-	private Map<String, String> checkPostalCode(String ibanEncoding, List<CodifichePa> encodings) {
-		boolean encodingFound =
-				encodings.stream()
-				.filter(
-						encoding ->
-						encoding
-						.getFkCodifica()
-						.getIdCodifica()
-						.equals(Encoding.CodeTypeEnum.BARCODE_128_AIM.getValue()))
-				.anyMatch(encoding -> encoding.getCodicePa().equals(ibanEncoding));
-		Map<String, String> result = new HashMap<>();
-		result.put(ACTION_KEY, encodingFound ? "" : "ADD_ENCODING");
-		result.put(NOTE_KEY, encodingFound ? "Encoding already present." : "Encoding not found.");
-		return result;
-	}
 }
