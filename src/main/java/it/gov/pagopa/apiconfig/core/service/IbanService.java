@@ -493,7 +493,7 @@ public class IbanService {
 
 			// checks if the PA is associated with a qr-code (if this is not the case, the association is created)
 			encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
-			this.checkQrCode(pa, encodings);
+			this.createQrCode(pa, encodings);
 
 		} catch (AppException e) {
 			checkItemList.add(
@@ -655,9 +655,9 @@ public class IbanService {
 	}
 
 	/**
-	 * @param pa check if PA has QR-CODE encodings
+	 * @param pa check (and eventually creates) if PA has QR-CODE encodings
 	 */
-	private void checkQrCode(Pa pa, List<CodifichePa> codifichePaList) {
+	private void createQrCode(Pa pa, List<CodifichePa> codifichePaList) {
 		boolean hasQrcodeEncoding =
 				codifichePaList.stream()
 				.anyMatch(elem -> elem.getFkCodifica().getIdCodifica().equals("QR-CODE"));
@@ -674,10 +674,10 @@ public class IbanService {
 	}
 	
 	/**
-	 * @param pa check if PA has Barcode encodings (only postal ibans) 
+	 * @param pa check (and eventually creates) if PA has Barcode encodings (only postal ibans) 
 	 */
 
-	private void checkBarcode(String ibanValue, Pa pa, List<CodifichePa> encodings) {
+	private void createBarcode(String ibanValue, Pa pa, List<CodifichePa> encodings) {
 		String ibanEncoding = ibanValue.substring(ibanValue.length()- 12);
 		boolean hasBarcodeEncoding =
 				encodings.stream()
@@ -713,10 +713,10 @@ public class IbanService {
 					HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
 		}
 		// checks the PA is associated with a qr-code (if this is not the case, the association is created)
-		this.checkQrCode(existingCreditorInstitution, encodings);
+		this.createQrCode(existingCreditorInstitution, encodings);
 		if (isPostalIban(iban.getIbanValue())) {
 			// check and if it doesn't exist create BARCODE_128_AIM encoding
-			this.checkBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
+			this.createBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
 		}
 	}
 
@@ -755,7 +755,7 @@ public class IbanService {
 			}
 			// check and if it doesn't exist create BARCODE_128_AIM encoding
 			try {
-				this.checkBarcode(iban, pa, encodings);
+				this.createBarcode(iban, pa, encodings);
 			} catch (AppException e) {
 				valid = false;
 				note = e.getHttpStatus()+" : "+e.getMessage();
