@@ -1,19 +1,6 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCodifichePa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIban;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMaster;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMasters;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributes;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMasterValidityDateInsertedDate;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMasters;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa2;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPostalIbanEnhanced;
+import static it.gov.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
