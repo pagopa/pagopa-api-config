@@ -1,6 +1,8 @@
 function buildIbanCreate(iban) {
-    today = new Date()
-    today.setYear(today.getYear() + 1901)
+    let validityDate = new Date()
+    validityDate.setYear(validityDate.getYear() + 1901)
+    let dueDate = new Date() 
+    dueDate.setYear(dueDate.getYear() + 1902)
     return {
         "description": "Testing",
         "iban": iban,
@@ -11,14 +13,16 @@ function buildIbanCreate(iban) {
             "name": "0201138TS"
           }
         ],
-        "validity_date": today,
-        "due_date": today
+        "validity_date": validityDate,
+        "due_date": dueDate
       }
 }
 
 function buildIbanUpdate() {
-    today = new Date()
-    today.setYear(today.getYear() + 1)
+    let validityDate = new Date()
+    validityDate.setYear(validityDate.getYear() + 1901)
+    let dueDate = new Date() 
+    dueDate.setYear(dueDate.getYear() + 1902)
     return {
         "description": "Updated description testing",
         "iban": "IT99C0222211111000000003333",
@@ -29,8 +33,8 @@ function buildIbanUpdate() {
             "name": "0201138TS"
           }
         ],
-        "validity_date": today,
-        "due_date": today
+        "validity_date": validityDate,
+        "due_date": dueDate
       }
 }
 
