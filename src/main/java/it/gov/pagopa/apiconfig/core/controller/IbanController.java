@@ -486,7 +486,7 @@ public class IbanController {
 	  public ResponseEntity<Void> massiveCreateIcas(
 	      @NotNull
 	          @Parameter(
-	              description = "Zip file containing ICAs to create",
+	              description = "Zip file containing IBANs to create",
 	              required = true,
 	              content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
 	          @RequestParam("file")
