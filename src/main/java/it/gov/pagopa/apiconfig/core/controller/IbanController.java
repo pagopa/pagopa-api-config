@@ -483,10 +483,10 @@ public class IbanController {
 	  @PostMapping(
 	      value = "/ibans",
 	      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	  public ResponseEntity<Void> massiveCreateIcas(
+	  public ResponseEntity<Void> massiveCreateIbans(
 	      @NotNull
 	          @Parameter(
-	              description = "Zip file containing ICAs to create",
+	              description = "Zip file containing IBANs to create",
 	              required = true,
 	              content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
 	          @RequestParam("file")

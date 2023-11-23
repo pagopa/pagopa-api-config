@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -13,16 +13,18 @@ import org.modelmapper.spi.MappingContext;
 
 import it.gov.pagopa.apiconfig.core.model.massiveloading.Iban;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 
-public class ConvertIbansMassLoadToIbanMaster extends AbstractConverter<IbansMassLoad, ArrayList<IbanMaster>> {
+public class ConvertIbansMassLoadToIbanMaster extends AbstractConverter<IbansMassLoad, IbansMaster> {
 	
 	@Override
-	public ArrayList<IbanMaster> convert(
-		      MappingContext<IbansMassLoad, ArrayList<IbanMaster>> context) {
+	public IbansMaster convert(
+		      MappingContext<IbansMassLoad, IbansMaster> context) {
 		@Valid IbansMassLoad source = context.getSource();
-		ArrayList<IbanMaster> ibanMasterList = context.getDestination();
+		@Valid IbansMaster destination = context.getDestination();
+		List<IbanMaster> ibanMasterList = destination.getIbanMasterList();
 
 		for (Iban iban: source.getIbans()) {
 			
@@ -45,13 +47,13 @@ public class ConvertIbansMassLoadToIbanMaster extends AbstractConverter<IbansMas
 
 		}
 
-		return ibanMasterList;
+		return destination;
 		
 	}
 	
 	@Override
-	protected ArrayList<IbanMaster> convert(IbansMassLoad source) {
-		return new ArrayList<>();
+	protected IbansMaster convert(IbansMassLoad source) {
+		return new IbansMaster();
 	}
 
 }
