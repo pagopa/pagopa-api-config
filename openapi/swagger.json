@@ -7583,7 +7583,7 @@
         "tags": [
           "Ibans"
         ],
-        "operationId": "massiveCreateIcas_1",
+        "operationId": "massiveCreateIbans",
         "summary": "Upload a zip file containing the details of multiple ibans to create"
       }
     },
@@ -12066,34 +12066,6 @@
         ],
         "operationId": "updatePaymentServiceProvidersChannels",
         "summary": "Update a relation between PSP and channel"
-      }
-    },
-    "/populate": {
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "type": "string"
-        }
-      ],
-      "post": {
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          }
-        },
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "operationId": "populateIbanTables"
       }
     },
     "/refresh/config": {
