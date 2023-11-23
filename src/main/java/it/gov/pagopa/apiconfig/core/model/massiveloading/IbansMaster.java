@@ -3,8 +3,6 @@ package it.gov.pagopa.apiconfig.core.model.massiveloading;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
