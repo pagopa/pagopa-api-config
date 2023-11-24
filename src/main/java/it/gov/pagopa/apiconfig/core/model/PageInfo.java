@@ -42,4 +42,9 @@ public class PageInfo {
   @Schema(description = "Total number of pages", required = true)
   @PositiveOrZero
   Integer totalPages;
+
+  @JsonProperty("total_elements")
+  @Schema(description = "Total number of elements for all pages", required = true)
+  @PositiveOrZero
+  Long totalElements;
 }
