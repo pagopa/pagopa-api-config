@@ -10,7 +10,8 @@
     "page": 0,
     "limit": 50,
     "items_found": 1,
-    "total_pages": 1
+    "total_pages": 1,
+    "total_elements": 1
   }
 }
 
