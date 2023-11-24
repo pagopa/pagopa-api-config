@@ -259,7 +259,7 @@ public class IbanService {
 					}
 				});
 
-		if(ibanEnhancedList.isEmpty() && (label.equals(acaLabel) || label.equals(cupLabel))) {
+		if(ibanEnhancedList.isEmpty() && (acaLabel.equals(label) || cupLabel.equals(label))) {
 			IbanMaster lastPublishedIban = getLastPublishedIban(pa);
 			if(lastPublishedIban != null) {
 				ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
