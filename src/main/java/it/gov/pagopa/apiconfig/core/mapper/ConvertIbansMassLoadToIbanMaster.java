@@ -32,13 +32,13 @@ public class ConvertIbansMassLoadToIbanMaster extends AbstractConverter<IbansMas
 					.iban(iban.getIbanValue())
 					.description(iban.getDescription())
 					.fiscalCode(source.getCreditorInstitutionCode())
-					.dueDate(Timestamp.valueOf(LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.ISO_DATE_FORMAT_ZERO_OFFSET).parse(iban.getDueDate()))))
+					.dueDate(Timestamp.valueOf(LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(iban.getDueDate()))))
 					.build();
 
 
 			IbanMaster ibanMaster = IbanMaster.builder()
 					.description(source.getDescription())
-					.validityDate(Timestamp.valueOf(LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.ISO_DATE_FORMAT_ZERO_OFFSET).parse(iban.getValidityDate()))))
+					.validityDate(Timestamp.valueOf(LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(iban.getValidityDate()))))
 					.insertedDate(Timestamp.from(Instant.now()))
 					.iban(ibanEntity)
 					.build();	  
