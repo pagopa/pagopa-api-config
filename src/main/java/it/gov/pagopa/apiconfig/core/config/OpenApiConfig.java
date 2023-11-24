@@ -31,13 +31,13 @@ public class OpenApiConfig {
       @Value("${info.application.version}") String appVersion) {
     return new OpenAPI()
       .servers(List.of(new Server().url("http://localhost:8080"),
-          new Server().url("https://{host}/{basePath}")
+          new Server().url("https://{host}{basePath}")
               .variables(new ServerVariables()
                 .addServerVariable("host",
                   new ServerVariable()._enum(List.of("api.dev.platform.pagopa.it","api.uat.platform.pagopa.it","api.platform.pagopa.it"))
                       ._default("api.dev.platform.pagopa.it"))
-                .addServerVariable("basePath", new ServerVariable()._enum(List.of("apiconfig/auth/api/v1", "apiconfig/api/v1"))
-                  ._default("apiconfig/auth/api/v1"))
+                .addServerVariable("basePath", new ServerVariable()._enum(List.of("/apiconfig/auth/api/v1", "/apiconfig/api/v1"))
+                  ._default("/apiconfig/auth/api/v1"))
               )))
         .components(
             new Components()
