@@ -726,8 +726,8 @@ public class IbanService {
 		List<CheckItem> checkItemList = new ArrayList<>();
 		
 		ibansLoaded.forEach(item -> {
-			    LocalDateTime validityDate = LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.ISO_DATE_FORMAT_ZERO_OFFSET).parse(item.getValidityDate()));
-			    LocalDateTime dueDate = LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.ISO_DATE_FORMAT_ZERO_OFFSET).parse(item.getDueDate()));
+			    LocalDateTime validityDate = LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(item.getValidityDate()));
+			    LocalDateTime dueDate = LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(item.getDueDate()));
 			    // check validity date
 		        checkItemList.add(CommonUtil.checkValidityDate(validityDate));
 		        // check due date

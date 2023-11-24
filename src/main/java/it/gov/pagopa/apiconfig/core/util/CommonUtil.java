@@ -48,7 +48,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class CommonUtil {
 	
-   public static final String ISO_DATE_FORMAT_ZERO_OFFSET = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+   public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
   /**
    * @param page Page returned from the database
