@@ -11,8 +11,6 @@ fi
 
 mvn test -Dtest=OpenApiGenerationTest
 
-cp ./openapi/openapi.json ./openapi/openapi_auth.json
-
 if [ $(npm list -g | grep -c api-spec-converter) -eq 0 ]; then
   npm install -g api-spec-converter
 fi
