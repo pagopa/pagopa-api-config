@@ -54,6 +54,7 @@ public class CommonUtil {
         .limit(page.getSize())
         .totalPages(page.getTotalPages())
         .itemsFound(page.getNumberOfElements())
+        .totalItems(page.getTotalElements())
         .build();
   }
 

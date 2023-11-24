@@ -161,6 +161,7 @@ public class TestUtil {
     when(page.getNumberOfElements()).thenReturn(content.size());
     when(page.getNumber()).thenReturn(pageNumber);
     when(page.getSize()).thenReturn(limit);
+    when(page.getTotalElements()).thenReturn((long) content.size());
     when(page.getContent()).thenReturn(content);
     when(page.stream()).thenReturn(content.stream());
     return page;
