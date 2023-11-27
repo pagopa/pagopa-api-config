@@ -2,8 +2,8 @@ apiVersion: v2
 name: core
 description: APIs to manage configuration for CI and PSP of pagoPA
 type: application
-version: 0.96.0
-appVersion: 0.56.10-1-PAGOPA-1342-massive-iban-upload
+version: 0.97.0
+appVersion: 0.56.10-2-PAGOPA-1342-massive-iban-upload
 dependencies:
   - name: microservice-chart
     version: 2.8.0
