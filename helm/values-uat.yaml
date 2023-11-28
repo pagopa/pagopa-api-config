@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.56.10-1-PAGOPA-1342-massive-iban-upload"
+    tag: "0.56.10-3-PAGOPA-1342-massive-iban-upload"
     pullPolicy: Always
   livenessProbe:
     httpGet:
