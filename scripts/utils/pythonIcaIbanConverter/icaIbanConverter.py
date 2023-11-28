@@ -34,6 +34,8 @@ def icaToIban(icaFile):
     return json_output
 
 folder_name = sys.argv[1].rstrip('.zip') + '_iban'
+if(os.path.isdir(folder_name)):
+    os.rmdir(folder_name)
 os.mkdir(folder_name)
 zf = zipfile.ZipFile(sys.argv[1], 'r')
 for name in zf.namelist():
