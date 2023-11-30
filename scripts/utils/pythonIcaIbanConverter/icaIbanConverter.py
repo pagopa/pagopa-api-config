@@ -40,6 +40,8 @@ os.mkdir(folder_name)
 zf = zipfile.ZipFile(sys.argv[1], 'r')
 for name in zf.namelist():
     f = zf.open(name)
+    if(f.name.startswith('__MACOSX')):
+        continue
     out = icaToIban(f)
     completeName = os.path.join(folder_name, f.name.rstrip('.xml') + ".json")
     fileToSave = open(completeName, "w")
