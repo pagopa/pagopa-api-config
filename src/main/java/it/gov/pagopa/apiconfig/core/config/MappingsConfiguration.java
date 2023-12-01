@@ -1,8 +1,11 @@
 package it.gov.pagopa.apiconfig.core.config;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
+=======
+>>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -70,6 +73,10 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Station;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
+<<<<<<< HEAD
+=======
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
+>>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPsp;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPspDetails;
 import it.gov.pagopa.apiconfig.core.model.psp.Cdi;
@@ -199,7 +206,11 @@ public class MappingsConfiguration {
     ConvertPaStazionePaToCreditorInstitutionView convertPaStazionePaToCreditorInstitutionView =
         new ConvertPaStazionePaToCreditorInstitutionView();
     
+<<<<<<< HEAD
     Converter<IbansMassLoad, ArrayList<IbanMaster>> convertIbansMassLoadToIbanMaster = new ConvertIbansMassLoadToIbanMaster();
+=======
+    Converter<IbansMassLoad, IbansMaster> convertIbansMassLoadToIbanMaster = new ConvertIbansMassLoadToIbanMaster();
+>>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
 
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
@@ -319,7 +330,11 @@ public class MappingsConfiguration {
         .createTypeMap(IbanAttributeMaster.class, IbanLabel.class)
         .setConverter(convertIbanAttributeMasterToIbanLabel);
 	
+<<<<<<< HEAD
     mapper.createTypeMap(IbansMassLoad.class, new ArrayList<IbanMaster>().getClass())
+=======
+    mapper.createTypeMap(IbansMassLoad.class, IbansMaster.class)
+>>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
 			.setConverter(convertIbansMassLoadToIbanMaster);
     
     return mapper;

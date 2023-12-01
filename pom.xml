@@ -12,7 +12,11 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
+<<<<<<< HEAD
   <version>0.56.10-6-PAGOPA-1342-massive-iban-upload</version>
+=======
+  <version>0.56.10-10-PAGOPA-1342-massive-iban-upload</version>
+>>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti</description>
 
   <properties>

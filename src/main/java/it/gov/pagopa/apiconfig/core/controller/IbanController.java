@@ -483,10 +483,17 @@ public class IbanController {
 	  @PostMapping(
 	      value = "/ibans",
 	      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+<<<<<<< HEAD
 	  public ResponseEntity<Void> massiveCreateIcas(
 	      @NotNull
 	          @Parameter(
 	              description = "Zip file containing ICAs to create",
+=======
+	  public ResponseEntity<Void> massiveCreateIbans(
+	      @NotNull
+	          @Parameter(
+	              description = "Zip file containing IBANs to create",
+>>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
 	              required = true,
 	              content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
 	          @RequestParam("file")
