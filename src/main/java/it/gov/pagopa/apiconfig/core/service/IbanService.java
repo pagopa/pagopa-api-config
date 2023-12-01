@@ -58,14 +58,12 @@ import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
-import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
 import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 
 @Service
@@ -99,8 +97,6 @@ public class IbanService {
 	@Autowired private IbanAttributeRepository ibanAttributeRepository;
 
 	@Autowired private IbanAttributeMasterRepository ibanAttributeMasterRepository;
-
-	@Autowired private IbanValidiPerPaRepository ibanValidiPerPaRepository;
 
 	@Autowired private CodifichePaRepository codifichePaRepository;
 
@@ -746,13 +742,16 @@ public class IbanService {
 		String action = "";
 
 		// check if postal Iban
-		if (this.isPostalIban(iban)) {
-			// check that, if postal IBAN, then is not already associated with another Creditor Institution
-			List<IbanValidiPerPa> ibans = ibanValidiPerPaRepository.findAllByIbanAccreditoContainsIgnoreCase(iban);
-			if (!ibans.isEmpty()) {
-				note = "Postal iban already associated with another Creditor Institution. ";
+		if (valid && this.isPostalIban(iban)) {
+			
+			// if postal IBAN --> it can be associated with only one Creditor Institution  
+			if (ibanRepository.findByIban(iban).isPresent() && 
+					ibanRepository.findByIban(iban).get().getIbanMasters().stream().noneMatch(im -> im.getFkPa().equals(pa.getObjId()))) {
+				valid = false;
+				note = "Postal iban ["+iban+"] already associated with another Creditor Institution. ";
 				action = "Change the IBAN or change the Creditor Institution to which it has been associated. ";
 			}
+
 			// check and if it doesn't exist create BARCODE_128_AIM encoding
 			try {
 				this.createBarcode(iban, pa, encodings);
