@@ -4,15 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-<<<<<<< HEAD
-<<<<<<< HEAD
     "version": "0.57.0"
-=======
-    "version": "0.56.10-6-PAGOPA-1342-massive-iban-upload"
->>>>>>> e8d75bbf (Bump to version 0.56.10-6-PAGOPA-1342-massive-iban-upload [skip ci])
-=======
-    "version": "0.56.10-10-PAGOPA-1342-massive-iban-upload"
->>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
   },
   "host": "localhost:8080",
   "basePath": "/",
