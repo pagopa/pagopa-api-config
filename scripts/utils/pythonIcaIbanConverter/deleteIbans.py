@@ -1,6 +1,7 @@
 import oracledb
 import sys
 import csv
+import os
 
 data = []
 with open(sys.argv[1]) as csv_file:
