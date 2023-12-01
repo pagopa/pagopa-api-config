@@ -1,8 +1,5 @@
 package it.gov.pagopa.apiconfig.core.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -70,6 +67,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Station;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPsp;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPspDetails;
 import it.gov.pagopa.apiconfig.core.model.psp.Cdi;
@@ -88,7 +86,6 @@ import it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys;
 import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
 import it.gov.pagopa.apiconfig.starter.entity.FtpServers;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
-import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
 import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
 import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
@@ -199,7 +196,7 @@ public class MappingsConfiguration {
     ConvertPaStazionePaToCreditorInstitutionView convertPaStazionePaToCreditorInstitutionView =
         new ConvertPaStazionePaToCreditorInstitutionView();
     
-    Converter<IbansMassLoad, ArrayList<IbanMaster>> convertIbansMassLoadToIbanMaster = new ConvertIbansMassLoadToIbanMaster();
+    Converter<IbansMassLoad, IbansMaster> convertIbansMassLoadToIbanMaster = new ConvertIbansMassLoadToIbanMaster();
 
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
@@ -318,8 +315,8 @@ public class MappingsConfiguration {
     mapper
         .createTypeMap(IbanAttributeMaster.class, IbanLabel.class)
         .setConverter(convertIbanAttributeMasterToIbanLabel);
-	
-    mapper.createTypeMap(IbansMassLoad.class, new ArrayList<IbanMaster>().getClass())
+
+    mapper.createTypeMap(IbansMassLoad.class, IbansMaster.class)
 			.setConverter(convertIbansMassLoadToIbanMaster);
     
     return mapper;

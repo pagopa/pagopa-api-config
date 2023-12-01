@@ -5,10 +5,14 @@
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "version": "0.57.0"
 =======
     "version": "0.56.10-6-PAGOPA-1342-massive-iban-upload"
 >>>>>>> e8d75bbf (Bump to version 0.56.10-6-PAGOPA-1342-massive-iban-upload [skip ci])
+=======
+    "version": "0.56.10-10-PAGOPA-1342-massive-iban-upload"
+>>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
   },
   "host": "localhost:8080",
   "basePath": "/",
@@ -7587,7 +7591,11 @@
         "tags": [
           "Ibans"
         ],
+<<<<<<< HEAD
         "operationId": "massiveCreateIcas_1",
+=======
+        "operationId": "massiveCreateIbans",
+>>>>>>> branch 'PAGOPA-1342-massive-iban-upload' of https://github.com/pagopa/pagopa-api-config
         "summary": "Upload a zip file containing the details of multiple ibans to create"
       }
     },
