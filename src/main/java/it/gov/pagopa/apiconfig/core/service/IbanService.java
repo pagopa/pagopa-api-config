@@ -1,10 +1,7 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -27,6 +24,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
+import com.opencsv.exceptions.CsvException;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbanMassLoadCsv;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoadCsv;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.validator.routines.IBANValidator;
 import org.modelmapper.ModelMapper;
@@ -325,6 +329,77 @@ public class IbanService {
 		return abiCode.equals(postalIbanAbi);
 	}
 
+    public void manageMassiveIbanCsv(MultipartFile file) {
+        try {
+            List<IbanMassLoadCsv> x = validateCsv(file);
+            List<IbanMassLoadCsv> toInsert = new ArrayList<>();
+            List<IbanMassLoadCsv> toDelete = new ArrayList<>();
+            List<IbanMassLoadCsv> toUpdate = new ArrayList<>();
+            x.forEach(
+                ibanMassLoadCsvRow -> {
+                    if("I".equals(ibanMassLoadCsvRow.getOperazione())) {
+                        toInsert.add(ibanMassLoadCsvRow);
+                    } else if("D".equals(ibanMassLoadCsvRow.getOperazione())) {
+                        toDelete.add(ibanMassLoadCsvRow);
+                    } else if("U".equals(ibanMassLoadCsvRow.getOperazione())) {
+                        toUpdate.add(ibanMassLoadCsvRow);
+                    } else {
+                        throw new AppException(
+                                HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Column \"Operazione\" must be equal to either \"I\", \"D\" or \"U\"");
+                    }
+                }
+            );
+            IbansMassLoadCsv ibansMassLoadCsvInsert = IbansMassLoadCsv.builder().ibanRows(toInsert).build();
+            IbansMaster ibansMasterToInsert = IbansMaster.builder().build();
+            IbansMaster ibansMasterToDelete = IbansMaster.builder().build();
+            IbansMaster ibansMasterToUpdate = IbansMaster.builder().build();
+
+            modelMapper.map(ibansMassLoadCsvInsert, ibansMasterToInsert);
+            modelMapper.map(toDelete, ibansMasterToDelete);
+            modelMapper.map(toUpdate, ibansMasterToUpdate);
+
+            this.saveIbans(ibansMasterToInsert.getIbanMasterList());
+            this.updateIbans(ibansMasterToUpdate.getIbanMasterList());
+            this.deleteIbans(ibansMasterToDelete.getIbanMasterList());
+        } catch (IOException | RuntimeException e) {
+            throw new AppException(
+                    HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem in the file examination", e);
+        }
+    }
+
+    private List<IbanMassLoadCsv> validateCsv(MultipartFile file) throws IOException {
+        // read CSV
+        Reader reader =
+                new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+
+        // create mapping strategy to arrange the column name
+        HeaderColumnNameMappingStrategy<IbanMassLoadCsv> mappingStrategy =
+                new HeaderColumnNameMappingStrategy<>();
+        mappingStrategy.setType(IbanMassLoadCsv.class);
+
+        // execute validation
+        CsvToBean<IbanMassLoadCsv> parsedCSV =
+                new CsvToBeanBuilder<IbanMassLoadCsv>(reader)
+                        .withSeparator(',')
+                        .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                        .withOrderedResults(true)
+                        .withMappingStrategy(mappingStrategy)
+                        .withType(IbanMassLoadCsv.class)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .withThrowExceptions(false)
+                        .build();
+
+        List<IbanMassLoadCsv> y = parsedCSV.parse();
+        List<CsvException> errors = parsedCSV.getCapturedExceptions();
+
+        if (!errors.isEmpty()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            errors.forEach(error -> stringBuilder.append(String.format("|%s |", error.getMessage())));
+            throw new AppException(AppError.IBANS_BAD_REQUEST, stringBuilder);
+        }
+        return y;
+    }
+
 	private IbanMaster getLastPublishedIban(Pa pa) {
 		List<IbanMaster> activeIbans = pa.getIbanMasters().stream()
 				.filter(ibanPa -> ibanPa.getValidityDate().before(Timestamp.valueOf(LocalDateTime.now())))
@@ -513,7 +588,6 @@ public class IbanService {
 	 *
 	 * @param file MultiPartFile to analyze
 	 * @param callback function to apply to file
-	 * @param force boolean to bypass date verification
 	 * @return a List of massiveChecks corresponding to the zip entry.
 	 */
 	@java.lang.SuppressWarnings("java:S5042")
@@ -771,4 +845,51 @@ public class IbanService {
 				.build();
 	}
 
+    private void updateIbans(List<IbanMaster> ibanMasterList) {
+        manageIbanMasterList(ibanMasterList);
+    }
+
+    private void saveIbans(List<IbanMaster> ibanMasterList) {
+        List<Iban> ibanToSaveList = new ArrayList<>();
+        for(IbanMaster loadedIbanMaster : ibanMasterList) {
+            if(ibanRepository.findByIban(loadedIbanMaster.getIban().getIban()).isEmpty()) {
+                ibanToSaveList.add(loadedIbanMaster.getIban());
+            }
+        }
+        ibanRepository.saveAll(ibanToSaveList);
+        manageIbanMasterList(ibanMasterList);
+    }
+
+    private void deleteIbans(List<IbanMaster> ibanMasterList) {
+        List<IbanAttributeMaster> ibanAttributeMastersToDeleteList = new ArrayList<>();
+        List<Iban> ibanToDeleteList = new ArrayList<>();
+        for(IbanMaster ibanMaster : ibanMasterList) {
+            ibanAttributeMastersToDeleteList.addAll(ibanMaster.getIbanAttributesMasters());
+            if(ibanMasterRepository.findByFkIban(ibanMaster.getFkIban()).size() == 1) {
+                ibanToDeleteList.add(ibanMaster.getIban());
+            }
+        }
+        ibanAttributeMasterRepository.deleteAll(ibanAttributeMastersToDeleteList);
+        ibanMasterRepository.deleteAll(ibanMasterList);
+        ibanRepository.deleteAll(ibanToDeleteList);
+    }
+
+    private void manageIbanMasterList(List<IbanMaster> ibanMasterList) {
+        List<IbanMaster> ibanMasterToSaveList = new ArrayList<>();
+        for (IbanMaster loadedIbanMaster : ibanMasterList) {
+            List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(loadedIbanMaster.getFkIban(), loadedIbanMaster.getFkPa());
+            if (CollectionUtils.isNotEmpty(m)) {
+                // there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
+                loadedIbanMaster.setObjId(m.get(0).getObjId());
+                // update the properties of the existing iban master
+                modelMapper.map(loadedIbanMaster, m.get(0));
+                loadedIbanMaster = m.get(0);
+            } else {
+                throw new AppException(AppError.IBAN_NOT_FOUND,
+                        "Association " + loadedIbanMaster.getIban().getIban() + " and " + loadedIbanMaster.getPa().getIdDominio() + " not found");
+            }
+            ibanMasterToSaveList.add(loadedIbanMaster);
+        }
+        ibanMasterRepository.saveAll(ibanMasterToSaveList);
+    }
 }
