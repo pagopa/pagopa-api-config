@@ -1,13 +1,13 @@
 package it.gov.pagopa.apiconfig.core.model.massiveloading;
 
-import com.opencsv.bean.CsvBindByName;
+import java.util.List;
+
+import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import javax.validation.constraints.Size;
-import java.util.List;
 
 @Getter
 @Setter
