@@ -356,7 +356,7 @@ public class IbanService {
 
             this.insertIbans(ibansMasterToInsert.getIbanMasterList());
             this.updateIbans(ibansMasterToUpdate.getIbanMasterList());
-            //this.deleteIbans(ibansMasterToDelete.getIbanMasterList());
+            this.deleteIbans(ibansMasterToDelete.getIbanMasterList());
         } catch (IOException | RuntimeException e) {
             throw new AppException(
                     HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem in the file examination - " + e.getMessage(), e);
@@ -824,7 +824,7 @@ public class IbanService {
 			
 			// if postal IBAN --> it can be associated with only one Creditor Institution  
 			if (ibanRepository.findByIban(iban).isPresent()  
-					&& !ibanRepository.findByIban(iban).get().getIbanMasters().isEmpty() // check that it is not an orphan iban
+					&& !ibanRepository.findByIban(iban).get().getIbanMasters().isEmpty() // check that it is not an orphan iban (ie without associations in the iban_master table)
 					&& ibanRepository.findByIban(iban).get().getIbanMasters().stream().noneMatch(im -> im.getFkPa().equals(pa.getObjId()))) {
 				valid = false;
 				note = "Postal iban ["+iban+"] already associated with another Creditor Institution. ";
@@ -903,18 +903,14 @@ public class IbanService {
     	ibanMasterRepository.saveAll(ibanMasterToUpdateList);
     }
 
-    
     private void deleteIbans(List<IbanMaster> ibanMasterList) {
-        List<IbanAttributeMaster> ibanAttributeMastersToDeleteList = new ArrayList<>();
         List<Iban> ibanToDeleteList = new ArrayList<>();
-        for(IbanMaster ibanMaster : ibanMasterList) {
-            ibanAttributeMastersToDeleteList.addAll(ibanMaster.getIbanAttributesMasters());
-            if(ibanMasterRepository.findByFkIban(ibanMaster.getFkIban()).size() == 1) {
-                ibanToDeleteList.add(ibanMaster.getIban());
-            }
+        for(IbanMaster loadedIbanMaster : ibanMasterList) {
+        	Iban iban = loadedIbanMaster.getIban();
+    		// checks if the iban exists
+    		Iban ibanToDelete = ibanRepository.findByIban(iban.getIban()).orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban.getIban()));
+    		ibanToDeleteList.add(ibanToDelete);
         }
-        ibanAttributeMasterRepository.deleteAll(ibanAttributeMastersToDeleteList);
-        ibanMasterRepository.deleteAll(ibanMasterList);
         ibanRepository.deleteAll(ibanToDeleteList);
     }
 
