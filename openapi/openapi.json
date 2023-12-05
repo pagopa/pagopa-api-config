@@ -4,14 +4,14 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.57.0"
+    "version": "0.57.0-1-PAGOPA-1342-massive-iban-upload"
   },
   "servers": [
     {
       "url": "http://localhost:8080"
     },
     {
-      "url": "https://{host}/{basePath}",
+      "url": "https://{host}{basePath}",
       "variables": {
         "host": {
           "default": "api.dev.platform.pagopa.it",
@@ -22,10 +22,10 @@
           ]
         },
         "basePath": {
-          "default": "apiconfig/auth/api/v1",
+          "default": "/apiconfig/auth/api/v1",
           "enum": [
-            "apiconfig/auth/api/v1",
-            "apiconfig/api/v1"
+            "/apiconfig/auth/api/v1",
+            "/apiconfig/api/v1"
           ]
         }
       }
@@ -9438,6 +9438,156 @@
         }
       ]
     },
+    "/creditorinstitutions/ibans": {
+      "post": {
+        "tags": [
+          "Ibans"
+        ],
+        "summary": "Upload a zip file containing the details of multiple ibans to create",
+        "operationId": "massiveCreateIbans",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "Zip file containing IBANs to create",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "X-Request-Id",
+          "in": "header",
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
     "/creditorinstitutions/view": {
       "get": {
         "tags": [
@@ -18178,7 +18328,7 @@
           "items_found",
           "limit",
           "page",
-          "total_elements",
+          "total_items",
           "total_pages"
         ],
         "type": "object",
@@ -18203,9 +18353,9 @@
             "description": "Total number of pages",
             "format": "int32"
           },
-          "total_elements": {
+          "total_items": {
             "type": "integer",
-            "description": "Total number of elements for all pages",
+            "description": "Total number of items for all pages",
             "format": "int64"
           }
         }

@@ -1,5 +1,11 @@
 package it.gov.pagopa.apiconfig.core.config;
 
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import it.gov.pagopa.apiconfig.core.mapper.ConvertBrokerDetailsToIntermediariPa;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertBrokerPspDetailsToIntermediariPsp;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertCanaleTipoVersamentoToPaymentType;
@@ -16,6 +22,7 @@ import it.gov.pagopa.apiconfig.core.mapper.ConvertEncodingToCodifichePa;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertFtpServersToFtpServer;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertIbanAttributeMasterToIbanLabel;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertIbanValidiPerPaToIban;
+import it.gov.pagopa.apiconfig.core.mapper.ConvertIbansMassLoadToIbanMaster;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertInformativeContoAccreditoMasterRepositoryToIca;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertInformativePaMasterToCounterpartTable;
 import it.gov.pagopa.apiconfig.core.mapper.ConvertIntermediariPaToBroker;
@@ -59,6 +66,8 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ica;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Station;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPsp;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPspDetails;
 import it.gov.pagopa.apiconfig.core.model.psp.Cdi;
@@ -90,16 +99,12 @@ import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
 import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MappingsConfiguration {
 
-  @Bean
+
+@Bean
   ModelMapper modelMapper() {
 
     ModelMapper mapper = new ModelMapper();
@@ -190,6 +195,8 @@ public class MappingsConfiguration {
 
     ConvertPaStazionePaToCreditorInstitutionView convertPaStazionePaToCreditorInstitutionView =
         new ConvertPaStazionePaToCreditorInstitutionView();
+    
+    Converter<IbansMassLoad, IbansMaster> convertIbansMassLoadToIbanMaster = new ConvertIbansMassLoadToIbanMaster();
 
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
@@ -309,6 +316,9 @@ public class MappingsConfiguration {
         .createTypeMap(IbanAttributeMaster.class, IbanLabel.class)
         .setConverter(convertIbanAttributeMasterToIbanLabel);
 
+    mapper.createTypeMap(IbansMassLoad.class, IbansMaster.class)
+			.setConverter(convertIbansMassLoadToIbanMaster);
+    
     return mapper;
   }
 }

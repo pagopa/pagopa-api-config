@@ -1,6 +1,19 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.*;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockCodifichePa;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIban;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMaster;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMasters;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributes;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMasterValidityDateInsertedDate;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMasters;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPa2;
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPostalIbanEnhanced;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,28 +27,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
-import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionEncodings;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
-import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
-import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import it.gov.pagopa.apiconfig.starter.entity.Iban;
-import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
-import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
-import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
-import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
-import it.gov.pagopa.apiconfig.starter.entity.Pa;
-import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
-import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -45,7 +38,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import javax.validation.ConstraintViolationException;
+
+import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -57,6 +53,32 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import it.gov.pagopa.apiconfig.ApiConfig;
+import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionEncodings;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
+import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
+import it.gov.pagopa.apiconfig.starter.entity.Iban;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttribute;
+import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
+import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
+import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.repository.CodifichePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanAttributeRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 
 @SpringBootTest(classes = ApiConfig.class)
 class IbanServiceTest {
@@ -70,6 +92,8 @@ class IbanServiceTest {
   @MockBean private IbanAttributeRepository ibanAttributeRepository;
 
   @MockBean private IbanAttributeMasterRepository ibanAttributeMasterRepository;
+  
+  @MockBean private CodifichePaRepository codifichePaRepository;
 
   @MockBean private AzureStorageInteraction azureStorageInteraction;
 
@@ -1028,5 +1052,40 @@ class IbanServiceTest {
                 ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "testAca");
 
         assertEquals(0, result.getIbanEnhancedList().size());
+    }
+    
+    @Test
+    void massiveCreateIbans_ok() throws IOException {
+    	File zip = TestUtil.readFile("file/massiveIbansValid.zip");
+    	MockMultipartFile file =
+    			new MockMultipartFile(
+    					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+    	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+    	try {
+    		ibanService.createMassiveIbans(file);
+    	} catch (Exception e) {
+    		fail(e);
+    	}
+    }
+    
+    @Test
+    void massiveCreateIbans_ko() throws IOException {
+    	File zip = TestUtil.readFile("file/massiveIbansBad.zip");
+    	MockMultipartFile file =
+    			new MockMultipartFile(
+    					"file",
+    					zip.getName(),
+    					MediaType.MULTIPART_FORM_DATA_VALUE,
+    					new FileInputStream(zip));
+    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+    	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong()))
+    	.thenReturn(Lists.list(getMockCodifichePa()));
+    	try {
+    		ibanService.createMassiveIbans(file);
+    		fail();
+    	} catch (AppException e) {
+    		assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+    	}
     }
 }
