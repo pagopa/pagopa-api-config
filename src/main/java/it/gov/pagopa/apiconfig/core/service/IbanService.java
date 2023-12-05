@@ -745,8 +745,9 @@ public class IbanService {
 		if (valid && this.isPostalIban(iban)) {
 			
 			// if postal IBAN --> it can be associated with only one Creditor Institution  
-			if (ibanRepository.findByIban(iban).isPresent() && 
-					ibanRepository.findByIban(iban).get().getIbanMasters().stream().noneMatch(im -> im.getFkPa().equals(pa.getObjId()))) {
+			if (ibanRepository.findByIban(iban).isPresent() 
+					&& !ibanRepository.findByIban(iban).get().getIbanMasters().isEmpty() // check that it is not an orphan iban 
+					&& ibanRepository.findByIban(iban).get().getIbanMasters().stream().noneMatch(im -> im.getFkPa().equals(pa.getObjId()))) {
 				valid = false;
 				note = "Postal iban ["+iban+"] already associated with another Creditor Institution. ";
 				action = "Change the IBAN or change the Creditor Institution to which it has been associated. ";
