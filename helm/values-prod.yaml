@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.57.0-1-PAGOPA-1342-massive-iban-upload"
+    tag: "0.57.1"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -135,7 +135,7 @@ microservice-chart: &microservice-chart
             labelSelector:
               matchLabels:
                 app.kubernetes.io/instance: pagopaapiconfig-oracle
-            namespaces: [ "apiconfig" ]
+            namespaces: ["apiconfig"]
             topologyKey: topology.kubernetes.io/zone
 # Configuration used to update image tag (stable or canary) by pipeline
 microservice-chart:
