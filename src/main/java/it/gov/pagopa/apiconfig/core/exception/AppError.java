@@ -214,7 +214,7 @@ public enum AppError {
       "IBAN not associated",
       "The IBAN with code %s is not associated to the creditor institution %s"),
   
-  IBANS_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Iban massive loading bad request", "Iban file is not valid: %s"),
+  IBANS_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Iban massive loading bad request", "File is not valid: %s"),
 
   POSTAL_IBAN_ALREADY_ASSOCIATED(
       HttpStatus.CONFLICT,
