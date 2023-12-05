@@ -128,6 +128,15 @@ microservice-chart: &microservice-chart
                 operator: In
                 values:
                   - user
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: pagopaapiconfig-oracle
+            namespaces: [ "apiconfig" ]
+            topologyKey: topology.kubernetes.io/zone
 # Configuration used to update image tag (stable or canary) by pipeline
 microservice-chart:
   !!merge <<: *microservice-chart
