@@ -205,31 +205,6 @@ create table NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_DETAIL
         foreign key (FK_INFORMATIVA_CONTO_ACCREDITO_MASTER)
             references NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER
 );
-create view NODO4_CFG.IBAN_VALIDI_PER_PA
-as
-select MAS.FK_PA,
-       DET.IBAN_ACCREDITO,
-       MAS.DATA_INIZIO_VALIDITA,
-       MAS.DATA_PUBBLICAZIONE,
-       MAS.RAGIONE_SOCIALE,
-       nullif(DET.ID_MERCHANT, '')     ID_MERCHANT,
-       nullif(DET.ID_BANCA_SELLER, '') ID_BANCA_SELLER,
-       nullif(DET.CHIAVE_AVVIO, '')    CHIAVE_AVVIO,
-       nullif(DET.CHIAVE_ESITO, '')    CHIAVE_ESITO,
-       DET.OBJ_ID                      OBJ_ID,
-       MAS.OBJ_ID                      MASTER_OBJ
-from NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER MAS
-         join (
-    select max(OBJ_ID) OBJ_ID
-    from NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER
-    where DATA_INIZIO_VALIDITA <= current_timestamp
-    group by FK_PA
-    having max(DATA_INIZIO_VALIDITA) <= current_timestamp
-) RIGHT_ID_BY_PK
-              on MAS.OBJ_ID = RIGHT_ID_BY_PK.OBJ_ID
-         join NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_DETAIL DET
-              on MAS.OBJ_ID = DET.FK_INFORMATIVA_CONTO_ACCREDITO_MASTER;
-
 
 
 create table NODO4_CFG.INFORMATIVE_PA_MASTER
@@ -675,7 +650,9 @@ create table NODO4_CFG.IBAN_MASTER
             references NODO4_CFG.PA,
     constraint FK_IBAN
             foreign key (FK_IBAN)
-                references NODO4_CFG.IBAN
+                references NODO4_CFG.IBAN,
+    constraint UQ_IBAN_PA
+        unique (FK_PA, FK_IBAN)
 );
 create table NODO4_CFG.IBAN_ATTRIBUTES_MASTER
 (
@@ -691,3 +668,54 @@ create table NODO4_CFG.IBAN_ATTRIBUTES_MASTER
             foreign key (FK_IBAN_ATTRIBUTE)
                 references NODO4_CFG.IBAN_ATTRIBUTES
 );
+
+-- create view NODO4_CFG.IBAN_VALIDI_PER_PA
+-- as
+-- select MAS.FK_PA,
+--       DET.IBAN_ACCREDITO,
+--       MAS.DATA_INIZIO_VALIDITA,
+--       MAS.DATA_PUBBLICAZIONE,
+--       MAS.RAGIONE_SOCIALE,
+--       nullif(DET.ID_MERCHANT, '')     ID_MERCHANT,
+--       nullif(DET.ID_BANCA_SELLER, '') ID_BANCA_SELLER,
+--       nullif(DET.CHIAVE_AVVIO, '')    CHIAVE_AVVIO,
+--       nullif(DET.CHIAVE_ESITO, '')    CHIAVE_ESITO,
+--       DET.OBJ_ID                      OBJ_ID,
+--       MAS.OBJ_ID                      MASTER_OBJ
+-- from NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER MAS
+--         join (
+--    select max(OBJ_ID) OBJ_ID
+--    from NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_MASTER
+--    where DATA_INIZIO_VALIDITA <= current_timestamp
+--    group by FK_PA
+--    having max(DATA_INIZIO_VALIDITA) <= current_timestamp
+--) RIGHT_ID_BY_PK
+--              on MAS.OBJ_ID = RIGHT_ID_BY_PK.OBJ_ID
+--         join NODO4_CFG.INFORMATIVE_CONTO_ACCREDITO_DETAIL DET
+--              on MAS.OBJ_ID = DET.FK_INFORMATIVA_CONTO_ACCREDITO_MASTER;
+
+CREATE OR REPLACE VIEW NODO4_CFG.IBAN_VALIDI_PER_PA AS
+	   SELECT mas.fk_pa,
+       det.iban          AS iban_accredito,
+       mas.validity_date AS data_inizio_validita,
+       mas.INSERTED_DATE AS data_pubblicazione,
+       p.ID_DOMINIO   	 AS ragione_sociale,
+       NULL              AS id_merchant,
+       'NA'              AS id_banca_seller,
+       NULL              AS chiave_avvio,
+       NULL              AS chiave_esito,
+       mas.OBJ_ID 		 AS obj_id,
+       mas.obj_id        AS master_obj
+	FROM   ((NODO4_CFG.iban_master mas
+         JOIN (
+         SELECT NODO4_CFG.iban_master.obj_id AS obj_id
+               FROM   NODO4_CFG.iban_master
+               WHERE  ( NODO4_CFG.iban_master.validity_date <= current_timestamp )
+               ) right_id_by_pk ON (( mas.obj_id = right_id_by_pk.obj_id )))
+        JOIN NODO4_CFG.iban det
+          ON (( mas.fk_iban = det.obj_id ))
+        JOIN NODO4_CFG.PA p ON (( mas.FK_PA = p.OBJ_ID)) 
+          ); 
+
+
+
