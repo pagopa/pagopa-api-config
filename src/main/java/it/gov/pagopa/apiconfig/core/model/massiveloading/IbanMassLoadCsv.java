@@ -21,13 +21,13 @@ public class IbanMassLoadCsv {
     @CsvBindByName(required = true, column = "ragionesociale")
     private String ragioneSociale;
 
-    @CsvBindByName(required = true, column = "descrizione")
+    @CsvBindByName(required = false, column = "descrizione")
     private String description;
 
     @CsvBindByName(required = true, column = "iban")
     private String iban;
 
-    @CsvBindByName(required = true, column = "idsellerbank")
+    @CsvBindByName(required = false, column = "idsellerbank")
     private String idSellerBank;
 
     @CsvBindByName(required = true, column = "dataattivazioneiban")
