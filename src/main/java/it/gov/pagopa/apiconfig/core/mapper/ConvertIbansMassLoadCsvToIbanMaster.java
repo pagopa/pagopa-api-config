@@ -9,11 +9,14 @@ import org.modelmapper.spi.MappingContext;
 import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ConvertIbansMassLoadCsvToIbanMaster extends AbstractConverter<IbansMassLoadCsv, IbansMaster> {
+	
+	public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
 	
 	@Override
 	public IbansMaster convert(
@@ -34,7 +37,7 @@ public class ConvertIbansMassLoadCsvToIbanMaster extends AbstractConverter<Ibans
 
 			IbanMaster ibanMaster = IbanMaster.builder()
 					.description(ibanRow.getDescription())
-					.validityDate(Timestamp.valueOf(LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(ibanRow.getIbanActiveDate()))))
+					.validityDate(Timestamp.valueOf(LocalDate.from(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN).parse(ibanRow.getIbanActiveDate())).atStartOfDay()))
 					.insertedDate(Timestamp.from(Instant.now()))
 					.iban(ibanEntity)
 					.build();	  
