@@ -483,7 +483,7 @@ public class IbanController {
 	  @PostMapping(
 	      value = "/ibans",
 	      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	  public ResponseEntity<Void> massiveCreateIbans(
+  public ResponseEntity<Void> massiveCreateIbans(
 	      @NotNull
 	          @Parameter(
 	              description = "Zip file containing IBANs to create",
@@ -508,7 +508,7 @@ public class IbanController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "200",
                             description = "OK",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
                     @ApiResponse(
@@ -548,7 +548,7 @@ public class IbanController {
     @PostMapping(
             value = "/ibans/csv",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Void> massiveCreateIbansCsv(
+  public ResponseEntity<Void> massiveCreateIbansCsv(
             @NotNull
             @Parameter(
                     description = "CSV file regarding various Ibans actions",
@@ -557,6 +557,6 @@ public class IbanController {
             @RequestParam("file")
             MultipartFile file) {
         ibansService.createMassiveIbansByCsv(file);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

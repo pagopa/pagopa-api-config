@@ -1,19 +1,6 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCodifichePa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIban;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMaster;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributeMasters;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanAttributes;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEntity;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMasterValidityDateInsertedDate;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMaster_2;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanMasters;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa2;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPostalIbanEnhanced;
+import static it.gov.pagopa.apiconfig.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -1083,6 +1070,55 @@ class IbanServiceTest {
     	.thenReturn(Lists.list(getMockCodifichePa()));
     	try {
     		ibanService.createMassiveIbans(file);
+    		fail();
+    	} catch (AppException e) {
+    		assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+    	}
+    }
+    
+    @Test
+    void massiveCreateIbansByCsv_ok() throws IOException {
+    	
+    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+    	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+    	when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any())).thenReturn(List.of(getMockIbanMaster_2()));
+        
+    	File zip = TestUtil.readFile("file/massiveIbansValid_Insert.csv");
+    	MockMultipartFile file =
+    			new MockMultipartFile(
+    					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+    	try {
+    		ibanService.createMassiveIbansByCsv(file);
+    	} catch (Exception e) {
+    		fail(e);
+    	}
+    	
+    	Optional<Iban> ibanEntity = Optional.of(Iban.builder().iban("1234567898000").description("mock").build());
+    	when(ibanRepository.findByIban(anyString())).thenReturn(ibanEntity);
+    	
+    	zip = TestUtil.readFile("file/massiveIbansValid_Update_Delete.csv");
+    	file =
+    			new MockMultipartFile(
+    					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+    	try {
+    		ibanService.createMassiveIbansByCsv(file);
+    	} catch (Exception e) {
+    		fail(e);
+    	}
+    }
+    
+    @Test
+    void massiveCreateIbansByCsv_ko() throws IOException {
+    	
+    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+    	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+        
+    	File zip = TestUtil.readFile("file/massiveIbansValid_Bad.csv");
+    	MockMultipartFile file =
+    			new MockMultipartFile(
+    					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+    	try {
+    		ibanService.createMassiveIbansByCsv(file);
     		fail();
     	} catch (AppException e) {
     		assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
