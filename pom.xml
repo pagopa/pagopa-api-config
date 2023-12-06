@@ -12,7 +12,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-  <version>0.57.4</version>
+  <version>0.57.0-2-PAGOPA-1378-sviluppo-caricamento-massivo-iban-da-csv</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti</description>
 
   <properties>
@@ -29,7 +29,7 @@
     <postgresql-version>42.5.1</postgresql-version>
     <azure.storage.table.version>8.6.6</azure.storage.table.version>
     <testcontainer.version>1.17.6</testcontainer.version>
-    <starter.version>1.16.0</starter.version>
+    <starter.version>1.17.0</starter.version>
   </properties>
 
   <repositories>
