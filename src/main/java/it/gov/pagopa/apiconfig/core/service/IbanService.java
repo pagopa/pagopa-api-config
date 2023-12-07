@@ -356,7 +356,7 @@ public class IbanService {
 
             this.insertIbans(ibansMasterToInsert.getIbanMasterList());
             this.updateIbans(ibansMasterToUpdate.getIbanMasterList());
-            this.deleteIbans(ibansMasterToDelete.getIbanMasterList());
+            this.deleteIbans(ibansMasterToDelete.getIbanMasterList(), ibansMasterToInsert.getIbanMasterList());
         } catch (IOException | RuntimeException e) {
             throw new AppException(
                     HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem in the file examination - " + e.getMessage(), e);
@@ -914,54 +914,52 @@ public class IbanService {
     	ibanMasterRepository.saveAll(ibanMasterToUpdateList);
     }
 
-    private void deleteIbans(List<IbanMaster> ibanMasterList) {
-        List<Iban> ibanToDeleteList = new ArrayList<>();
+    private void deleteIbans(List<IbanMaster> ibanMasterDeleteList, List<IbanMaster> ibanMasterInsertList) {
+        List<Long> ibanToDeleteList = new ArrayList<>();
         List<Long> ibanMasterIdToDeleteList = new ArrayList<>();
-        for(IbanMaster loadedIbanMaster : ibanMasterList) {
+        List<Long> ibanAttributeMasterToDeleteList = new ArrayList<>();
+        for(IbanMaster loadedIbanMaster : ibanMasterDeleteList) {
         	Iban iban = loadedIbanMaster.getIban();
         	// checks if the iban exists
     		Iban ibanToDelete = ibanRepository.findByIban(iban.getIban()).orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban.getIban()));
     		
-    		// before add check that the iban is not already present in the list (two or more rows with the same iban in the file) 
-    		// and has only one relationship in the iban_master table (delete on cascade)
-    		if (ibanToDeleteList.stream().filter(i -> i.getIban().equals(iban.getIban())).findAny().isEmpty() && 
-    				(ibanToDelete.getIbanMasters().isEmpty() || ibanToDelete.getIbanMasters().size() == 1)) {
+    		
+    		/*if (ibanToDeleteList.stream().filter(i -> i.getIban().equals(iban.getIban())).findAny().isEmpty() 
+    				&& null != ibanToDelete.getIbanMasters() 
+    				&& (ibanToDelete.getIbanMasters().isEmpty() || ibanToDelete.getIbanMasters().size() == 1)) {
     			ibanToDeleteList.add(ibanToDelete);
     		} else {
     		  // delete only the relation in the iban_master
     		  Pa pa = this.getPaIfExists(iban.getFiscalCode());	
+    		  // there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
     		  List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
-    		  ibanMasterIdToDeleteList.add(m.get(0).getObjId());	
-    		}
+    		  ibanMasterIdToDeleteList.add(m.get(0).getObjId());
+    		  ibanAttributeMasterToDeleteList.addAll (m.get(0).getIbanAttributesMasters().stream()
+                      .map(IbanAttributeMaster::getObjId).collect(Collectors.toList()));
+    		}*/
     		
-    		/*	
-    		if (ibanToDeleteList.stream().filter(i -> i.getIban().equals(iban.getIban())).findAny().isEmpty()) {
-    			
-    			List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
-    			
-    			if (!ibanToDelete.getIbanMasters().isEmpty()) {
-    				ibanToDelete.removeIbanMaster(m.get(0));
-    			} else {
-    				ibanToDelete.setIbanMasters(m);
-    			}
-    			
-    			//ibanToDelete.setIbanMasters());
-    			
-    			
-    			ibanToDeleteList.add(ibanToDelete);
-    			
-    			ibanMasterRepository.deleteAllById(null);
-    		}*/
-    		/*} else {
-    			// delete only the relation in iban_master
-    			Pa pa = this.getPaIfExists(iban.getFiscalCode());
-    			List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
-    			// there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
-    			ibanMasterRepository.delete(m.get(0));
-    		}*/
+    		// before add check:
+    		// 1. the iban is not already present in the list (two or more delete rows in the file with the same iban)
+    		// 2. the same iban is not present in the insert list 
+    		// 3. has only one relationship in the iban_master table
+    		if (ibanToDeleteList.stream().filter(i -> ibanToDelete.getObjId().equals(i)).findAny().isEmpty()
+    				&& ibanMasterInsertList.stream().filter(ins -> ins.getIban().getIban().equals(ibanToDelete.getIban())).findAny().isEmpty()
+    				&& null != ibanToDelete.getIbanMasters() 
+    				&& (ibanToDelete.getIbanMasters().isEmpty() || ibanToDelete.getIbanMasters().size() == 1)){
+    			ibanToDeleteList.add(ibanToDelete.getObjId());
+    		}
+    		// delete the relation in the iban_master
+    		Pa pa = this.getPaIfExists(iban.getFiscalCode());	
+    		// there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
+    		List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
+    		ibanMasterIdToDeleteList.add(m.get(0).getObjId());
+    		ibanAttributeMasterToDeleteList.addAll (m.get(0).getIbanAttributesMasters().stream()
+    				.map(IbanAttributeMaster::getObjId).collect(Collectors.toList()));
+    		
         }
-        ibanRepository.deleteAll(ibanToDeleteList);
+        ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDeleteList);
         ibanMasterRepository.deleteByIds(ibanMasterIdToDeleteList);
+        ibanRepository.deleteByIds(ibanToDeleteList);
     }
 
     
