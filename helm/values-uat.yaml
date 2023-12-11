@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.57.4-1-PASELC-634-errore-salvataggio-modifiche-iban-fatte-dopo-data-inizio-validita"
+    tag: "0.57.4-2-PASELC-634"
     pullPolicy: Always
   livenessProbe:
     httpGet:
