@@ -326,7 +326,22 @@ public class IbanService {
 				};
 				massiveRead(file, func);
 	}
-	
+
+	public IbanLabel upsertIbanLabel(@Valid @NotNull IbanLabel ibanLabel) {
+		IbanAttribute ibanAttribute = ibanAttributeRepository.findAll()
+				.stream()
+				.filter(attribute -> attribute.getAttributeName().equals(ibanLabel.getName()))
+				.findFirst()
+				.orElse(IbanAttribute.builder()
+						.attributeName(ibanLabel.getName())
+						.build());
+		ibanAttribute.setAttributeDescription(ibanLabel.getDescription());
+		ibanAttribute = ibanAttributeRepository.save(ibanAttribute);
+		return IbanLabel.builder()
+				.name(ibanAttribute.getAttributeName())
+				.description(ibanAttribute.getAttributeDescription())
+				.build();
+	}
 	
 	public boolean isPostalIban(String ibanValue) {
 		String abiCode = ibanValue.substring(5, 10);
