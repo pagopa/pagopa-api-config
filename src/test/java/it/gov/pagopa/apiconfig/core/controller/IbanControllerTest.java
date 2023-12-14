@@ -19,6 +19,7 @@ import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
 
@@ -223,5 +224,17 @@ class IbanControllerTest {
 
     mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
             .andExpect(status().isOk());
+  }
+
+  @Test
+  void upsertIbanLabel_200() throws Exception {
+    IbanLabel ibanLabel = IbanLabel.builder().name("newlabel").description("description").build();
+    when(ibanService.upsertIbanLabel(any(IbanLabel.class)))
+            .thenReturn(ibanLabel);
+    mvc.perform(post("/creditorinstitutions/ibans/labels")
+                    .content(TestUtil.toJson(ibanLabel))
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }
 }

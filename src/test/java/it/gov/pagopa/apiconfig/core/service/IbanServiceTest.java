@@ -30,6 +30,7 @@ import javax.validation.ConstraintViolationException;
 
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -52,6 +53,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutio
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
@@ -746,9 +748,16 @@ class IbanServiceTest {
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now().plusDays(2));
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
+    Iban mockIban = getMockIban(iban, organizationFiscalCode);
+    IbanMaster mockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban);
+    mockIbanMaster.setValidityDate(Timestamp.from(OffsetDateTime.now().plusDays(2).toInstant()));
     // mocking responses from repositories
+    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(mockIban));
     when(paRepository.findByIdDominio(organizationFiscalCode))
-        .thenReturn(Optional.of(creditorInstitution));
+            .thenReturn(Optional.of(creditorInstitution));
+    when(ibanRepository.save(any(Iban.class))).thenReturn(mockIban);
+    when(ibanMasterRepository.findByFkIbanAndFkPa(anyLong(), anyLong()))
+            .thenReturn(List.of(mockIbanMaster));
     // executing logic and check assertions
     AppException ex =
         assertThrows(
@@ -764,7 +773,10 @@ class IbanServiceTest {
     IbanEnhanced iban = getMockIbanEnhanced(OffsetDateTime.now().plusDays(1), OffsetDateTime.now().plusDays(1));
     Pa creditorInstitution = getMockPa();
     String organizationFiscalCode = creditorInstitution.getIdDominio();
+    Iban mockIban = getMockIban(iban, organizationFiscalCode);
+    mockIban.setDueDate(Timestamp.from(OffsetDateTime.now().toInstant()));
     // mocking responses from repositories
+    when(ibanRepository.findByIban(anyString())).thenReturn(Optional.of(mockIban));
     when(paRepository.findByIdDominio(organizationFiscalCode))
         .thenReturn(Optional.of(creditorInstitution));
     
@@ -1124,4 +1136,55 @@ class IbanServiceTest {
     		assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
     	}
     }
+
+  @Test
+  void upsertIbanLabel_insert_200() throws JsonProcessingException {
+    String name = "fakelabel";
+    String description = "description edit";
+    IbanLabel ibanLabel = new IbanLabel(name, description);
+    IbanAttribute changedIbanAttribute = IbanAttribute.builder().objId(1L).attributeName(name).attributeDescription(description).build();
+
+    when(ibanAttributeRepository.findAll()).thenReturn(List.of());
+    when(ibanAttributeRepository.save(any(IbanAttribute.class))).thenReturn(changedIbanAttribute);
+
+    IbanLabel response = ibanService.upsertIbanLabel(ibanLabel);
+
+    assertEquals(TestUtil.toJson(response), TestUtil.toJson(ibanLabel));
+  }
+
+  @Test
+  void upsertIbanLabel_insertWithOtherLabel_200() throws JsonProcessingException {
+    String name = "fakelabel";
+    String description = "description edit";
+    IbanLabel ibanLabel = new IbanLabel(name, description);
+    IbanAttribute changedIbanAttribute = IbanAttribute.builder().objId(1L).attributeName(name).attributeDescription(description).build();
+    List<IbanAttribute> mockIbanAttributes = List.of(
+            IbanAttribute.builder().objId(1L).attributeName("label1").attributeDescription("description-1").build(),
+            IbanAttribute.builder().objId(2L).attributeName("label2").attributeDescription("description-2").build());
+
+    when(ibanAttributeRepository.findAll()).thenReturn(mockIbanAttributes);
+    when(ibanAttributeRepository.save(any(IbanAttribute.class))).thenReturn(changedIbanAttribute);
+
+    IbanLabel response = ibanService.upsertIbanLabel(ibanLabel);
+
+    assertEquals(TestUtil.toJson(response), TestUtil.toJson(ibanLabel));
+  }
+
+  @Test
+  void upsertIbanLabel_update_200() throws JsonProcessingException {
+    Long id = 1L;
+    String name = "fakelabel";
+    String description = "description edit";
+    IbanLabel ibanLabel = new IbanLabel(name, description);
+    IbanAttribute mockIbanAttribute = IbanAttribute.builder().objId(id).attributeName(name).attributeDescription("no-description").build();
+    IbanAttribute changedIbanAttribute = IbanAttribute.builder().objId(id).attributeName(name).attributeDescription(description).build();
+
+    when(ibanAttributeRepository.findAll()).thenReturn(List.of(mockIbanAttribute));
+    when(ibanAttributeRepository.save(any(IbanAttribute.class))).thenReturn(changedIbanAttribute);
+
+    IbanLabel response = ibanService.upsertIbanLabel(ibanLabel);
+
+    assertEquals(TestUtil.toJson(response), TestUtil.toJson(ibanLabel));
+    Assertions.assertNotEquals(TestUtil.toJson(response), TestUtil.toJson(mockIbanAttribute));
+  }
 }
