@@ -955,7 +955,8 @@ public class IbanService {
     		List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
     		if (CollectionUtils.isEmpty(m)) {throw new AppException(AppError.IBAN_NOT_ASSOCIATED, iban.getIban(), iban.getFiscalCode());}
     		ibanMasterIdToDeleteList.add(m.get(0).getObjId());
-    		ibanAttributeMasterToDeleteList.addAll (m.get(0).getIbanAttributesMasters().stream()
+    		List<IbanAttributeMaster> ibanAttributeMasterList = m.get(0).getIbanAttributesMasters() != null? m.get(0).getIbanAttributesMasters() : new ArrayList<>();
+    		ibanAttributeMasterToDeleteList.addAll (ibanAttributeMasterList.stream()
     				.map(IbanAttributeMaster::getObjId).collect(Collectors.toList()));
     		
         }

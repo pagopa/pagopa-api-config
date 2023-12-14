@@ -121,7 +121,7 @@ public class TestUtil {
    * @throws IOException if an I/O error occurs reading from the file or a malformed or unmappable
    *     byte sequence is read
    */
-  public String readJsonFromFile(String relativePath) throws IOException {
+  public static String readJsonFromFile(String relativePath) throws IOException {
     ClassLoader classLoader = TestUtil.class.getClassLoader();
     File file = new File(Objects.requireNonNull(classLoader.getResource(relativePath)).getPath());
     return Files.readString(file.toPath());
@@ -131,7 +131,7 @@ public class TestUtil {
    * @param relativePath Path from source root of the file
    * @return the requested file
    */
-  public File readFile(String relativePath) {
+  public static File readFile(String relativePath) {
     ClassLoader classLoader = TestUtil.class.getClassLoader();
     return new File(Objects.requireNonNull(classLoader.getResource(relativePath)).getFile());
   }
@@ -141,7 +141,7 @@ public class TestUtil {
    * @return object as Json string
    * @throws JsonProcessingException if there is an error during the parsing of the object
    */
-  public String toJson(Object object) throws JsonProcessingException {
+  public static String toJson(Object object) throws JsonProcessingException {
     return new ObjectMapper().writeValueAsString(object);
   }
 
@@ -154,7 +154,7 @@ public class TestUtil {
    * @param <T> Class of the elements
    * @return a Mock of {@link Page}
    */
-  public <T> Page<T> mockPage(List<T> content, int limit, int pageNumber) {
+  public static <T> Page<T> mockPage(List<T> content, int limit, int pageNumber) {
     @SuppressWarnings("unchecked")
     Page<T> page = Mockito.mock(Page.class);
     when(page.getTotalPages()).thenReturn((int) Math.ceil((double) content.size() / limit));
@@ -1126,7 +1126,7 @@ public class TestUtil {
       return ibanMasters;
   }
 
-  public it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(IbanEnhanced iban, String organizationFiscalCode) {
+  public static it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(IbanEnhanced iban, String organizationFiscalCode) {
       return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
               .objId(100L)
               .iban(iban.getIbanValue())
@@ -1136,7 +1136,7 @@ public class TestUtil {
               .build();
   }
 
-  public IbanMaster getMockIbanMaster(
+  public static IbanMaster getMockIbanMaster(
           Pa creditorInstitution, IbanEnhanced iban, it.gov.pagopa.apiconfig.starter.entity.Iban ibanToBeCreated) {
       return IbanMaster.builder()
               .objId(100L)
@@ -1151,7 +1151,7 @@ public class TestUtil {
               .build();
   }
 
-  public it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(String organizationFiscalCode) {
+  public static it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(String organizationFiscalCode) {
       return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
               .objId(100L)
               .iban("IT99C0222211111000000000004")
@@ -1160,7 +1160,7 @@ public class TestUtil {
               .dueDate(Timestamp.valueOf(LocalDateTime.now().plusYears(3)))
               .build();
     }
-  public IbanMaster getMockIbanMasterValidityDateInsertedDate(
+  public static IbanMaster getMockIbanMasterValidityDateInsertedDate(
           Pa creditorInstitution, it.gov.pagopa.apiconfig.starter.entity.Iban ibanToBeCreated, Timestamp validityDate, Timestamp insertedDate) {
       return IbanMaster.builder()
               .objId(100L)
