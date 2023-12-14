@@ -1120,6 +1120,24 @@ class IbanServiceTest {
     }
     
     @Test
+    void massiveCreateIbansByCsv_ko2() throws IOException {
+    	
+    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+    	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+        
+    	File zip = TestUtil.readFile("file/massiveIbansValid_BadOperationValue.csv");
+    	MockMultipartFile file =
+    			new MockMultipartFile(
+    					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+    	try {
+    		ibanService.createMassiveIbansByCsv(file);
+    		fail();
+    	} catch (AppException e) {
+    		assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+    	}
+    }
+    
+    @Test
     void massiveCreateIbansByCsv_ko() throws IOException {
     	
     	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
