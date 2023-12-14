@@ -179,7 +179,7 @@ public class IbanService {
 		// Update Ica Table
 		azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
 		List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(existingCreditorInstitution.getObjId());
-		this.checkAndSetup(iban, existingCreditorInstitution, encodings);
+		this.checkEcodingsAssociation(iban, existingCreditorInstitution, encodings);
 
 		// retrieve the iban and throw exception if not found. If creditor institution is the owner, it
 		// can update the IBAN object
@@ -187,6 +187,9 @@ public class IbanService {
 				ibanRepository
 				.findByIban(ibanCode)
 				.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, organizationFiscalCode));
+		if (!CommonUtil.toTimestamp(iban.getDueDate()).equals(existingIban.getDueDate())) {
+			this.checkDueDate(iban);
+		}
 		if (organizationFiscalCode.equals(existingIban.getFiscalCode())) {
 			existingIban = saveIban(iban, existingIban);
 		}
@@ -198,6 +201,9 @@ public class IbanService {
 						() ->
 						new AppException(
 								AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
+		if (!CommonUtil.toTimestamp(iban.getValidityDate()).equals(existingIbanMaster.getValidityDate())) {
+			this.checkValidityDate(iban);
+		}
 		// generate a relation between iban and CI
 		IbanMaster ibanCIRelationToBeUpdated =
 				saveIbanCIRelation(existingIbanMaster, existingCreditorInstitution, iban, existingIban);
@@ -787,18 +793,32 @@ public class IbanService {
 	}
 
 	private void checkAndSetup(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
+		checkValidityDate(iban);
+		checkDueDate(iban);
+		checkEcodingsAssociation(iban, existingCreditorInstitution, encodings);
+	}
+
+	private void checkValidityDate(IbanEnhanced iban) {
 		// check validity date
 		CheckItem check = CommonUtil.checkValidityDate(iban.getValidityDate().toLocalDateTime());
 		if (check.getValid().equals(Validity.NOT_VALID)) {
 			throw new AppException(
 					HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
 		}
+	}
+
+	private void checkDueDate(IbanEnhanced iban) {
+		CheckItem check;
 		// check due date
 		check = CommonUtil.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
 		if (check.getValid().equals(Validity.NOT_VALID)) {
 			throw new AppException(
 					HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
 		}
+	}
+
+	private void checkEcodingsAssociation(IbanEnhanced iban, Pa existingCreditorInstitution,
+			List<CodifichePa> encodings) {
 		// checks the PA is associated with a qr-code (if this is not the case, the association is created)
 		this.createQrCode(existingCreditorInstitution, encodings);
 		if (isPostalIban(iban.getIbanValue())) {
