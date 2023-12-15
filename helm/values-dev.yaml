@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.57.5-3-PAGOPA-1378-sviluppo-caricamento-massivo-iban-da-csv"
+    tag: "0.57.5-4-PAGOPA-1378-sviluppo-caricamento-massivo-iban-da-csv"
     pullPolicy: Always
   livenessProbe:
     httpGet:
