@@ -174,7 +174,7 @@ public class IbanService {
 		// Update Ica Table
 		azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
 		List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(existingCreditorInstitution.getObjId());
-		this.checkAndSetup(iban, existingCreditorInstitution, encodings);
+		this.checkQRCodeAssociation(iban, existingCreditorInstitution, encodings);
 
 		// retrieve the iban and throw exception if not found. If creditor institution is the owner, it
 		// can update the IBAN object
@@ -182,9 +182,13 @@ public class IbanService {
 				ibanRepository
 				.findByIban(ibanCode)
 				.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, organizationFiscalCode));
+		if (CommonUtil.checkIfLocalDatesNotEquals(iban.getDueDate().toLocalDateTime(), existingIban.getDueDate().toLocalDateTime())) {
+			this.checkDueDate(iban);
+		}
 		if (organizationFiscalCode.equals(existingIban.getFiscalCode())) {
 			existingIban = saveIban(iban, existingIban);
 		}
+
 		// check if IBAN was already associated to creditor institution. If not associated, throw an
 		// exception
 		IbanMaster existingIbanMaster =
@@ -193,6 +197,10 @@ public class IbanService {
 						() ->
 						new AppException(
 								AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
+		if (CommonUtil.checkIfLocalDatesNotEquals(iban.getValidityDate().toLocalDateTime(), existingIbanMaster.getValidityDate().toLocalDateTime())) {
+			this.checkValidityDate(iban);
+		}
+
 		// generate a relation between iban and CI
 		IbanMaster ibanCIRelationToBeUpdated =
 				saveIbanCIRelation(existingIbanMaster, existingCreditorInstitution, iban, existingIban);
@@ -318,7 +326,22 @@ public class IbanService {
 				};
 				massiveRead(file, func);
 	}
-	
+
+	public IbanLabel upsertIbanLabel(@Valid @NotNull IbanLabel ibanLabel) {
+		IbanAttribute ibanAttribute = ibanAttributeRepository.findAll()
+				.stream()
+				.filter(attribute -> attribute.getAttributeName().equals(ibanLabel.getName()))
+				.findFirst()
+				.orElse(IbanAttribute.builder()
+						.attributeName(ibanLabel.getName())
+						.build());
+		ibanAttribute.setAttributeDescription(ibanLabel.getDescription());
+		ibanAttribute = ibanAttributeRepository.save(ibanAttribute);
+		return IbanLabel.builder()
+				.name(ibanAttribute.getAttributeName())
+				.description(ibanAttribute.getAttributeDescription())
+				.build();
+	}
 	
 	public boolean isPostalIban(String ibanValue) {
 		String abiCode = ibanValue.substring(5, 10);
@@ -695,25 +718,37 @@ public class IbanService {
 		}
 	}
 
-	private void checkAndSetup(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
-		// check validity date
+	private void checkValidityDate(IbanEnhanced iban) {
 		CheckItem check = CommonUtil.checkValidityDate(iban.getValidityDate().toLocalDateTime());
 		if (check.getValid().equals(Validity.NOT_VALID)) {
 			throw new AppException(
 					HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
 		}
-		// check due date
-		check = CommonUtil.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
+	}
+
+	private void checkDueDate(IbanEnhanced iban) {
+		CheckItem check = CommonUtil.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
 		if (check.getValid().equals(Validity.NOT_VALID)) {
 			throw new AppException(
 					HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
 		}
-		// checks the PA is associated with a qr-code (if this is not the case, the association is created)
+	}
+
+	private void checkQRCodeAssociation(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
 		this.createQrCode(existingCreditorInstitution, encodings);
 		if (isPostalIban(iban.getIbanValue())) {
 			// check and if it doesn't exist create BARCODE_128_AIM encoding
 			this.createBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
 		}
+	}
+
+	private void checkAndSetup(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
+		// check validity date
+		checkValidityDate(iban);
+		// check due date
+		checkDueDate(iban);
+		// checks the PA is associated with a qr-code (if this is not the case, the association is created)
+		checkQRCodeAssociation(iban, existingCreditorInstitution, encodings);
 	}
 
 	private List<CheckItem> checkIbans(Pa pa, 

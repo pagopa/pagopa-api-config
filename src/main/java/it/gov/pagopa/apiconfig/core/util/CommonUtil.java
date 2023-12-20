@@ -316,6 +316,10 @@ public class CommonUtil {
         .build();
   }
 
+  public static boolean checkIfLocalDatesNotEquals(LocalDateTime date1, LocalDateTime date2) {
+    return date1 == null || date2 == null || !date1.toLocalDate().equals(date2.toLocalDate());
+  }
+
   /**
    * @param file XML to map
    * @param clazz class of model result
