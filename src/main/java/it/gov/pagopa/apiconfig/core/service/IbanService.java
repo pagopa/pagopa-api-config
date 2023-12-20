@@ -182,7 +182,7 @@ public class IbanService {
 				ibanRepository
 				.findByIban(ibanCode)
 				.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, organizationFiscalCode));
-		if (!CommonUtil.toTimestamp(iban.getDueDate()).equals(existingIban.getDueDate())) {
+		if (CommonUtil.checkIfLocalDatesNotEquals(iban.getDueDate().toLocalDateTime(), existingIban.getDueDate().toLocalDateTime())) {
 			this.checkDueDate(iban);
 		}
 		if (organizationFiscalCode.equals(existingIban.getFiscalCode())) {
@@ -197,7 +197,7 @@ public class IbanService {
 						() ->
 						new AppException(
 								AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
-		if (!CommonUtil.toTimestamp(iban.getValidityDate()).equals(existingIbanMaster.getValidityDate())) {
+		if (CommonUtil.checkIfLocalDatesNotEquals(iban.getValidityDate().toLocalDateTime(), existingIbanMaster.getValidityDate().toLocalDateTime())) {
 			this.checkValidityDate(iban);
 		}
 
