@@ -10,13 +10,14 @@ import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.gov.pagopa.apiconfig.core.util.Constants;
 import it.gov.pagopa.apiconfig.core.util.OffsetDateTimeDeserializer;
-import java.time.OffsetDateTime;
-import java.util.List;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 /** Iban (V2 Version) */
 @Data
