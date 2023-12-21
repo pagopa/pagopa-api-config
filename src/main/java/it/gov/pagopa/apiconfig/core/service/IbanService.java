@@ -209,7 +209,12 @@ public class IbanService {
     public IbansEnhanced getIbans(@NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid") String organizationFiscalCode, String label) {
         Pa pa = getPaIfExists(organizationFiscalCode);
 
-        List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label);
+        List<IbanMaster> ibanMasters;
+        if (label == null || label.isEmpty()) {
+            ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
+        } else {
+            ibanMasters = ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label);
+        }
 
         List<IbanEnhanced> ibanEnhancedList = ibanMasters.stream()
                 .map(elem -> convertEntitiesToModel(Pa.builder().build(), elem.getIban(), elem.getIbanAttributesMasters(), elem))
@@ -227,62 +232,62 @@ public class IbanService {
                 .build();
     }
 
-    // TODO: this service has bad performance, use getIbans instead
+    // TODO: this service has a performance issue, use getIbans instead
     @Deprecated
-	public IbansEnhanced getCreditorInstitutionsIbansByLabel(
-			@NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
-			String organizationFiscalCode,
-			String label) {
-		List<IbanEnhanced> ibanEnhancedList = new ArrayList<>();
-		Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
-		Pa pa =
-				creditorInstitutionOpt.orElseThrow(
-						() ->
-						new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
+    public IbansEnhanced getCreditorInstitutionsIbansByLabel(
+            @NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
+            String organizationFiscalCode,
+            String label) {
+        List<IbanEnhanced> ibanEnhancedList = new ArrayList<>();
+        Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
+        Pa pa =
+                creditorInstitutionOpt.orElseThrow(
+                        () ->
+                                new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
 
-		List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
-		ibanMasters.forEach(
-				ibanMaster -> {
-					Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getFkIban());
-					Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND));
-					Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
-					Pa ciOwner =
-							ciOwnerOpt.orElseThrow(
-									() ->
-									new AppException(
-											AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
+        List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
+        ibanMasters.forEach(
+                ibanMaster -> {
+                    Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getFkIban());
+                    Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND));
+                    Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
+                    Pa ciOwner =
+                            ciOwnerOpt.orElseThrow(
+                                    () ->
+                                            new AppException(
+                                                    AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
 
-					if (label == null || label.isEmpty()) {
-						IbanEnhanced ibanEnhanced =
-								convertEntitiesToModel(
-										ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
-						ibanEnhancedList.add(ibanEnhanced);
-					} else {
-						boolean labelMatch =
-								ibanMaster.getIbanAttributesMasters().stream()
-								.map(
-										ibanAttributeMaster ->
-										ibanAttributeMaster.getIbanAttribute().getAttributeName())
-								.anyMatch(name -> name.equalsIgnoreCase(label));
+                    if (label == null || label.isEmpty()) {
+                        IbanEnhanced ibanEnhanced =
+                                convertEntitiesToModel(
+                                        ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+                        ibanEnhancedList.add(ibanEnhanced);
+                    } else {
+                        boolean labelMatch =
+                                ibanMaster.getIbanAttributesMasters().stream()
+                                        .map(
+                                                ibanAttributeMaster ->
+                                                        ibanAttributeMaster.getIbanAttribute().getAttributeName())
+                                        .anyMatch(name -> name.equalsIgnoreCase(label));
 
-						if (labelMatch) {
-							IbanEnhanced ibanEnhanced =
-									convertEntitiesToModel(
-											ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
-							ibanEnhancedList.add(ibanEnhanced);
-						}
-					}
-				});
+                        if (labelMatch) {
+                            IbanEnhanced ibanEnhanced =
+                                    convertEntitiesToModel(
+                                            ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
+                            ibanEnhancedList.add(ibanEnhanced);
+                        }
+                    }
+                });
 
-		if(ibanEnhancedList.isEmpty() && (acaLabel.equals(label) || cupLabel.equals(label))) {
-			IbanMaster lastPublishedIban = getLastPublishedIban(pa);
-			if(lastPublishedIban != null) {
-				ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
-			}
-		}
+        if (ibanEnhancedList.isEmpty() && (acaLabel.equals(label) || cupLabel.equals(label))) {
+            IbanMaster lastPublishedIban = getLastPublishedIban(pa);
+            if (lastPublishedIban != null) {
+                ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
+            }
+        }
 
-		return IbansEnhanced.builder().ibanEnhancedList(ibanEnhancedList).build();
-	}
+        return IbansEnhanced.builder().ibanEnhancedList(ibanEnhancedList).build();
+    }
 
     public String deleteIban(
             @NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
@@ -473,8 +478,8 @@ public class IbanService {
                 .description(ibanCIRelation.getDescription())
                 .labels(
                         Optional.of(ibanAttributes.stream()
-                                                .map(obj -> modelMapper.map(obj, IbanLabel.class))
-                                                .collect(Collectors.toList()))
+                                        .map(obj -> modelMapper.map(obj, IbanLabel.class))
+                                        .collect(Collectors.toList()))
                                 .orElse(List.of()))
                 .ciOwnerFiscalCode(iban.getFiscalCode())
                 .isActive(IbanStatus.ENABLED.equals(ibanCIRelation.getIbanStatus()))
