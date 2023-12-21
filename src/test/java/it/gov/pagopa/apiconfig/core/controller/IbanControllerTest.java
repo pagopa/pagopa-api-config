@@ -4,8 +4,7 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbanEnhanced_2;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbans;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockIbansEnhanced;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,7 +54,7 @@ class IbanControllerTest {
   void setUp() {
     when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234"))
         .thenReturn(getMockIbans());
-    when(ibanService.getCreditorInstitutionsIbansByLabel(anyString(), anyString()))
+    when(ibanService.getCreditorInstitutionsIbansByLabel(anyInt(), anyInt(), anyString(), anyString()))
         .thenReturn(
             getMockIbansEnhanced(
                 OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
@@ -71,7 +70,7 @@ class IbanControllerTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"/creditorinstitutions/1234/ibans/enhanced?label=STANDIN"})
+  @CsvSource({"/creditorinstitutions/1234/ibans/enhanced?limit=50&page=0&label=STANDIN"})
   void testGetsEnhanced(String url) throws Exception {
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())

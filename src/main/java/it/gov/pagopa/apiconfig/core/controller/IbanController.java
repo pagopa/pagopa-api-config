@@ -13,12 +13,18 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
+import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+
+import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -119,6 +125,8 @@ public class IbanController {
    * GET /creditorinstitutions/{creditorinstitutioncode}/ibans/enhanced?label={value} : Get creditor
    * institution ibans
    *
+   * @param limit Number of elements on one page. Default = 50
+   * @param page Page number. Page value starts from 0
    * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
    *     (required)
    * @param filterByLabel label for iban filtering
@@ -178,17 +186,28 @@ public class IbanController {
       value = "/{creditorinstitutioncode}/ibans/enhanced",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<IbansEnhanced> getCreditorInstitutionsIbansEnhanced(
+      @Positive @Parameter(description = "Number of elements on one page. Default = 50")
+        @RequestParam(required = false, defaultValue = "50") Integer limit,
+      @PositiveOrZero @Parameter(description = "Page number. Page value starts from 0", required = true)
+        @RequestParam Integer page,
       @Size(max = 50)
-          @Parameter(
+      @Parameter(
               description = "Organization fiscal code, the fiscal code of the Organization.",
               required = true)
-          @PathVariable("creditorinstitutioncode")
-          String creditorInstitutionCode,
+      @PathVariable("creditorinstitutioncode")
+        String creditorInstitutionCode,
       @RequestParam(required = false, name = "label") @Parameter(description = "Filter by label")
-          String filterByLabel) {
-
+        String filterByLabel,
+      @RequestParam(required = false, name = "code") @Parameter(description = "Filter by iban")
+        String filterByIban
+      ) {
     return ResponseEntity.ok(
-        ibansService.getCreditorInstitutionsIbansByLabel(creditorInstitutionCode, filterByLabel));
+        ibansService.getCreditorInstitutionsIbansByLabel(
+                limit,
+                page,
+                creditorInstitutionCode,
+                filterByLabel,
+                filterByIban));
   }
 
   /**

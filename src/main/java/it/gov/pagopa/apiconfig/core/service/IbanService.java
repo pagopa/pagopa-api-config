@@ -27,11 +27,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.validator.routines.IBANValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -219,9 +223,13 @@ public class IbanService {
 	}
 
 	public IbansEnhanced getCreditorInstitutionsIbansByLabel(
+            @NotNull Integer limit,
+            @NotNull Integer pageNumber,
 			@NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
 			String organizationFiscalCode,
-			String label) {
+			String label,
+            String filterByIban) {
+        Pageable pageable = PageRequest.of(pageNumber, limit);
 		List<IbanEnhanced> ibanEnhancedList = new ArrayList<>();
 		Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
 		Pa pa =
@@ -229,7 +237,7 @@ public class IbanService {
 						() ->
 						new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
 
-		List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
+		Page<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId(), pageable);
 		ibanMasters.forEach(
 				ibanMaster -> {
 					Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getFkIban());
@@ -536,7 +544,6 @@ public class IbanService {
 	 *
 	 * @param file MultiPartFile to analyze
 	 * @param callback function to apply to file
-	 * @param force boolean to bypass date verification
 	 * @return a List of massiveChecks corresponding to the zip entry.
 	 */
 	@java.lang.SuppressWarnings("java:S5042")
