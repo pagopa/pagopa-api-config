@@ -215,6 +215,13 @@ public class IbanService {
                 .map(elem -> convertEntitiesToModel(Pa.builder().build(), elem.getIban(), elem.getIbanAttributesMasters(), elem))
                 .collect(Collectors.toList());
 
+        if(ibanEnhancedList.isEmpty() && (acaLabel.equals(label) || cupLabel.equals(label))) {
+            IbanMaster lastPublishedIban = getLastPublishedIban(pa);
+            if(lastPublishedIban != null) {
+                ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
+            }
+        }
+
         return IbansEnhanced.builder()
                 .ibanEnhancedList(ibanEnhancedList)
                 .build();
