@@ -8,7 +8,7 @@ microservice-chart: &microservice-chart
       maxUnavailable: 0
       maxSurge: 1
   canaryDelivery:
-    create: true
+    create: false
     ingress:
       canary:
         type: header
@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.58.0"
+    tag: "0.58.0-2-iban-test"
     pullPolicy: Always
   livenessProbe:
     httpGet:
