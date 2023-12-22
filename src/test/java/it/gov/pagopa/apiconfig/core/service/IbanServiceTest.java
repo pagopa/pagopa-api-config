@@ -69,7 +69,7 @@ class IbanServiceTest {
 
   // PA IBAN owner differs from PA linked in IBAN_MASTER
   @Test
-  void getIbansEnhanced_200()
+  void getIbansEnhanced_200_deprecated()
       throws IOException,
           JSONException,
           org.springframework.boot.configurationprocessor.json.JSONException {
@@ -99,12 +99,49 @@ class IbanServiceTest {
     obj.put("due_date", "2023-06-07T13:48:15.166Z");
     actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
     String expected =
-        TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+        TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced_deprecated.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
   @Test
-  void getIbansEnhanced_DifferentPA_200()
+    void getIbansEnhanced_200()
+            throws IOException,
+            JSONException,
+            org.springframework.boot.configurationprocessor.json.JSONException {
+        // retrieving mock object
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        IbanEnhanced iban =
+                getMockIbanEnhanced(
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"),
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+        Iban mockIban = getMockIban(iban, organizationFiscalCode);
+        List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban);
+        // mocking responses from repositories
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterRepository.findByFkPa(creditorInstitution.getObjId()))
+                .thenReturn(mockIbanMasters);
+      when(ibanMasterRepository.findByFkPaAndLabel(creditorInstitution.getObjId(), "STANDIN"))
+              .thenReturn(mockIbanMasters);
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        // executing logic and check assertions
+        IbansEnhanced result =
+                ibanService.getIbans(organizationFiscalCode, "STANDIN");
+        String actual = TestUtil.toJson(result);
+        // Force date value for check
+        JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
+        obj.put("publication_date", "2023-05-23T10:38:07.165Z");
+        obj.put("validity_date", "2023-06-07T13:48:15.166Z");
+        obj.put("due_date", "2023-06-07T13:48:15.166Z");
+        actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
+        String expected =
+                TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+  @Test
+  void getIbansEnhanced_DifferentPA_200_deprecated()
       throws IOException,
           JSONException,
           org.springframework.boot.configurationprocessor.json.JSONException {
@@ -133,12 +170,47 @@ class IbanServiceTest {
     obj.put("due_date", "2023-06-07T13:48:15.166Z");
     actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
     String expected =
-        TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+        TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced_deprecated.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
+    @Test
+    void getIbansEnhanced_DifferentPA_200()
+            throws IOException,
+            JSONException,
+            org.springframework.boot.configurationprocessor.json.JSONException {
+        // retrieving mock object
+        Pa pa1 = getMockPa();
+        Pa pa2 = getMockPa2();
+        IbanEnhanced iban =
+                getMockIbanEnhanced(
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"),
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+        Iban mockIban = getMockIban(iban, pa1.getIdDominio());
+        List<IbanMaster> mockIbanMasters = getMockIbanMasters(pa2, iban, mockIban);
+        // mocking responses from repositories
+        when(paRepository.findByIdDominio(pa1.getIdDominio())).thenReturn(Optional.of(pa1));
+        when(paRepository.findByIdDominio(pa2.getIdDominio())).thenReturn(Optional.of(pa2));
+        when(ibanMasterRepository.findByFkPa(pa2.getObjId())).thenReturn(mockIbanMasters);
+        when(ibanMasterRepository.findByFkPaAndLabel(pa2.getObjId(), "STANDIN")).thenReturn(mockIbanMasters);
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        // executing logic and check assertions
+        IbansEnhanced result =
+                ibanService.getIbans(pa2.getIdDominio(), "STANDIN");
+        String actual = TestUtil.toJson(result);
+        // Force date value for check
+        JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
+        obj.put("publication_date", "2023-05-23T10:38:07.165Z");
+        obj.put("validity_date", "2023-06-07T13:48:15.166Z");
+        obj.put("due_date", "2023-06-07T13:48:15.166Z");
+        actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
+        String expected =
+                TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
   @Test
-  void getIbansEnhanced_noLabel_200()
+  void getIbansEnhanced_noLabel_200_deprecated()
       throws IOException,
           JSONException,
           org.springframework.boot.configurationprocessor.json.JSONException {
@@ -168,12 +240,49 @@ class IbanServiceTest {
     obj.put("due_date", "2023-06-07T13:48:15.166Z");
     actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
     String expected =
-        TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+        TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced_deprecated.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
+    @Test
+    void getIbansEnhanced_noLabel_200()
+            throws IOException,
+            JSONException,
+            org.springframework.boot.configurationprocessor.json.JSONException {
+        // retrieving mock object
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        IbanEnhanced iban =
+                getMockIbanEnhanced(
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"),
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+        Iban mockIban = getMockIban(iban, organizationFiscalCode);
+        List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban);
+        // mocking responses from repositories
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterRepository.findByFkPa(creditorInstitution.getObjId()))
+                .thenReturn(mockIbanMasters);
+        when(ibanMasterRepository.findByFkPaAndLabel(creditorInstitution.getObjId(), null))
+                .thenReturn(mockIbanMasters);
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        // executing logic and check assertions
+        IbansEnhanced result =
+                ibanService.getIbans(organizationFiscalCode, null);
+        String actual = TestUtil.toJson(result);
+        // Force date value for check
+        JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
+        obj.put("publication_date", "2023-05-23T10:38:07.165Z");
+        obj.put("validity_date", "2023-06-07T13:48:15.166Z");
+        obj.put("due_date", "2023-06-07T13:48:15.166Z");
+        actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
+        String expected =
+                TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
   @Test
-  void getIbansEnhanced_EmptyIbanList_200()
+  void getIbansEnhanced_EmptyIbanList_200_deprecated()
       throws JsonProcessingException,
           JSONException,
           org.springframework.boot.configurationprocessor.json.JSONException {
@@ -201,8 +310,37 @@ class IbanServiceTest {
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
+    @Test
+    void getIbansEnhanced_EmptyIbanList()
+            throws JsonProcessingException,
+            JSONException,
+            org.springframework.boot.configurationprocessor.json.JSONException {
+        // retrieving mock object
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        IbanEnhanced iban =
+                getMockIbanEnhanced(
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"),
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+        Iban mockIban = getMockIban(iban, organizationFiscalCode);
+        List<IbanMaster> mockIbanMasters = getMockIbanMasters(creditorInstitution, iban, mockIban);
+        // mocking responses from repositories
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterRepository.findByFkPaAndLabel(creditorInstitution.getObjId(), "CUP"))
+                .thenReturn(new ArrayList<>());
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        // executing logic and check assertions
+        IbansEnhanced result =
+                ibanService.getIbans(organizationFiscalCode, "CUP");
+        String actual = TestUtil.toJson(result);
+        String expected =
+                TestUtil.toJson(IbansEnhanced.builder().ibanEnhancedList(new ArrayList<>()).build());
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
   @Test
-  void getIbansEnhanced_noCIFound_404() throws JsonProcessingException, JSONException {
+  void getIbansEnhanced_noCIFound_404_deprecated() throws JsonProcessingException, JSONException {
     // retrieving mock object
     String organizationFiscalCode = "13229677908";
     // mocking responses from repositories
@@ -214,6 +352,20 @@ class IbanServiceTest {
             () -> ibanService.getCreditorInstitutionsIbansByLabel(organizationFiscalCode, "CUP"));
     assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
   }
+
+    @Test
+    void getIbansEnhanced_noCIFound_404() throws JsonProcessingException, JSONException {
+        // retrieving mock object
+        String organizationFiscalCode = "13229677908";
+        // mocking responses from repositories
+        when(paRepository.findByIdDominio(organizationFiscalCode)).thenReturn(Optional.empty());
+        // executing logic and check assertions
+        AppException ex =
+                assertThrows(
+                        AppException.class,
+                        () -> ibanService.getIbans(organizationFiscalCode, "CUP"));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
+    }
 
   @Test
   void createIban_newIban_200() {
@@ -970,7 +1122,7 @@ class IbanServiceTest {
   }
 
     @Test
-    void getIbansEnhancedFilteredACA_200()
+    void getIbansEnhancedFilteredACA_200_deprecated()
             throws IOException,
             JSONException,
             org.springframework.boot.configurationprocessor.json.JSONException {
@@ -1001,7 +1153,7 @@ class IbanServiceTest {
     }
 
     @Test
-    void getIbansEnhancedFilteredACANoValid_200()
+    void getIbansEnhancedFilteredACANoValid_200_deprecated()
             throws IOException,
             JSONException,
             org.springframework.boot.configurationprocessor.json.JSONException {

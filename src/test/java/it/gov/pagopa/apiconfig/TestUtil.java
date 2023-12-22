@@ -1116,6 +1116,7 @@ public class TestUtil {
                               .objId(100L)
                               .fkPa(creditorInstitution.getObjId())
                               .fkIban(ibanEntity.getObjId())
+                              .iban(ibanEntity)
                               .ibanStatus(iban.isActive() ? IbanMaster.IbanStatus.ENABLED : IbanMaster.IbanStatus.DISABLED)
                               .insertedDate(
                                       CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
