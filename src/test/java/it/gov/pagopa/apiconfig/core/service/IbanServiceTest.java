@@ -32,6 +32,8 @@ import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -1118,68 +1120,20 @@ class IbanServiceTest {
     		fail(e);
     	}
     }
-    
-    @Test
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "file/massiveIbansValid_BadOperationValue.csv",
+            "file/massiveIbansValid_Bad.csv",
+            "file/massiveIbansInvalid_NotWellFormed.csv",
+            "file/massiveIbansInvalid_NotRequiredValue.csv"
+    })
     void massiveCreateIbansByCsv_ko() throws IOException {
     	
     	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
     	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
         
     	File zip = TestUtil.readFile("file/massiveIbansValid_BadOperationValue.csv");
-    	MockMultipartFile file =
-    			new MockMultipartFile(
-    					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
-    	try {
-    		ibanService.createMassiveIbansByCsv(file);
-    		fail();
-    	} catch (AppException e) {
-    		assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-    	}
-    }
-    
-    @Test
-    void massiveCreateIbansByCsv_ko2() throws IOException {
-    	
-    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
-    	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
-        
-    	File zip = TestUtil.readFile("file/massiveIbansValid_Bad.csv");
-    	MockMultipartFile file =
-    			new MockMultipartFile(
-    					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
-    	try {
-    		ibanService.createMassiveIbansByCsv(file);
-    		fail();
-    	} catch (AppException e) {
-    		assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-    	}
-    }
-    
-    @Test
-    void massiveCreateIbansByCsv_ko3() throws IOException {
-    	
-    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
-    	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
-        // file without iddominio column
-    	File zip = TestUtil.readFile("file/massiveIbansInvalid_NotWellFormed.csv");
-    	MockMultipartFile file =
-    			new MockMultipartFile(
-    					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
-    	try {
-    		ibanService.createMassiveIbansByCsv(file);
-    		fail();
-    	} catch (AppException e) {
-    		assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-    	}
-    }
-    
-    @Test
-    void massiveCreateIbansByCsv_ko4() throws IOException {
-    	
-    	when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
-    	when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
-        // file without dataattivazioneiban required value
-    	File zip = TestUtil.readFile("file/massiveIbansInvalid_NotRequiredValue.csv");
     	MockMultipartFile file =
     			new MockMultipartFile(
     					"file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
