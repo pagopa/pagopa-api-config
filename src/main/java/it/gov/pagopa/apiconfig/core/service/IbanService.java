@@ -357,13 +357,13 @@ public class IbanService {
                 ibanMassLoadCsvRow -> {
                     if("I".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione())) {
                         toInsert.add(ibanMassLoadCsvRow);
-                    } else if("D".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione())) {
+                    } else if("D".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione()) || "C".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione())) {
                         toDelete.add(ibanMassLoadCsvRow);
-                    } else if("U".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione())) {
+                    } else if("U".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione()) || "M".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione())) {
                         toUpdate.add(ibanMassLoadCsvRow);
                     } else {
                         throw new AppException(
-                                HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Column \"Operazione\" must be equal to either \"I\", \"D\" or \"U\"");
+                                HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Column \"Operazione\" must be equal to either \"I\", \"D|C\" or \"U|M\"");
                     }
                 }
             );
