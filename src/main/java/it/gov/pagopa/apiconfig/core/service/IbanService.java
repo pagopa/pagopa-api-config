@@ -1,5 +1,48 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
+import com.opencsv.exceptions.CsvException;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbanMassLoadCsv;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoadCsv;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.validator.routines.IBANValidator;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
+
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
@@ -17,33 +60,7 @@ import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
 import it.gov.pagopa.apiconfig.starter.repository.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.validator.routines.IBANValidator;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import java.io.*;
-import java.nio.file.Files;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 @Service
 @Validated
@@ -143,51 +160,51 @@ public class IbanService {
                 ibanCIRelationToBeCreated);
     }
 
-    public IbanEnhanced updateIban(
-            @NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
-            String organizationFiscalCode,
-            @NotBlank
-            @Pattern(regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid")
-            String ibanCode,
-            @Valid @NotNull IbanEnhanced iban) {
-        if (!ibanCode.equals(iban.getIbanValue())) {
-            throw new AppException(
-                    HttpStatus.BAD_REQUEST,
-                    "IBAN codes not matching",
-                    "The IBAN code in the body request does not match with the IBAN code passed as path"
-                            + " parameter.");
-        }
-        // retrieve the creditor institution and throw exception if not found
-        Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
-        // Update Ica Table
-        azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
-        List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(existingCreditorInstitution.getObjId());
-        this.checkQRCodeAssociation(iban, existingCreditorInstitution, encodings);
+	public IbanEnhanced updateIban(
+			@NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
+			String organizationFiscalCode,
+			@NotBlank
+			@Pattern(regexp = "[a-zA-Z]{2}\\d{2}[a-zA-Z0-9]{1,30}", message = "IBAN code not valid")
+			String ibanCode,
+			@Valid @NotNull IbanEnhanced iban) {
+		if (!ibanCode.equals(iban.getIbanValue())) {
+			throw new AppException(
+					HttpStatus.BAD_REQUEST,
+					"IBAN codes not matching",
+					"The IBAN code in the body request does not match with the IBAN code passed as path"
+							+ " parameter.");
+		}
+		// retrieve the creditor institution and throw exception if not found
+		Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
+		// Update Ica Table
+		azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
+		List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(existingCreditorInstitution.getObjId());
+		this.checkEcodingsAssociation(iban, existingCreditorInstitution, encodings);
 
-        // retrieve the iban and throw exception if not found. If creditor institution is the owner, it
-        // can update the IBAN object
-        Iban existingIban =
-                ibanRepository
-                        .findByIban(ibanCode)
-                        .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, organizationFiscalCode));
-        if (CommonUtil.checkIfLocalDatesNotEquals(iban.getDueDate().toLocalDateTime(), existingIban.getDueDate().toLocalDateTime())) {
-            this.checkDueDate(iban);
-        }
-        if (organizationFiscalCode.equals(existingIban.getFiscalCode())) {
-            existingIban = saveIban(iban, existingIban);
-        }
+		// retrieve the iban and throw exception if not found. If creditor institution is the owner, it
+		// can update the IBAN object
+		Iban existingIban =
+				ibanRepository
+				.findByIban(ibanCode)
+				.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, organizationFiscalCode));
+		if (CommonUtil.checkIfLocalDatesNotEquals(iban.getDueDate().toLocalDateTime(), existingIban.getDueDate().toLocalDateTime())) {
+			this.checkDueDate(iban);
+		}
+		if (organizationFiscalCode.equals(existingIban.getFiscalCode())) {
+			existingIban = saveIban(iban, existingIban);
+		}
 
-        // check if IBAN was already associated to creditor institution. If not associated, throw an
-        // exception
-        IbanMaster existingIbanMaster =
-                getIbanMaster(existingIban, existingCreditorInstitution)
-                        .orElseThrow(
-                                () ->
-                                        new AppException(
-                                                AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
-        if (CommonUtil.checkIfLocalDatesNotEquals(iban.getValidityDate().toLocalDateTime(), existingIbanMaster.getValidityDate().toLocalDateTime())) {
-            this.checkValidityDate(iban);
-        }
+		// check if IBAN was already associated to creditor institution. If not associated, throw an
+		// exception
+		IbanMaster existingIbanMaster =
+				getIbanMaster(existingIban, existingCreditorInstitution)
+				.orElseThrow(
+						() ->
+						new AppException(
+								AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
+		if (CommonUtil.checkIfLocalDatesNotEquals(iban.getValidityDate().toLocalDateTime(), existingIbanMaster.getValidityDate().toLocalDateTime())) {
+			this.checkValidityDate(iban);
+		}
 
         // generate a relation between iban and CI
         IbanMaster ibanCIRelationToBeUpdated =
@@ -364,9 +381,81 @@ public class IbanService {
                 .build();
     }
 
+
+    public void createMassiveIbansByCsv(MultipartFile file) {
+        try {
+            List<IbanMassLoadCsv> x = validateCsv(file);
+            List<IbanMassLoadCsv> toInsert = new ArrayList<>();
+            List<IbanMassLoadCsv> toDelete = new ArrayList<>();
+            List<IbanMassLoadCsv> toUpdate = new ArrayList<>();
+            x.forEach(
+                ibanMassLoadCsvRow -> {
+                    if("I".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione())) {
+                        toInsert.add(ibanMassLoadCsvRow);
+                    } else if("D".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione()) || "C".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione())) {
+                        toDelete.add(ibanMassLoadCsvRow);
+                    } else if("U".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione()) || "M".equalsIgnoreCase(ibanMassLoadCsvRow.getOperazione())) {
+                        toUpdate.add(ibanMassLoadCsvRow);
+                    } else {
+                        throw new AppException(
+                                HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Column \"Operazione\" must be equal to either \"I\", \"D|C\" or \"U|M\"");
+                    }
+                }
+            );
+
+            IbansMaster ibansMasterToInsert = IbansMaster.builder().build();
+            IbansMaster ibansMasterToDelete = IbansMaster.builder().build();
+            IbansMaster ibansMasterToUpdate = IbansMaster.builder().build();
+
+            modelMapper.map(IbansMassLoadCsv.builder().ibanRows(toInsert).build(), ibansMasterToInsert);
+            modelMapper.map(IbansMassLoadCsv.builder().ibanRows(toDelete).build(), ibansMasterToDelete);
+            modelMapper.map(IbansMassLoadCsv.builder().ibanRows(toUpdate).build(), ibansMasterToUpdate);
+
+            this.insertIbans(ibansMasterToInsert.getIbanMasterList());
+            this.updateIbans(ibansMasterToUpdate.getIbanMasterList());
+            this.deleteIbans(ibansMasterToDelete.getIbanMasterList(), ibansMasterToInsert.getIbanMasterList());
+        } catch (IOException | RuntimeException e) {
+            throw new AppException(
+                    HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem in the file examination - " + e.getMessage(), e);
+        }
+    }
+
     public boolean isPostalIban(String ibanValue) {
         String abiCode = ibanValue.substring(5, 10);
         return abiCode.equals(postalIbanAbi);
+    }
+
+    private List<IbanMassLoadCsv> validateCsv(MultipartFile file) throws IOException {
+        // read CSV
+        Reader reader =
+                new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+
+        // create mapping strategy to arrange the column name
+        HeaderColumnNameMappingStrategy<IbanMassLoadCsv> mappingStrategy =
+                new HeaderColumnNameMappingStrategy<>();
+        mappingStrategy.setType(IbanMassLoadCsv.class);
+
+        // execute validation
+        CsvToBean<IbanMassLoadCsv> parsedCSV =
+                new CsvToBeanBuilder<IbanMassLoadCsv>(reader)
+                        .withSeparator(',')
+                        .withFieldAsNull(CSVReaderNullFieldIndicator.NEITHER)
+                        .withOrderedResults(true)
+                        .withMappingStrategy(mappingStrategy)
+                        .withType(IbanMassLoadCsv.class)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .withThrowExceptions(false)
+                        .build();
+
+        List<IbanMassLoadCsv> y = parsedCSV.parse();
+        List<CsvException> errors = parsedCSV.getCapturedExceptions();
+
+        if (!errors.isEmpty()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            errors.forEach(error -> stringBuilder.append(String.format("|%s |", error.getMessage())));
+            throw new AppException(AppError.IBANS_BAD_REQUEST, stringBuilder);
+        }
+        return y;
     }
 
     private IbanMaster getLastPublishedIban(Pa pa) {
@@ -551,25 +640,25 @@ public class IbanService {
         return checkItemList;
     }
 
-    /**
-     * Helper for the massive read
-     *
-     * @param file     MultiPartFile to analyze
-     * @param callback function to apply to file
-     * @return a List of massiveChecks corresponding to the zip entry.
-     */
-    @java.lang.SuppressWarnings("java:S5042")
-    private List<MassiveCheck> massiveRead(
-            MultipartFile file,
-            BiFunction<InputStream, Boolean, List<CheckItem>> callback) {
-        List<MassiveCheck> massiveChecks = new ArrayList<>();
-        try {
-            // bytes and number of files counter
-            var bytesCounter =
-                    new Object() {
-                        int totalBytes = 0;
-                    };
-            int nOfZipFiles = 0;
+	/**
+	 * Helper for the massive read
+	 *
+	 * @param file MultiPartFile to analyze
+	 * @param callback function to apply to file
+	 * @return a List of massiveChecks corresponding to the zip entry.
+	 */
+	@java.lang.SuppressWarnings("java:S5042")
+	private List<MassiveCheck> massiveRead(
+			MultipartFile file,
+			BiFunction<InputStream, Boolean, List<CheckItem>> callback) {
+		List<MassiveCheck> massiveChecks = new ArrayList<>();
+		try {
+			// bytes and number of files counter
+			var bytesCounter =
+					new Object() {
+				int totalBytes = 0;
+			};
+			int nOfZipFiles = 0;
 
             // function to execute input callback during the analysis of zip files
             BiFunction<InputStream, Integer, List<CheckItem>> callbackCaller =
@@ -736,13 +825,14 @@ public class IbanService {
         }
     }
 
-    private void checkValidityDate(IbanEnhanced iban) {
-        CheckItem check = CommonUtil.checkValidityDate(iban.getValidityDate().toLocalDateTime());
-        if (check.getValid().equals(Validity.NOT_VALID)) {
-            throw new AppException(
-                    HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
-        }
-    }
+	private void checkValidityDate(IbanEnhanced iban) {
+		// check validity date
+		CheckItem check = CommonUtil.checkValidityDate(iban.getValidityDate().toLocalDateTime());
+		if (check.getValid().equals(Validity.NOT_VALID)) {
+			throw new AppException(
+					HttpStatus.BAD_REQUEST, check.getTitle(), check.getNote() + check.getValue());
+		}
+	}
 
     private void checkDueDate(IbanEnhanced iban) {
         CheckItem check = CommonUtil.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
@@ -752,39 +842,43 @@ public class IbanService {
         }
     }
 
-    private void checkQRCodeAssociation(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
-        this.createQrCode(existingCreditorInstitution, encodings);
-        if (isPostalIban(iban.getIbanValue())) {
-            // check and if it doesn't exist create BARCODE_128_AIM encoding
-            this.createBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
-        }
-    }
-
+	private void checkEcodingsAssociation(IbanEnhanced iban, Pa existingCreditorInstitution,
+			List<CodifichePa> encodings) {
+		// checks the PA is associated with a qr-code (if this is not the case, the association is created)
+		this.createQrCode(existingCreditorInstitution, encodings);
+		if (isPostalIban(iban.getIbanValue())) {
+			// check and if it doesn't exist create BARCODE_128_AIM encoding
+			this.createBarcode(iban.getIbanValue(), existingCreditorInstitution, encodings);
+		}
+	}
     private void checkAndSetup(IbanEnhanced iban, Pa existingCreditorInstitution, List<CodifichePa> encodings) {
         // check validity date
         checkValidityDate(iban);
         // check due date
         checkDueDate(iban);
         // checks the PA is associated with a qr-code (if this is not the case, the association is created)
-        checkQRCodeAssociation(iban, existingCreditorInstitution, encodings);
+        checkEcodingsAssociation(iban, existingCreditorInstitution, encodings);
     }
 
     private List<CheckItem> checkIbans(Pa pa,
                                        List<it.gov.pagopa.apiconfig.core.model.massiveloading.Iban> ibansLoaded, List<CodifichePa> encodings) {
 
         List<CheckItem> checkItemList = new ArrayList<>();
+        ibansLoaded.forEach(item -> checkItemList.addAll(this.checkSingleIban(pa, encodings, item)));
+        return checkItemList;
+    }
 
-        ibansLoaded.forEach(item -> {
-                    LocalDateTime validityDate = LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(item.getValidityDate()));
-                    LocalDateTime dueDate = LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(item.getDueDate()));
-                    // check validity date
-                    checkItemList.add(CommonUtil.checkValidityDate(validityDate));
-                    // check due date
-                    checkItemList.add(CommonUtil.checkDueDate(validityDate, dueDate));
-                    // check iban
-                    checkItemList.add(getIbanCheck(pa, item.getIbanValue(), encodings));
-                }
-        );
+    private List<CheckItem> checkSingleIban(Pa pa, List<CodifichePa> encodings,
+                                            it.gov.pagopa.apiconfig.core.model.massiveloading.Iban item) {
+        List<CheckItem> checkItemList = new ArrayList<>();
+        LocalDateTime validityDate = LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(item.getValidityDate()));
+        LocalDateTime dueDate = LocalDateTime.from(DateTimeFormatter.ofPattern(CommonUtil.DATE_FORMAT_PATTERN).parse(item.getDueDate()));
+        // check validity date
+        checkItemList.add(CommonUtil.checkValidityDate(validityDate));
+        // check due date
+        checkItemList.add(CommonUtil.checkDueDate(validityDate, dueDate));
+        // check iban
+        checkItemList.add(getIbanCheck(pa, item.getIbanValue(), encodings));
         return checkItemList;
     }
 
@@ -794,17 +888,19 @@ public class IbanService {
         String note = valid ? "" : "Iban not valid";
         String action = "";
 
-        // check if postal Iban
-        if (valid && this.isPostalIban(iban)) {
+		// check if postal Iban
+		if (valid && this.isPostalIban(iban)) {
+			
+			Optional<Iban> ibanEntityToCheck = ibanRepository.findByIban(iban);
 
-            // if postal IBAN --> it can be associated with only one Creditor Institution
-            if (ibanRepository.findByIban(iban).isPresent()
-                    && !ibanRepository.findByIban(iban).get().getIbanMasters().isEmpty() // check that it is not an orphan iban
-                    && ibanRepository.findByIban(iban).get().getIbanMasters().stream().noneMatch(im -> im.getFkPa().equals(pa.getObjId()))) {
-                valid = false;
-                note = "Postal iban [" + iban + "] already associated with another Creditor Institution. ";
-                action = "Change the IBAN or change the Creditor Institution to which it has been associated. ";
-            }
+			// if postal IBAN --> it can be associated with only one Creditor Institution
+			if (ibanEntityToCheck.isPresent()
+					&& !ibanEntityToCheck.get().getIbanMasters().isEmpty() // check that it is not an orphan iban (ie without associations in the iban_master table)
+					&& ibanEntityToCheck.get().getIbanMasters().stream().noneMatch(im -> im.getFkPa().equals(pa.getObjId()))) {
+				valid = false;
+				note = "Postal iban ["+iban+"] already associated with another Creditor Institution. ";
+				action = "Change the IBAN or change the Creditor Institution to which it has been associated. ";
+			}
 
             // check and if it doesn't exist create BARCODE_128_AIM encoding
             try {
@@ -824,4 +920,131 @@ public class IbanService {
                 .build();
     }
 
+
+	private void insertIbans(List<IbanMaster> ibanMasterList) {
+        List<Iban> ibanToInsertList = new ArrayList<>();
+        List<IbanMaster> ibanMasterToInsertList = new ArrayList<>();
+        for(IbanMaster loadedIbanMaster : ibanMasterList) {
+        	Iban iban = loadedIbanMaster.getIban();
+        	Pa pa = this.getPaIfExists(iban.getFiscalCode());
+        	Iban ibanEntityToCheck = ibanRepository.findByIban(iban.getIban()).orElse(null);
+        	// if the iban does not already exist or if it is associated with another PA --> it's inserted
+            if(null == ibanEntityToCheck ||
+            		ibanEntityToCheck.getIbanMasters().isEmpty() || // check that it is an orphan iban (ie without associations in the iban_master table)
+            		ibanEntityToCheck.getIbanMasters().stream().noneMatch(im -> im.getFkPa().equals(pa.getObjId()))) {
+            	this.validateIban(loadedIbanMaster, iban, pa);
+    			// set the necessary info for persistence
+            	loadedIbanMaster.setPa(pa);
+            	// before add check that the iban is not already present in the list (two or more rows with the same iban in the file) or table
+            	if (ibanToInsertList.stream().filter(i -> i.getIban().equals(iban.getIban())).findAny().isEmpty() && null == ibanEntityToCheck) {
+            		ibanToInsertList.add(iban);
+            	} else if (null != ibanEntityToCheck) {
+            		// if the iban already existed in table associated with another PA --> only create the new relationship on iban_master with the new PA
+            		loadedIbanMaster.setIban(ibanEntityToCheck);
+            	}
+                ibanMasterToInsertList.add(loadedIbanMaster);
+            } else {
+            	throw new AppException(AppError.IBAN_ALREADY_EXIST, iban.getIban());
+            }
+        }
+        // save Iban and IbanMaster entity
+        manageIbanMasterList(ibanMasterToInsertList, ibanRepository.saveAll(ibanToInsertList));
+    }
+
+    private void updateIbans(List<IbanMaster> ibanMasterList) {
+    	List<IbanMaster> ibanMasterToUpdateList = new ArrayList<>();
+    	for(IbanMaster loadedIbanMaster : ibanMasterList) {
+    		Iban iban = loadedIbanMaster.getIban();
+    		Pa pa = this.getPaIfExists(iban.getFiscalCode());
+    		this.validateIban(loadedIbanMaster, iban, pa);
+    		loadedIbanMaster.setPa(pa);
+    		// checks if the iban exists and if so updates the information
+    		Iban ibanToUpdate = ibanRepository.findByIban(iban.getIban()).orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban.getIban()));
+    		loadedIbanMaster.getIban().setObjId(ibanToUpdate.getObjId());
+			// update the properties of the existing iban
+			modelMapper.map(loadedIbanMaster.getIban(), ibanToUpdate);
+
+			List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToUpdate.getObjId(), pa.getObjId());
+
+			if (CollectionUtils.isNotEmpty(m)) {
+				// there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
+				loadedIbanMaster.setObjId(m.get(0).getObjId());
+				// update the properties of the existing iban master
+				modelMapper.map(loadedIbanMaster, m.get(0));
+				loadedIbanMaster = m.get(0);
+				loadedIbanMaster.setIban(ibanToUpdate);
+
+				ibanMasterToUpdateList.add(loadedIbanMaster);
+			} else {
+				throw new AppException(AppError.IBAN_NOT_ASSOCIATED, iban.getIban(), iban.getFiscalCode());
+			}
+
+    	}
+    	ibanMasterRepository.saveAll(ibanMasterToUpdateList);
+    }
+
+    private void deleteIbans(List<IbanMaster> ibanMasterDeleteList, List<IbanMaster> ibanMasterInsertList) {
+        List<Long> ibanToDeleteList = new ArrayList<>();
+        List<Long> ibanMasterIdToDeleteList = new ArrayList<>();
+        List<Long> ibanAttributeMasterToDeleteList = new ArrayList<>();
+        for(IbanMaster loadedIbanMaster : ibanMasterDeleteList) {
+        	Iban iban = loadedIbanMaster.getIban();
+        	// checks if the iban exists
+    		Iban ibanToDelete = ibanRepository.findByIban(iban.getIban()).orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban.getIban()));
+
+    		// before add check:
+    		// 1. the iban is not already present in the list (two or more delete rows in the file with the same iban)
+    		// 2. the same iban is not present in the insert list
+    		// 3. has only one relationship in the iban_master table
+    		if (ibanToDeleteList.stream().filter(i -> ibanToDelete.getObjId().equals(i)).findAny().isEmpty()
+    				&& ibanMasterInsertList.stream().filter(ins -> ins.getIban().getIban().equals(ibanToDelete.getIban())).findAny().isEmpty()
+    				&& null != ibanToDelete.getIbanMasters()
+    				&& (ibanToDelete.getIbanMasters().isEmpty() || ibanToDelete.getIbanMasters().size() == 1)){
+    			ibanToDeleteList.add(ibanToDelete.getObjId());
+    		}
+    		// delete the relation in the iban_master
+    		Pa pa = this.getPaIfExists(iban.getFiscalCode());
+    		// there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
+    		List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
+    		if (CollectionUtils.isEmpty(m)) {throw new AppException(AppError.IBAN_NOT_ASSOCIATED, iban.getIban(), iban.getFiscalCode());}
+    		ibanMasterIdToDeleteList.add(m.get(0).getObjId());
+    		List<IbanAttributeMaster> ibanAttributeMasterList = m.get(0).getIbanAttributesMasters() != null? m.get(0).getIbanAttributesMasters() : new ArrayList<>();
+    		ibanAttributeMasterToDeleteList.addAll (ibanAttributeMasterList.stream()
+    				.map(IbanAttributeMaster::getObjId).collect(Collectors.toList()));
+
+        }
+        ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDeleteList);
+        ibanMasterRepository.deleteByIds(ibanMasterIdToDeleteList);
+        ibanRepository.deleteByIds(ibanToDeleteList);
+    }
+
+
+    private void manageIbanMasterList(List<IbanMaster> ibanMasterToSaveList, List<Iban> savedIbanList) {
+    	for (Iban savedIban: savedIbanList) {
+    		ibanMasterToSaveList.forEach(master -> {
+    		    if (master.getIban().getIban().equalsIgnoreCase(savedIban.getIban())) {
+    		    	// when find the record update the iban with the one saved in the database
+    		        master.setIban(savedIban);
+    		    }
+    		});
+    	}
+        ibanMasterRepository.saveAll(ibanMasterToSaveList);
+    }
+
+    private void validateIban(IbanMaster loadedIbanMaster, Iban iban, Pa pa) {
+		// checks if the PA is associated with a qr-code (if this is not the case, the association is created)
+		List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
+		this.createQrCode(pa, encodings);
+		it.gov.pagopa.apiconfig.core.model.massiveloading.Iban ibanToCheck = it.gov.pagopa.apiconfig.core.model.massiveloading.Iban.builder()
+		.dueDate(new SimpleDateFormat(CommonUtil.DATE_FORMAT_PATTERN).format(iban.getDueDate()))
+		.validityDate(new SimpleDateFormat(CommonUtil.DATE_FORMAT_PATTERN).format(loadedIbanMaster.getValidityDate()))
+		.ibanValue(iban.getIban())
+		.build();
+		// validate the iban
+		this.checkSingleIban(pa, encodings, ibanToCheck).stream()
+		.filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
+		.findAny().ifPresent(check -> {throw new AppException(
+			AppError.IBANS_BAD_REQUEST,
+			String.format("[%s] %s", check.getValue(), check.getNote()));});
+	}
 }

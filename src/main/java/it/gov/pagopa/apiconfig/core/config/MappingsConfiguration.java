@@ -1,53 +1,12 @@
 package it.gov.pagopa.apiconfig.core.config;
 
+import it.gov.pagopa.apiconfig.core.mapper.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import it.gov.pagopa.apiconfig.core.mapper.ConvertBrokerDetailsToIntermediariPa;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertBrokerPspDetailsToIntermediariPsp;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertCanaleTipoVersamentoToPaymentType;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertCanaliToChannel;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertCanaliToChannelDetails;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertCdiMasterToCdi;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertChannelDetailsToCanali;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertCodifichePaToEncoding;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertConfigurationKeysToConfigurationKey;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertCreditorInstitutionDetailsToPa;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertCreditorInstitutionStationPostToPaStazionePa;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertElencoServiziToService;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertEncodingToCodifichePa;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertFtpServersToFtpServer;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertIbanAttributeMasterToIbanLabel;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertIbanValidiPerPaToIban;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertIbansMassLoadToIbanMaster;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertInformativeContoAccreditoMasterRepositoryToIca;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertInformativePaMasterToCounterpartTable;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertIntermediariPaToBroker;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertIntermediariPaToBrokerDetails;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertIntermediariPspToBrokerPsp;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertIntermediariPspToBrokerPspDetails;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPaStazionePaToCreditorInstitutionStation;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPaStazionePaToCreditorInstitutionView;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPaStazionePaToStationCreditorInstitution;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPaToCreditorInstitution;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPaToCreditorInstitutionDetails;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPaymentServiceProviderDetailsToPsp;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPaymentTypeToString;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPaymentTypeToTipiVersamento;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPddEToPddM;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPddMToPddE;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPspCanaleTipoVersamentoToPaymentServiceProviderView;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPspCanaleTipoVersamentoToPspChannel;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPspToPaymentServiceProvider;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertPspToPaymentServiceProviderDetails;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertStationDetailsToStazioni;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertStazioniToStation;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertStazioniToStationDetails;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertTipiVersamentoToPaymentType;
-import it.gov.pagopa.apiconfig.core.mapper.ConvertWfespPluginConfToWfespPluginConf;
 import it.gov.pagopa.apiconfig.core.model.configuration.ConfigurationKey;
 import it.gov.pagopa.apiconfig.core.model.configuration.FtpServer;
 import it.gov.pagopa.apiconfig.core.model.configuration.PaymentType;
@@ -67,6 +26,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Station;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoadCsv;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPsp;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPspDetails;
@@ -198,6 +158,8 @@ public class MappingsConfiguration {
     
     Converter<IbansMassLoad, IbansMaster> convertIbansMassLoadToIbanMaster = new ConvertIbansMassLoadToIbanMaster();
 
+    Converter<IbansMassLoadCsv, IbansMaster> convertIbansMassLoadCsvToIbanMaster = new ConvertIbansMassLoadCsvToIbanMaster();
+
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
         .setConverter(convertPaToCreditorInstitutionDetails);
@@ -318,6 +280,9 @@ public class MappingsConfiguration {
 
     mapper.createTypeMap(IbansMassLoad.class, IbansMaster.class)
 			.setConverter(convertIbansMassLoadToIbanMaster);
+
+    mapper.createTypeMap(IbansMassLoadCsv.class, IbansMaster.class)
+            .setConverter(convertIbansMassLoadCsvToIbanMaster);
     
     return mapper;
   }

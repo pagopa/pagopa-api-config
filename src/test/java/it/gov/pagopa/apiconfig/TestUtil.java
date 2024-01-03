@@ -1155,7 +1155,7 @@ public class TestUtil {
   public static it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(String organizationFiscalCode) {
       return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
               .objId(100L)
-              .iban("IT99C0222211111000000000004")
+              .iban("IT84H0706676470000000822789")
               .fiscalCode(organizationFiscalCode)
               .description("iban")
               .dueDate(Timestamp.valueOf(LocalDateTime.now().plusYears(3)))
