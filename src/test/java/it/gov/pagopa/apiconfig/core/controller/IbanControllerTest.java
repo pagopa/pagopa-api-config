@@ -205,6 +205,26 @@ class IbanControllerTest {
     mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isCreated());
   }
+  
+  @Test
+  void createMassiveIbansByCsv() throws Exception {
+    File zip = TestUtil.readFile("file/massiveIbansValid_Insert.csv");
+    MockMultipartFile multipartFile =
+        new MockMultipartFile(
+            "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+    String url = "/creditorinstitutions/ibans/csv";
+
+    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+        .andExpect(status().isOk());
+    
+    zip = TestUtil.readFile("file/massiveIbansValid_Update_Delete.csv");
+    multipartFile =
+            new MockMultipartFile(
+                "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+
+    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+            .andExpect(status().isOk());
+  }
 
   @Test
   void upsertIbanLabel_200() throws Exception {

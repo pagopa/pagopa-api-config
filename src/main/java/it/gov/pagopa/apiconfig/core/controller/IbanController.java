@@ -484,7 +484,7 @@ public class IbanController {
 	  @PostMapping(
 	      value = "/ibans",
 	      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	  public ResponseEntity<Void> massiveCreateIbans(
+  public ResponseEntity<Void> massiveCreateIbans(
 	      @NotNull
 	          @Parameter(
 	              description = "Zip file containing IBANs to create",
@@ -495,6 +495,71 @@ public class IbanController {
 	    ibansService.createMassiveIbans(file);
 	    return ResponseEntity.status(HttpStatus.CREATED).build();
 	  }
+
+    @Operation(
+            summary =
+                    "Upload a CSV file containing the details of multiple ibans to create",
+            security = {
+                    @SecurityRequirement(name = "ApiKey"),
+                    @SecurityRequirement(name = "Authorization")
+            },
+            tags = {
+                    "Massive Loading",
+            })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "429",
+                            description = "Too many requests",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Service unavailable",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @PostMapping(
+            value = "/ibans/csv",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+  public ResponseEntity<Void> massiveCreateIbansCsv(
+            @NotNull
+            @Parameter(
+                    description = "CSV file regarding various Ibans actions",
+                    required = true,
+                    content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
+            @RequestParam("file")
+            MultipartFile file) {
+        ibansService.createMassiveIbansByCsv(file);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 
     @Operation(

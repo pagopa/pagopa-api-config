@@ -29,7 +29,7 @@
     <postgresql-version>42.5.1</postgresql-version>
     <azure.storage.table.version>8.6.6</azure.storage.table.version>
     <testcontainer.version>1.17.6</testcontainer.version>
-    <starter.version>1.16.0</starter.version>
+    <starter.version>1.18.0</starter.version>
   </properties>
 
   <repositories>
