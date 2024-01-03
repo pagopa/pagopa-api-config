@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.57.5-5-PAGOPA-1378-sviluppo-caricamento-massivo-iban-da-csv"
+    "version": "0.58.0"
   },
   "servers": [
     {
