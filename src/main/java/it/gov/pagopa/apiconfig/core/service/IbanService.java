@@ -193,8 +193,13 @@ public class IbanService {
         IbanMaster ibanCIRelationToBeUpdated =
                 saveIbanCIRelation(existingIbanMaster, existingCreditorInstitution, iban, existingIban);
         // remove all labels and save them again
-        ibanAttributeMasterRepository.deleteAll(existingIbanMaster.getIbanAttributesMasters());
-        ibanAttributeMasterRepository.flush();
+        Iterator<IbanAttributeMaster> it = ibanCIRelationToBeUpdated.getIbanAttributesMasters().iterator();
+        while (it.hasNext()) {
+            IbanAttributeMaster ibanAttributeMaster = it.next();
+            ibanAttributeMaster.setIbanMaster(null);
+            it.remove();
+        }
+        ibanMasterRepository.flush();
         List<IbanAttributeMaster> updatedIbanAttributes =
                 saveIbanLabelRelation(iban, ibanCIRelationToBeUpdated);
 
