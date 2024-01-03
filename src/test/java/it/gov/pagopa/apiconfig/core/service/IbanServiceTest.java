@@ -1023,7 +1023,7 @@ class IbanServiceTest {
 
         assertEquals(1, result.getIbanEnhancedList().size());
         assertEquals(nowTime.minusYears(1), result.getIbanEnhancedList().get(0).getPublicationDate().toLocalDateTime());
-        assertEquals("IT99C0222211111000000000004", result.getIbanEnhancedList().get(0).getIbanValue());
+        assertEquals("IT84H0706676470000000822789", result.getIbanEnhancedList().get(0).getIbanValue());
     }
 
     @Test
@@ -1119,6 +1119,25 @@ class IbanServiceTest {
     	} catch (Exception e) {
     		fail(e);
     	}
+    }
+
+    @Test
+    void massiveCreateIbansByCsv_existingIban_ok() throws IOException {
+
+        when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
+        when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
+        when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any())).thenReturn(List.of(getMockIbanMaster_2()));
+        when(ibanRepository.saveAll(any(List.class))).thenReturn(List.of(getMockIban("00168480242")));
+
+        File zip = TestUtil.readFile("file/massiveIbansValid_existingIban_Insert.csv");
+        MockMultipartFile file =
+                new MockMultipartFile(
+                        "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+        try {
+            ibanService.createMassiveIbansByCsv(file);
+        } catch (Exception e) {
+            fail(e);
+        }
     }
 
     @ParameterizedTest
