@@ -2,7 +2,7 @@ apiVersion: v2
 name: core
 description: APIs to manage configuration for CI and PSP of pagoPA
 type: application
-version: 0.110.0
+version: 0.112.0
 appVersion: 0.58.1
 dependencies:
   - name: microservice-chart
