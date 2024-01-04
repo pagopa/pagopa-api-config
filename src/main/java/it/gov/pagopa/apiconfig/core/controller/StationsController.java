@@ -456,10 +456,10 @@ public class StationsController {
           @RequestParam
           Integer page,
       @Parameter(description = "Number of elements on one page. Default = 50")
-      @RequestParam(required = false)
-          String creditorInstitution) {
+      @RequestParam(required = false, name = "ciName")
+          String filterByCiName) {
     return ResponseEntity.ok(
-        stationsService.getStationCreditorInstitutions(stationCode, creditorInstitution, limit, page));
+        stationsService.getStationCreditorInstitutions(stationCode, filterByCiName, limit, page));
   }
 
   @Operation(
