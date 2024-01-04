@@ -760,6 +760,7 @@ class IbanServiceTest {
         when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
         doNothing().when(ibanAttributeMasterRepository).deleteAll(any());
         doNothing().when(ibanAttributeMasterRepository).flush();
+        doNothing().when(ibanAttributeMasterRepository).deleteByIds(anyList());
         when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class)))
                 .then(returnsFirstArg());
         // executing logic and check assertions
@@ -811,6 +812,7 @@ class IbanServiceTest {
         when(ibanAttributeRepository.findAll()).thenReturn(ibanAttributes);
         doNothing().when(ibanAttributeMasterRepository).deleteAll(any());
         doNothing().when(ibanAttributeMasterRepository).flush();
+        doNothing().when(ibanAttributeMasterRepository).deleteByIds(anyList());
         when(ibanAttributeMasterRepository.save(any(IbanAttributeMaster.class)))
                 .thenThrow(
                         IllegalArgumentException
