@@ -455,7 +455,7 @@ public class StationsController {
           @Parameter(description = "Page number. Page value starts from 0", required = true)
           @RequestParam
           Integer page,
-      @Parameter(description = "Number of elements on one page. Default = 50")
+      @Parameter(description = "Filter by creditor institution name")
       @RequestParam(required = false, name = "ciName")
           String filterByCiName) {
     return ResponseEntity.ok(
