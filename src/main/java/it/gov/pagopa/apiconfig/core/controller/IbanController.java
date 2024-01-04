@@ -15,24 +15,18 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @RestController()
 @RequestMapping(path = "/creditorinstitutions")
@@ -189,6 +183,72 @@ public class IbanController {
 
     return ResponseEntity.ok(
         ibansService.getCreditorInstitutionsIbansByLabel(creditorInstitutionCode, filterByLabel));
+  }
+
+  @Operation(
+      summary = "Get creditor institution ibans list",
+      security = {
+        @SecurityRequirement(name = "ApiKey"),
+        @SecurityRequirement(name = "Authorization")
+      },
+      tags = {
+        "Creditor Institutions",
+      })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = IbansEnhanced.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not Found",
+            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Too many requests",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Service unavailable",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @GetMapping(
+      value = "/{creditorinstitutioncode}/ibans/list",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<IbansEnhanced> getIbans(
+      @Size(max = 50)
+          @Parameter(
+              description = "The fiscal code of the Organization.",
+              required = true)
+          @PathVariable("creditorinstitutioncode")
+      @NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
+      String creditorInstitutionCode,
+      @RequestParam(required = false, name = "label") @Parameter(description = "Filter by label")
+          String filterByLabel) {
+
+    return ResponseEntity.ok(ibansService.getIbans(creditorInstitutionCode, filterByLabel));
   }
 
   /**
