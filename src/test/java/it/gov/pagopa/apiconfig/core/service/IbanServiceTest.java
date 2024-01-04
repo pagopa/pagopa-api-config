@@ -742,6 +742,13 @@ class IbanServiceTest {
         iban.setActive(false);
         IbanMaster updatedMockIbanMaster = getMockIbanMaster(creditorInstitution, iban, mockIban);
         updatedMockIbanMaster.setIbanStatus(IbanStatus.DISABLED);
+        updatedMockIbanMaster.getIbanAttributesMasters().add(IbanAttributeMaster.builder()
+                .objId(100L)
+                .ibanAttribute(ibanAttributes.get(0))
+                .fkAttribute(ibanAttributes.get(0).getObjId())
+                .ibanMaster(updatedMockIbanMaster)
+                .fkIbanMaster(updatedMockIbanMaster.getObjId())
+                .build());
         // mocking responses from repositories
         when(paRepository.findByIdDominio(organizationFiscalCode))
                 .thenReturn(Optional.of(creditorInstitution));
