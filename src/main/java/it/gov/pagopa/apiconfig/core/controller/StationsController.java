@@ -454,9 +454,12 @@ public class StationsController {
       @PositiveOrZero
           @Parameter(description = "Page number. Page value starts from 0", required = true)
           @RequestParam
-          Integer page) {
+          Integer page,
+      @Parameter(description = "Number of elements on one page. Default = 50")
+      @RequestParam(required = false)
+          String creditorInstitution) {
     return ResponseEntity.ok(
-        stationsService.getStationCreditorInstitutions(stationCode, limit, page));
+        stationsService.getStationCreditorInstitutions(stationCode, creditorInstitution, limit, page));
   }
 
   @Operation(
