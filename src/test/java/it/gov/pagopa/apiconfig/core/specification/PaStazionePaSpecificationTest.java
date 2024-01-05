@@ -48,5 +48,28 @@ class PaStazionePaSpecificationTest {
                 "123", "123", "123", 1L, 1L, 1L, Boolean.TRUE)
             .toPredicate(root, query, builder);
     assertNotNull(p);
+
+    p =
+            PaStazionePaSpecification.filterByStationAndCreditorInstitution(
+                            null, null)
+                    .toPredicate(root, query, builder);
+    assertNotNull(p);
+    p =
+            PaStazionePaSpecification.filterByStationAndCreditorInstitution(
+                            123L, null)
+                    .toPredicate(root, query, builder);
+    assertNotNull(p);
+
+    p =
+            PaStazionePaSpecification.filterByStationAndCreditorInstitution(
+                            null, "Comune di")
+                    .toPredicate(root, query, builder);
+    assertNotNull(p);
+
+    p =
+            PaStazionePaSpecification.filterByStationAndCreditorInstitution(
+                            123L, "Comune di")
+                    .toPredicate(root, query, builder);
+    assertNotNull(p);
   }
 }

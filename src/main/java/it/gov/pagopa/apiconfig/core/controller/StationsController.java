@@ -454,9 +454,12 @@ public class StationsController {
       @PositiveOrZero
           @Parameter(description = "Page number. Page value starts from 0", required = true)
           @RequestParam
-          Integer page) {
+          Integer page,
+      @Parameter(description = "Filter by creditor institution name")
+      @RequestParam(required = false, name = "ciName")
+          String filterByCiName) {
     return ResponseEntity.ok(
-        stationsService.getStationCreditorInstitutions(stationCode, limit, page));
+        stationsService.getStationCreditorInstitutions(stationCode, filterByCiName, limit, page));
   }
 
   @Operation(
