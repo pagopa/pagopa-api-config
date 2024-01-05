@@ -249,14 +249,29 @@ class StationsServiceTest {
   void getStationCreditorInstitutions() throws IOException, JSONException {
     when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
     Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
-    when(paStazionePaRepository.findAllByFkStazione_ObjId(any(), any(Pageable.class)))
+    when(paStazionePaRepository.findAll(any(), any(Pageable.class)))
         .thenReturn(page);
 
     StationCreditorInstitutions result =
-        stationsService.getStationCreditorInstitutions("1234", 50, 0);
+        stationsService.getStationCreditorInstitutions("1234", null, 50, 0);
     String actual = TestUtil.toJson(result);
     String expected =
         TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");
+    JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @Test
+  void getStationCreditorInstitutions_withCIName() throws IOException, JSONException {
+    when(stazioniRepository.findByIdStazione("1234")).thenReturn(Optional.of(getMockStazioni()));
+    Page<PaStazionePa> page = TestUtil.mockPage(Lists.newArrayList(getMockPaStazionePa()), 50, 0);
+    when(paStazionePaRepository.findAll(any(), any(Pageable.class)))
+            .thenReturn(page);
+
+    StationCreditorInstitutions result =
+            stationsService.getStationCreditorInstitutions("1234", "comune di", 50, 0);
+    String actual = TestUtil.toJson(result);
+    String expected =
+            TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
   }
 
