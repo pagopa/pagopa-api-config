@@ -210,13 +210,11 @@ public class IbanService {
         IbanMaster ibanCIRelationToBeUpdated =
                 saveIbanCIRelation(existingIbanMaster, existingCreditorInstitution, iban, existingIban);
         // remove all labels and save them again
-        Iterator<IbanAttributeMaster> it = ibanCIRelationToBeUpdated.getIbanAttributesMasters().iterator();
-        while (it.hasNext()) {
-            IbanAttributeMaster ibanAttributeMaster = it.next();
-            ibanAttributeMaster.setIbanMaster(null);
-            it.remove();
-        }
-        ibanMasterRepository.flush();
+        List<Long> ibanAttributeMasterToDelete = ibanCIRelationToBeUpdated.getIbanAttributesMasters().stream()
+                .map(IbanAttributeMaster::getObjId)
+                .collect(Collectors.toList());
+        ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDelete);
+        ibanMasterRepository.saveAndFlush(ibanCIRelationToBeUpdated);
         List<IbanAttributeMaster> updatedIbanAttributes =
                 saveIbanLabelRelation(iban, ibanCIRelationToBeUpdated);
 

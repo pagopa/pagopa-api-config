@@ -10,6 +10,7 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorIns
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Stations;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
+import it.gov.pagopa.apiconfig.core.specification.PaStazionePaSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
@@ -114,11 +115,14 @@ public class StationsService {
   }
 
   public StationCreditorInstitutions getStationCreditorInstitutions(
-      @NotNull String stationCode, @NotNull Integer limit, @NotNull Integer pageNumber) {
+      @NotNull String stationCode, String ciName, @NotNull Integer limit, @NotNull Integer pageNumber) {
     Stazioni stazioni = getStationIfExists(stationCode);
     Pageable pageable = PageRequest.of(pageNumber, limit);
-    Page<PaStazionePa> page =
-        paStazioniRepository.findAllByFkStazione_ObjId(stazioni.getObjId(), pageable);
+    Page<PaStazionePa> page = paStazioniRepository.findAll(
+            PaStazionePaSpecification.filterByStationAndCreditorInstitution(
+                    stazioni.getObjId(),
+                    ciName),
+            pageable);
     List<StationCreditorInstitution> ecList =
         page.stream()
             .map(paStazionePa -> modelMapper.map(paStazionePa, StationCreditorInstitution.class))
