@@ -177,7 +177,7 @@ public class IbanService {
 		// retrieve the creditor institution and throw exception if not found
 		Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
 		// Update Ica Table
-		//azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
+		azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
 		List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(existingCreditorInstitution.getObjId());
 		this.checkEcodingsAssociation(iban, existingCreditorInstitution, encodings);
 
