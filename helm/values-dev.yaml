@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.58.2-5-PASELC-649-find-by-creditorinstitution"
+    tag: "0.58.3"
     pullPolicy: Always
   livenessProbe:
     httpGet:
