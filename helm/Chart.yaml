@@ -2,8 +2,8 @@ apiVersion: v2
 name: core
 description: APIs to manage configuration for CI and PSP of pagoPA
 type: application
-version: 0.117.0
-appVersion: 0.58.2-3-PASELC-649-find-by-creditorinstitution
+version: 0.118.0
+appVersion: 0.58.2-4-PASELC-649-find-by-creditorinstitution
 dependencies:
   - name: microservice-chart
     version: 2.8.0
