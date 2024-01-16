@@ -104,6 +104,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -1149,6 +1150,7 @@ public class TestUtil {
               .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
               .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
               .description(iban.getDescription())
+              .ibanAttributesMasters(new ArrayList<>())
               .build();
   }
 
