@@ -16,4 +16,5 @@ public class FilterPaView {
   @Nullable private Long applicationCode;
   @Nullable private Long segregationCode;
   @Nullable private Boolean mod4;
+  @Nullable private Boolean enabled;
 }
