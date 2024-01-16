@@ -7101,8 +7101,8 @@
       },
       "get": {
         "produces": [
-          "application/json",
-          "application/xml"
+          "application/xml",
+          "application/json"
         ],
         "parameters": [
           {
@@ -7702,6 +7702,124 @@
         "summary": "Upload a CSV file containing the details of multiple ibans to create"
       }
     },
+    "/creditorinstitutions/ibans/labels": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IbanLabel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/IbanLabel"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Ibans"
+        ],
+        "operationId": "upsertIbanLabel",
+        "summary": "Create or update a label to be associated to IBANs"
+      }
+    },
     "/creditorinstitutions/view": {
       "parameters": [
         {
@@ -7754,6 +7872,13 @@
             "name": "stationCode",
             "required": false,
             "type": "string"
+          },
+          {
+            "description": "Filter by enabled",
+            "in": "query",
+            "name": "enabled",
+            "required": false,
+            "type": "boolean"
           },
           {
             "description": "Filter by aux digit",
@@ -8935,6 +9060,130 @@
         ],
         "operationId": "getCreditorInstitutionsIbansEnhanced",
         "summary": "Get creditor institution ibans enhanced"
+      }
+    },
+    "/creditorinstitutions/{creditorinstitutioncode}/ibans/list": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "The fiscal code of the Organization.",
+            "in": "path",
+            "maxLength": 50,
+            "minLength": 0,
+            "name": "creditorinstitutioncode",
+            "pattern": "\\d{11}",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Filter by label",
+            "in": "query",
+            "name": "label",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/IbansEnhanced"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Ibans"
+        ],
+        "operationId": "getIbans",
+        "summary": "Get creditor institution ibans list"
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/ibans/{ibanId}": {
@@ -13442,6 +13691,13 @@
             "name": "page",
             "required": true,
             "type": "integer"
+          },
+          {
+            "description": "Filter by creditor institution name",
+            "in": "query",
+            "name": "ciName",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
@@ -14328,7 +14584,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_key": {
@@ -14350,7 +14606,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_value": {
