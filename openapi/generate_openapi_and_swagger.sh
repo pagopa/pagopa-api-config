@@ -31,5 +31,7 @@ jq  '."paths"."/batchoperation/creditorinstitution-station/loading".post.paramet
 jq  '."paths"."/batchoperation/creditorinstitution-station/migration".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/icas/check/massive".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/icas/massive".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
+jq  '."paths"."/creditorinstitutions/ibans/csv".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
+jq  '."paths"."/creditorinstitutions/ibans".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 
 kill %% || true
