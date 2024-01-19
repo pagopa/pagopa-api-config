@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,6 +26,9 @@ class RefreshServiceTest {
   public static final String JSON_SUCCESS_REFRESH_CONFIGURATION_JOB_TRIGGER =
       "{\"success\":true,\"action\":\"Trigger job refreshConfiguration\",\"description\":\"Job"
           + " triggered\"}";
+
+  private static final String API_CONFIG_CACHE_REFRESH_API= "/stakeholders/node/cache/refresh";
+
   @Autowired private RefreshService refreshService;
   private MockClient mockClient;
 
@@ -40,6 +44,10 @@ class RefreshServiceTest {
                 HttpMethod.GET,
                 "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue(),
                 JSON_SUCCESS_REFRESH_CONFIGURATION_JOB_TRIGGER)
+            .ok(
+                    HttpMethod.GET,
+                    API_CONFIG_CACHE_REFRESH_API,
+                    "")
             .ok(
                 HttpMethod.GET,
                 "/config/refresh/" + ConfigurationDomain.FTP_SERVER.getValue(),
@@ -76,6 +84,17 @@ class RefreshServiceTest {
         "{\"success\":true,\"action\":\"Trigger job refreshConfiguration\",\"description\":\"Job"
             + " triggered\"}",
         response);
+  }
+
+  @Test
+  void refreshApiConfigCache() {
+    String response = refreshService.refreshConfig(ConfigurationDomain.GLOBAL);
+    mockClient.verifyOne(
+            HttpMethod.GET, API_CONFIG_CACHE_REFRESH_API);
+    assertEquals(
+            "{\"success\":true,\"action\":\"Trigger job refreshConfiguration\",\"description\":\"Job"
+                    + " triggered\"}",
+            response);
   }
 
   @Test
