@@ -33,8 +33,10 @@ public class RefreshService {
   private RefreshClient client;
   private ApiConfigCacheClient apiConfigCacheClient;
 
-  @Value("${service.api-config-cache.refresh}") boolean apiConfigCacheRefresh;
-  @Value("${service.nodo-monitoring.refresh}") boolean monitoringRefresh;
+  @Value("${service.api-config-cache.refresh}") private boolean apiConfigCacheRefresh;
+  @Value("${service.api-config-cache.subscriptionKey}") private String apiConfigCacheSubscriptionKey;
+
+  @Value("${service.nodo-monitoring.refresh}") private boolean monitoringRefresh;
 
   public RefreshService(@Value("${service.nodo-monitoring.host}") String monitoringUrl, @Value("${service.api-config-cache.host}") String apiConfigCacheUrl) {
     client = Feign.builder().target(RefreshClient.class, monitoringUrl);
@@ -68,7 +70,7 @@ public class RefreshService {
       () -> {
         try {
           log.debug("RefreshService api-config-cache refresh");
-          ResponseEntity<String> response = apiConfigCacheClient.refresh();
+          ResponseEntity<String> response = apiConfigCacheClient.refresh(apiConfigCacheSubscriptionKey);
           int httpResponseCode = response.getStatusCodeValue();
           if (httpResponseCode != HttpStatus.OK.value()) {
             log.error("RefreshService api-config-cache refresh error - result: httpStatusCode[{}], body[{}]", httpResponseCode, response.getBody());
