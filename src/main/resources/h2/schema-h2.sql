@@ -51,6 +51,7 @@ create table NODO4_CFG.PA
     PAGAMENTO_PRESSO_PSP              boolean     not null,
     RENDICONTAZIONE_FTP               boolean     not null,
     RENDICONTAZIONE_ZIP               boolean     not null,
+    CBILL                             varchar(255),
     constraint PK_PA
         primary key (OBJ_ID),
     constraint UQ_ID_DOMINIO
