@@ -2,6 +2,7 @@
   "creditor_institution_code": "00168480242",
   "enabled": true,
   "business_name": "Comune di Bassano del Grappa",
+  "cbill_code": "56I10",
   "address": {
     "location": "",
     "city": "",
