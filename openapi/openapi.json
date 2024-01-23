@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.58.9"
+    "version": "0.58.9-1-PASELC-714-gestione-cbill"
   },
   "servers": [
     {
@@ -18017,6 +18017,10 @@
             "minLength": 0,
             "type": "string",
             "example": "Comune di Lorem Ipsum"
+          },
+          "cbill_code": {
+            "type": "string",
+            "example": "1234567890100"
           },
           "address": {
             "$ref": "#/components/schemas/CreditorInstitutionAddress"
