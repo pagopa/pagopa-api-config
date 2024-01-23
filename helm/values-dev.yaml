@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.58.9"
+    tag: "0.58.9-1-PASELC-714-gestione-cbill"
     pullPolicy: Always
   livenessProbe:
     httpGet:
