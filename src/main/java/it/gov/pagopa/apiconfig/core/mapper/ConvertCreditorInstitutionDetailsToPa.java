@@ -24,6 +24,7 @@ public class ConvertCreditorInstitutionDetailsToPa
         .pagamentoPressoPsp(source.getPspPayment())
         .rendicontazioneFtp(source.getReportingFtp())
         .rendicontazioneZip(source.getReportingZip())
+        .cbill(source.getCbillCode())
         .build();
   }
 }

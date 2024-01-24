@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.58.8"
+    "version": "0.58.11"
   },
   "host": "localhost:8080",
   "basePath": "/",
@@ -14745,6 +14745,10 @@
           "example": "Comune di Lorem Ipsum",
           "maxLength": 70,
           "minLength": 0,
+          "type": "string"
+        },
+        "cbill_code": {
+          "example": "1234567890100",
           "type": "string"
         },
         "creditor_institution_code": {
