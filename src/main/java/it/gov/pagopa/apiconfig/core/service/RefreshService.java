@@ -2,6 +2,7 @@ package it.gov.pagopa.apiconfig.core.service;
 
 import feign.Feign;
 import feign.FeignException;
+import feign.Response;
 import it.gov.pagopa.apiconfig.core.client.ApiConfigCacheClient;
 import it.gov.pagopa.apiconfig.core.client.RefreshClient;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
@@ -12,7 +13,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
@@ -48,13 +48,13 @@ public class RefreshService {
   }
 
   public String refreshConfig(ConfigurationDomain domain) {
-    String response = "KO";
+    String response = "OK";
     if (domain.equals(ConfigurationDomain.GLOBAL)) {
       if( apiConfigCacheRefresh ) {
         callApiConfigCache();
       }
       if( monitoringRefresh ) {
-        response = "OK";//callJobTrigger(JobTrigger.REFRESH_CONFIGURATION);
+        response = callJobTrigger(JobTrigger.REFRESH_CONFIGURATION);
       }
     } else {
       if( monitoringRefresh ) {
@@ -70,12 +70,12 @@ public class RefreshService {
       () -> {
         try {
           log.debug("RefreshService api-config-cache refresh");
-          ResponseEntity<String> response = apiConfigCacheClient.refresh(apiConfigCacheSubscriptionKey);
-          int httpResponseCode = response.getStatusCodeValue();
+          Response response = apiConfigCacheClient.refresh(apiConfigCacheSubscriptionKey);
+          int httpResponseCode = response.status();
           if (httpResponseCode != HttpStatus.OK.value()) {
-            log.error("RefreshService api-config-cache refresh error - result: httpStatusCode[{}], body[{}]", httpResponseCode, response.getBody());
+            log.error("RefreshService api-config-cache refresh error - result: httpStatusCode[{}]", httpResponseCode);
           }
-          log.debug("RefreshService api-config-cache refresh successful");
+          log.info("RefreshService api-config-cache refresh successful");
         } catch (FeignException.GatewayTimeout e) {
           log.error("RefreshService api-config-cache refresh error: Gateway timeout", e);
         } catch (FeignException e) {
