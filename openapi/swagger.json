@@ -14747,6 +14747,10 @@
           "minLength": 0,
           "type": "string"
         },
+        "cbill_code": {
+          "example": "1234567890100",
+          "type": "string"
+        },
         "creditor_institution_code": {
           "example": "1234567890100",
           "maxLength": 35,
