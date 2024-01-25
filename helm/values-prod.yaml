@@ -92,6 +92,7 @@ microservice-chart: &microservice-chart
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
     NODO_MONITORING_HOST: 'https://api.platform.pagopa.it/nodo-monitoring/monitoring/v1'
+    NODO_MONITORING_REFRESH: "true"
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
     ICA_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
@@ -158,6 +159,7 @@ postgresql:
     DATABASE_SCHEMA: 'cfg'
     HEALTHCHECK_QUERY: "select 1"
     API_CONFIG_CACHE_HOST: 'https://api.platform.pagopa.it/api-config-cache/p/v1'
+    API_CONFIG_CACHE_REFRESH: "true"
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
@@ -177,6 +179,7 @@ oracle:
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
     DATABASE_SCHEMA: 'NODO4_CFG'
     API_CONFIG_CACHE_HOST: 'https://api.platform.pagopa.it/api-config-cache/o/v1'
+    API_CONFIG_CACHE_REFRESH: "true"
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'oracle-db-cfg-password'
