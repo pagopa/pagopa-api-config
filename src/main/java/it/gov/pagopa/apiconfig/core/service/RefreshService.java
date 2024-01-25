@@ -74,8 +74,9 @@ public class RefreshService {
           int httpResponseCode = response.status();
           if (httpResponseCode != HttpStatus.OK.value()) {
             log.error("RefreshService api-config-cache refresh error - result: httpStatusCode[{}]", httpResponseCode);
+          } else {
+            log.info("RefreshService api-config-cache refresh successful");
           }
-          log.info("RefreshService api-config-cache refresh successful");
         } catch (FeignException.GatewayTimeout e) {
           log.error("RefreshService api-config-cache refresh error: Gateway timeout", e);
         } catch (FeignException e) {
