@@ -108,13 +108,12 @@ public class StationsService {
   }
 
   public StationCreditorInstitutions getStationCreditorInstitutions(
-          @NotNull String stationCode, String ciName, String filterByCiNameOrCF, @NotNull Integer limit, @NotNull Integer pageNumber) {
+          @NotNull String stationCode, String filterByCiNameOrCF, @NotNull Integer limit, @NotNull Integer pageNumber) {
     Stazioni stazioni = getStationIfExists(stationCode);
     Pageable pageable = PageRequest.of(pageNumber, limit);
     Page<PaStazionePa> page = paStazioniRepository.findAll(
             PaStazionePaSpecification.filterByStationAndCreditorInstitution(
                     stazioni.getObjId(),
-                    ciName,
                     filterByCiNameOrCF),
             pageable);
     List<StationCreditorInstitution> ecList =

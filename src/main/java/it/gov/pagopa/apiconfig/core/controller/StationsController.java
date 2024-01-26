@@ -456,14 +456,11 @@ public class StationsController {
           @Parameter(description = "Page number. Page value starts from 0", required = true)
           @RequestParam
           Integer page,
-      @Parameter(description = "Filter by creditor institution name")
-      @RequestParam(required = false, name = "ciName")
-          String filterByCiName,
       @Parameter(description = "Filter by name or tax code of the creditor institution")
       @RequestParam(required = false, name = "ciNameOrCF")
           String filterByCiNameOrCF) {
     return ResponseEntity.ok(
-        stationsService.getStationCreditorInstitutions(stationCode, filterByCiName, filterByCiNameOrCF, limit, page));
+        stationsService.getStationCreditorInstitutions(stationCode, filterByCiNameOrCF, limit, page));
   }
 
   @Operation(

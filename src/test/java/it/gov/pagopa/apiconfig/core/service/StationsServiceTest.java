@@ -242,7 +242,7 @@ class StationsServiceTest {
         .thenReturn(page);
 
     StationCreditorInstitutions result =
-        stationsService.getStationCreditorInstitutions("1234", null, null, 50, 0);
+        stationsService.getStationCreditorInstitutions("1234",  null, 50, 0);
     String actual = TestUtil.toJson(result);
     String expected =
         TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");
@@ -257,7 +257,7 @@ class StationsServiceTest {
             .thenReturn(page);
 
     StationCreditorInstitutions result =
-            stationsService.getStationCreditorInstitutions("1234", "comune di", null, 50, 0);
+            stationsService.getStationCreditorInstitutions("1234", "comune di", 50, 0);
     String actual = TestUtil.toJson(result);
     String expected =
             TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");

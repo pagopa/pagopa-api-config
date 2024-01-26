@@ -52,24 +52,24 @@ class PaStazionePaSpecificationTest {
 
     p =
             PaStazionePaSpecification.filterByStationAndCreditorInstitution(
-                            null, null, null)
+                            null, null)
                     .toPredicate(root, query, builder);
     assertNotNull(p);
     p =
             PaStazionePaSpecification.filterByStationAndCreditorInstitution(
-                            123L, null, null)
-                    .toPredicate(root, query, builder);
-    assertNotNull(p);
-
-    p =
-            PaStazionePaSpecification.filterByStationAndCreditorInstitution(
-                            null, "Comune di", null)
+                            123L, null)
                     .toPredicate(root, query, builder);
     assertNotNull(p);
 
     p =
             PaStazionePaSpecification.filterByStationAndCreditorInstitution(
-                            123L, "Comune di", null)
+                            null, "Comune di")
+                    .toPredicate(root, query, builder);
+    assertNotNull(p);
+
+    p =
+            PaStazionePaSpecification.filterByStationAndCreditorInstitution(
+                            123L, "Comune di")
                     .toPredicate(root, query, builder);
     assertNotNull(p);
   }
