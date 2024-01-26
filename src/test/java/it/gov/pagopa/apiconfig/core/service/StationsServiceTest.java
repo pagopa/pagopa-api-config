@@ -1,22 +1,5 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getMockFilterAndOrder;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockIntermediariePa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockPaStazionePa;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockStationDetails;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockStazioni;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.when;
-
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
@@ -30,8 +13,6 @@ import it.gov.pagopa.apiconfig.starter.repository.IntermediariPaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
-import java.io.IOException;
-import java.util.Optional;
 import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -44,6 +25,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import static it.gov.pagopa.apiconfig.TestUtil.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = ApiConfig.class)
 class StationsServiceTest {
@@ -253,7 +242,7 @@ class StationsServiceTest {
         .thenReturn(page);
 
     StationCreditorInstitutions result =
-        stationsService.getStationCreditorInstitutions("1234", null, 50, 0);
+        stationsService.getStationCreditorInstitutions("1234", null, null, 50, 0);
     String actual = TestUtil.toJson(result);
     String expected =
         TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");
@@ -268,7 +257,7 @@ class StationsServiceTest {
             .thenReturn(page);
 
     StationCreditorInstitutions result =
-            stationsService.getStationCreditorInstitutions("1234", "comune di", 50, 0);
+            stationsService.getStationCreditorInstitutions("1234", "comune di", null, 50, 0);
     String actual = TestUtil.toJson(result);
     String expected =
             TestUtil.readJsonFromFile("response/get_station_creditorinstitutions_ok.json");

@@ -17,7 +17,7 @@ public class PaStazionePaSpecification {
 
   private PaStazionePaSpecification() {}
 
-  public static Specification<PaStazionePa> filterByStationAndCreditorInstitution(Long stationObjId, String ciName) {
+  public static Specification<PaStazionePa> filterByStationAndCreditorInstitution(Long stationObjId, String ciName, String filterByCiNameOrCF) {
     return (root, query, cb) -> {
       query.distinct(true);
       List<Predicate> list = new ArrayList<>();
@@ -27,6 +27,12 @@ public class PaStazionePaSpecification {
 
       if (StringUtils.isNotEmpty(ciName)) {
         list.add(cb.and(cb.like(cb.lower(pa.get("ragioneSociale")), "%" + ciName.toLowerCase() + "%")));
+      }
+      if (StringUtils.isNotEmpty(filterByCiNameOrCF)) {
+        var conditionName = cb.like(cb.lower(pa.get("ragioneSociale")), "%" + filterByCiNameOrCF.toLowerCase() + "%");
+        var conditionCF = cb.like(cb.lower(pa.get("idDominio")), "%" + filterByCiNameOrCF.toLowerCase() + "%");
+        var condition = cb.or(conditionCF, conditionName);
+        list.add(cb.and(condition));
       }
       if (stationObjId != null) {
         list.add(cb.and(cb.equal(stazioni.get("objId"), stationObjId)));
