@@ -16,7 +16,10 @@
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti</description>
 
   <properties>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
 
     <ojdbc8-version>21.4.0.0</ojdbc8-version>
     <springdoc-version>1.6.4</springdoc-version>
