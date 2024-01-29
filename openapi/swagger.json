@@ -13693,9 +13693,9 @@
             "type": "integer"
           },
           {
-            "description": "Filter by creditor institution name",
+            "description": "Filter by name or tax code of the creditor institution",
             "in": "query",
-            "name": "ciName",
+            "name": "ciNameOrCF",
             "required": false,
             "type": "string"
           }
