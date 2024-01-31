@@ -7,7 +7,6 @@ import feign.mock.MockTarget;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.core.client.RefreshClient;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.ConfigurationDomain;
 import it.gov.pagopa.apiconfig.core.model.JobTrigger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,14 +39,6 @@ class RefreshServiceTest {
                 HttpMethod.GET,
                 "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue(),
                 JSON_SUCCESS_REFRESH_CONFIGURATION_JOB_TRIGGER)
-            .ok(
-                HttpMethod.GET,
-                "/config/refresh/" + ConfigurationDomain.FTP_SERVER.getValue(),
-                "SUCCESS")
-            .add(
-                HttpMethod.GET,
-                "/config/refresh/" + ConfigurationDomain.PA.getValue(),
-                500) // simulates a server-side error
             .add(
                 HttpMethod.GET,
                 "/jobs/trigger/" + JobTrigger.PA_RETRY_PA_INVIA_RT_NEGATIVE.getValue(),
@@ -59,17 +50,8 @@ class RefreshServiceTest {
   }
 
   @Test
-  void refreshDomainConfig() {
-    // valid param case: picking one among ConfigDomain values
-    String response = refreshService.refreshConfig(ConfigurationDomain.FTP_SERVER);
-    mockClient.verifyOne(
-        HttpMethod.GET, "/config/refresh/" + ConfigurationDomain.FTP_SERVER.getValue());
-    assertEquals("SUCCESS", response);
-  }
-
-  @Test
   void refreshGlobalConfig() {
-    String response = refreshService.refreshConfig(ConfigurationDomain.GLOBAL);
+    String response = refreshService.refreshConfig();
     mockClient.verifyOne(
         HttpMethod.GET, "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue());
     assertEquals(
@@ -98,12 +80,4 @@ class RefreshServiceTest {
     assertEquals("Refresh configuration failure", exception.getMessage());
   }
 
-  @Test
-  void refreshDomainConfig_500() {
-    // simulates a server-side error
-    Throwable exception =
-        assertThrows(
-            AppException.class, () -> refreshService.refreshConfig(ConfigurationDomain.PA));
-    assertEquals("Something was wrong", exception.getMessage());
-  }
 }

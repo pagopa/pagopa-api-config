@@ -7,7 +7,6 @@ import it.gov.pagopa.apiconfig.core.client.ApiConfigCacheClient;
 import it.gov.pagopa.apiconfig.core.client.RefreshClient;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.ConfigurationDomain;
 import it.gov.pagopa.apiconfig.core.model.JobTrigger;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -47,19 +46,13 @@ public class RefreshService {
     return callJobTrigger(jobType);
   }
 
-  public String refreshConfig(ConfigurationDomain domain) {
+  public String refreshConfig() {
     String response = "OK";
-    if (domain.equals(ConfigurationDomain.GLOBAL)) {
-      if( apiConfigCacheRefresh ) {
-        callApiConfigCache();
-      }
-      if( monitoringRefresh ) {
-        response = callJobTrigger(JobTrigger.REFRESH_CONFIGURATION);
-      }
-    } else {
-      if( monitoringRefresh ) {
-        response = callRefreshConfigDomain(domain);
-      }
+    if( apiConfigCacheRefresh ) {
+      callApiConfigCache();
+    }
+    if( monitoringRefresh ) {
+      response = callJobTrigger(JobTrigger.REFRESH_CONFIGURATION);
     }
     return response;
   }
@@ -99,19 +92,4 @@ public class RefreshService {
     return response;
   }
 
-  private String callRefreshConfigDomain(ConfigurationDomain domain) {
-    String response;
-
-    try {
-      response = client.refreshConfiguration(domain.getValue());
-    } catch (FeignException e) {
-      throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
-    }
-    log.debug("RefreshService refresh domain configuration: {}", response);
-    if (!response.equalsIgnoreCase(SUCCESS)) {
-      throw new AppException(AppError.REFRESH_CONFIG_EXCEPTION);
-    }
-
-    return response;
-  }
 }
