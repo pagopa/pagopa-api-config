@@ -16,11 +16,6 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Stations;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.core.service.StationsService;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
@@ -31,6 +26,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 
 @RestController()
 @RequestMapping(path = "/stations")
@@ -455,11 +456,11 @@ public class StationsController {
           @Parameter(description = "Page number. Page value starts from 0", required = true)
           @RequestParam
           Integer page,
-      @Parameter(description = "Filter by creditor institution name")
-      @RequestParam(required = false, name = "ciName")
-          String filterByCiName) {
+      @Parameter(description = "Filter by name or tax code of the creditor institution")
+      @RequestParam(required = false, name = "ciNameOrCF")
+          String filterByCiNameOrCF) {
     return ResponseEntity.ok(
-        stationsService.getStationCreditorInstitutions(stationCode, filterByCiName, limit, page));
+        stationsService.getStationCreditorInstitutions(stationCode, filterByCiNameOrCF, limit, page));
   }
 
   @Operation(
