@@ -37,9 +37,9 @@ class RefreshControllerTest {
   }
 
   @Test
-  void refreshService_400() throws Exception {
+  void refreshService_404() throws Exception {
     String url = "/refresh/config/NOT_A_VALID_DOMAIN";
-    mvc.perform(get(url)).andExpect(status().is(HttpStatus.BAD_REQUEST.value()));
+    mvc.perform(get(url)).andExpect(status().is(HttpStatus.NOT_FOUND.value()));
   }
 
   @Test
