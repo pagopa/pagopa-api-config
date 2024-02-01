@@ -57,7 +57,6 @@ public class RefreshService {
     return response;
   }
 
-  @Async
   private void callApiConfigCache() {
     CompletableFuture.supplyAsync(
       () -> {
@@ -75,7 +74,7 @@ public class RefreshService {
         } catch (FeignException e) {
           log.error("RefreshService api-config-cache refresh error", e);
         }
-      return null;
+        return null;
     });
   }
 
