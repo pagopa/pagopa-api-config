@@ -100,10 +100,10 @@ class SchedulerTest {
 
     // Check che il file iban sia stato salvato
     IcaBinaryFile icaBinaryFile =
-        icaBinaryFileRepository
-            .findByIdDominio("00168480243")
-            .orElseThrow(
-                () -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, "00168480243"));
+            icaBinaryFileRepository
+                    .findByIdDominio("00168480243")
+                    .orElseThrow(
+                            () -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, "00168480243"));
     String xml = new String(icaBinaryFile.getFileContent());
     assertThat(xml, containsString("00168480243"));
     assertThat(xml, containsString(LocalDateTime.now().toLocalDate().toString()));
