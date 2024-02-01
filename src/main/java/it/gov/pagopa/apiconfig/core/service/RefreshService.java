@@ -25,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
 @Setter
 @Slf4j
 @Transactional
-@EnableAsync
 public class RefreshService {
 
   public static final String SUCCESS = "SUCCESS";
