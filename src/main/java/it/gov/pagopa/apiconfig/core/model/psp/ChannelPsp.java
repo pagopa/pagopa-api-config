@@ -41,4 +41,9 @@ public class ChannelPsp {
   // should be @NotEmpty for requests, but it is not compatible for responses
   // check on empty request is managed in the service method
   private List<String> paymentTypeList;
+
+  @JsonProperty("tax_code")
+  @Schema(required = true)
+  @NotNull
+  private String taxCode;
 }
