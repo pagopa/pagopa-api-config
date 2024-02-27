@@ -14395,13 +14395,17 @@
         },
         "psp_code": {
           "type": "string"
+        },
+        "tax_code": {
+          "type": "string"
         }
       },
       "required": [
         "business_name",
         "enabled",
         "payment_types",
-        "psp_code"
+        "psp_code",
+        "tax_code"
       ],
       "type": "object"
     },
@@ -14472,7 +14476,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validitÃ  token",
+          "example": " default millisecondi validità token",
           "type": "string"
         },
         "config_key": {
@@ -14494,7 +14498,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validitÃ  token",
+          "example": " default millisecondi validità token",
           "type": "string"
         },
         "config_value": {
