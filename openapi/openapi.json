@@ -19389,6 +19389,9 @@
           },
           "mod4": {
             "type": "boolean"
+          },
+          "station_enabled": {
+            "type": "boolean"
           }
         }
       },
