@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.58.15"
+    tag: "0.58.15-1-PAGOPA-1677-sviluppo-adeguamento-schema-xsd-dei-cdi"
     pullPolicy: Always
   livenessProbe:
     httpGet:
