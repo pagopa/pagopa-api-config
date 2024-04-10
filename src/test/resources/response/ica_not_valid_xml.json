@@ -1,5 +1,5 @@
 {
   "xsdCompliant": false,
-  "xsdSchema": "https://raw.githubusercontent.com/pagopa/pagopa-api/master/general/InformativaContoAccredito_1_2_1.xsd",
+  "xsdSchema": "https://raw.githubusercontent.com/pagopa/pagopa-api/develop/xsd-common/InformativaContoAccredito_1_2_1.xsd",
   "detail": "Invalid content was found starting with element 'idBancaSeller'. One of '{ibanAccredito}' is expected. Error at lineNumber: 10"
 }
