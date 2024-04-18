@@ -18147,7 +18147,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validitÃ  token"
+            "example": " default millisecondi validità token"
           }
         }
       },
@@ -18648,7 +18648,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validitÃ  token"
+            "example": " default millisecondi validità token"
           },
           "config_category": {
             "type": "string",
