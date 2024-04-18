@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.58.15"
+    tag: "0.58.15-1-PAGOPA-1677-sviluppo-adeguamento-schema-xsd-dei-cdi"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -88,9 +88,9 @@ microservice-chart: &microservice-chart
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
     COSMOS_URI: 'https://pagopa-p-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
     APP_LOGGING_LEVEL: "INFO"
-    XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
-    XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
-    XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
+    XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/xsd-common/InformativaContoAccredito_1_2_1.xsd'
+    XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/xsd-common/TabellaDelleControparti_1_0_8.xsd'
+    XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/master/xsd-common/CatalogoDatiInformativiPSP.xsd'
     NODO_MONITORING_HOST: 'https://api.platform.pagopa.it/nodo-monitoring/monitoring/v1'
     NODO_MONITORING_REFRESH: "true"
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
