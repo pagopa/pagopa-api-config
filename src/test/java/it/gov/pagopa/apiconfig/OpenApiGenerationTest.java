@@ -29,7 +29,12 @@ class OpenApiGenerationTest {
 
     @Test
     void swaggerSpringPlugin() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/v3/api-docs").accept(MediaType.APPLICATION_JSON))
+        saveOpenAPI("/v3/api-docs/core", "openapi.json");
+        saveOpenAPI("/v3/api-docs/technical_support_iban", "openapi-iban-technical-support.json");
+    }
+
+    private void saveOpenAPI(String fromUri, String toFile) throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(fromUri).accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andDo(
                         (result) -> {
@@ -44,7 +49,7 @@ class OpenApiGenerationTest {
                                     objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(swagger);
                             Path basePath = Paths.get("openapi/");
                             Files.createDirectories(basePath);
-                            Files.write(basePath.resolve("openapi.json"), formatted.getBytes());
+                            Files.write(basePath.resolve(toFile), formatted.getBytes());
                         });
     }
 }

@@ -34,4 +34,7 @@ jq  '."paths"."/icas/massive".post.parameters[0].type |= "file"' ./openapi/swagg
 jq  '."paths"."/creditorinstitutions/ibans/csv".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/creditorinstitutions/ibans".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 
+# Remove post, put and delete method from Technical Support Openapi
+jq  'del( .paths[].post, .paths[].put, .paths[].delete)' ./openapi/openapi-iban-technical-support.json > ./openapi/openapi-technical-support.json.tmp && mv ./openapi/openapi-technical-support.json.tmp ./openapi/openapi-iban-technical-support.json
+
 kill %% || true
