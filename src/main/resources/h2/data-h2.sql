@@ -124,15 +124,17 @@ values (1, 'idPsp1', null, 'profilo=$identificativoIntermediarioPA$~$identificat
 insert into NODO4_CFG.CANALI_NODO (OBJ_ID, REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING,
                                    MODELLO_PAGAMENTO, MULTI_PAYMENT, RAGIONE_SOCIALE, RPT_RT_COMPLIANT, WSAPI,
                                    REDIRECT_PROTOCOLLO, ID_SERV_PLUGIN, ID_CLUSTER, ID_FESP_INSTANCE, LENTO, RT_PUSH,
-                                   AGID_CHANNEL, ON_US, CARRELLO_CARTE, RECOVERY, MARCA_BOLLO_DIGITALE, FLAG_IO,FLAG_PSP_CP, VERSIONE_PRIMITIVE)
+                                   AGID_CHANNEL, ON_US, CARRELLO_CARTE, RECOVERY, MARCA_BOLLO_DIGITALE, FLAG_IO,FLAG_PSP_CP,
+                                   VERSIONE_PRIMITIVE, FLAG_TRAVASO)
 values (1, null, null, null, null, 'ATTIVATO_PRESSO_PSP', 'N', null, 'N', null, 'HTTP', null, 'CL_1', null, 'N', 'Y',
-        'N', 'N', 'N', 'Y', 'N', 'N', 'N', 1);
+        'N', 'N', 'N', 'Y', 'N', 'N', 'N', 1, 'N');
 insert into NODO4_CFG.CANALI_NODO (OBJ_ID, REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING,
                                    MODELLO_PAGAMENTO, MULTI_PAYMENT, RAGIONE_SOCIALE, RPT_RT_COMPLIANT, WSAPI,
                                    REDIRECT_PROTOCOLLO, ID_SERV_PLUGIN, ID_CLUSTER, ID_FESP_INSTANCE, LENTO, RT_PUSH,
-                                   AGID_CHANNEL, ON_US, CARRELLO_CARTE, RECOVERY, MARCA_BOLLO_DIGITALE, FLAG_IO, FLAG_PSP_CP, VERSIONE_PRIMITIVE)
+                                   AGID_CHANNEL, ON_US, CARRELLO_CARTE, RECOVERY, MARCA_BOLLO_DIGITALE, FLAG_IO, FLAG_PSP_CP,
+                                   VERSIONE_PRIMITIVE, FLAG_TRAVASO)
 values (2, null, null, null, null, 'MODELLO_PAGAMENTO', 'N', null, 'N', null, 'HTTP', null, 'CL_2', null, 'N', 'Y',
-        'N', 'N', 'N', 'Y', 'N', 'N', 'N', 1);
+        'N', 'N', 'N', 'Y', 'N', 'N', 'N', 1, 'N');
 
 
 

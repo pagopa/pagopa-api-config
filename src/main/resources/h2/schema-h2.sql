@@ -334,6 +334,7 @@ create table NODO4_CFG.CANALI_NODO
     FLAG_IO               char                  default 'N',
     FLAG_PSP_CP           char                  default 'N',
     VERSIONE_PRIMITIVE    numeric(2)            default 1,
+    FLAG_TRAVASO          char                  default 'N',
     constraint PK_CANALI_NODO
         primary key (OBJ_ID),
     constraint FK_CANALI_SERV_PLUGIN
