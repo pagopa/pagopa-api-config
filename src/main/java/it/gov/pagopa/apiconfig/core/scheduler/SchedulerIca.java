@@ -47,8 +47,6 @@ public class SchedulerIca {
 
   @Autowired private AzureStorageInteraction azureStorageInteraction;
 
-  @Scheduled(cron = "${cron.job.schedule.expression}")
-  @Async
   @Transactional
   public void updateIcaFile() {
     LocalDateTime previousExecution = LocalDateTime.now(ZoneOffset.UTC).minusDays(1L);
@@ -80,6 +78,13 @@ public class SchedulerIca {
             icaBinaryFileRepository.save(oldIcaBinaryFile.get());
           }
         });
+  }
+
+  @Scheduled(cron = "${cron.job.schedule.expression}")
+  @Async
+  @Transactional
+  public void updateIcaFileAsync() {
+    updateIcaFile();
   }
 
   private void setIcaBinaryFileFields(IcaBinaryFile icaBinaryFile, byte[] icaBinaryFileXml) {

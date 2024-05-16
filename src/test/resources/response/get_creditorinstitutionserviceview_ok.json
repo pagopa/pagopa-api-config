@@ -7,7 +7,8 @@
       "aux_digit": 1,
       "application_code": 2,
       "segregation_code": 3,
-      "mod4": true
+      "mod4": true,
+      "station_enabled": true
     }
   ],
   "page_info": {

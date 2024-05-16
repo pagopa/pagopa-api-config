@@ -1,14 +1,8 @@
 package it.gov.pagopa.apiconfig.core.service;
 
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.deNull;
-
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Station;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitutions;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Stations;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
 import it.gov.pagopa.apiconfig.core.specification.PaStazionePaSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
@@ -20,14 +14,6 @@ import it.gov.pagopa.apiconfig.starter.repository.IntermediariPaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +25,13 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static it.gov.pagopa.apiconfig.core.util.CommonUtil.deNull;
 
 @Service
 @Validated
@@ -115,13 +108,13 @@ public class StationsService {
   }
 
   public StationCreditorInstitutions getStationCreditorInstitutions(
-      @NotNull String stationCode, String ciName, @NotNull Integer limit, @NotNull Integer pageNumber) {
+          @NotNull String stationCode, String filterByCiNameOrCF, @NotNull Integer limit, @NotNull Integer pageNumber) {
     Stazioni stazioni = getStationIfExists(stationCode);
     Pageable pageable = PageRequest.of(pageNumber, limit);
     Page<PaStazionePa> page = paStazioniRepository.findAll(
             PaStazionePaSpecification.filterByStationAndCreditorInstitution(
                     stazioni.getObjId(),
-                    ciName),
+                    filterByCiNameOrCF),
             pageable);
     List<StationCreditorInstitution> ecList =
         page.stream()

@@ -27,7 +27,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.58.11"
+    tag: "0.58.16"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -88,10 +88,11 @@ microservice-chart: &microservice-chart
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
     COSMOS_URI: 'https://pagopa-u-weu-afm-marketplace-cosmos-account.documents.azure.com:443/'
     APP_LOGGING_LEVEL: "INFO"
-    XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/InformativaContoAccredito_1_2_1.xsd'
-    XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/TabellaDelleControparti_1_0_8.xsd'
-    XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/SANP3.3.0/xsd/CatalogoDatiInformativiPSP.xsd'
+    XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/develop/xsd-common/InformativaContoAccredito_1_2_1.xsd'
+    XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/develop/xsd-common/TabellaDelleControparti_1_0_8.xsd'
+    XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/develop/xsd-common/CatalogoDatiInformativiPSP.xsd'
     NODO_MONITORING_HOST: 'https://api.uat.platform.pagopa.it/nodo-monitoring/monitoring/v1'
+    NODO_MONITORING_REFRESH: "true"
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
     AFM_UTILS_RETRY_MAX_DELAY: "2000"
     ICA_STORAGE_TABLE_NAME: "pagopauweuapiconfigsaicatable"
@@ -109,6 +110,7 @@ microservice-chart: &microservice-chart
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-u-connection-string'
     AFM_MARKETPLACE_SUBSCRIPTION_KEY: 'afm-marketplace-subscription-key'
     AFM_UTILS_SUBSCRIPTION_KEY: 'afm-utils-subscription-key'
+    API_CONFIG_CACHE_SUBSCRIPTION_KEY: 'api-config-cache-subscription-key'
     COSMOS_KEY: 'afm-cosmos-key'
     ICA_STORAGE_CONNECTION_STRING: 'api-config-ica-u-sa-connection-string'
     AZURE_STORAGE_CONNECTION_STRING: 'api-config-ica-u-sa-connection-string'
@@ -146,6 +148,8 @@ postgresql:
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
     DATABASE_SCHEMA: 'cfg'
     HEALTHCHECK_QUERY: "select 1"
+    API_CONFIG_CACHE_HOST: 'https://api.uat.platform.pagopa.it/api-config-cache/p/v1'
+    API_CONFIG_CACHE_REFRESH: "true"
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
@@ -164,6 +168,8 @@ oracle:
     SPRING_DATASOURCE_DRIVER: 'oracle.jdbc.OracleDriver'
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
     DATABASE_SCHEMA: 'NODO4_CFG'
+    API_CONFIG_CACHE_HOST: 'https://api.uat.platform.pagopa.it/api-config-cache/o/v1'
+    API_CONFIG_CACHE_REFRESH: "true"
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'oracle-db-cfg-password'

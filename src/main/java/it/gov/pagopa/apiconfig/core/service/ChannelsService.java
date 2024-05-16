@@ -388,26 +388,27 @@ public class ChannelsService {
         .collect(Collectors.toList());
   }
 
-  /**
-   * Maps PSP objects stored in the DB in a List of PaymentServiceProvider
-   *
-   * @param page page of PSP returned from the database
-   * @param channelCode id of the channel
-   * @return a list of {@link PaymentServiceProvider}.
-   */
-  private List<ChannelPsp> getPspList(Page<Psp> page, String channelCode) {
-    return page.stream()
-        .map(
-            elem -> {
-              var psp = modelMapper.map(elem, PaymentServiceProvider.class);
-              return ChannelPsp.builder()
-                  .pspCode(psp.getPspCode())
-                  .enabled(psp.getEnabled())
-                  .businessName(psp.getBusinessName())
-                  .paymentTypeList(
-                      mapPaymentType(elem.getPspCanaleTipoVersamentoList(), channelCode))
-                  .build();
-            })
-        .collect(Collectors.toList());
-  }
+    /**
+     * Maps PSP objects stored in the DB in a List of PaymentServiceProvider
+     *
+     * @param page        page of PSP returned from the database
+     * @param channelCode id of the channel
+     * @return a list of {@link PaymentServiceProvider}.
+     */
+    private List<ChannelPsp> getPspList(Page<Psp> page, String channelCode) {
+        return page.stream()
+                .map(
+                        elem -> {
+                            var psp = modelMapper.map(elem, PaymentServiceProvider.class);
+                            return ChannelPsp.builder()
+                                    .pspCode(psp.getPspCode())
+                                    .enabled(psp.getEnabled())
+                                    .businessName(psp.getBusinessName())
+                                    .taxCode(psp.getTaxCode())
+                                    .paymentTypeList(
+                                            mapPaymentType(elem.getPspCanaleTipoVersamentoList(), channelCode))
+                                    .build();
+                        })
+                .collect(Collectors.toList());
+    }
 }

@@ -1,12 +1,6 @@
 package it.gov.pagopa.apiconfig.core.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.core.model.ConfigurationDomain;
 import it.gov.pagopa.apiconfig.core.model.JobTrigger;
 import it.gov.pagopa.apiconfig.core.service.RefreshService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +12,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
 class RefreshControllerTest {
@@ -27,15 +26,8 @@ class RefreshControllerTest {
 
   @BeforeEach
   void setUp() {
-    when(refreshService.refreshConfig(any(ConfigurationDomain.class))).thenReturn("SUCCESS");
+    when(refreshService.refreshConfig()).thenReturn("SUCCESS");
     when(refreshService.jobTrigger(any(JobTrigger.class))).thenReturn("SUCCESS");
-  }
-
-  @Test
-  void refreshService() throws Exception {
-    // valid param case: picking one among ConfigDomain values
-    String url = "/refresh/config/" + ConfigurationDomain.FTP_SERVER;
-    mvc.perform(get(url)).andExpect(status().isOk());
   }
 
   @Test
@@ -45,9 +37,9 @@ class RefreshControllerTest {
   }
 
   @Test
-  void refreshService_400() throws Exception {
+  void refreshService_404() throws Exception {
     String url = "/refresh/config/NOT_A_VALID_DOMAIN";
-    mvc.perform(get(url)).andExpect(status().is(HttpStatus.BAD_REQUEST.value()));
+    mvc.perform(get(url)).andExpect(status().is(HttpStatus.NOT_FOUND.value()));
   }
 
   @Test

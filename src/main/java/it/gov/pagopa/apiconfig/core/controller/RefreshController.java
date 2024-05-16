@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.gov.pagopa.apiconfig.core.model.ConfigurationDomain;
 import it.gov.pagopa.apiconfig.core.model.JobTrigger;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
 import it.gov.pagopa.apiconfig.core.service.RefreshService;
@@ -133,57 +132,7 @@ public class RefreshController {
       value = "/config",
       produces = {MediaType.TEXT_PLAIN_VALUE})
   public ResponseEntity<String> getRefreshGlobalConfig() {
-    return ResponseEntity.ok(refreshService.refreshConfig(ConfigurationDomain.GLOBAL));
+    return ResponseEntity.ok(refreshService.refreshConfig());
   }
 
-  /**
-   * GET /refresh/config/{configtype} : Get domain configuration refresh activation
-   *
-   * @return OK. (status code 200) or Service unavailable (status code 500)
-   */
-  @Operation(
-      summary = "Refresh Configuration activation for a specific domain",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {"Refresh Config domains"})
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
-  @GetMapping(
-      value = "/config/{configtype}",
-      produces = {MediaType.TEXT_PLAIN_VALUE})
-  public ResponseEntity<String> getRefreshConfig(
-      @Parameter(description = "Configuration domain", required = true) @PathVariable("configtype")
-          ConfigurationDomain configtype) {
-    return ResponseEntity.ok(refreshService.refreshConfig(configtype));
-  }
 }
