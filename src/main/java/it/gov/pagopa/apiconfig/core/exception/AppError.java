@@ -201,6 +201,11 @@ public enum AppError {
       HttpStatus.CONFLICT,
       "IBAN already associated",
       "The IBAN with code %s was already associated to the creditor institution %s"),
+  
+  IBAN_ALREADY_EXIST(
+	      HttpStatus.CONFLICT,
+	      "IBAN already exist",
+	      "The IBAN with code %s already exists"),
 
   IBAN_LABEL_NOT_VALID(
       HttpStatus.UNPROCESSABLE_ENTITY,
@@ -213,6 +218,8 @@ public enum AppError {
       HttpStatus.NOT_FOUND,
       "IBAN not associated",
       "The IBAN with code %s is not associated to the creditor institution %s"),
+  
+  IBANS_BAD_REQUEST(HttpStatus.BAD_REQUEST, "Iban massive loading bad request", "File is not valid: %s"),
 
   POSTAL_IBAN_ALREADY_ASSOCIATED(
       HttpStatus.CONFLICT,

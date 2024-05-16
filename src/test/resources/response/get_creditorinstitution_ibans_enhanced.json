@@ -2,7 +2,6 @@
   "ibans_enhanced": [
     {
       "ci_owner": "00168480242",
-      "company_name": "Comune di Bassano del Grappa",
       "description": "Riscossione tributi",
       "iban": "IT99C0222211111000000000000",
       "is_active": true,

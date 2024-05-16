@@ -112,7 +112,8 @@ Then start the springboot application with this command:
 
 `mvn spring-boot:run -Dspring-boot.run.profiles=local`
 
-Using the spring profile `local`, the Spring application connects to the docker DB.
+Using the spring profile `local`, the Spring application connects to the H2 in-memory DB.  
+For access to H2 console, use this url: http://localhost:8080/h2-console/
 
 
 ### Spring Profiles

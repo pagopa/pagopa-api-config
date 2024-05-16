@@ -10,30 +10,26 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @RestController()
-@RequestMapping(path = "/creditorinstitutions/{creditorinstitutioncode}/ibans")
+@RequestMapping(path = "/creditorinstitutions")
 @Tag(name = "Ibans", description = "Everything about Iban")
 @Validated
 public class IbanController {
@@ -57,7 +53,7 @@ public class IbanController {
         @SecurityRequirement(name = "Authorization")
       },
       tags = {
-        "Creditor Institutions",
+        "Iban",
       })
   @ApiResponses(
       value = {
@@ -100,7 +96,7 @@ public class IbanController {
                     schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
-      value = "",
+      value = "/{creditorinstitutioncode}/ibans",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<Ibans> getCreditorInstitutionsIbans(
       @Size(max = 50)
@@ -173,7 +169,7 @@ public class IbanController {
                     schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(
-      value = "/enhanced",
+      value = "/{creditorinstitutioncode}/ibans/enhanced",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<IbansEnhanced> getCreditorInstitutionsIbansEnhanced(
       @Size(max = 50)
@@ -187,6 +183,72 @@ public class IbanController {
 
     return ResponseEntity.ok(
         ibansService.getCreditorInstitutionsIbansByLabel(creditorInstitutionCode, filterByLabel));
+  }
+
+  @Operation(
+      summary = "Get creditor institution ibans list",
+      security = {
+        @SecurityRequirement(name = "ApiKey"),
+        @SecurityRequirement(name = "Authorization")
+      },
+      tags = {
+        "Creditor Institutions",
+      })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = IbansEnhanced.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not Found",
+            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Too many requests",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Service unavailable",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @GetMapping(
+      value = "/{creditorinstitutioncode}/ibans/list",
+      produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<IbansEnhanced> getIbans(
+      @Size(max = 50)
+          @Parameter(
+              description = "The fiscal code of the Organization.",
+              required = true)
+          @PathVariable("creditorinstitutioncode")
+      @NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
+      String creditorInstitutionCode,
+      @RequestParam(required = false, name = "label") @Parameter(description = "Filter by label")
+          String filterByLabel) {
+
+    return ResponseEntity.ok(ibansService.getIbans(creditorInstitutionCode, filterByLabel));
   }
 
   /**
@@ -255,7 +317,7 @@ public class IbanController {
                     schema = @Schema(implementation = ProblemJson.class)))
       })
   @PostMapping(
-      value = "",
+      value = "/{creditorinstitutioncode}/ibans",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<IbanEnhanced> createCreditorInstitutionsIbans(
       @Size(max = 50)
@@ -336,7 +398,7 @@ public class IbanController {
                     schema = @Schema(implementation = ProblemJson.class)))
       })
   @PutMapping(
-      value = "/{ibanId}",
+      value = "/{creditorinstitutioncode}/ibans/{ibanId}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<IbanEnhanced> updateCreditorInstitutionsIbans(
       @Size(max = 50)
@@ -414,7 +476,7 @@ public class IbanController {
                     schema = @Schema(implementation = ProblemJson.class)))
       })
   @DeleteMapping(
-      value = "/{ibanValue}",
+      value = "/{creditorinstitutioncode}/ibans/{ibanValue}",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<String> deleteCreditorInstitutionsIban(
       @Size(max = 50)
@@ -429,4 +491,192 @@ public class IbanController {
           String ibanValue) {
     return ResponseEntity.ok(ibansService.deleteIban(creditorInstitutionCode, ibanValue));
   }
+  
+  @Operation(
+	      summary = "Upload a zip file containing the details of multiple ibans to create",
+	      security = {
+	        @SecurityRequirement(name = "ApiKey"),
+	        @SecurityRequirement(name = "Authorization")
+	      },
+	      tags = {
+	        "Iban",
+	      })
+	  @ApiResponses(
+	      value = {
+	        @ApiResponse(
+	            responseCode = "201",
+	            description = "OK",
+	            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+	        @ApiResponse(
+	            responseCode = "400",
+	            description = "Bad Request",
+	            content =
+	                @Content(
+	                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+	                    schema = @Schema(implementation = ProblemJson.class))),
+	        @ApiResponse(
+	            responseCode = "401",
+	            description = "Unauthorized",
+	            content = @Content(schema = @Schema())),
+	        @ApiResponse(
+	            responseCode = "403",
+	            description = "Forbidden",
+	            content = @Content(schema = @Schema())),
+	        @ApiResponse(
+	            responseCode = "404",
+	            description = "Not Found",
+	            content =
+	                @Content(
+	                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+	                    schema = @Schema(implementation = ProblemJson.class))),
+	        @ApiResponse(
+	            responseCode = "429",
+	            description = "Too many requests",
+	            content = @Content(schema = @Schema())),
+	        @ApiResponse(
+	            responseCode = "500",
+	            description = "Service unavailable",
+	            content =
+	                @Content(
+	                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+	                    schema = @Schema(implementation = ProblemJson.class)))
+	      })
+	  @PostMapping(
+	      value = "/ibans",
+	      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+  public ResponseEntity<Void> massiveCreateIbans(
+	      @NotNull
+	          @Parameter(
+	              description = "Zip file containing IBANs to create",
+	              required = true,
+	              content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
+	          @RequestParam("file")
+	          MultipartFile file) {
+	    ibansService.createMassiveIbans(file);
+	    return ResponseEntity.status(HttpStatus.CREATED).build();
+	  }
+
+    @Operation(
+            summary =
+                    "Upload a CSV file containing the details of multiple ibans to create",
+            security = {
+                    @SecurityRequirement(name = "ApiKey"),
+                    @SecurityRequirement(name = "Authorization")
+            },
+            tags = {
+                    "Massive Loading",
+            })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "429",
+                            description = "Too many requests",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Service unavailable",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @PostMapping(
+            value = "/ibans/csv",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+  public ResponseEntity<Void> massiveCreateIbansCsv(
+            @NotNull
+            @Parameter(
+                    description = "CSV file regarding various Ibans actions",
+                    required = true,
+                    content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
+            @RequestParam("file")
+            MultipartFile file) {
+        ibansService.createMassiveIbansByCsv(file);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
+    @Operation(
+            summary = "Create or update a label to be associated to IBANs",
+            security = {
+                    @SecurityRequirement(name = "ApiKey"),
+                    @SecurityRequirement(name = "Authorization")
+            },
+            tags = {
+                    "Iban",
+            })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = IbanLabel.class))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "429",
+                            description = "Too many requests",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Service unavailable",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @PostMapping(
+            value = "/ibans/labels",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<IbanLabel> upsertIbanLabel(@RequestBody @Valid @NotNull IbanLabel ibanLabel) {
+        return ResponseEntity.ok(ibansService.upsertIbanLabel(ibanLabel));
+    }
 }

@@ -31,6 +31,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
@@ -43,6 +47,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class CommonUtil {
+	
+   public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
   /**
    * @param page Page returned from the database
@@ -54,6 +60,7 @@ public class CommonUtil {
         .limit(page.getSize())
         .totalPages(page.getTotalPages())
         .itemsFound(page.getNumberOfElements())
+        .totalItems(page.getTotalElements())
         .build();
   }
 
@@ -247,7 +254,7 @@ public class CommonUtil {
     if (startValidityDate == null) {
       validity = CheckItem.Validity.NOT_VALID;
       value = "-";
-      note = "Not parsable";
+      note = "Validity Date not parsable";
     } else {
       validity =
           startValidityDate.toLocalDate().isBefore(tomorrow)
@@ -261,11 +268,56 @@ public class CommonUtil {
     }
 
     return CheckItem.builder()
-        .title("Validity date")
+        .title("Check validity date")
         .value(value)
         .valid(validity)
         .note(note)
         .build();
+  }
+  
+  /**
+   * check if the dueDate is after the validityDate
+   * @param validityDate
+   * @param dueDate
+   * @return item with validity info
+   */
+  public static CheckItem checkDueDate(LocalDateTime validityDate, LocalDateTime dueDate) {
+    String value;
+    String note;
+    CheckItem.Validity validity;
+
+    if (validityDate == null) {
+      validity = CheckItem.Validity.NOT_VALID;
+      value = "-";
+      note = "Validity Date not parsable";
+    } 
+    else if (dueDate == null) {
+        validity = CheckItem.Validity.NOT_VALID;
+        value = "-";
+        note = "Due Date not parsable";
+    } 
+    else {
+      validity =
+    		  dueDate.toLocalDate().isAfter(validityDate.toLocalDate())
+              ? CheckItem.Validity.VALID
+              : CheckItem.Validity.NOT_VALID;
+      value = validityDate.toString();
+      note =
+          validity.equals(CheckItem.Validity.VALID)
+              ? ""
+              : "Due date must be greater than the validity date";
+    }
+
+    return CheckItem.builder()
+        .title("Check due date")
+        .value(value)
+        .valid(validity)
+        .note(note)
+        .build();
+  }
+
+  public static boolean checkIfLocalDatesNotEquals(LocalDateTime date1, LocalDateTime date2) {
+    return date1 == null || date2 == null || !date1.toLocalDate().equals(date2.toLocalDate());
   }
 
   /**
@@ -318,5 +370,23 @@ public class CommonUtil {
       return "";
     }
     return "." + env.toLowerCase();
+  }
+  
+  /**
+   * @param file Json to map
+   * @param clazz class of model result
+   * @return JSON mapped in the model
+   */
+  public static <T> T mapJSON(InputStream inputStream, Class<T> clazz) {
+    T model;
+    try {
+    	ObjectMapper mapper = new ObjectMapper()
+    			.registerModule(new JavaTimeModule())
+    			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    	model = mapper.readValue(inputStream, clazz);
+    } catch (Exception e) {
+      throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
+    }
+    return model;
   }
 }

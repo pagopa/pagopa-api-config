@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -18,8 +19,12 @@ import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.time.OffsetDateTime;
 import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +38,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(classes = ApiConfig.class)
@@ -186,5 +192,49 @@ class IbanControllerTest {
             delete("/creditorinstitutions/1234/ibans/IT99C0222211111000000000003")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
+  }
+  
+  @Test
+  void createMassiveIbans() throws Exception {
+    File zip = TestUtil.readFile("file/massiveIbansValid.zip");
+    MockMultipartFile multipartFile =
+        new MockMultipartFile(
+            "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+    String url = "/creditorinstitutions/ibans";
+
+    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+        .andExpect(status().isCreated());
+  }
+  
+  @Test
+  void createMassiveIbansByCsv() throws Exception {
+    File zip = TestUtil.readFile("file/massiveIbansValid_Insert.csv");
+    MockMultipartFile multipartFile =
+        new MockMultipartFile(
+            "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+    String url = "/creditorinstitutions/ibans/csv";
+
+    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+        .andExpect(status().isOk());
+    
+    zip = TestUtil.readFile("file/massiveIbansValid_Update_Delete.csv");
+    multipartFile =
+            new MockMultipartFile(
+                "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+
+    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+            .andExpect(status().isOk());
+  }
+
+  @Test
+  void upsertIbanLabel_200() throws Exception {
+    IbanLabel ibanLabel = IbanLabel.builder().name("newlabel").description("description").build();
+    when(ibanService.upsertIbanLabel(any(IbanLabel.class)))
+            .thenReturn(ibanLabel);
+    mvc.perform(post("/creditorinstitutions/ibans/labels")
+                    .content(TestUtil.toJson(ibanLabel))
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }
 }

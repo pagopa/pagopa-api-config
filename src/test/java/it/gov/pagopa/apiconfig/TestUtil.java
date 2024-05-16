@@ -104,6 +104,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -121,7 +122,7 @@ public class TestUtil {
    * @throws IOException if an I/O error occurs reading from the file or a malformed or unmappable
    *     byte sequence is read
    */
-  public String readJsonFromFile(String relativePath) throws IOException {
+  public static String readJsonFromFile(String relativePath) throws IOException {
     ClassLoader classLoader = TestUtil.class.getClassLoader();
     File file = new File(Objects.requireNonNull(classLoader.getResource(relativePath)).getPath());
     return Files.readString(file.toPath());
@@ -131,7 +132,7 @@ public class TestUtil {
    * @param relativePath Path from source root of the file
    * @return the requested file
    */
-  public File readFile(String relativePath) {
+  public static File readFile(String relativePath) {
     ClassLoader classLoader = TestUtil.class.getClassLoader();
     return new File(Objects.requireNonNull(classLoader.getResource(relativePath)).getFile());
   }
@@ -141,7 +142,7 @@ public class TestUtil {
    * @return object as Json string
    * @throws JsonProcessingException if there is an error during the parsing of the object
    */
-  public String toJson(Object object) throws JsonProcessingException {
+  public static String toJson(Object object) throws JsonProcessingException {
     return new ObjectMapper().writeValueAsString(object);
   }
 
@@ -154,13 +155,14 @@ public class TestUtil {
    * @param <T> Class of the elements
    * @return a Mock of {@link Page}
    */
-  public <T> Page<T> mockPage(List<T> content, int limit, int pageNumber) {
+  public static <T> Page<T> mockPage(List<T> content, int limit, int pageNumber) {
     @SuppressWarnings("unchecked")
     Page<T> page = Mockito.mock(Page.class);
     when(page.getTotalPages()).thenReturn((int) Math.ceil((double) content.size() / limit));
     when(page.getNumberOfElements()).thenReturn(content.size());
     when(page.getNumber()).thenReturn(pageNumber);
     when(page.getSize()).thenReturn(limit);
+    when(page.getTotalElements()).thenReturn((long) content.size());
     when(page.getContent()).thenReturn(content);
     when(page.stream()).thenReturn(content.stream());
     return page;
@@ -211,6 +213,7 @@ public class TestUtil {
         .idDominio("00168480242")
         .enabled(true)
         .ragioneSociale("Comune di Bassano del Grappa")
+        .cbill("56I10")
         .capDomicilioFiscale("00111")
         .pagamentoPressoPsp(true)
         .rendicontazioneFtp(false)
@@ -224,6 +227,7 @@ public class TestUtil {
         .idDominio("00168480243")
         .enabled(true)
         .ragioneSociale("Comune di Firenze")
+        .cbill("8G580")
         .capDomicilioFiscale("00112")
         .pagamentoPressoPsp(true)
         .rendicontazioneFtp(false)
@@ -314,6 +318,7 @@ public class TestUtil {
         .pspPayment(false)
         .creditorInstitutionCode("1234")
         .businessName("Città di Roma")
+        .cbillCode("56I10")
         .enabled(true)
         .address(CreditorInstitutionAddress.builder().city("Roma").zipCode("00111").build())
         .reportingFtp(true)
@@ -1115,6 +1120,7 @@ public class TestUtil {
                               .objId(100L)
                               .fkPa(creditorInstitution.getObjId())
                               .fkIban(ibanEntity.getObjId())
+                              .iban(ibanEntity)
                               .ibanStatus(iban.isActive() ? IbanMaster.IbanStatus.ENABLED : IbanMaster.IbanStatus.DISABLED)
                               .insertedDate(
                                       CommonUtil.toTimestamp(OffsetDateTime.parse("2023-05-23T10:38:07.165+02")))
@@ -1125,7 +1131,7 @@ public class TestUtil {
       return ibanMasters;
   }
 
-  public it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(IbanEnhanced iban, String organizationFiscalCode) {
+  public static it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(IbanEnhanced iban, String organizationFiscalCode) {
       return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
               .objId(100L)
               .iban(iban.getIbanValue())
@@ -1135,7 +1141,7 @@ public class TestUtil {
               .build();
   }
 
-  public IbanMaster getMockIbanMaster(
+  public static IbanMaster getMockIbanMaster(
           Pa creditorInstitution, IbanEnhanced iban, it.gov.pagopa.apiconfig.starter.entity.Iban ibanToBeCreated) {
       return IbanMaster.builder()
               .objId(100L)
@@ -1147,19 +1153,20 @@ public class TestUtil {
               .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
               .validityDate(CommonUtil.toTimestamp(iban.getValidityDate()))
               .description(iban.getDescription())
+              .ibanAttributesMasters(new ArrayList<>())
               .build();
   }
 
-  public it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(String organizationFiscalCode) {
+  public static it.gov.pagopa.apiconfig.starter.entity.Iban getMockIban(String organizationFiscalCode) {
       return it.gov.pagopa.apiconfig.starter.entity.Iban.builder()
               .objId(100L)
-              .iban("IT99C0222211111000000000004")
+              .iban("IT84H0706676470000000822789")
               .fiscalCode(organizationFiscalCode)
               .description("iban")
               .dueDate(Timestamp.valueOf(LocalDateTime.now().plusYears(3)))
               .build();
     }
-  public IbanMaster getMockIbanMasterValidityDateInsertedDate(
+  public static IbanMaster getMockIbanMasterValidityDateInsertedDate(
           Pa creditorInstitution, it.gov.pagopa.apiconfig.starter.entity.Iban ibanToBeCreated, Timestamp validityDate, Timestamp insertedDate) {
       return IbanMaster.builder()
               .objId(100L)

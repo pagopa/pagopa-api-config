@@ -118,6 +118,7 @@ public class CreditorInstitutionsService {
                 filter.getCreditorInstitutionCode(),
                 filter.getPaBrokerCode(),
                 filter.getStationCode(),
+                filter.getEnabled(),
                 filter.getAuxDigit(),
                 filter.getApplicationCode(),
                 filter.getSegregationCode(),

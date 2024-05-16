@@ -52,4 +52,7 @@ public class CreditorInstitutionView {
 
   @JsonProperty("mod4")
   private Boolean quartoModello;
+
+  @JsonProperty("station_enabled")
+  private Boolean stationEnabled;
 }
