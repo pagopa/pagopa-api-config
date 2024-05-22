@@ -21,22 +21,25 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbanMassLoadCsv;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoadCsv;
+import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.validator.routines.IBANValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,11 +51,7 @@ import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.CheckItem;
 import it.gov.pagopa.apiconfig.core.model.CheckItem.Validity;
 import it.gov.pagopa.apiconfig.core.model.MassiveCheck;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
@@ -60,7 +59,6 @@ import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
 import it.gov.pagopa.apiconfig.starter.repository.*;
-import java.util.*;
 
 @Service
 @Validated
@@ -226,14 +224,18 @@ public class IbanService {
                 ibanCIRelationToBeUpdated);
     }
 
-    public IbansEnhanced getIbans(@NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid") String organizationFiscalCode, String label) {
+    public IbansEnhanced getIbans(@NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid") String organizationFiscalCode,
+                                  @Positive Integer limit,
+                                  @PositiveOrZero Integer pageNumber,
+                                  String label) {
+        Pageable pageable = PageRequest.of(pageNumber, limit);
         Pa pa = getPaIfExists(organizationFiscalCode);
 
-        List<IbanMaster> ibanMasters;
+        Page<IbanMaster> ibanMasters;
         if (label == null || label.isEmpty()) {
-            ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
+            ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId(), pageable);
         } else {
-            ibanMasters = ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label);
+            ibanMasters = ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label, pageable);
         }
 
         List<IbanEnhanced> ibanEnhancedList = ibanMasters.stream()
@@ -249,64 +251,8 @@ public class IbanService {
 
         return IbansEnhanced.builder()
                 .ibanEnhancedList(ibanEnhancedList)
+                .pageInfo(CommonUtil.buildPageInfo(ibanMasters))
                 .build();
-    }
-
-    // TODO: this service has a performance issue, use getIbans instead
-    @Deprecated
-    public IbansEnhanced getCreditorInstitutionsIbansByLabel(
-            @NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
-            String organizationFiscalCode,
-            String label) {
-        List<IbanEnhanced> ibanEnhancedList = new ArrayList<>();
-        Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
-        Pa pa =
-                creditorInstitutionOpt.orElseThrow(
-                        () ->
-                                new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
-
-        List<IbanMaster> ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId());
-        ibanMasters.forEach(
-                ibanMaster -> {
-                    Optional<Iban> ibanOpt = ibanRepository.findById(ibanMaster.getFkIban());
-                    Iban iban = ibanOpt.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND));
-                    Optional<Pa> ciOwnerOpt = paRepository.findByIdDominio(iban.getFiscalCode());
-                    Pa ciOwner =
-                            ciOwnerOpt.orElseThrow(
-                                    () ->
-                                            new AppException(
-                                                    AppError.CREDITOR_INSTITUTION_NOT_FOUND, iban.getFiscalCode()));
-
-                    if (label == null || label.isEmpty()) {
-                        IbanEnhanced ibanEnhanced =
-                                convertEntitiesToModel(
-                                        ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
-                        ibanEnhancedList.add(ibanEnhanced);
-                    } else {
-                        boolean labelMatch =
-                                ibanMaster.getIbanAttributesMasters().stream()
-                                        .map(
-                                                ibanAttributeMaster ->
-                                                        ibanAttributeMaster.getIbanAttribute().getAttributeName())
-                                        .anyMatch(name -> name.equalsIgnoreCase(label));
-
-                        if (labelMatch) {
-                            IbanEnhanced ibanEnhanced =
-                                    convertEntitiesToModel(
-                                            ciOwner, iban, ibanMaster.getIbanAttributesMasters(), ibanMaster);
-                            ibanEnhancedList.add(ibanEnhanced);
-                        }
-                    }
-                });
-
-        if (ibanEnhancedList.isEmpty() && (acaLabel.equals(label) || cupLabel.equals(label))) {
-            IbanMaster lastPublishedIban = getLastPublishedIban(pa);
-            if (lastPublishedIban != null) {
-                ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
-            }
-        }
-
-        return IbansEnhanced.builder().ibanEnhancedList(ibanEnhancedList).build();
     }
 
     public String deleteIban(
