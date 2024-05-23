@@ -807,10 +807,10 @@ public class CreditorInstitutionsController {
             value = "/cbill",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> massiveUploadCbillCsv(
-            @RequestParam(required = false, name = "mode", defaultValue = "incremental")
-            @Parameter(description = "Loading mode incremental|full: incremental sets only PA entry " +
+            @RequestParam(required = false, name = "incremental", defaultValue = "true")
+            @Parameter(description = "Loading mode (true = incremental|false = full): incremental sets only PA entry " +
                     "with no cbill code, full replace the cbill code for all the CI in the PA table")
-            String mode,
+            boolean incremental,
             @NotNull
             @Parameter(
                     description = "CSV file regarding cbill codes to load",
@@ -818,7 +818,7 @@ public class CreditorInstitutionsController {
                     content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
             @RequestParam("file")
             MultipartFile file) {
-        creditorInstitutionsService.loadCbillByCsv(file, mode);
+        creditorInstitutionsService.loadCbillByCsv(file, incremental);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -44,10 +44,6 @@ public class CreditorInstitutionsService {
 
   public static final String BAD_RELATION_INFO = "Bad Relation info";
 
-  public static final String INCREMENTAL_CBILL_LOADING = "incremental";
-
-  public static final String FULL_CBILL_LOADING = "full";
-
   public static final String FILE_BAD_REQUEST = "Bad request for the massive loading of CBILL codes";
 
   @Autowired private PaRepository paRepository;
@@ -564,38 +560,36 @@ public class CreditorInstitutionsService {
    * Update CI data with new cbill codes
    *
    * @param file csv file that contains the cbill code list to upload
-   * @param mode loading mode incremental|full
+   * @param incremental loading mode incremental|full
    */
-  public void loadCbillByCsv(MultipartFile file, String mode) {
+  public void loadCbillByCsv(MultipartFile file, boolean incremental) {
     try {
       // parse and validate cbill file
       List<CbillMassiveLoadCsv> cbillList = validateCsv(file);
-      System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
+
       // read the CI to update
       List<Pa> paList;
-      if (CreditorInstitutionsService.INCREMENTAL_CBILL_LOADING.equalsIgnoreCase(mode)) {
+      if (incremental) {
         Optional<List<Pa>> list = paRepository.findPaWithoutCbill();
         paList = list.orElse(new ArrayList<Pa>());
-      } else if (CreditorInstitutionsService.FULL_CBILL_LOADING.equalsIgnoreCase(mode)) {
-        paList = paRepository.findAll();
       } else {
-        throw new IllegalArgumentException("Invalid parameter mode provided " +
-                "[" + mode + "] - allowed values [incremental|full]");
+        paList = paRepository.findAll();
       }
+
       // build cbill map
       Map<String, String> cbillMap = cbillList.stream()
               .collect(Collectors.toMap(CbillMassiveLoadCsv::getCreditorInstitutionCode,
                       CbillMassiveLoadCsv::getCbillCode));
+
       // update the model
-      int paToUpdate = 0;
       for (Pa pa : paList) {
         if (cbillMap.containsKey(pa.getIdDominio())) {
           pa.setCbill(cbillMap.get(pa.getIdDominio()));
-          paToUpdate++;
         }
       }
+
       // persist data
-      if (paToUpdate > 0) {
+      if (!paList.isEmpty()) {
         paRepository.saveAllAndFlush(paList);
       }
     } catch (IOException | RuntimeException e) {
