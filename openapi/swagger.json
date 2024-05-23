@@ -7472,6 +7472,129 @@
         "summary": "Create creditor institution"
       }
     },
+    "/creditorinstitutions/cbill": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "default": "incremental",
+            "description": "Loading mode incremental|full: incremental sets only PA entry with no cbill code, full replace the cbill code for all the CI in the PA table",
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "CSV file regarding cbill codes to load",
+            "format": "binary",
+            "in": "formData",
+            "name": "file",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "massiveUploadCbillCsv",
+        "summary": "Upload a CSV file containing the cbill codes"
+      }
+    },
     "/creditorinstitutions/ibans": {
       "parameters": [
         {
@@ -9060,130 +9183,6 @@
         ],
         "operationId": "getCreditorInstitutionsIbansEnhanced",
         "summary": "Get creditor institution ibans enhanced"
-      }
-    },
-    "/creditorinstitutions/{creditorinstitutioncode}/ibans/list": {
-      "parameters": [
-        {
-          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
-          "in": "header",
-          "name": "X-Request-Id",
-          "type": "string"
-        }
-      ],
-      "get": {
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "description": "The fiscal code of the Organization.",
-            "in": "path",
-            "maxLength": 50,
-            "minLength": 0,
-            "name": "creditorinstitutioncode",
-            "pattern": "\\d{11}",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "description": "Filter by label",
-            "in": "query",
-            "name": "label",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/IbansEnhanced"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            }
-          },
-          "500": {
-            "description": "Service unavailable",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          },
-          {
-            "Authorization": []
-          }
-        ],
-        "tags": [
-          "Ibans"
-        ],
-        "operationId": "getIbans",
-        "summary": "Get creditor institution ibans list"
       }
     },
     "/creditorinstitutions/{creditorinstitutioncode}/ibans/{ibanId}": {
@@ -14476,7 +14475,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_key": {
@@ -14498,7 +14497,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_value": {
@@ -14851,6 +14850,9 @@
           "maxLength": 35,
           "minLength": 0,
           "type": "string"
+        },
+        "station_enabled": {
+          "type": "boolean"
         }
       },
       "required": [

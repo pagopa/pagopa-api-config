@@ -1,11 +1,17 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
+import com.opencsv.exceptions.CsvException;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Iban;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
+import it.gov.pagopa.apiconfig.core.model.massiveloading.CbillMassiveLoadCsv;
 import it.gov.pagopa.apiconfig.core.specification.PaStazionePaSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.*;
@@ -19,14 +25,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +43,13 @@ import java.util.stream.Collectors;
 public class CreditorInstitutionsService {
 
   public static final String BAD_RELATION_INFO = "Bad Relation info";
+
+  public static final String INCREMENTAL_CBILL_LOADING = "incremental";
+
+  public static final String FULL_CBILL_LOADING = "full";
+
+  public static final String FILE_BAD_REQUEST = "Bad request for the massive loading of CBILL codes";
+
   @Autowired private PaRepository paRepository;
 
   @Autowired private StazioniRepository stazioniRepository;
@@ -543,5 +558,88 @@ public class CreditorInstitutionsService {
             HttpStatus.CONFLICT, BAD_RELATION_INFO, "SegregationCode already exists");
       }
     }
+  }
+
+  /**
+   * Update CI data with new cbill codes
+   *
+   * @param file csv file that contains the cbill code list to upload
+   * @param mode loading mode incremental|full
+   */
+  public void loadCbillByCsv(MultipartFile file, String mode) {
+    try {
+      // parse and validate cbill file
+      List<CbillMassiveLoadCsv> cbillList = validateCsv(file);
+      System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><");
+      // read the CI to update
+      List<Pa> paList;
+      if (CreditorInstitutionsService.INCREMENTAL_CBILL_LOADING.equalsIgnoreCase(mode)) {
+        Optional<List<Pa>> list = paRepository.findPaWithoutCbill();
+        paList = list.orElse(new ArrayList<Pa>());
+      } else if (CreditorInstitutionsService.FULL_CBILL_LOADING.equalsIgnoreCase(mode)) {
+        paList = paRepository.findAll();
+      } else {
+        throw new IllegalArgumentException("Invalid parameter mode provided " +
+                "[" + mode + "] - allowed values [incremental|full]");
+      }
+      // build cbill map
+      Map<String, String> cbillMap = cbillList.stream()
+              .collect(Collectors.toMap(CbillMassiveLoadCsv::getCreditorInstitutionCode,
+                      CbillMassiveLoadCsv::getCbillCode));
+      // update the model
+      int paToUpdate = 0;
+      for (Pa pa : paList) {
+        if (cbillMap.containsKey(pa.getIdDominio())) {
+          pa.setCbill(cbillMap.get(pa.getIdDominio()));
+          paToUpdate++;
+        }
+      }
+      // persist data
+      if (paToUpdate > 0) {
+        paRepository.saveAllAndFlush(paList);
+      }
+    } catch (IOException | RuntimeException e) {
+      throw new AppException(
+              HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem during the file examination - " + e.getMessage(), e);
+    }
+  }
+
+  /**
+   *
+   * @param file csv file that contains the cbill code list to upload
+   * @return the list of cbill objects to upload
+   * @throws IOException if any csv parsing errors occur
+   */
+  private List<CbillMassiveLoadCsv> validateCsv(MultipartFile file) throws IOException {
+    // read CSV
+    Reader reader =
+            new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+
+    // create mapping strategy to arrange the column name
+    HeaderColumnNameMappingStrategy<CbillMassiveLoadCsv> mappingStrategy =
+            new HeaderColumnNameMappingStrategy<>();
+    mappingStrategy.setType(CbillMassiveLoadCsv.class);
+
+    // execute validation
+    CsvToBean<CbillMassiveLoadCsv> parsedCSV =
+            new CsvToBeanBuilder<CbillMassiveLoadCsv>(reader)
+                    .withSeparator(';')
+                    .withFieldAsNull(CSVReaderNullFieldIndicator.NEITHER)
+                    .withOrderedResults(true)
+                    .withMappingStrategy(mappingStrategy)
+                    .withType(CbillMassiveLoadCsv.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .withThrowExceptions(false)
+                    .build();
+
+    List<CbillMassiveLoadCsv> y = parsedCSV.parse();
+    List<CsvException> errors = parsedCSV.getCapturedExceptions();
+
+    if (!errors.isEmpty()) {
+      StringBuilder stringBuilder = new StringBuilder();
+      errors.forEach(error -> stringBuilder.append(String.format("|%s |", error.getMessage())));
+      throw new AppException(AppError.CBILL_BAD_REQUEST, stringBuilder);
+    }
+    return y;
   }
 }
