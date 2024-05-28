@@ -49,6 +49,5 @@ public class Station {
   private Long version;
 
   @Schema(description = "Describe the station connection's type, true synchronous, false asynchronous")
-  @NotNull
   private Boolean isConnectionSync;
 }
