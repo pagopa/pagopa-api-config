@@ -17600,6 +17600,7 @@
         "required": [
           "broker_code",
           "enabled",
+          "isConnectionSync",
           "port",
           "primitive_version",
           "protocol",
@@ -17612,6 +17613,10 @@
         ],
         "type": "object",
         "properties": {
+          "isConnectionSync": {
+            "type": "boolean",
+            "description": "Describe the station connection's type, true synchronous, false asynchronous"
+          },
           "station_code": {
             "maxLength": 35,
             "minLength": 0,
@@ -18729,11 +18734,16 @@
       "Station": {
         "required": [
           "enabled",
+          "isConnectionSync",
           "station_code",
           "version"
         ],
         "type": "object",
         "properties": {
+          "isConnectionSync": {
+            "type": "boolean",
+            "description": "Describe the station connection's type, true synchronous, false asynchronous"
+          },
           "station_code": {
             "maxLength": 35,
             "minLength": 0,
@@ -19245,11 +19255,16 @@
       "CreditorInstitutionStation": {
         "required": [
           "enabled",
+          "isConnectionSync",
           "station_code",
           "version"
         ],
         "type": "object",
         "properties": {
+          "isConnectionSync": {
+            "type": "boolean",
+            "description": "Describe the station connection's type, true synchronous, false asynchronous"
+          },
           "station_code": {
             "maxLength": 35,
             "minLength": 0,
