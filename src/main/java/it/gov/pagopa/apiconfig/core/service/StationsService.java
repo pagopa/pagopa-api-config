@@ -58,7 +58,7 @@ public class StationsService {
       @Nullable String brokerDescription,
       @Nullable String creditorInstitutionCode,
       @Valid FilterAndOrder filterAndOrder) {
-    Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
+    Pageable pageable = PageRequest.of(pageNumber, limit);
     // convert code to FK
     Long fkIntermediario =
         Optional.ofNullable(brokerCode)
