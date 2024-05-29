@@ -17637,7 +17637,8 @@
           },
           "is_connection_sync": {
             "type": "boolean",
-            "description": "Describe the station connection's type, true synchronous, false asynchronous"
+            "description": "Describe the station connection's type, true synchronous, false asynchronous",
+            "readOnly": true
           },
           "ip": {
             "type": "string"
@@ -18763,7 +18764,8 @@
           },
           "is_connection_sync": {
             "type": "boolean",
-            "description": "Describe the station connection's type, true synchronous, false asynchronous"
+            "description": "Describe the station connection's type, true synchronous, false asynchronous",
+            "readOnly": true
           }
         }
       },
@@ -19283,7 +19285,8 @@
           },
           "is_connection_sync": {
             "type": "boolean",
-            "description": "Describe the station connection's type, true synchronous, false asynchronous"
+            "description": "Describe the station connection's type, true synchronous, false asynchronous",
+            "readOnly": true
           },
           "application_code": {
             "minimum": 0,
