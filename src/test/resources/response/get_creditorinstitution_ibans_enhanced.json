@@ -15,5 +15,12 @@
       "validity_date": "2023-06-07T13:48:15.166Z",
       "due_date": "2023-06-07T13:48:15.166Z"
     }
-  ]
+  ],
+  "page_info": {
+    "page": 0,
+    "limit": 50,
+    "items_found": 1,
+    "total_pages": 1,
+    "total_items": 1
+  }
 }

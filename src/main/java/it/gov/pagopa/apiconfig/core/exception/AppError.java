@@ -242,6 +242,8 @@ public enum AppError {
       "CHARITY prefix found in the PSP ID field",
       "Requests prefixed with CHARITY in the PSP ID field are rejected [IdentificativoPSP=%s]"),
 
+  CBILL_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CBILL massive loading bad request", "File is not valid: %s"),
+
   UNKNOWN(null, null, null);
 
   public final HttpStatus httpStatus;
