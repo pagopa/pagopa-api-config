@@ -35,5 +35,5 @@
   "target_port_pof":443,
   "target_path_pof":"/",
   "primitive_version": 1,
-  "isConnectionSync": true
+  "is_connection_sync": true
 }
