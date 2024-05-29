@@ -571,7 +571,7 @@ public class CreditorInstitutionsService {
       List<Pa> paList;
       if (incremental) {
         Optional<List<Pa>> list = paRepository.findPaWithoutCbill();
-        paList = list.orElse(new ArrayList<Pa>());
+        paList = list.orElse(new ArrayList<>());
       } else {
         paList = paRepository.findAll();
       }
