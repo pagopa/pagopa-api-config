@@ -1,22 +1,5 @@
 package it.gov.pagopa.apiconfig.core.controller;
 
-import static it.gov.pagopa.apiconfig.TestUtil.getCreditorInstitutionStationEdit;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionDetails;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationEdit;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationList;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutions;
-import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionsView;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.CreditorInstitutionDetails;
@@ -34,7 +17,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+import static it.gov.pagopa.apiconfig.TestUtil.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = ApiConfig.class)
 @AutoConfigureMockMvc
@@ -180,5 +174,23 @@ class CreditorInstitutionsControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void uploadMassiveCbill() throws Exception {
+    File file = TestUtil.readFile("file/massiveCbillValid_Insert.csv");
+    MockMultipartFile multipartFile =
+            new MockMultipartFile(
+                    "file", file.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(file));
+    String url = "/creditorinstitutions/cbill";
+
+    // test incremental load
+    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+            .andExpect(status().isOk());
+
+    // test full load
+    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA)
+                    .queryParam("incremental", "false"))
+            .andExpect(status().isOk());
   }
 }

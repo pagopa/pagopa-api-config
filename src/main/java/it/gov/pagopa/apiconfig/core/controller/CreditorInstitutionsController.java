@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -751,4 +752,73 @@ public class CreditorInstitutionsController {
                 .mod4(mod4)
                 .build()));
   }
+
+    @Operation(
+            summary =
+                    "Upload a CSV file containing the cbill codes",
+            security = {
+                    @SecurityRequirement(name = "ApiKey"),
+                    @SecurityRequirement(name = "Authorization")
+            },
+            tags = {
+                    "Massive Loading",
+            })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "429",
+                            description = "Too many requests",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Service unavailable",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @PostMapping(
+            value = "/cbill",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Void> massiveUploadCbillCsv(
+            @RequestParam(required = false, name = "incremental", defaultValue = "true")
+            @Parameter(description = "Loading mode (true = incremental|false = full): incremental sets only PA entry " +
+                    "with no cbill code, full replace the cbill code for all the CI in the PA table")
+            boolean incremental,
+            @NotNull
+            @Parameter(
+                    description = "CSV file regarding cbill codes to load",
+                    required = true,
+                    content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
+            @RequestParam("file")
+            MultipartFile file) {
+        creditorInstitutionsService.loadCbillByCsv(file, incremental);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
