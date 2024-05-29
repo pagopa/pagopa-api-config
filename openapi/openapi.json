@@ -17635,6 +17635,11 @@
             "description": "number version",
             "format": "int64"
           },
+          "is_connection_sync": {
+            "type": "boolean",
+            "description": "Describe the station connection's type, true synchronous, false asynchronous",
+            "readOnly": true
+          },
           "ip": {
             "type": "string"
           },
@@ -18756,6 +18761,11 @@
             "type": "integer",
             "description": "number version",
             "format": "int64"
+          },
+          "is_connection_sync": {
+            "type": "boolean",
+            "description": "Describe the station connection's type, true synchronous, false asynchronous",
+            "readOnly": true
           }
         }
       },
@@ -19272,6 +19282,11 @@
             "type": "integer",
             "description": "number version",
             "format": "int64"
+          },
+          "is_connection_sync": {
+            "type": "boolean",
+            "description": "Describe the station connection's type, true synchronous, false asynchronous",
+            "readOnly": true
           },
           "application_code": {
             "minimum": 0,

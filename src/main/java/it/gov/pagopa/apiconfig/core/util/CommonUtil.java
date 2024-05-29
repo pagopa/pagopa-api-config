@@ -24,6 +24,8 @@ import javax.xml.transform.stax.StAXSource;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -388,5 +390,16 @@ public class CommonUtil {
       throw new AppException(AppError.INTERNAL_SERVER_ERROR, e);
     }
     return model;
+  }
+
+  /**
+   * Compute the station's connection flag
+   *
+   * @param station station model
+   * @return true if the station is configured to be synchronous, false otherwise
+   */
+  public static boolean isConnectionSync(Stazioni station) {
+    return (org.apache.commons.lang3.StringUtils.isNotBlank(station.getTargetPath()) && org.apache.commons.lang3.StringUtils.isNotBlank(station.getRedirectIp()))
+            || StringUtils.isNotBlank(station.getTargetPathPof());
   }
 }
