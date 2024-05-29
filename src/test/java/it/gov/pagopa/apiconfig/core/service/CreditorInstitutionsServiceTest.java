@@ -41,6 +41,9 @@ import it.gov.pagopa.apiconfig.starter.repository.IbanValidiPerPaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +65,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 @SpringBootTest(classes = ApiConfig.class)
 class CreditorInstitutionsServiceTest {
@@ -801,5 +806,24 @@ class CreditorInstitutionsServiceTest {
     String expected =
         TestUtil.readJsonFromFile("response/get_creditorinstitutionserviceview_ok.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void loadCbillCsv(boolean incremental) throws IOException {
+      File cbillCsv = TestUtil.readFile("file/massiveCbillValid_Insert.csv");
+      MockMultipartFile file =
+              new MockMultipartFile(
+                      "file", cbillCsv.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(cbillCsv));
+      Pa pa = TestUtil.getMockPa();
+      pa.setCbill(null);
+      List<Pa> pas = List.of(pa);
+      when(paRepository.findPaWithoutCbill())
+              .thenReturn(Optional.of(pas));
+      when(paRepository.findAll()).thenReturn(pas);
+
+      assertEquals(null, pa.getCbill());
+      creditorInstitutionsService.loadCbillByCsv(file, incremental);
+      assertEquals("BFJ9Q", pa.getCbill());
   }
 }
