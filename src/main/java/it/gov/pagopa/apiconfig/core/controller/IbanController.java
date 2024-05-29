@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanEnhanced;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbanLabel;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Ibans;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.IbansEnhanced;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.service.CreditorInstitutionsService;
 import it.gov.pagopa.apiconfig.core.service.IbanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @RestController()
 @RequestMapping(path = "/creditorinstitutions")
@@ -115,76 +110,12 @@ public class IbanController {
    *
    * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
    *     (required)
+   * @param limit Number of elements on one page. Default = 50
+   * @param page Page number. Page value starts from 0
    * @param filterByLabel label for iban filtering
    * @return OK. (status code 200) or Not Found (status code 404) or Service unavailable (status
    *     code 500)
    */
-  @Operation(
-      summary = "Get creditor institution ibans enhanced",
-      security = {
-        @SecurityRequirement(name = "ApiKey"),
-        @SecurityRequirement(name = "Authorization")
-      },
-      tags = {
-        "Creditor Institutions",
-      })
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = IbansEnhanced.class))),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Unauthorized",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content = @Content(schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(
-            responseCode = "429",
-            description = "Too many requests",
-            content = @Content(schema = @Schema())),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Service unavailable",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProblemJson.class)))
-      })
-  @GetMapping(
-      value = "/{creditorinstitutioncode}/ibans/enhanced",
-      produces = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<IbansEnhanced> getCreditorInstitutionsIbansEnhanced(
-      @Size(max = 50)
-          @Parameter(
-              description = "Organization fiscal code, the fiscal code of the Organization.",
-              required = true)
-          @PathVariable("creditorinstitutioncode")
-          String creditorInstitutionCode,
-      @RequestParam(required = false, name = "label") @Parameter(description = "Filter by label")
-          String filterByLabel) {
-
-    return ResponseEntity.ok(
-        ibansService.getCreditorInstitutionsIbansByLabel(creditorInstitutionCode, filterByLabel));
-  }
-
   @Operation(
       summary = "Get creditor institution ibans list",
       security = {
@@ -238,6 +169,14 @@ public class IbanController {
       value = "/{creditorinstitutioncode}/ibans/list",
       produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<IbansEnhanced> getIbans(
+      @Positive
+          @Parameter(description = "Number of elements on one page. Default = 50")
+          @RequestParam(required = false, defaultValue = "50")
+          Integer limit,
+      @PositiveOrZero
+          @Parameter(description = "Page number. Page value starts from 0", required = true)
+          @RequestParam(required = false, defaultValue = "0")
+          Integer page,
       @Size(max = 50)
           @Parameter(
               description = "The fiscal code of the Organization.",
@@ -248,7 +187,7 @@ public class IbanController {
       @RequestParam(required = false, name = "label") @Parameter(description = "Filter by label")
           String filterByLabel) {
 
-    return ResponseEntity.ok(ibansService.getIbans(creditorInstitutionCode, filterByLabel));
+    return ResponseEntity.ok(ibansService.getIbans(creditorInstitutionCode, limit, page, filterByLabel));
   }
 
   /**
