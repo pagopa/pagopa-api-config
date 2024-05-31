@@ -50,9 +50,6 @@ public class RefreshService {
     if( apiConfigCacheRefresh ) {
       callApiConfigCache();
     }
-    if( monitoringRefresh ) {
-      response = callJobTrigger(JobTrigger.REFRESH_CONFIGURATION);
-    }
     return response;
   }
 
