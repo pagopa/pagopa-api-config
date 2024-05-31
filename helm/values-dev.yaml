@@ -10,6 +10,7 @@ microservice-chart: &microservice-chart
   canaryDelivery:
     create: false
     ingress:
+      proxyBodySize: 4m
       canary:
         type: header
         headerName: X-Canary
@@ -54,6 +55,7 @@ microservice-chart: &microservice-chart
     create: true
     host: "weudev.apiconfig.internal.dev.platform.pagopa.it"
     servicePort: 8080
+    proxyBodySize: 4m
   serviceAccount:
     create: false
   podAnnotations: {}
