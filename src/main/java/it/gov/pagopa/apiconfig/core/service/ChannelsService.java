@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.deNull;
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.getSort;
 
 @Service
 @Validated
@@ -65,7 +64,7 @@ public class ChannelsService {
       String brokerCode,
       String brokerDescription,
       @Valid FilterAndOrder filterAndOrder) {
-    Pageable pageable = PageRequest.of(pageNumber, limit, getSort(filterAndOrder));
+    Pageable pageable = PageRequest.of(pageNumber, limit);
     Page<Canali> page =
         canaliRepository.findAll(
             CanaliSpecification.filterChannelsByCodeAndBrokerDescriptionFilters(
