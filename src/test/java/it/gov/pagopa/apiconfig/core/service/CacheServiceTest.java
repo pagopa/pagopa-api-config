@@ -62,7 +62,7 @@ class CacheServiceTest {
             Lists.newArrayList(Cache.builder().id("2023-02-08 01:00:06").version("3.10.0").build()),
             50,
             0);
-    when(cacheRepository.findByVersionNotLike(anyString(), any(Pageable.class))).thenReturn(page);
+    when(cacheRepository.findByVersionLike(anyString(), any(Pageable.class))).thenReturn(page);
 
     var result = cacheService.getCacheVersions(0, 50);
     assertNotNull(result);

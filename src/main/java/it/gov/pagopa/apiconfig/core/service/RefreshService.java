@@ -12,8 +12,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -34,8 +32,6 @@ public class RefreshService {
   @Value("${service.api-config-cache.refresh}") private boolean apiConfigCacheRefresh;
   @Value("${service.api-config-cache.subscriptionKey}") private String apiConfigCacheSubscriptionKey;
 
-  @Value("${service.nodo-monitoring.refresh}") private boolean monitoringRefresh;
-
   public RefreshService(@Value("${service.nodo-monitoring.host}") String monitoringUrl, @Value("${service.api-config-cache.host}") String apiConfigCacheUrl) {
     client = Feign.builder().target(RefreshClient.class, monitoringUrl);
     apiConfigCacheClient = Feign.builder().target(ApiConfigCacheClient.class, apiConfigCacheUrl);
@@ -46,11 +42,10 @@ public class RefreshService {
   }
 
   public String refreshConfig() {
-    String response = "OK";
     if( apiConfigCacheRefresh ) {
       callApiConfigCache();
     }
-    return response;
+    return "OK";
   }
 
   private void callApiConfigCache() {
