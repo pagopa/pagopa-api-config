@@ -11,11 +11,11 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCacheByVersion;
@@ -57,14 +57,11 @@ class CacheServiceTest {
 
   @Test
   void getCacheVersions() {
-    Page<Cache> page =
-        TestUtil.mockPage(
-            Lists.newArrayList(Cache.builder().id("2023-02-08 01:00:06").version("3.10.0").build()),
-            50,
-            0);
+    Page<Cache> page = new PageImpl<>(List.of(Cache.builder().id("2023-02-08 01:00:06").version("3.10.0").time(ZonedDateTime.now()).build()));
     when(cacheRepository.findByVersionLike(anyString(), any(Pageable.class))).thenReturn(page);
 
     var result = cacheService.getCacheVersions(0, 50);
     assertNotNull(result);
+    assertTrue(!result.getVersionList().isEmpty());
   }
 }
