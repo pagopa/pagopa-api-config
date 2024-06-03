@@ -1,11 +1,9 @@
 package it.gov.pagopa.apiconfig.core.service;
 
 import it.gov.pagopa.apiconfig.ApiConfig;
-import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.starter.entity.Cache;
 import it.gov.pagopa.apiconfig.starter.repository.CacheRepository;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +60,6 @@ class CacheServiceTest {
 
     var result = cacheService.getCacheVersions(0, 50);
     assertNotNull(result);
-    assertTrue(!result.getVersionList().isEmpty());
+    assertFalse(result.getVersionList().isEmpty());
   }
 }
