@@ -7495,7 +7495,7 @@
             "in": "query",
             "name": "incremental",
             "required": false,
-            "type": "boolean"
+            "type": "file"
           },
           {
             "description": "CSV file regarding cbill codes to load",
@@ -14109,6 +14109,9 @@
         "id": {
           "type": "string"
         },
+        "time": {
+          "type": "string"
+        },
         "version": {
           "type": "string"
         }
@@ -14747,6 +14750,10 @@
         "enabled": {
           "default": true,
           "description": "station enabled",
+          "type": "boolean"
+        },
+        "is_connection_sync": {
+          "description": "Describe the station connection's type, true synchronous, false asynchronous",
           "type": "boolean"
         },
         "mod4": {
@@ -15769,6 +15776,10 @@
           "description": "station enabled",
           "type": "boolean"
         },
+        "is_connection_sync": {
+          "description": "Describe the station connection's type, true synchronous, false asynchronous",
+          "type": "boolean"
+        },
         "station_code": {
           "example": "1234567890100",
           "maxLength": 35,
@@ -15879,6 +15890,10 @@
         },
         "ip_4mod": {
           "type": "string"
+        },
+        "is_connection_sync": {
+          "description": "Describe the station connection's type, true synchronous, false asynchronous",
+          "type": "boolean"
         },
         "password": {
           "type": "string"
