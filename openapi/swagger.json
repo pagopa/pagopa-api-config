@@ -7495,7 +7495,7 @@
             "in": "query",
             "name": "incremental",
             "required": false,
-            "type": "file"
+            "type": "boolean"
           },
           {
             "description": "CSV file regarding cbill codes to load",
@@ -7503,7 +7503,7 @@
             "in": "formData",
             "name": "file",
             "required": true,
-            "type": "string"
+            "type": "file"
           }
         ],
         "responses": {

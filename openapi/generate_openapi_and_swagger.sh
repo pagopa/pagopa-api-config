@@ -33,6 +33,6 @@ jq  '."paths"."/icas/check/massive".post.parameters[0].type |= "file"' ./openapi
 jq  '."paths"."/icas/massive".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/creditorinstitutions/ibans/csv".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 jq  '."paths"."/creditorinstitutions/ibans".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
-jq  '."paths"."/creditorinstitutions/cbill".post.parameters[0].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
+jq  '."paths"."/creditorinstitutions/cbill".post.parameters[1].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 
 kill %% || true
