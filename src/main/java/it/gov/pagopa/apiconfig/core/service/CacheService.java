@@ -38,7 +38,7 @@ public class CacheService {
   public CacheVersions getCacheVersions(Integer page, Integer limit) {
     Sort sortOrder = Sort.by(Sort.Direction.DESC, "time").and(Sort.by("version"));
     Pageable pageable = PageRequest.of(page, limit, sortOrder);
-    Page<Cache> data = cacheRepository.findByVersionNotLike("GZIP_JSON-%", pageable);
+    Page<Cache> data = cacheRepository.findByVersionLike("GZIP_JSON-%", pageable);
 
     Type listType =
         new TypeToken<List<it.gov.pagopa.apiconfig.core.model.configuration.Cache>>() {}.getType();

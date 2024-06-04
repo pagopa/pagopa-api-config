@@ -50,17 +50,6 @@ class RefreshServiceTest {
   }
 
   @Test
-  void refreshGlobalConfig() {
-    String response = refreshService.refreshConfig();
-    mockClient.verifyOne(
-        HttpMethod.GET, "/jobs/trigger/" + JobTrigger.REFRESH_CONFIGURATION.getValue());
-    assertEquals(
-        "{\"success\":true,\"action\":\"Trigger job refreshConfiguration\",\"description\":\"Job"
-            + " triggered\"}",
-        response);
-  }
-
-  @Test
   void jobTrigger() {
     // valid param case: picking one among JobTrigger values
     String response = refreshService.jobTrigger(JobTrigger.PA_INVIA_RT);

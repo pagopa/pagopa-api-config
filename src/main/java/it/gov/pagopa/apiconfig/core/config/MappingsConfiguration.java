@@ -1,6 +1,7 @@
 package it.gov.pagopa.apiconfig.core.config;
 
 import it.gov.pagopa.apiconfig.core.mapper.*;
+import it.gov.pagopa.apiconfig.starter.entity.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -38,27 +39,6 @@ import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderDetails;
 import it.gov.pagopa.apiconfig.core.model.psp.PaymentServiceProviderView;
 import it.gov.pagopa.apiconfig.core.model.psp.PspChannel;
 import it.gov.pagopa.apiconfig.core.model.psp.Service;
-import it.gov.pagopa.apiconfig.starter.entity.CanaleTipoVersamento;
-import it.gov.pagopa.apiconfig.starter.entity.Canali;
-import it.gov.pagopa.apiconfig.starter.entity.CdiMaster;
-import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
-import it.gov.pagopa.apiconfig.starter.entity.ConfigurationKeys;
-import it.gov.pagopa.apiconfig.starter.entity.ElencoServizi;
-import it.gov.pagopa.apiconfig.starter.entity.FtpServers;
-import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
-import it.gov.pagopa.apiconfig.starter.entity.IbanValidiPerPa;
-import it.gov.pagopa.apiconfig.starter.entity.InformativeContoAccreditoMaster;
-import it.gov.pagopa.apiconfig.starter.entity.InformativePaMaster;
-import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
-import it.gov.pagopa.apiconfig.starter.entity.IntermediariPsp;
-import it.gov.pagopa.apiconfig.starter.entity.Pa;
-import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
-import it.gov.pagopa.apiconfig.starter.entity.Pdd;
-import it.gov.pagopa.apiconfig.starter.entity.Psp;
-import it.gov.pagopa.apiconfig.starter.entity.PspCanaleTipoVersamento;
-import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
-import it.gov.pagopa.apiconfig.starter.entity.TipiVersamento;
-import it.gov.pagopa.apiconfig.starter.entity.WfespPluginConf;
 
 @Configuration
 public class MappingsConfiguration {
@@ -159,6 +139,8 @@ public class MappingsConfiguration {
     Converter<IbansMassLoad, IbansMaster> convertIbansMassLoadToIbanMaster = new ConvertIbansMassLoadToIbanMaster();
 
     Converter<IbansMassLoadCsv, IbansMaster> convertIbansMassLoadCsvToIbanMaster = new ConvertIbansMassLoadCsvToIbanMaster();
+
+    Converter<Cache, it.gov.pagopa.apiconfig.core.model.configuration.Cache> convertCacheToCacheModel = new ConvertCacheToCacheModel();
 
     mapper
         .createTypeMap(Pa.class, CreditorInstitutionDetails.class)
@@ -283,6 +265,9 @@ public class MappingsConfiguration {
 
     mapper.createTypeMap(IbansMassLoadCsv.class, IbansMaster.class)
             .setConverter(convertIbansMassLoadCsvToIbanMaster);
+
+    mapper.createTypeMap(Cache.class, it.gov.pagopa.apiconfig.core.model.configuration.Cache.class)
+            .setConverter(convertCacheToCacheModel);
     
     return mapper;
   }

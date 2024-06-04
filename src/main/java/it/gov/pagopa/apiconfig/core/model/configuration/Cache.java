@@ -17,4 +17,5 @@ public class Cache {
 
   private String id;
   private String version;
+  private String time;
 }
