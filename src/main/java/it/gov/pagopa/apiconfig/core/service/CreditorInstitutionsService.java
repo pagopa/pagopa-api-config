@@ -78,6 +78,14 @@ public class CreditorInstitutionsService {
         this.modelMapper = modelMapper;
     }
 
+    /**
+     * Retrieve a paginated list of creditor institutions that match the provided filters
+     *
+     * @param limit the size of the page
+     * @param pageNumber the page number
+     * @param filterAndOrder the filters
+     * @return a paginated list of creditor institutions
+     */
     public CreditorInstitutions getCreditorInstitutions(
             @NotNull Integer limit,
             @NotNull Integer pageNumber,
