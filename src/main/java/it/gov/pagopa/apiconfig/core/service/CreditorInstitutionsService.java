@@ -43,32 +43,46 @@ import java.util.stream.Collectors;
 public class CreditorInstitutionsService {
 
     public static final String BAD_RELATION_INFO = "Bad Relation info";
-
     public static final String FILE_BAD_REQUEST = "Bad request for the massive loading of CBILL codes";
 
-    @Autowired
-    private PaRepository paRepository;
+    private final PaRepository paRepository;
+
+    private final StazioniRepository stazioniRepository;
+
+    private final PaStazionePaRepository paStazionePaRepository;
+
+    private final IbanValidiPerPaRepository ibanValidiPerPaRepository;
+
+    private final CodifichePaRepository codifichePaRepository;
+
+    private final CodificheRepository codificheRepository;
+
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private StazioniRepository stazioniRepository;
-
-    @Autowired
-    private PaStazionePaRepository paStazionePaRepository;
-
-    @Autowired
-    private IbanValidiPerPaRepository ibanValidiPerPaRepository;
-
-    @Autowired
-    private CodifichePaRepository codifichePaRepository;
-
-    @Autowired
-    private CodificheRepository codificheRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public CreditorInstitutionsService(
+            PaRepository paRepository,
+            StazioniRepository stazioniRepository,
+            PaStazionePaRepository paStazionePaRepository,
+            IbanValidiPerPaRepository ibanValidiPerPaRepository,
+            CodifichePaRepository codifichePaRepository,
+            CodificheRepository codificheRepository,
+            ModelMapper modelMapper
+    ) {
+        this.paRepository = paRepository;
+        this.stazioniRepository = stazioniRepository;
+        this.paStazionePaRepository = paStazionePaRepository;
+        this.ibanValidiPerPaRepository = ibanValidiPerPaRepository;
+        this.codifichePaRepository = codifichePaRepository;
+        this.codificheRepository = codificheRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public CreditorInstitutions getCreditorInstitutions(
-            @NotNull Integer limit, @NotNull Integer pageNumber, @Valid FilterAndOrder filterAndOrder) {
+            @NotNull Integer limit,
+            @NotNull Integer pageNumber,
+            @Valid FilterAndOrder filterAndOrder
+    ) {
         Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
         var filters =
                 CommonUtil.getFilters(
@@ -77,7 +91,7 @@ public class CreditorInstitutionsService {
                                 .ragioneSociale(filterAndOrder.getFilter().getName())
                                 .enabled(filterAndOrder.getFilter().getEnabled())
                                 .build());
-        Page<Pa> page = paRepository.findAll(filters, pageable);
+        Page<Pa> page = this.paRepository.findAll(filters, pageable);
         return CreditorInstitutions.builder()
                 .creditorInstitutionList(getCreditorInstitutions(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))
@@ -221,7 +235,7 @@ public class CreditorInstitutionsService {
                         .map(i -> paRepository.findById(i.getFkPa()))
                         .filter(Optional::isPresent)
                         .map(pa -> modelMapper.map(pa.get(), CreditorInstitution.class))
-                        .collect(Collectors.toList());
+                        .toList();
 
         return CreditorInstitutionList.builder().creditorInstitutions(ciList).build();
     }
@@ -330,7 +344,7 @@ public class CreditorInstitutionsService {
         return paStazionePaList.stream()
                 .filter(Objects::nonNull)
                 .map(elem -> modelMapper.map(elem, CreditorInstitutionStation.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -342,7 +356,7 @@ public class CreditorInstitutionsService {
     private List<CreditorInstitution> getCreditorInstitutions(Page<Pa> page) {
         return page.stream()
                 .map(elem -> modelMapper.map(elem, CreditorInstitution.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -354,7 +368,7 @@ public class CreditorInstitutionsService {
     private List<CreditorInstitutionView> getCreditorInstitutionsView(Page<PaStazionePa> page) {
         return page.stream()
                 .map(elem -> modelMapper.map(elem, CreditorInstitutionView.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -365,7 +379,7 @@ public class CreditorInstitutionsService {
         return ibans.stream()
                 .filter(Objects::nonNull)
                 .map(elem -> modelMapper.map(elem, Iban.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void addQrEncoding(Pa pa) {
@@ -396,7 +410,7 @@ public class CreditorInstitutionsService {
         return codifichePa.stream()
                 .map(CodifichePa::getFkPa)
                 .map(pa -> modelMapper.map(pa, CreditorInstitution.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

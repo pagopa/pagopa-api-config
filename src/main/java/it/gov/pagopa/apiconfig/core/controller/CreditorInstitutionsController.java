@@ -74,9 +74,9 @@ public class CreditorInstitutionsController {
             @Parameter(description = "Filter by creditor institution's enabled") @RequestParam(required = false) Boolean enabled,
             @Parameter(description = "Order by creditor institution's tax code or business name") @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.CreditorInstitution orderBy,
             @Parameter(description = "Direction of ordering") @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering,
-            @Parameter(description = "Number of elements on one page") @RequestParam(required = false, defaultValue = "50") @Positive  Integer limit,
+            @Parameter(description = "Number of elements on one page") @RequestParam(required = false, defaultValue = "50") @Positive Integer limit,
             @Parameter(description = "Page number", required = true) @RequestParam @PositiveOrZero Integer page
-            ) {
+    ) {
         return ResponseEntity.ok(
                 this.creditorInstitutionsService.getCreditorInstitutions(
                         limit,
@@ -152,7 +152,8 @@ public class CreditorInstitutionsController {
                     description = "Organization fiscal code, the fiscal code of the Organization.",
                     required = true)
             @PathVariable("creditorinstitutioncode")
-            String creditorInstitutionCode) {
+            String creditorInstitutionCode
+    ) {
         return ResponseEntity.ok(
                 creditorInstitutionsService.getCreditorInstitution(creditorInstitutionCode));
     }
@@ -211,7 +212,8 @@ public class CreditorInstitutionsController {
             value = "",
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CreditorInstitutionDetails> createCreditorInstitution(
-            @RequestBody @Valid @NotNull CreditorInstitutionDetails creditorInstitutionDetails) {
+            @RequestBody @Valid @NotNull CreditorInstitutionDetails creditorInstitutionDetails
+    ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(creditorInstitutionsService.createCreditorInstitution(creditorInstitutionDetails));
     }
@@ -280,7 +282,8 @@ public class CreditorInstitutionsController {
             @RequestBody
             @Valid
             @NotNull
-            CreditorInstitutionDetails creditorInstitutionDetails) {
+            CreditorInstitutionDetails creditorInstitutionDetails
+    ) {
         return ResponseEntity.ok(
                 creditorInstitutionsService.updateCreditorInstitution(
                         creditorInstitutionCode, creditorInstitutionDetails));
@@ -342,7 +345,8 @@ public class CreditorInstitutionsController {
                     description = "Organization fiscal code, the fiscal code of the Organization.",
                     required = true)
             @PathVariable("creditorinstitutioncode")
-            String creditorInstitutionCode) {
+            String creditorInstitutionCode
+    ) {
         creditorInstitutionsService.deleteCreditorInstitution(creditorInstitutionCode);
         return ResponseEntity.ok().build();
     }
@@ -414,7 +418,8 @@ public class CreditorInstitutionsController {
                     description = "Organization fiscal code, the fiscal code of the Organization.",
                     required = true)
             @PathVariable("creditorinstitutioncode")
-            String creditorInstitutionCode) {
+            String creditorInstitutionCode
+    ) {
         return ResponseEntity.ok(
                 creditorInstitutionsService.getCreditorInstitutionStations(creditorInstitutionCode));
     }
@@ -481,7 +486,8 @@ public class CreditorInstitutionsController {
                     required = true)
             @PathVariable("creditorinstitutioncode")
             String creditorInstitutionCode,
-            @RequestBody @Valid @NotNull CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+            @RequestBody @Valid @NotNull CreditorInstitutionStationEdit creditorInstitutionStationEdit
+    ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         creditorInstitutionsService.createCreditorInstitutionStation(
@@ -554,7 +560,8 @@ public class CreditorInstitutionsController {
             @RequestBody
             @Valid
             @NotNull
-            CreditorInstitutionStationEdit creditorInstitutionStationEdit) {
+            CreditorInstitutionStationEdit creditorInstitutionStationEdit
+    ) {
         return ResponseEntity.ok(
                 creditorInstitutionsService.updateCreditorInstitutionStation(
                         creditorInstitutionCode, stationCode, creditorInstitutionStationEdit));
@@ -620,7 +627,8 @@ public class CreditorInstitutionsController {
             @Size(max = 50)
             @Parameter(description = "station code.", required = true)
             @PathVariable("stationcode")
-            String stationCode) {
+            String stationCode
+    ) {
         creditorInstitutionsService.deleteCreditorInstitutionStation(
                 creditorInstitutionCode, stationCode);
         return ResponseEntity.ok().build();
@@ -705,7 +713,8 @@ public class CreditorInstitutionsController {
             @Parameter(description = "Filter by segregation code")
             Long segregationCode,
             @RequestParam(required = false, name = "mod4") @Parameter(description = "Filter by mod4")
-            Boolean mod4) {
+            Boolean mod4
+    ) {
         return ResponseEntity.ok(
                 creditorInstitutionsService.getCreditorInstitutionsView(
                         limit,
@@ -786,7 +795,8 @@ public class CreditorInstitutionsController {
                     required = true,
                     content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
             @RequestParam("file")
-            MultipartFile file) {
+            MultipartFile file
+    ) {
         creditorInstitutionsService.loadCbillByCsv(file, incremental);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
