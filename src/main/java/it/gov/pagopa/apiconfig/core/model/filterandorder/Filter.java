@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.springframework.lang.Nullable;
 
 @Getter
@@ -12,7 +11,16 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 @Builder
 public class Filter {
-  @Nullable private String code;
-  @Nullable private String name;
-  @Nullable private String taxCode;
+
+    @Nullable
+    private String code;
+
+    @Nullable
+    private String name;
+
+    @Nullable
+    private String taxCode;
+
+    @Nullable
+    private Boolean enabled;
 }
