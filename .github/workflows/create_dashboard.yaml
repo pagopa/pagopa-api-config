@@ -39,7 +39,7 @@ jobs:
           persist-credentials: false
 
       # from https://github.com/pagopa/opex-dashboard-azure-action/
-      - uses: pagopa/opex-dashboard-azure-action@v1.2.1
+      - uses: pagopa/opex-dashboard-azure-action@3ad80a5e4a2d5a8f342615637072f21b687320ce # v1.2.1
         with:
           environment: ${{ matrix.environment }}
           api-name: ${{ matrix.product }}
@@ -56,7 +56,7 @@ jobs:
     if: ${{ always() }}
     steps:
       - name: Delete Previous deployments
-        uses: actions/github-script@v6
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6
         env:
           SHA_HEAD: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.sha) || github.sha}}
         with:
