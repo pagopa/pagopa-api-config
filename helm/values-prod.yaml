@@ -28,7 +28,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.0-1-VAS-1146-primitive-version-channel"
+    tag: "0.59.0-2-VAS-1146-primitive-version-channel"
     pullPolicy: Always
   livenessProbe:
     httpGet:
