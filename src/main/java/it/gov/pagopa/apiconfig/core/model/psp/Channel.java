@@ -36,4 +36,8 @@ public class Channel {
       description = "Broker description. Read only field",
       example = "Lorem ipsum dolor sit amet")
   private String brokerDescription;
+
+  @Schema(required = true, description = "Primitive number version")
+  @JsonProperty("primitive_version")
+  private Integer primitiveVersion;
 }
