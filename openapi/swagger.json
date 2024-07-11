@@ -15826,6 +15826,9 @@
     },
     "StationCreditorInstitution": {
       "properties": {
+        "aca": {
+          "type": "boolean"
+        },
         "application_code": {
           "format": "int64",
           "type": "integer"
@@ -15860,6 +15863,9 @@
         "segregation_code": {
           "format": "int64",
           "type": "integer"
+        },
+        "stand_in": {
+          "type": "boolean"
         }
       },
       "required": [
