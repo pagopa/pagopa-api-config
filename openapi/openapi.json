@@ -18840,6 +18840,12 @@
           },
           "broadcast": {
             "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
+            "type": "boolean"
           }
         }
       },
