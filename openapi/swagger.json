@@ -7228,40 +7228,29 @@
         ],
         "parameters": [
           {
-            "default": 50,
-            "description": "Number of elements on one page. Default = 50",
-            "format": "int32",
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "description": "Page number. Page value starts from 0",
-            "format": "int32",
-            "in": "query",
-            "minimum": 0,
-            "name": "page",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "description": "Filter by code",
+            "description": "Filter by creditor institution's tax code",
             "in": "query",
             "name": "code",
             "required": false,
             "type": "string"
           },
           {
-            "description": "Filter by name",
+            "description": "Filter by creditor institution's business name",
             "in": "query",
             "name": "name",
             "required": false,
             "type": "string"
           },
           {
+            "description": "Filter by creditor institution's enabled",
+            "in": "query",
+            "name": "enabled",
+            "required": false,
+            "type": "boolean"
+          },
+          {
             "default": "CODE",
-            "description": "Order by code or name",
+            "description": "Order by creditor institution's tax code or business name",
             "enum": [
               "CODE",
               "NAME"
@@ -7282,6 +7271,24 @@
             "name": "ordering",
             "required": false,
             "type": "string"
+          },
+          {
+            "default": 50,
+            "description": "Number of elements on one page",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number",
+            "format": "int32",
+            "in": "query",
+            "minimum": 0,
+            "name": "page",
+            "required": true,
+            "type": "integer"
           }
         ],
         "responses": {
@@ -14201,11 +14208,17 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "primitive_version": {
+          "description": "Primitive number version",
+          "format": "int32",
+          "type": "integer"
         }
       },
       "required": [
         "channel_code",
-        "enabled"
+        "enabled",
+        "primitive_version"
       ],
       "type": "object"
     },
@@ -14275,8 +14288,6 @@
         "primitive_version": {
           "description": "Primitive number version",
           "format": "int32",
-          "maximum": 2,
-          "minimum": 1,
           "type": "integer"
         },
         "protocol": {
@@ -14730,6 +14741,9 @@
     },
     "CreditorInstitutionStation": {
       "properties": {
+        "aca": {
+          "type": "boolean"
+        },
         "application_code": {
           "format": "int64",
           "minimum": 0,
@@ -14764,6 +14778,9 @@
           "minimum": 0,
           "type": "integer"
         },
+        "stand_in": {
+          "type": "boolean"
+        },
         "station_code": {
           "example": "1234567890100",
           "maxLength": 35,
@@ -14787,6 +14804,9 @@
     },
     "CreditorInstitutionStationEdit": {
       "properties": {
+        "aca": {
+          "type": "boolean"
+        },
         "application_code": {
           "format": "int64",
           "minimum": 0,
@@ -14815,6 +14835,9 @@
           "format": "int64",
           "minimum": 0,
           "type": "integer"
+        },
+        "stand_in": {
+          "type": "boolean"
         },
         "station_code": {
           "example": "1234567890100",

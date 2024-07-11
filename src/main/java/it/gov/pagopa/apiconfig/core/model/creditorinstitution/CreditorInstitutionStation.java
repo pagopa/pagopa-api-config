@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.springframework.lang.Nullable;
 
 /** Stations */
 @EqualsAndHashCode(callSuper = true)
@@ -37,4 +38,12 @@ public class CreditorInstitutionStation extends Station {
 
   @JsonProperty("broadcast")
   private Boolean broadcast;
+
+  @Nullable
+  @JsonProperty("aca")
+  private Boolean aca;
+
+  @Nullable
+  @JsonProperty("stand_in")
+  private Boolean standIn;
 }
