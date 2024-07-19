@@ -103,7 +103,6 @@ public class StationMaintenanceService {
             OffsetDateTime endDateTime
     ) {
         boolean standIn = createStationMaintenance.getStandIn();
-        // TODO check
         // force standIn flag to true when the used has already consumed all the available hours for this year
         if (isAnnualHoursLimitExceededForUser(brokerCode, now, startDateTime, endDateTime)) {
             standIn = true;
