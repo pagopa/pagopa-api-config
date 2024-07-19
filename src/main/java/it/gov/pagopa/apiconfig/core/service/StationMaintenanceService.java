@@ -76,10 +76,7 @@ public class StationMaintenanceService {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID, "Start date time must be before end date time");
         }
         if (hasOverlappingMaintenance(createStationMaintenance, startDateTime, endDateTime)) {
-            throw new AppException(
-                    AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID,
-                    "There is an overlapping maintenance for the same date time interval"
-            );
+            throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_HAS_OVERLAPPING);
         }
 
         StationMaintenance maintenance = buildStationMaintenance(brokerCode, createStationMaintenance, now, startDateTime, endDateTime);
@@ -157,5 +154,4 @@ public class StationMaintenanceService {
     private boolean isNotRoundedTo15Minutes(OffsetDateTime dateTime) {
         return dateTime.getMinute() % 15 != 0;
     }
-
 }

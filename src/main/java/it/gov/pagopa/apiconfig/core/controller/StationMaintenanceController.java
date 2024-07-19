@@ -56,7 +56,7 @@ public class StationMaintenanceController {
                 content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))
       })
   @PostMapping(value = "/{brokercode}/station-maintenances", produces = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<StationMaintenanceResource> createBroker(
+  public ResponseEntity<StationMaintenanceResource> createStationMaintenance(
           @Parameter(description = "Broker's tax code") @PathVariable("brokercode") String brokerCode,
           @RequestBody @Valid @NotNull CreateStationMaintenance createStationMaintenance
   ) {
