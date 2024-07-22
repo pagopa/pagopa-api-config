@@ -40,28 +40,28 @@ public class StationMaintenanceController {
     }
 
     @Operation(summary = "Create a maintenance for the specified station",
-          security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "Created",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = StationMaintenanceResource.class))),
-        @ApiResponse(responseCode = "400", description = "Bad Request",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
-        @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
-        @ApiResponse(responseCode = "409", description = "Conflict",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
-        @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
-        @ApiResponse(responseCode = "500", description = "Service unavailable",
-                content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))
-      })
-  @PostMapping(value = "/{brokercode}/station-maintenances", produces = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<StationMaintenanceResource> createStationMaintenance(
-          @Parameter(description = "Broker's tax code") @PathVariable("brokercode") String brokerCode,
-          @RequestBody @Valid @NotNull CreateStationMaintenance createStationMaintenance
-  ) {
-    return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(this.stationMaintenanceService.createStationMaintenance(brokerCode, createStationMaintenance));
-  }
+            security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Created",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = StationMaintenanceResource.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad Request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "409", description = "Conflict",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "500", description = "Service unavailable",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @PostMapping(value = "/{brokercode}/station-maintenances", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<StationMaintenanceResource> createStationMaintenance(
+            @Parameter(description = "Broker's tax code") @PathVariable("brokercode") String brokerCode,
+            @RequestBody @Valid @NotNull CreateStationMaintenance createStationMaintenance
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(this.stationMaintenanceService.createStationMaintenance(brokerCode, createStationMaintenance));
+    }
 }
