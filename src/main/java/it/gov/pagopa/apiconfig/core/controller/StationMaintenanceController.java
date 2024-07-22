@@ -89,8 +89,9 @@ public class StationMaintenanceController {
             @Parameter(description = "Maintenance's id") @PathVariable("maintenanceid") Long maintenanceId,
             @RequestBody @Valid @NotNull UpdateStationMaintenance updateStationMaintenance
     ) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(this.stationMaintenanceService.updateStationMaintenance(brokerCode, maintenanceId, updateStationMaintenance));
+        return ResponseEntity.ok(
+                this.stationMaintenanceService.
+                        updateStationMaintenance(brokerCode, maintenanceId, updateStationMaintenance)
+        );
     }
 }

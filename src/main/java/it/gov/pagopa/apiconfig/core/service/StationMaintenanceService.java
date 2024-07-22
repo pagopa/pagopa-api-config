@@ -93,6 +93,34 @@ public class StationMaintenanceService {
                 .build();
     }
 
+    /**
+     * Update the station's maintenance with the specified maintenance id with the provided data.
+     * <p>
+     * If the maintenance is already in progress, only the endDateTime field can be
+     * updated otherwise startDateTime, endDateTime and standIn fields can be updated.
+     * Before the update of the maintenance checks if all the requirements are matched, if it is an in progress maintenance
+     * perform the following checks:
+     * <ul>
+     *     <li> endDateTime is valid only if it is rounded to a 15-minute interval (seconds and milliseconds are truncated)
+     *     <li> current timestamp < endDateTime
+     *     <li> there are no overlapping maintenance for the same station excluded the current maintenance
+     * </ul>
+     * Otherwise, perform the following checks:
+     * <ul>
+     *     <li> the startDateTime is after 72h from the creation date time
+     *     <li> startDateTime and endDateTime are valid only if they are rounded to a 15-minute interval
+     *     (seconds and milliseconds are truncated)
+     *     <li> startDateTime < endDateTime
+     *     <li> there are no overlapping maintenance for the same station excluded the current maintenance
+     * </ul>
+     * Additionally, in case of scheduled maintenance it retrieves the count of maintenance hours for the specified broker,
+     * and if the annual limit has been reached, the StandIn flag is set to true.
+     *
+     * @param brokerCode               broker's tax code
+     * @param maintenanceId            maintenance's id
+     * @param updateStationMaintenance update info of the maintenance
+     * @return the updated maintenance
+     */
     public StationMaintenanceResource updateStationMaintenance(
             String brokerCode,
             Long maintenanceId,
