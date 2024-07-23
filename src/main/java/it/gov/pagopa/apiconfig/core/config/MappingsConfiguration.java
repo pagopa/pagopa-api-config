@@ -1,6 +1,7 @@
 package it.gov.pagopa.apiconfig.core.config;
 
 import it.gov.pagopa.apiconfig.core.mapper.*;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -268,7 +269,10 @@ public class MappingsConfiguration {
 
     mapper.createTypeMap(Cache.class, it.gov.pagopa.apiconfig.core.model.configuration.Cache.class)
             .setConverter(convertCacheToCacheModel);
-    
+
+    mapper.createTypeMap(StationMaintenance.class, StationMaintenanceResource.class)
+            .setConverter(new ConvertStationMaintenanceToStationMaintenanceResource());
+
     return mapper;
   }
 }

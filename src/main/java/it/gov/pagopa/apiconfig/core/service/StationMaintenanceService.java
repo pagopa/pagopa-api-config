@@ -2,7 +2,9 @@ package it.gov.pagopa.apiconfig.core.service;
 
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.PageInfo;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
@@ -12,13 +14,17 @@ import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.StationMaintenanceSummaryViewRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 @Validated
@@ -28,16 +34,19 @@ public class StationMaintenanceService {
     private final ExtendedStationMaintenanceRepository stationMaintenanceRepository;
     private final StationMaintenanceSummaryViewRepository summaryViewRepository;
     private final StazioniRepository stationRepository;
+    private final ModelMapper mapper;
 
     @Autowired
     public StationMaintenanceService(
             ExtendedStationMaintenanceRepository stationMaintenanceRepository,
             StationMaintenanceSummaryViewRepository summaryViewRepository,
-            StazioniRepository stationRepository
+            StazioniRepository stationRepository,
+            ModelMapper mapper
     ) {
         this.stationMaintenanceRepository = stationMaintenanceRepository;
         this.summaryViewRepository = summaryViewRepository;
         this.stationRepository = stationRepository;
+        this.mapper = mapper;
     }
 
     /**
@@ -83,14 +92,7 @@ public class StationMaintenanceService {
         StationMaintenance maintenance = buildStationMaintenance(brokerCode, createStationMaintenance, now, startDateTime, endDateTime);
         StationMaintenance saved = this.stationMaintenanceRepository.save(maintenance);
 
-        return StationMaintenanceResource.builder()
-                .maintenanceId(saved.getObjId())
-                .brokerCode(brokerCode)
-                .startDateTime(saved.getStartDateTime())
-                .endDateTime(saved.getEndDateTime())
-                .standIn(saved.getStandIn())
-                .stationCode(createStationMaintenance.getStationCode())
-                .build();
+        return this.mapper.map(saved, StationMaintenanceResource.class);
     }
 
     /**
@@ -138,13 +140,41 @@ public class StationMaintenanceService {
             saved = updateScheduledStationMaintenance(brokerCode, now, updateStationMaintenance, stationMaintenance);
         }
 
-        return StationMaintenanceResource.builder()
-                .maintenanceId(saved.getObjId())
-                .brokerCode(brokerCode)
-                .startDateTime(saved.getStartDateTime())
-                .endDateTime(saved.getEndDateTime())
-                .standIn(saved.getStandIn())
-                .stationCode(stationMaintenance.getStation().getIdStazione())
+        return this.mapper.map(saved, StationMaintenanceResource.class);
+    }
+
+    public StationMaintenanceListResource getStationMaintenances(
+            String brokerCode,
+            String stationCode,
+            OffsetDateTime startDateTimeBefore,
+            OffsetDateTime startDateTimeAfter,
+            OffsetDateTime endDateTimeBefore,
+            OffsetDateTime endDateTimeAfter,
+            Integer limit,
+            Integer page
+    ) {
+        Page<StationMaintenance> response = this.stationMaintenanceRepository.findAllByFilters(
+                brokerCode,
+                stationCode,
+                startDateTimeBefore,
+                startDateTimeAfter,
+                endDateTimeBefore,
+                endDateTimeAfter,
+                PageRequest.of(page, limit)
+        );
+        List<StationMaintenanceResource> maintenanceList = response.getContent().parallelStream()
+                .map(maintenance -> this.mapper.map(maintenance, StationMaintenanceResource.class))
+                .toList();
+
+        return StationMaintenanceListResource.builder()
+                .maintenanceList(maintenanceList)
+                .pageInfo(PageInfo.builder()
+                        .page(page)
+                        .limit(limit)
+                        .totalItems(response.getTotalElements())
+                        .totalPages(response.getTotalPages())
+                        .itemsFound(response.getNumberOfElements())
+                        .build())
                 .build();
     }
 

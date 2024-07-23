@@ -1,11 +1,13 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import it.gov.pagopa.apiconfig.core.config.MappingsConfiguration;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenance;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
@@ -36,7 +38,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = StationMaintenanceService.class)
+@SpringBootTest(classes = {StationMaintenanceService.class, MappingsConfiguration.class})
 class StationMaintenanceServiceTest {
 
     private static final String BROKER_CODE = "brokerCode";
@@ -611,7 +613,12 @@ class StationMaintenanceServiceTest {
     private StationMaintenance buildMaintenanceParametrized(OffsetDateTime startDateTime) {
         return StationMaintenance.builder()
                 .objId(MAINTENANCE_ID)
-                .station(Stazioni.builder().idStazione(STATION_CODE).build())
+                .station(Stazioni.builder()
+                        .idStazione(STATION_CODE)
+                        .intermediarioPa(IntermediariPa.builder()
+                                .idIntermediarioPa(BROKER_CODE)
+                                .build())
+                        .build())
                 .startDateTime(startDateTime)
                 .endDateTime(startDateTime.plusHours(2))
                 .standIn(false)
@@ -621,7 +628,12 @@ class StationMaintenanceServiceTest {
     private StationMaintenance buildMaintenance() {
         return StationMaintenance.builder()
                 .objId(MAINTENANCE_ID)
-                .station(Stazioni.builder().idStazione(STATION_CODE).build())
+                .station(Stazioni.builder()
+                        .idStazione(STATION_CODE)
+                        .intermediarioPa(IntermediariPa.builder()
+                                .idIntermediarioPa(BROKER_CODE)
+                                .build())
+                        .build())
                 .startDateTime(OffsetDateTime.now())
                 .endDateTime(OffsetDateTime.now())
                 .standIn(false)
