@@ -73,7 +73,7 @@ public class StationMaintenanceService {
         if (computeDateDifferenceInHours(now, startDateTime) < 72) {
             throw new AppException(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID);
         }
-        if (startDateTime.isAfter(endDateTime) || startDateTime.isEqual(endDateTime)) {
+        if (!endDateTime.isAfter(startDateTime)) {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID, "Start date time must be before end date time");
         }
         if (hasOverlappingMaintenance(createStationMaintenance.getStationCode(), startDateTime, endDateTime, null)) {
@@ -128,11 +128,11 @@ public class StationMaintenanceService {
     ) {
         StationMaintenance stationMaintenance = this.stationMaintenanceRepository.findById(maintenanceId)
                 .orElseThrow(() -> new AppException(AppError.MAINTENANCE_NOT_FOUND, maintenanceId));
-
         OffsetDateTime now = OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
         StationMaintenance saved;
-        if (stationMaintenance.getStartDateTime().isBefore(now.plusMinutes(15))) {
+        boolean isMaintenanceInProgress = stationMaintenance.getStartDateTime().isBefore(now.plusMinutes(15));
+        if (isMaintenanceInProgress) {
             saved = updateInProgressStationMaintenance(now, updateStationMaintenance, stationMaintenance);
         } else {
             saved = updateScheduledStationMaintenance(brokerCode, now, updateStationMaintenance, stationMaintenance);
@@ -154,6 +154,10 @@ public class StationMaintenanceService {
             UpdateStationMaintenance updateStationMaintenance,
             StationMaintenance oldStationMaintenance
     ) {
+        if (updateStationMaintenance.getStartDateTime() == null) {
+            throw new AppException(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID);
+        }
+
         OffsetDateTime newStartDateTime = updateStationMaintenance.getStartDateTime().truncatedTo(ChronoUnit.MINUTES);
         OffsetDateTime newEndDateTime = updateStationMaintenance.getEndDateTime().truncatedTo(ChronoUnit.MINUTES);
 
@@ -163,7 +167,7 @@ public class StationMaintenanceService {
         if (computeDateDifferenceInHours(now, newStartDateTime) < 72) {
             throw new AppException(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID);
         }
-        if (newStartDateTime.isAfter(newEndDateTime) || newStartDateTime.isEqual(newEndDateTime)) {
+        if (!newEndDateTime.isAfter(newStartDateTime)) {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID, "Start date time must be before end date time");
         }
         if (hasOverlappingMaintenance(
@@ -175,7 +179,9 @@ public class StationMaintenanceService {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_HAS_OVERLAPPING);
         }
 
-        boolean standIn = updateStationMaintenance.getStandIn();
+        boolean standIn = updateStationMaintenance.getStandIn() != null
+                ? updateStationMaintenance.getStandIn()
+                : oldStationMaintenance.getStandIn();
         double oldScheduledHours = computeDateDifferenceInHours(oldStationMaintenance.getStartDateTime(), oldStationMaintenance.getEndDateTime());
         // force standIn flag to true when the used has already consumed all the available hours for this year
         if (isAnnualHoursLimitExceededForUser(brokerCode, now, newStartDateTime, newEndDateTime, oldScheduledHours)) {
@@ -194,6 +200,7 @@ public class StationMaintenanceService {
             StationMaintenance oldStationMaintenance
     ) {
         OffsetDateTime newEndDateTime = updateStationMaintenance.getEndDateTime().truncatedTo(ChronoUnit.MINUTES);
+
         if (isNotRoundedTo15Minutes(newEndDateTime)) {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID, "End date time is not rounded to 15 minutes");
         }

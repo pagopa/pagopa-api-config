@@ -245,7 +245,7 @@ public enum AppError {
   CBILL_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CBILL massive loading bad request", "File is not valid: %s"),
 
   // Station Maintenance errors
-  MAINTENANCE_START_DATE_TIME_NOT_VALID(HttpStatus.BAD_REQUEST, "Invalid station maintenance start date time", "A new maintenance must start after 72h from the creation's date time"),
+  MAINTENANCE_START_DATE_TIME_NOT_VALID(HttpStatus.BAD_REQUEST, "Invalid station maintenance start date time", "A maintenance must start after 72h from the current date time"),
   MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID(HttpStatus.BAD_REQUEST, "Invalid station maintenance date time interval", "The provided maintenance interval is not valid: %s"),
   MAINTENANCE_DATE_TIME_INTERVAL_HAS_OVERLAPPING(HttpStatus.CONFLICT, "Conflict on station maintenance date time interval", "There is an overlapping maintenance for the provided date time interval"),
   MAINTENANCE_SUMMARY_NOT_FOUND(HttpStatus.NOT_FOUND, "Maintenance summary not found", "The maintenance summary for the provided broker %s and year %s was not found"),
