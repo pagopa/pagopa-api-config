@@ -18,12 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -94,4 +89,29 @@ public class StationMaintenanceController {
                         updateStationMaintenance(brokerCode, maintenanceId, updateStationMaintenance)
         );
     }
+
+    @Operation(summary = "Get a maintenance for the specified station, given its broker code and maintenance id",
+            security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Created",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = StationMaintenanceResource.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad Request",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "409", description = "Conflict",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+                    @ApiResponse(responseCode = "500", description = "Service unavailable",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))
+            })
+    @GetMapping(value = "/{brokercode}/station-maintenances/{maintenanceid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<StationMaintenanceResource> getStationMaintenance(
+            @Parameter(description = "Broker's tax code") @PathVariable("brokercode") String brokerCode,
+            @Parameter(description = "Maintenance's id") @PathVariable("maintenanceid") Long maintenanceId
+    ) {
+        return ResponseEntity.ok(this.stationMaintenanceService.getStationMaintenance(brokerCode, maintenanceId));
+    }
+
 }
