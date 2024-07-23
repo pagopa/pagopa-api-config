@@ -838,6 +838,264 @@
         "summary": "Update a broker"
       }
     },
+    "/brokers/{brokercode}/station-maintenances": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Broker's tax code",
+            "in": "path",
+            "name": "brokercode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateStationMaintenance"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/StationMaintenanceResource"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "createStationMaintenance",
+        "summary": "Create a maintenance for the specified station"
+      }
+    },
+    "/brokers/{brokercode}/station-maintenances/{maintenanceid}": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Broker's tax code",
+            "in": "path",
+            "name": "brokercode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Maintenance's id",
+            "format": "int64",
+            "in": "path",
+            "name": "maintenanceid",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateStationMaintenance"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/StationMaintenanceResource"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "updateStationMaintenance",
+        "summary": "Update a maintenance for the specified station"
+      }
+    },
     "/brokerspsp": {
       "parameters": [
         {
@@ -7228,40 +7486,29 @@
         ],
         "parameters": [
           {
-            "default": 50,
-            "description": "Number of elements on one page. Default = 50",
-            "format": "int32",
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "description": "Page number. Page value starts from 0",
-            "format": "int32",
-            "in": "query",
-            "minimum": 0,
-            "name": "page",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "description": "Filter by code",
+            "description": "Filter by creditor institution's tax code",
             "in": "query",
             "name": "code",
             "required": false,
             "type": "string"
           },
           {
-            "description": "Filter by name",
+            "description": "Filter by creditor institution's business name",
             "in": "query",
             "name": "name",
             "required": false,
             "type": "string"
           },
           {
+            "description": "Filter by creditor institution's enabled",
+            "in": "query",
+            "name": "enabled",
+            "required": false,
+            "type": "boolean"
+          },
+          {
             "default": "CODE",
-            "description": "Order by code or name",
+            "description": "Order by creditor institution's tax code or business name",
             "enum": [
               "CODE",
               "NAME"
@@ -7282,6 +7529,24 @@
             "name": "ordering",
             "required": false,
             "type": "string"
+          },
+          {
+            "default": 50,
+            "description": "Number of elements on one page",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "description": "Page number",
+            "format": "int32",
+            "in": "query",
+            "minimum": 0,
+            "name": "page",
+            "required": true,
+            "type": "integer"
           }
         ],
         "responses": {
@@ -14201,11 +14466,17 @@
         },
         "enabled": {
           "type": "boolean"
+        },
+        "primitive_version": {
+          "description": "Primitive number version",
+          "format": "int32",
+          "type": "integer"
         }
       },
       "required": [
         "channel_code",
-        "enabled"
+        "enabled",
+        "primitive_version"
       ],
       "type": "object"
     },
@@ -14275,8 +14546,6 @@
         "primitive_version": {
           "description": "Primitive number version",
           "format": "int32",
-          "maximum": 2,
-          "minimum": 1,
           "type": "integer"
         },
         "protocol": {
@@ -14498,7 +14767,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validitÃ  token",
+          "example": " default millisecondi validità token",
           "type": "string"
         },
         "config_key": {
@@ -14520,7 +14789,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validitÃ  token",
+          "example": " default millisecondi validità token",
           "type": "string"
         },
         "config_value": {
@@ -14594,6 +14863,37 @@
       "required": [
         "counterpart_tables",
         "page_info"
+      ],
+      "type": "object"
+    },
+    "CreateStationMaintenance": {
+      "properties": {
+        "end_date_time": {
+          "description": "The end date time of the station maintenance",
+          "example": "2024-04-01T13:00:00Z",
+          "format": "date-time",
+          "type": "string"
+        },
+        "stand_in": {
+          "description": "StandIn flag",
+          "type": "boolean"
+        },
+        "start_date_time": {
+          "description": "The start date time of the station maintenance",
+          "example": "2024-04-01T13:00:00Z",
+          "format": "date-time",
+          "type": "string"
+        },
+        "station_code": {
+          "description": "Code of the station subject of the maintenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "end_date_time",
+        "stand_in",
+        "start_date_time",
+        "station_code"
       ],
       "type": "object"
     },
@@ -16049,6 +16349,48 @@
       ],
       "type": "object"
     },
+    "StationMaintenanceResource": {
+      "properties": {
+        "broker_code": {
+          "description": "Code of the broker that owns the station",
+          "type": "string"
+        },
+        "end_date_time": {
+          "description": "The end date time of the station maintenance",
+          "example": "2024-04-01T13:00:00Z",
+          "format": "date-time",
+          "type": "string"
+        },
+        "maintenance_id": {
+          "description": "Maintenance's id",
+          "format": "int64",
+          "type": "integer"
+        },
+        "stand_in": {
+          "description": "StandIn flag",
+          "type": "boolean"
+        },
+        "start_date_time": {
+          "description": "The start date time of the station maintenance",
+          "example": "2024-04-01T13:00:00Z",
+          "format": "date-time",
+          "type": "string"
+        },
+        "station_code": {
+          "description": "Code of the station subject of the maintenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "broker_code",
+        "end_date_time",
+        "maintenance_id",
+        "stand_in",
+        "start_date_time",
+        "station_code"
+      ],
+      "type": "object"
+    },
     "Stations": {
       "properties": {
         "page_info": {
@@ -16064,6 +16406,30 @@
       "required": [
         "page_info",
         "stations"
+      ],
+      "type": "object"
+    },
+    "UpdateStationMaintenance": {
+      "properties": {
+        "end_date_time": {
+          "description": "The end date time of the station maintenance",
+          "example": "2024-04-01T13:00:00Z",
+          "format": "date-time",
+          "type": "string"
+        },
+        "stand_in": {
+          "description": "StandIn flag",
+          "type": "boolean"
+        },
+        "start_date_time": {
+          "description": "The start date time of the station maintenance",
+          "example": "2024-04-01T13:00:00Z",
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "end_date_time"
       ],
       "type": "object"
     },
