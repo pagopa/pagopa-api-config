@@ -36,7 +36,7 @@ public class StationMaintenanceResource {
     @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
     @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(
-            example = "2024-04-01T13:00:00.000Z",
+            example = "2024-04-01T10:00:00.000Z",
             required = true,
             description = "The start date time of the station maintenance")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

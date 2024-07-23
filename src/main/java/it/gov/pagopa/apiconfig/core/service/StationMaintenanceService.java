@@ -143,6 +143,19 @@ public class StationMaintenanceService {
         return this.mapper.map(saved, StationMaintenanceResource.class);
     }
 
+    /**
+     * Retrieve a paginated list of station maintenance for the specified broker with the specified filters.
+     *
+     * @param brokerCode          broker's tax code
+     * @param stationCode         station's code
+     * @param startDateTimeBefore used to filter out all maintenance that have the start date time before this date time
+     * @param startDateTimeAfter  used to filter out all maintenance that have the start date time after this date time
+     * @param endDateTimeBefore   used to filter out all maintenance that have the end date time before this date time
+     * @param endDateTimeAfter    used to filter out all maintenance that have the end date time after this date time
+     * @param limit               page size
+     * @param page                page number
+     * @return the requested page of maintenances
+     */
     public StationMaintenanceListResource getStationMaintenances(
             String brokerCode,
             String stationCode,
