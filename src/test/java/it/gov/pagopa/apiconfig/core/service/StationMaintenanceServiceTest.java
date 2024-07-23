@@ -4,6 +4,7 @@ import it.gov.pagopa.apiconfig.core.config.MappingsConfiguration;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
@@ -19,10 +20,12 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -594,6 +597,36 @@ class StationMaintenanceServiceTest {
 
         verify(summaryViewRepository, never()).findById(any());
         verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void getStationMaintenancesSuccess() {
+        List<StationMaintenance> list = Collections.singletonList(buildMaintenance());
+        when(stationMaintenanceRepository.findAllByFilters(
+                anyString(),
+                anyString(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+        )).thenReturn(new PageImpl<>(list));
+
+
+        StationMaintenanceListResource result = assertDoesNotThrow(() ->
+                sut.getStationMaintenances(
+                        BROKER_CODE,
+                        STATION_CODE,
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        10,
+                        0));
+
+        assertNotNull(result);
+        assertEquals(list.size(), result.getMaintenanceList().size());
+        assertEquals(list.size(), result.getPageInfo().getItemsFound());
     }
 
     private StationMaintenanceSummaryView buildSummaryViewNotExtra() {
