@@ -21,10 +21,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -106,6 +107,14 @@ class StationMaintenanceControllerTest {
                         .param("maintenanceYear", "2024")
                 ).andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void deleteStationMaintenanceTest() throws Exception {
+        mockMvc.perform(delete("/brokers/{brokercode}/station-maintenances/{maintenanceid}", BROKER_CODE, MAINTENANCE_ID))
+                .andExpect(status().is2xxSuccessful());
+
+        verify(stationMaintenanceService).deleteStationMaintenance(BROKER_CODE, MAINTENANCE_ID);
     }
 
     private StationMaintenanceResource buildMaintenanceResource() {
