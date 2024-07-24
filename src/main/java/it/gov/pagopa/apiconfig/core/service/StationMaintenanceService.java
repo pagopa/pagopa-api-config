@@ -153,7 +153,7 @@ public class StationMaintenanceService {
     }
 
     /**
-     * Retrieve a paginated list of station maintenance for the specified broker with the specified filters.
+     * Retrieve a paginated list of station maintenance for the specified broker with the provided filters.
      *
      * @param brokerCode          broker's tax code
      * @param stationCode         station's code
@@ -198,6 +198,13 @@ public class StationMaintenanceService {
                 .build();
     }
 
+    /**
+     * Retrieve the maintenance's hours summary of the specified broker for the provided year
+     *
+     * @param brokerCode      broker's tax code
+     * @param maintenanceYear year of maintenance for the summary
+     * @return the summary
+     */
     public MaintenanceHoursSummaryResource getBrokerMaintenancesSummary(String brokerCode, String maintenanceYear) {
         StationMaintenanceSummaryView maintenanceSummary = this.summaryViewRepository.findById(
                 StationMaintenanceSummaryId.builder()
