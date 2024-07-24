@@ -1,12 +1,17 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import it.gov.pagopa.apiconfig.core.config.MappingsConfiguration;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.MaintenanceHoursSummaryResource;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenance;
+import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryId;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.StationMaintenanceSummaryViewRepository;
@@ -18,10 +23,13 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -37,7 +45,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = StationMaintenanceService.class)
+@SpringBootTest(classes = {StationMaintenanceService.class, MappingsConfiguration.class})
 class StationMaintenanceServiceTest {
 
     private static final String BROKER_CODE = "brokerCode";
@@ -615,6 +623,120 @@ class StationMaintenanceServiceTest {
 
     }
 
+    @Test
+    void getStationMaintenancesSuccess() {
+        List<StationMaintenance> list = Collections.singletonList(buildMaintenance());
+        when(stationMaintenanceRepository.findAllByFilters(
+                anyString(),
+                anyString(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+        )).thenReturn(new PageImpl<>(list));
+
+        StationMaintenanceListResource result = assertDoesNotThrow(() ->
+                sut.getStationMaintenances(
+                        BROKER_CODE,
+                        STATION_CODE,
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        PageRequest.of(0, 10)
+                ));
+
+        assertNotNull(result);
+        assertEquals(list.size(), result.getMaintenanceList().size());
+        assertEquals(list.size(), result.getPageInfo().getItemsFound());
+    }
+
+    @Test
+    void getBrokerMaintenancesSummarySuccessWithoutExtra() {
+        StationMaintenanceSummaryView summaryView = StationMaintenanceSummaryView.builder()
+                .usedHours(10.25)
+                .scheduledHours(2.50)
+                .build();
+        when(summaryViewRepository.findById(
+                StationMaintenanceSummaryId.builder()
+                        .brokerCode(BROKER_CODE)
+                        .maintenanceYear("2024")
+                        .build())
+        ).thenReturn(Optional.of(summaryView));
+
+        MaintenanceHoursSummaryResource result = assertDoesNotThrow(() ->
+                sut.getBrokerMaintenancesSummary(BROKER_CODE, "2024"));
+
+        assertNotNull(result);
+        assertEquals("10:15", result.getUsedHours());
+        assertEquals("2:30", result.getScheduledHours());
+        assertEquals("23:15", result.getRemainingHours());
+        assertEquals("0", result.getExtraHours());
+        assertEquals("36", result.getAnnualHoursLimit());
+    }
+
+    @Test
+    void getBrokerMaintenancesSummarySuccessWithExtra() {
+        StationMaintenanceSummaryView summaryView = StationMaintenanceSummaryView.builder()
+                .usedHours(35.25)
+                .scheduledHours(10.50)
+                .build();
+        when(summaryViewRepository.findById(
+                StationMaintenanceSummaryId.builder()
+                        .brokerCode(BROKER_CODE)
+                        .maintenanceYear("2024")
+                        .build())
+        ).thenReturn(Optional.of(summaryView));
+
+        MaintenanceHoursSummaryResource result = assertDoesNotThrow(() ->
+                sut.getBrokerMaintenancesSummary(BROKER_CODE, "2024"));
+
+        assertNotNull(result);
+        assertEquals("35:15", result.getUsedHours());
+        assertEquals("10:30", result.getScheduledHours());
+        assertEquals("0", result.getRemainingHours());
+        assertEquals("9:45", result.getExtraHours());
+        assertEquals("36", result.getAnnualHoursLimit());
+    }
+
+    @Test
+    void getBrokerMaintenancesSummaryFailNotFound() {
+        when(summaryViewRepository.findById(
+                StationMaintenanceSummaryId.builder()
+                        .brokerCode(BROKER_CODE)
+                        .maintenanceYear("2024")
+                        .build())
+        ).thenReturn(Optional.empty());
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.getBrokerMaintenancesSummary(BROKER_CODE, "2024"));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.title, e.getTitle());
+    }
+
+    @Test
+    void deleteStationMaintenanceSuccess() {
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(buildMaintenance()));
+
+        assertDoesNotThrow(() -> sut.deleteStationMaintenance(BROKER_CODE, MAINTENANCE_ID));
+    }
+
+    @Test
+    void deleteStationMaintenanceFail() {
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        AppException e = assertThrows(AppException.class, () -> sut.deleteStationMaintenance(BROKER_CODE, MAINTENANCE_ID));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_NOT_FOUND.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_NOT_FOUND.title, e.getTitle());
+    }
+
     private StationMaintenanceSummaryView buildSummaryViewNotExtra() {
         return StationMaintenanceSummaryView.builder()
                 .scheduledHours(10.0)
@@ -632,7 +754,12 @@ class StationMaintenanceServiceTest {
     private StationMaintenance buildMaintenanceParametrized(OffsetDateTime startDateTime) {
         return StationMaintenance.builder()
                 .objId(MAINTENANCE_ID)
-                .station(Stazioni.builder().idStazione(STATION_CODE).build())
+                .station(Stazioni.builder()
+                        .idStazione(STATION_CODE)
+                        .intermediarioPa(IntermediariPa.builder()
+                                .idIntermediarioPa(BROKER_CODE)
+                                .build())
+                        .build())
                 .startDateTime(startDateTime)
                 .endDateTime(startDateTime.plusHours(2))
                 .standIn(false)
@@ -642,7 +769,12 @@ class StationMaintenanceServiceTest {
     private StationMaintenance buildMaintenance() {
         return StationMaintenance.builder()
                 .objId(MAINTENANCE_ID)
-                .station(Stazioni.builder().idStazione(STATION_CODE).build())
+                .station(Stazioni.builder()
+                        .idStazione(STATION_CODE)
+                        .intermediarioPa(IntermediariPa.builder()
+                                .idIntermediarioPa(BROKER_CODE)
+                                .build())
+                        .build())
                 .startDateTime(OffsetDateTime.now())
                 .endDateTime(OffsetDateTime.now())
                 .standIn(false)

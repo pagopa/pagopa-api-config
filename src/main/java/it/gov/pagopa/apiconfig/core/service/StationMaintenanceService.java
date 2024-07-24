@@ -2,7 +2,10 @@ package it.gov.pagopa.apiconfig.core.service;
 
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.PageInfo;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.MaintenanceHoursSummaryResource;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
@@ -12,13 +15,19 @@ import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.StationMaintenanceSummaryViewRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,16 +38,25 @@ public class StationMaintenanceService {
     private final ExtendedStationMaintenanceRepository stationMaintenanceRepository;
     private final StationMaintenanceSummaryViewRepository summaryViewRepository;
     private final StazioniRepository stationRepository;
+    private final ModelMapper mapper;
+    private final Double annualHoursLimit;
+    private final Double minimumSchedulingNoticeHours;
 
     @Autowired
     public StationMaintenanceService(
             ExtendedStationMaintenanceRepository stationMaintenanceRepository,
             StationMaintenanceSummaryViewRepository summaryViewRepository,
-            StazioniRepository stationRepository
+            StazioniRepository stationRepository,
+            ModelMapper mapper,
+            @Value("${station.maintenance.annual-hours-limit}") Double annualHoursLimit,
+            @Value("${station.maintenance.minimum-scheduling-notice-hours}") Double minimumSchedulingNoticeHours
     ) {
         this.stationMaintenanceRepository = stationMaintenanceRepository;
         this.summaryViewRepository = summaryViewRepository;
         this.stationRepository = stationRepository;
+        this.mapper = mapper;
+        this.annualHoursLimit = annualHoursLimit;
+        this.minimumSchedulingNoticeHours = minimumSchedulingNoticeHours;
     }
 
     /**
@@ -46,7 +64,7 @@ public class StationMaintenanceService {
      * <p>
      * Before the creation of the maintenance checks if all the requirements are matched:
      * <ul>
-     *     <li> the startDateTime is after 72h from the creation date time
+     *     <li> the startDateTime is after {@link #minimumSchedulingNoticeHours} from the creation date time
      *     <li> startDateTime and endDateTime are valid only if they are rounded to a 15-minute interval
      *     (seconds and milliseconds are truncated)
      *     <li> startDateTime < endDateTime
@@ -71,7 +89,7 @@ public class StationMaintenanceService {
         if (isNotRoundedTo15Minutes(startDateTime) || isNotRoundedTo15Minutes(endDateTime)) {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID, "Date time are not rounded to 15 minutes");
         }
-        if (computeDateDifferenceInHours(now, startDateTime) < 72) {
+        if (computeDateDifferenceInHours(now, startDateTime) < minimumSchedulingNoticeHours) {
             throw new AppException(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID);
         }
         if (!endDateTime.isAfter(startDateTime)) {
@@ -84,14 +102,7 @@ public class StationMaintenanceService {
         StationMaintenance maintenance = buildStationMaintenance(brokerCode, createStationMaintenance, now, startDateTime, endDateTime);
         StationMaintenance saved = this.stationMaintenanceRepository.save(maintenance);
 
-        return StationMaintenanceResource.builder()
-                .maintenanceId(saved.getObjId())
-                .brokerCode(brokerCode)
-                .startDateTime(saved.getStartDateTime())
-                .endDateTime(saved.getEndDateTime())
-                .standIn(saved.getStandIn())
-                .stationCode(createStationMaintenance.getStationCode())
-                .build();
+        return this.mapper.map(saved, StationMaintenanceResource.class);
     }
 
     /**
@@ -108,7 +119,7 @@ public class StationMaintenanceService {
      * </ul>
      * Otherwise, perform the following checks:
      * <ul>
-     *     <li> the startDateTime is after 72h from the creation date time
+     *     <li> the startDateTime is after {@link #minimumSchedulingNoticeHours} from the creation date time
      *     <li> startDateTime and endDateTime are valid only if they are rounded to a 15-minute interval
      *     (seconds and milliseconds are truncated)
      *     <li> startDateTime < endDateTime
@@ -139,14 +150,99 @@ public class StationMaintenanceService {
             saved = updateScheduledStationMaintenance(brokerCode, now, updateStationMaintenance, stationMaintenance);
         }
 
-        return StationMaintenanceResource.builder()
-                .maintenanceId(saved.getObjId())
-                .brokerCode(brokerCode)
-                .startDateTime(saved.getStartDateTime())
-                .endDateTime(saved.getEndDateTime())
-                .standIn(saved.getStandIn())
-                .stationCode(stationMaintenance.getStation().getIdStazione())
+        return this.mapper.map(saved, StationMaintenanceResource.class);
+    }
+
+    /**
+     * Retrieve a paginated list of station maintenance for the specified broker with the provided filters.
+     *
+     * @param brokerCode          broker's tax code
+     * @param stationCode         station's code
+     * @param startDateTimeBefore used to filter out all maintenance that have the start date time before this date time
+     * @param startDateTimeAfter  used to filter out all maintenance that have the start date time after this date time
+     * @param endDateTimeBefore   used to filter out all maintenance that have the end date time before this date time
+     * @param endDateTimeAfter    used to filter out all maintenance that have the end date time after this date time
+     * @param pageable            contains info about the requested page
+     * @return the requested page of maintenances
+     */
+    public StationMaintenanceListResource getStationMaintenances(
+            String brokerCode,
+            String stationCode,
+            OffsetDateTime startDateTimeBefore,
+            OffsetDateTime startDateTimeAfter,
+            OffsetDateTime endDateTimeBefore,
+            OffsetDateTime endDateTimeAfter,
+            Pageable pageable
+    ) {
+        Page<StationMaintenance> response = this.stationMaintenanceRepository.findAllByFilters(
+                brokerCode,
+                stationCode,
+                startDateTimeBefore,
+                startDateTimeAfter,
+                endDateTimeBefore,
+                endDateTimeAfter,
+                pageable
+        );
+        List<StationMaintenanceResource> maintenanceList = response.getContent().parallelStream()
+                .map(maintenance -> this.mapper.map(maintenance, StationMaintenanceResource.class))
+                .toList();
+
+        return StationMaintenanceListResource.builder()
+                .maintenanceList(maintenanceList)
+                .pageInfo(PageInfo.builder()
+                        .page(pageable.getPageNumber())
+                        .limit(pageable.getPageSize())
+                        .totalItems(response.getTotalElements())
+                        .totalPages(response.getTotalPages())
+                        .itemsFound(response.getNumberOfElements())
+                        .build())
                 .build();
+    }
+
+    /**
+     * Retrieve the maintenance's hours summary of the specified broker for the provided year
+     *
+     * @param brokerCode      broker's tax code
+     * @param maintenanceYear year of maintenance for the summary
+     * @return the summary
+     */
+    public MaintenanceHoursSummaryResource getBrokerMaintenancesSummary(String brokerCode, String maintenanceYear) {
+        StationMaintenanceSummaryView maintenanceSummary = this.summaryViewRepository.findById(
+                StationMaintenanceSummaryId.builder()
+                        .maintenanceYear(maintenanceYear)
+                        .brokerCode(brokerCode)
+                        .build()
+        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, maintenanceYear));
+
+        Double usedHours = maintenanceSummary.getUsedHours();
+        Double scheduledHours = maintenanceSummary.getScheduledHours();
+        double remainingHours = 0;
+        double extraHours = 0;
+        if (usedHours + scheduledHours < annualHoursLimit) {
+            remainingHours = annualHoursLimit - (scheduledHours + usedHours);
+        } else {
+            extraHours = (scheduledHours + usedHours) - annualHoursLimit;
+        }
+
+        return MaintenanceHoursSummaryResource.builder()
+                .usedHours(transformHoursToStringFormat(usedHours))
+                .scheduledHours(transformHoursToStringFormat(scheduledHours))
+                .remainingHours(transformHoursToStringFormat(remainingHours))
+                .extraHours(transformHoursToStringFormat(extraHours))
+                .annualHoursLimit(transformHoursToStringFormat(annualHoursLimit))
+                .build();
+    }
+
+    /**
+     * Delete the maintenance with the provided id
+     *
+     * @param brokerCode    broker's tax code
+     * @param maintenanceId maintenance's id
+     */
+    public void deleteStationMaintenance(String brokerCode, Long maintenanceId) {
+        StationMaintenance stationMaintenance = this.stationMaintenanceRepository.findById(maintenanceId)
+                .orElseThrow(() -> new AppException(AppError.MAINTENANCE_NOT_FOUND, maintenanceId));
+        this.stationMaintenanceRepository.delete(stationMaintenance);
     }
 
     private StationMaintenance updateScheduledStationMaintenance(
@@ -165,7 +261,7 @@ public class StationMaintenanceService {
         if (isNotRoundedTo15Minutes(newStartDateTime) || isNotRoundedTo15Minutes(newEndDateTime)) {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID, "Date time are not rounded to 15 minutes");
         }
-        if (computeDateDifferenceInHours(now, newStartDateTime) < 72) {
+        if (computeDateDifferenceInHours(now, newStartDateTime) < minimumSchedulingNoticeHours) {
             throw new AppException(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID);
         }
         if (!newEndDateTime.isAfter(newStartDateTime)) {
@@ -185,7 +281,7 @@ public class StationMaintenanceService {
                 : oldStationMaintenance.getStandIn();
         double oldScheduledHours = computeDateDifferenceInHours(oldStationMaintenance.getStartDateTime(), oldStationMaintenance.getEndDateTime());
         // force standIn flag to true when the used has already consumed all the available hours for this year
-        if (isAnnualHoursLimitExceededForUser(brokerCode, now, newStartDateTime, newEndDateTime, oldScheduledHours)) {
+        if (isAnnualHoursLimitExceededForUser(brokerCode, newStartDateTime, newEndDateTime, oldScheduledHours, String.valueOf(now.getYear()))) {
             standIn = true;
         }
 
@@ -231,7 +327,7 @@ public class StationMaintenanceService {
     ) {
         boolean standIn = createStationMaintenance.getStandIn();
         // force standIn flag to true when the used has already consumed all the available hours for this year
-        if (isAnnualHoursLimitExceededForUser(brokerCode, now, startDateTime, endDateTime, 0)) {
+        if (isAnnualHoursLimitExceededForUser(brokerCode, startDateTime, endDateTime, 0, String.valueOf(now.getYear()))) {
             standIn = true;
         }
 
@@ -254,22 +350,21 @@ public class StationMaintenanceService {
 
     private boolean isAnnualHoursLimitExceededForUser(
             String brokerCode,
-            OffsetDateTime now,
             OffsetDateTime startDateTime,
             OffsetDateTime endDateTime,
-            double oldScheduledHours
+            double oldScheduledHours,
+            String maintenanceYear
     ) {
         StationMaintenanceSummaryView maintenanceSummary = this.summaryViewRepository.findById(
                 StationMaintenanceSummaryId.builder()
-                        .maintenanceYear(String.valueOf(now.getYear()))
+                        .maintenanceYear(maintenanceYear)
                         .brokerCode(brokerCode)
                         .build()
-        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, ""));
+        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, maintenanceYear));
         double consumedHours = maintenanceSummary.getUsedHours() + maintenanceSummary.getScheduledHours();
         double newHoursToBeScheduled = computeDateDifferenceInHours(startDateTime, endDateTime);
 
-        return (consumedHours - oldScheduledHours + newHoursToBeScheduled) > 36;
-
+        return (consumedHours - oldScheduledHours + newHoursToBeScheduled) > annualHoursLimit;
     }
 
     private boolean hasOverlappingMaintenance(
@@ -315,4 +410,24 @@ public class StationMaintenanceService {
 
     }
 
+
+    private String transformHoursToStringFormat(Double hours) {
+        if (hours == 0) {
+            return "0";
+        }
+        BigDecimal bigDecimal = new BigDecimal(String.valueOf(hours));
+        int intValue = bigDecimal.intValue();
+        BigDecimal decimal = bigDecimal.subtract(new BigDecimal(intValue));
+
+        if (decimal.compareTo(BigDecimal.valueOf(0.25)) == 0) {
+            return String.format("%s:15", intValue);
+        }
+        if (decimal.compareTo(BigDecimal.valueOf(0.50)) == 0) {
+            return String.format("%s:30", intValue);
+        }
+        if (decimal.compareTo(BigDecimal.valueOf(0.75)) == 0) {
+            return String.format("%s:45", intValue);
+        }
+        return String.valueOf(intValue);
+    }
 }
