@@ -4,6 +4,7 @@ import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.PageInfo;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.MaintenanceHoursSummaryResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -36,8 +38,8 @@ public class StationMaintenanceService {
     private final StationMaintenanceSummaryViewRepository summaryViewRepository;
     private final StazioniRepository stationRepository;
     private final ModelMapper mapper;
-    private final Integer annualHoursLimit;
-    private final Integer minimumSchedulingNoticeHours;
+    private final Double annualHoursLimit;
+    private final Double minimumSchedulingNoticeHours;
 
     @Autowired
     public StationMaintenanceService(
@@ -45,8 +47,8 @@ public class StationMaintenanceService {
             StationMaintenanceSummaryViewRepository summaryViewRepository,
             StazioniRepository stationRepository,
             ModelMapper mapper,
-            @Value("${station.maintenance.annual-hours-limit}") Integer annualHoursLimit,
-            @Value("${station.maintenance.minimum-scheduling-notice-hours") Integer minimumSchedulingNoticeHours
+            @Value("${station.maintenance.annual-hours-limit}") Double annualHoursLimit,
+            @Value("${station.maintenance.minimum-scheduling-notice-hours}") Double minimumSchedulingNoticeHours
     ) {
         this.stationMaintenanceRepository = stationMaintenanceRepository;
         this.summaryViewRepository = summaryViewRepository;
@@ -196,6 +198,33 @@ public class StationMaintenanceService {
                 .build();
     }
 
+    public MaintenanceHoursSummaryResource getBrokerMaintenancesSummary(String brokerCode, String maintenanceYear) {
+        StationMaintenanceSummaryView maintenanceSummary = this.summaryViewRepository.findById(
+                StationMaintenanceSummaryId.builder()
+                        .maintenanceYear(maintenanceYear)
+                        .brokerCode(brokerCode)
+                        .build()
+        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, maintenanceYear));
+
+        Double usedHours = maintenanceSummary.getUsedHours();
+        Double scheduledHours = maintenanceSummary.getScheduledHours();
+        double remainingHours = 0;
+        double extraHours = 0;
+        if (usedHours + scheduledHours < annualHoursLimit) {
+            remainingHours = annualHoursLimit - (scheduledHours + usedHours);
+        } else {
+            extraHours = (scheduledHours + usedHours) - annualHoursLimit;
+        }
+
+        return MaintenanceHoursSummaryResource.builder()
+                .usedHours(transformHoursToStringFormat(usedHours))
+                .scheduledHours(transformHoursToStringFormat(scheduledHours))
+                .remainingHours(transformHoursToStringFormat(remainingHours))
+                .extraHours(transformHoursToStringFormat(extraHours))
+                .annualHoursLimit(transformHoursToStringFormat(annualHoursLimit))
+                .build();
+    }
+
     private StationMaintenance updateScheduledStationMaintenance(
             String brokerCode,
             OffsetDateTime now,
@@ -334,5 +363,25 @@ public class StationMaintenanceService {
 
     private boolean isNotRoundedTo15Minutes(OffsetDateTime dateTime) {
         return dateTime.getMinute() % 15 != 0;
+    }
+
+    private String transformHoursToStringFormat(Double hours) {
+        if (hours == 0) {
+            return "0";
+        }
+        BigDecimal bigDecimal = new BigDecimal(String.valueOf(hours));
+        int intValue = bigDecimal.intValue();
+        BigDecimal decimal = bigDecimal.subtract(new BigDecimal(intValue));
+
+        if (decimal.compareTo(BigDecimal.valueOf(0.25)) == 0) {
+            return String.format("%s:15", intValue);
+        }
+        if (decimal.compareTo(BigDecimal.valueOf(0.50)) == 0) {
+            return String.format("%s:30", intValue);
+        }
+        if (decimal.compareTo(BigDecimal.valueOf(0.75)) == 0) {
+            return String.format("%s:45", intValue);
+        }
+        return String.valueOf(intValue);
     }
 }
