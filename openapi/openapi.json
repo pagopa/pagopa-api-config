@@ -1110,7 +1110,7 @@
         "tags": [
           "Creditor Institutions"
         ],
-        "summary": "Get a paginated list of station's maintenance of the specified broker",
+        "summary": "Get a paginated list of station's maintenance for the specified broker",
         "operationId": "getStationMaintenances",
         "parameters": [
           {

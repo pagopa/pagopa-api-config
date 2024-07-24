@@ -49,7 +49,7 @@ public class StationMaintenanceController {
         this.stationMaintenanceService = stationMaintenanceService;
     }
 
-    @Operation(summary = "Get a paginated list of station's maintenance of the specified broker",
+    @Operation(summary = "Get a paginated list of station's maintenance for the specified broker",
             security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Created",
