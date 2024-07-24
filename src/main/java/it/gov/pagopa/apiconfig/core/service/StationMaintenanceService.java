@@ -16,6 +16,7 @@ import it.gov.pagopa.apiconfig.starter.repository.StationMaintenanceSummaryViewR
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,24 @@ public class StationMaintenanceService {
     private final StationMaintenanceSummaryViewRepository summaryViewRepository;
     private final StazioniRepository stationRepository;
     private final ModelMapper mapper;
+    private final Integer annualHoursLimit;
+    private final Integer minimumSchedulingNoticeHours;
 
     @Autowired
     public StationMaintenanceService(
             ExtendedStationMaintenanceRepository stationMaintenanceRepository,
             StationMaintenanceSummaryViewRepository summaryViewRepository,
             StazioniRepository stationRepository,
-            ModelMapper mapper
+            ModelMapper mapper,
+            @Value("${station.maintenance.annual-hours-limit}") Integer annualHoursLimit,
+            @Value("${station.maintenance.minimum-scheduling-notice-hours") Integer minimumSchedulingNoticeHours
     ) {
         this.stationMaintenanceRepository = stationMaintenanceRepository;
         this.summaryViewRepository = summaryViewRepository;
         this.stationRepository = stationRepository;
         this.mapper = mapper;
+        this.annualHoursLimit = annualHoursLimit;
+        this.minimumSchedulingNoticeHours = minimumSchedulingNoticeHours;
     }
 
     /**
@@ -54,7 +61,7 @@ public class StationMaintenanceService {
      * <p>
      * Before the creation of the maintenance checks if all the requirements are matched:
      * <ul>
-     *     <li> the startDateTime is after 72h from the creation date time
+     *     <li> the startDateTime is after {@link #minimumSchedulingNoticeHours} from the creation date time
      *     <li> startDateTime and endDateTime are valid only if they are rounded to a 15-minute interval
      *     (seconds and milliseconds are truncated)
      *     <li> startDateTime < endDateTime
@@ -79,7 +86,7 @@ public class StationMaintenanceService {
         if (isNotRoundedTo15Minutes(startDateTime) || isNotRoundedTo15Minutes(endDateTime)) {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID, "Date time are not rounded to 15 minutes");
         }
-        if (computeDateDifferenceInHours(now, startDateTime) < 72) {
+        if (computeDateDifferenceInHours(now, startDateTime) < minimumSchedulingNoticeHours) {
             throw new AppException(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID);
         }
         if (!endDateTime.isAfter(startDateTime)) {
@@ -109,7 +116,7 @@ public class StationMaintenanceService {
      * </ul>
      * Otherwise, perform the following checks:
      * <ul>
-     *     <li> the startDateTime is after 72h from the creation date time
+     *     <li> the startDateTime is after {@link #minimumSchedulingNoticeHours} from the creation date time
      *     <li> startDateTime and endDateTime are valid only if they are rounded to a 15-minute interval
      *     (seconds and milliseconds are truncated)
      *     <li> startDateTime < endDateTime
@@ -205,7 +212,7 @@ public class StationMaintenanceService {
         if (isNotRoundedTo15Minutes(newStartDateTime) || isNotRoundedTo15Minutes(newEndDateTime)) {
             throw new AppException(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID, "Date time are not rounded to 15 minutes");
         }
-        if (computeDateDifferenceInHours(now, newStartDateTime) < 72) {
+        if (computeDateDifferenceInHours(now, newStartDateTime) < minimumSchedulingNoticeHours) {
             throw new AppException(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID);
         }
         if (!newEndDateTime.isAfter(newStartDateTime)) {
@@ -225,7 +232,7 @@ public class StationMaintenanceService {
                 : oldStationMaintenance.getStandIn();
         double oldScheduledHours = computeDateDifferenceInHours(oldStationMaintenance.getStartDateTime(), oldStationMaintenance.getEndDateTime());
         // force standIn flag to true when the used has already consumed all the available hours for this year
-        if (isAnnualHoursLimitExceededForUser(brokerCode, now, newStartDateTime, newEndDateTime, oldScheduledHours)) {
+        if (isAnnualHoursLimitExceededForUser(brokerCode, newStartDateTime, newEndDateTime, oldScheduledHours, String.valueOf(now.getYear()))) {
             standIn = true;
         }
 
@@ -271,7 +278,7 @@ public class StationMaintenanceService {
     ) {
         boolean standIn = createStationMaintenance.getStandIn();
         // force standIn flag to true when the used has already consumed all the available hours for this year
-        if (isAnnualHoursLimitExceededForUser(brokerCode, now, startDateTime, endDateTime, 0)) {
+        if (isAnnualHoursLimitExceededForUser(brokerCode, startDateTime, endDateTime, 0, String.valueOf(now.getYear()))) {
             standIn = true;
         }
 
@@ -294,22 +301,21 @@ public class StationMaintenanceService {
 
     private boolean isAnnualHoursLimitExceededForUser(
             String brokerCode,
-            OffsetDateTime now,
             OffsetDateTime startDateTime,
             OffsetDateTime endDateTime,
-            double oldScheduledHours
+            double oldScheduledHours,
+            String maintenanceYear
     ) {
         StationMaintenanceSummaryView maintenanceSummary = this.summaryViewRepository.findById(
                 StationMaintenanceSummaryId.builder()
-                        .maintenanceYear(String.valueOf(now.getYear()))
+                        .maintenanceYear(maintenanceYear)
                         .brokerCode(brokerCode)
                         .build()
-        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, ""));
+        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, maintenanceYear));
         double consumedHours = maintenanceSummary.getUsedHours() + maintenanceSummary.getScheduledHours();
         double newHoursToBeScheduled = computeDateDifferenceInHours(startDateTime, endDateTime);
 
-        return (consumedHours - oldScheduledHours + newHoursToBeScheduled) > 36;
-
+        return (consumedHours - oldScheduledHours + newHoursToBeScheduled) > annualHoursLimit;
     }
 
     private boolean hasOverlappingMaintenance(
