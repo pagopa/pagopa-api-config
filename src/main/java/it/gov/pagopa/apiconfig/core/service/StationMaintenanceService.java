@@ -232,6 +232,18 @@ public class StationMaintenanceService {
                 .build();
     }
 
+    /**
+     * Delete the maintenance with the provided id
+     *
+     * @param brokerCode    broker's tax code
+     * @param maintenanceId maintenance's id
+     */
+    public void deleteStationMaintenance(String brokerCode, Long maintenanceId) {
+        StationMaintenance stationMaintenance = this.stationMaintenanceRepository.findById(maintenanceId)
+                .orElseThrow(() -> new AppException(AppError.MAINTENANCE_NOT_FOUND, maintenanceId));
+        this.stationMaintenanceRepository.delete(stationMaintenance);
+    }
+
     private StationMaintenance updateScheduledStationMaintenance(
             String brokerCode,
             OffsetDateTime now,
