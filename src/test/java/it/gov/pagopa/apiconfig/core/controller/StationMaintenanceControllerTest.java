@@ -72,7 +72,7 @@ class StationMaintenanceControllerTest {
 
     @Test
     void getStationMaintenancesTest() throws Exception {
-        when(stationMaintenanceService.getStationMaintenances(anyString(), anyString(), any(), any(), any(), any(), anyInt(), anyInt()))
+        when(stationMaintenanceService.getStationMaintenances(anyString(), anyString(), any(), any(), any(), any(), any()))
                 .thenReturn(StationMaintenanceListResource.builder()
                         .maintenanceList(Collections.singletonList(buildMaintenanceResource()))
                         .pageInfo(buildPageInfo())

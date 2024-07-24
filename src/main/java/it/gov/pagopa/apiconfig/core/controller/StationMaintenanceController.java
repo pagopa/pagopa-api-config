@@ -15,6 +15,7 @@ import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceR
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.service.StationMaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -85,8 +86,7 @@ public class StationMaintenanceController {
                         startDateTimeAfter,
                         endDateTimeBefore,
                         endDateTimeAfter,
-                        limit,
-                        page
+                        PageRequest.of(page, limit)
                 ));
     }
 

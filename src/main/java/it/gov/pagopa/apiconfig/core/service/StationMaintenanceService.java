@@ -17,7 +17,7 @@ import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -152,8 +152,7 @@ public class StationMaintenanceService {
      * @param startDateTimeAfter  used to filter out all maintenance that have the start date time after this date time
      * @param endDateTimeBefore   used to filter out all maintenance that have the end date time before this date time
      * @param endDateTimeAfter    used to filter out all maintenance that have the end date time after this date time
-     * @param limit               page size
-     * @param page                page number
+     * @param pageable            contains info about the requested page
      * @return the requested page of maintenances
      */
     public StationMaintenanceListResource getStationMaintenances(
@@ -163,8 +162,7 @@ public class StationMaintenanceService {
             OffsetDateTime startDateTimeAfter,
             OffsetDateTime endDateTimeBefore,
             OffsetDateTime endDateTimeAfter,
-            Integer limit,
-            Integer page
+            Pageable pageable
     ) {
         Page<StationMaintenance> response = this.stationMaintenanceRepository.findAllByFilters(
                 brokerCode,
@@ -173,7 +171,7 @@ public class StationMaintenanceService {
                 startDateTimeAfter,
                 endDateTimeBefore,
                 endDateTimeAfter,
-                PageRequest.of(page, limit)
+                pageable
         );
         List<StationMaintenanceResource> maintenanceList = response.getContent().parallelStream()
                 .map(maintenance -> this.mapper.map(maintenance, StationMaintenanceResource.class))
@@ -182,8 +180,8 @@ public class StationMaintenanceService {
         return StationMaintenanceListResource.builder()
                 .maintenanceList(maintenanceList)
                 .pageInfo(PageInfo.builder()
-                        .page(page)
-                        .limit(limit)
+                        .page(pageable.getPageNumber())
+                        .limit(pageable.getPageSize())
                         .totalItems(response.getTotalElements())
                         .totalPages(response.getTotalPages())
                         .itemsFound(response.getNumberOfElements())

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -621,8 +622,8 @@ class StationMaintenanceServiceTest {
                         OffsetDateTime.now(),
                         OffsetDateTime.now(),
                         OffsetDateTime.now(),
-                        10,
-                        0));
+                        PageRequest.of(0, 10)
+                ));
 
         assertNotNull(result);
         assertEquals(list.size(), result.getMaintenanceList().size());
