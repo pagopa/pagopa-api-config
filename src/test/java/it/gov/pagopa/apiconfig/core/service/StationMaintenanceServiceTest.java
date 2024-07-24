@@ -4,12 +4,14 @@ import it.gov.pagopa.apiconfig.core.config.MappingsConfiguration;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.MaintenanceHoursSummaryResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
 import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenance;
+import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryId;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.StationMaintenanceSummaryViewRepository;
@@ -613,7 +615,6 @@ class StationMaintenanceServiceTest {
                 any()
         )).thenReturn(new PageImpl<>(list));
 
-
         StationMaintenanceListResource result = assertDoesNotThrow(() ->
                 sut.getStationMaintenances(
                         BROKER_CODE,
@@ -628,6 +629,71 @@ class StationMaintenanceServiceTest {
         assertNotNull(result);
         assertEquals(list.size(), result.getMaintenanceList().size());
         assertEquals(list.size(), result.getPageInfo().getItemsFound());
+    }
+
+    @Test
+    void getBrokerMaintenancesSummarySuccessWithoutExtra() {
+        StationMaintenanceSummaryView summaryView = StationMaintenanceSummaryView.builder()
+                .usedHours(10.25)
+                .scheduledHours(2.50)
+                .build();
+        when(summaryViewRepository.findById(
+                StationMaintenanceSummaryId.builder()
+                        .brokerCode(BROKER_CODE)
+                        .maintenanceYear("2024")
+                        .build())
+        ).thenReturn(Optional.of(summaryView));
+
+        MaintenanceHoursSummaryResource result = assertDoesNotThrow(() ->
+                sut.getBrokerMaintenancesSummary(BROKER_CODE, "2024"));
+
+        assertNotNull(result);
+        assertEquals("10:15", result.getUsedHours());
+        assertEquals("2:30", result.getScheduledHours());
+        assertEquals("23:15", result.getRemainingHours());
+        assertEquals("0", result.getExtraHours());
+        assertEquals("36", result.getAnnualHoursLimit());
+    }
+
+    @Test
+    void getBrokerMaintenancesSummarySuccessWithExtra() {
+        StationMaintenanceSummaryView summaryView = StationMaintenanceSummaryView.builder()
+                .usedHours(35.25)
+                .scheduledHours(10.50)
+                .build();
+        when(summaryViewRepository.findById(
+                StationMaintenanceSummaryId.builder()
+                        .brokerCode(BROKER_CODE)
+                        .maintenanceYear("2024")
+                        .build())
+        ).thenReturn(Optional.of(summaryView));
+
+        MaintenanceHoursSummaryResource result = assertDoesNotThrow(() ->
+                sut.getBrokerMaintenancesSummary(BROKER_CODE, "2024"));
+
+        assertNotNull(result);
+        assertEquals("35:15", result.getUsedHours());
+        assertEquals("10:30", result.getScheduledHours());
+        assertEquals("0", result.getRemainingHours());
+        assertEquals("9:45", result.getExtraHours());
+        assertEquals("36", result.getAnnualHoursLimit());
+    }
+
+    @Test
+    void getBrokerMaintenancesSummaryFailNotFound() {
+        when(summaryViewRepository.findById(
+                StationMaintenanceSummaryId.builder()
+                        .brokerCode(BROKER_CODE)
+                        .maintenanceYear("2024")
+                        .build())
+        ).thenReturn(Optional.empty());
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.getBrokerMaintenancesSummary(BROKER_CODE, "2024"));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.title, e.getTitle());
     }
 
     private StationMaintenanceSummaryView buildSummaryViewNotExtra() {
