@@ -21,6 +21,8 @@ public class ConvertCreditorInstitutionStationPostToPaStazionePa
         .auxDigit(source.getAuxDigit())
         .pa(source.getFkPa())
         .fkStazione(source.getFkStazioni())
+        .aca(source.getAca())
+        .standin(source.getStandIn())
         .build();
   }
 }

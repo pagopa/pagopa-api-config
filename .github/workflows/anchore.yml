@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
       - name: Build the Docker image
         run: |
@@ -43,14 +43,14 @@ jobs:
           DOCKER_BUILDKIT=1 docker build . --file ${{ env.DOCKERFILE }} --tag localbuild/testimage:latest --secret id=GH_TOKEN,src=./secrets
 
       - name: Run the Anchore scan action itself with GitHub Advanced Security code scanning integration enabled
-        uses: anchore/scan-action@v3
+        uses: anchore/scan-action@3343887d815d7b07465f6fdcd395bd66508d486a # v3
         with:
           image: "localbuild/testimage:latest"
           acs-report-enable: true
           fail-build: true
           severity-cutoff: "high"
       - name: Upload Anchore Scan Report
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@3e0e84636c6f5df46a2cb232ae1dd1384713150d # v2
         if: always()
         with:
           sarif_file: results.sarif

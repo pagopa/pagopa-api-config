@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -54,6 +55,14 @@ public class CreditorInstitutionStationEdit {
 
   @JsonProperty("broadcast")
   private Boolean broadcast;
+
+  @Nullable
+  @JsonProperty("aca")
+  private Boolean aca;
+
+  @Nullable
+  @JsonProperty("stand_in")
+  private Boolean standIn;
 
   @JsonIgnore private Pa fkPa;
 

@@ -2,9 +2,9 @@
   "openapi": "3.0.1",
   "info": {
     "title": "core",
-    "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
+    "description": "@project.description@",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.59.2-1-PPANTT-45-add-delete-maintenance-api"
+    "version": "0.59.8"
   },
   "servers": [
     {
@@ -1707,142 +1707,6 @@
           },
           "409": {
             "description": "Conflict",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Service unavailable",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKey": []
-          },
-          {
-            "Authorization": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Creditor Institutions"
-        ],
-        "summary": "Delete a station's maintenance",
-        "operationId": "deleteStationMaintenance",
-        "parameters": [
-          {
-            "name": "brokercode",
-            "in": "path",
-            "description": "Broker's tax code",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "maintenanceid",
-            "in": "path",
-            "description": "Maintenance's id",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemJson"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
@@ -18789,6 +18653,12 @@
           },
           "broadcast": {
             "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
+            "type": "boolean"
           }
         }
       },
@@ -18993,7 +18863,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validità token"
+            "example": " default millisecondi validitÃ  token"
           }
         }
       },
@@ -19559,7 +19429,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validità token"
+            "example": " default millisecondi validitÃ  token"
           },
           "config_category": {
             "type": "string",
@@ -19735,6 +19605,12 @@
             "type": "boolean"
           },
           "broadcast": {
+            "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
             "type": "boolean"
           }
         }
@@ -20212,6 +20088,12 @@
             "type": "boolean"
           },
           "broadcast": {
+            "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
             "type": "boolean"
           }
         }
