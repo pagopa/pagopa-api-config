@@ -2,9 +2,9 @@
   "openapi": "3.0.1",
   "info": {
     "title": "core",
-    "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
+    "description": "@project.description@",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.59.2"
+    "version": "0.59.7"
   },
   "servers": [
     {
@@ -18653,6 +18653,12 @@
           },
           "broadcast": {
             "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
+            "type": "boolean"
           }
         }
       },
@@ -18857,7 +18863,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validità token"
+            "example": " default millisecondi validitÃ  token"
           }
         }
       },
@@ -19423,7 +19429,7 @@
           },
           "config_description": {
             "type": "string",
-            "example": " default millisecondi validità token"
+            "example": " default millisecondi validitÃ  token"
           },
           "config_category": {
             "type": "string",
@@ -19599,6 +19605,12 @@
             "type": "boolean"
           },
           "broadcast": {
+            "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
             "type": "boolean"
           }
         }
@@ -20076,6 +20088,12 @@
             "type": "boolean"
           },
           "broadcast": {
+            "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
             "type": "boolean"
           }
         }
