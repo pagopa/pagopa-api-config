@@ -3,6 +3,7 @@ package it.gov.pagopa.apiconfig.core.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.apiconfig.core.model.PageInfo;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.MaintenanceHoursSummaryResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
@@ -86,6 +87,23 @@ class StationMaintenanceControllerTest {
                         .param("endDateTimeAfter", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
                         .param("limit", "10")
                         .param("page", "0")
+                ).andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getBrokerMaintenancesSummaryTest() throws Exception {
+        when(stationMaintenanceService.getBrokerMaintenancesSummary(anyString(), anyString()))
+                .thenReturn(MaintenanceHoursSummaryResource.builder()
+                        .usedHours("2")
+                        .scheduledHours("3")
+                        .remainingHours("31")
+                        .extraHours("0")
+                        .annualHoursLimit("36")
+                        .build());
+
+        mockMvc.perform(get("/brokers/{brokercode}/station-maintenances/summary", BROKER_CODE)
+                        .param("maintenanceYear", "2024")
                 ).andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }

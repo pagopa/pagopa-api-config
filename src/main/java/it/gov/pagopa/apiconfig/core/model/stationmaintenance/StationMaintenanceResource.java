@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
 /**
- * Model class the response for station's maintenance APIs
+ * Model class of the response for station's maintenance APIs
  */
 @Getter
 @Setter

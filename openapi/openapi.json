@@ -1201,7 +1201,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Created",
+            "description": "OK",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
@@ -1451,6 +1451,163 @@
         }
       ]
     },
+    "/brokers/{brokercode}/station-maintenances/summary": {
+      "get": {
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "summary": "Get the hours' summary of stations' maintenance for the specified broker",
+        "operationId": "getBrokerMaintenancesSummary",
+        "parameters": [
+          {
+            "name": "brokercode",
+            "in": "path",
+            "description": "Broker's tax code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maintenanceYear",
+            "in": "query",
+            "description": "Year of maintenance (yyyy)",
+            "required": true,
+            "schema": {
+              "maxLength": 4,
+              "minLength": 4,
+              "type": "string"
+            },
+            "example": 2024
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceHoursSummaryResource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "X-Request-Id",
+          "in": "header",
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
     "/brokers/{brokercode}/station-maintenances/{maintenanceid}": {
       "put": {
         "tags": [
@@ -1491,7 +1648,7 @@
         },
         "responses": {
           "200": {
-            "description": "Created",
+            "description": "OK",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
@@ -20488,6 +20645,38 @@
           },
           "page_info": {
             "$ref": "#/components/schemas/PageInfo"
+          }
+        }
+      },
+      "MaintenanceHoursSummaryResource": {
+        "required": [
+          "annual_hours_limit",
+          "extra_hours",
+          "remaining_hours",
+          "scheduled_hours",
+          "used_hours"
+        ],
+        "type": "object",
+        "properties": {
+          "used_hours": {
+            "type": "string",
+            "description": "Count of used maintenance's hours"
+          },
+          "scheduled_hours": {
+            "type": "string",
+            "description": "Count of scheduled maintenance's hours"
+          },
+          "remaining_hours": {
+            "type": "string",
+            "description": "Count of remaining maintenance's hours before annual limit"
+          },
+          "extra_hours": {
+            "type": "string",
+            "description": "Count of maintenance's hours that exceed annual limit"
+          },
+          "annual_hours_limit": {
+            "type": "string",
+            "description": "Annual limit of maintenance hours"
           }
         }
       }
