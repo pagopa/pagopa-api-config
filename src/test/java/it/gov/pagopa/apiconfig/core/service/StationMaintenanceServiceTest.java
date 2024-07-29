@@ -16,6 +16,7 @@ import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.StationMaintenanceSummaryViewRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -600,6 +601,26 @@ class StationMaintenanceServiceTest {
 
         verify(summaryViewRepository, never()).findById(any());
         verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void getStationMaintenanceSuccessWhenValidData() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().minusHours(1));
+        when(stationMaintenanceRepository.findByIdAndBrokerCode(anyLong(),any()))
+                .thenReturn(Optional.of(oldMaintenance));
+        StationMaintenanceResource result = assertDoesNotThrow(
+                () -> sut.getStationMaintenance("test", 0L));
+        assertNotNull(result);
+        assertEquals(result.getMaintenanceId(), oldMaintenance.getObjId());
+    }
+
+    @Test
+    void getStationMaintenanceExceptionWhenMissingData() {
+        when(stationMaintenanceRepository.findByIdAndBrokerCode(anyLong(),any()))
+                .thenReturn(Optional.empty());
+        Assert.assertThrows(AppException.class, () ->
+                sut.getStationMaintenance("test", 0L));
+
     }
 
     @Test
