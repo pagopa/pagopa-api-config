@@ -54,6 +54,8 @@ class PaStazionePaRepositoryTest {
     entity.setPa(ci);
     entity.setSegregazione(1L);
     entity.setProgressivo(1L);
+    entity.setAca(true);
+    entity.setStandin(true);
     paStazionePa = paStazionePaRepository.save(entity);
   }
 

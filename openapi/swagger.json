@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.59.2"
+    "version": "0.59.6"
   },
   "host": "localhost:8080",
   "basePath": "/",
@@ -15030,6 +15030,9 @@
     },
     "CreditorInstitutionStation": {
       "properties": {
+        "aca": {
+          "type": "boolean"
+        },
         "application_code": {
           "format": "int64",
           "minimum": 0,
@@ -15064,6 +15067,9 @@
           "minimum": 0,
           "type": "integer"
         },
+        "stand_in": {
+          "type": "boolean"
+        },
         "station_code": {
           "example": "1234567890100",
           "maxLength": 35,
@@ -15087,6 +15093,9 @@
     },
     "CreditorInstitutionStationEdit": {
       "properties": {
+        "aca": {
+          "type": "boolean"
+        },
         "application_code": {
           "format": "int64",
           "minimum": 0,
@@ -15115,6 +15124,9 @@
           "format": "int64",
           "minimum": 0,
           "type": "integer"
+        },
+        "stand_in": {
+          "type": "boolean"
         },
         "station_code": {
           "example": "1234567890100",
@@ -16103,6 +16115,9 @@
     },
     "StationCreditorInstitution": {
       "properties": {
+        "aca": {
+          "type": "boolean"
+        },
         "application_code": {
           "format": "int64",
           "type": "integer"
@@ -16137,6 +16152,9 @@
         "segregation_code": {
           "format": "int64",
           "type": "integer"
+        },
+        "stand_in": {
+          "type": "boolean"
         }
       },
       "required": [
