@@ -355,12 +355,16 @@ public class StationMaintenanceService {
             double oldScheduledHours,
             String maintenanceYear
     ) {
-        StationMaintenanceSummaryView maintenanceSummary = this.summaryViewRepository.findById(
+        Optional<StationMaintenanceSummaryView> maintenanceSummaryViewOptional = this.summaryViewRepository.findById(
                 StationMaintenanceSummaryId.builder()
                         .maintenanceYear(maintenanceYear)
                         .brokerCode(brokerCode)
                         .build()
-        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, maintenanceYear));
+        );
+        if (maintenanceSummaryViewOptional.isEmpty()) {
+            return false;
+        }
+        StationMaintenanceSummaryView maintenanceSummary = maintenanceSummaryViewOptional.get();
         double consumedHours = maintenanceSummary.getUsedHours() + maintenanceSummary.getScheduledHours();
         double newHoursToBeScheduled = computeDateDifferenceInHours(startDateTime, endDateTime);
 
@@ -430,4 +434,5 @@ public class StationMaintenanceService {
         }
         return String.valueOf(intValue);
     }
+
 }
