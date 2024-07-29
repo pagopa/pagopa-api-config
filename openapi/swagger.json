@@ -847,6 +847,160 @@
           "type": "string"
         }
       ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Broker's tax code",
+            "in": "path",
+            "name": "brokercode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Station's code",
+            "in": "query",
+            "name": "stationCode",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "format": "date-time",
+            "in": "query",
+            "name": "startDateTimeBefore",
+            "required": false,
+            "type": "string",
+            "x-example": "2024-04-01T10:00:00.000Z"
+          },
+          {
+            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "format": "date-time",
+            "in": "query",
+            "name": "startDateTimeAfter",
+            "required": false,
+            "type": "string",
+            "x-example": "2024-04-01T10:00:00.000Z"
+          },
+          {
+            "description": "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "format": "date-time",
+            "in": "query",
+            "name": "endDateTimeBefore",
+            "required": false,
+            "type": "string",
+            "x-example": "2024-04-01T13:00:00.000Z"
+          },
+          {
+            "description": "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "format": "date-time",
+            "in": "query",
+            "name": "endDateTimeAfter",
+            "required": false,
+            "type": "string",
+            "x-example": "2024-04-01T13:00:00.000Z"
+          },
+          {
+            "default": 50,
+            "description": "Number of items for page",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "default": 0,
+            "description": "Page number",
+            "format": "int32",
+            "in": "query",
+            "minimum": 0,
+            "name": "page",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/StationMaintenanceListResource"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "getStationMaintenances",
+        "summary": "Get a paginated list of station's maintenance for the specified broker"
+      },
       "post": {
         "consumes": [
           "application/json"
@@ -963,6 +1117,130 @@
         "summary": "Create a maintenance for the specified station"
       }
     },
+    "/brokers/{brokercode}/station-maintenances/summary": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Broker's tax code",
+            "in": "path",
+            "name": "brokercode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Year of maintenance (yyyy)",
+            "in": "query",
+            "maxLength": 4,
+            "minLength": 4,
+            "name": "maintenanceYear",
+            "required": true,
+            "type": "string",
+            "x-example": 2024
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/MaintenanceHoursSummaryResource"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "getBrokerMaintenancesSummary",
+        "summary": "Get the hours' summary of stations' maintenance for the specified broker"
+      }
+    },
     "/brokers/{brokercode}/station-maintenances/{maintenanceid}": {
       "parameters": [
         {
@@ -972,6 +1250,227 @@
           "type": "string"
         }
       ],
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Broker's tax code",
+            "in": "path",
+            "name": "brokercode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Maintenance's id",
+            "format": "int64",
+            "in": "path",
+            "name": "maintenanceid",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "deleteStationMaintenance",
+        "summary": "Delete a station's maintenance"
+      },
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Broker's tax code",
+            "in": "path",
+            "name": "brokercode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Maintenance's id",
+            "format": "int64",
+            "in": "path",
+            "name": "maintenanceid",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/StationMaintenanceResource"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "getStationMaintenance",
+        "summary": "Get a maintenance for the specified station, given its broker code and maintenance id"
+      },
       "put": {
         "consumes": [
           "application/json"
@@ -1006,7 +1505,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Created",
+            "description": "OK",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
@@ -14880,7 +15379,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T13:00:00Z",
+          "example": "2024-04-01T10:00:00Z",
           "format": "date-time",
           "type": "string"
         },
@@ -15531,6 +16030,38 @@
       "required": [
         "icas",
         "page_info"
+      ],
+      "type": "object"
+    },
+    "MaintenanceHoursSummaryResource": {
+      "properties": {
+        "annual_hours_limit": {
+          "description": "Annual limit of maintenance hours",
+          "type": "string"
+        },
+        "extra_hours": {
+          "description": "Count of maintenance's hours that exceed annual limit",
+          "type": "string"
+        },
+        "remaining_hours": {
+          "description": "Count of remaining maintenance's hours before annual limit",
+          "type": "string"
+        },
+        "scheduled_hours": {
+          "description": "Count of scheduled maintenance's hours",
+          "type": "string"
+        },
+        "used_hours": {
+          "description": "Count of used maintenance's hours",
+          "type": "string"
+        }
+      },
+      "required": [
+        "annual_hours_limit",
+        "extra_hours",
+        "remaining_hours",
+        "scheduled_hours",
+        "used_hours"
       ],
       "type": "object"
     },
@@ -16367,6 +16898,25 @@
       ],
       "type": "object"
     },
+    "StationMaintenanceListResource": {
+      "properties": {
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "station_maintenance_list": {
+          "description": "List of station's maintenance",
+          "items": {
+            "$ref": "#/definitions/StationMaintenanceResource"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "page_info",
+        "station_maintenance_list"
+      ],
+      "type": "object"
+    },
     "StationMaintenanceResource": {
       "properties": {
         "broker_code": {
@@ -16390,7 +16940,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T13:00:00Z",
+          "example": "2024-04-01T10:00:00Z",
           "format": "date-time",
           "type": "string"
         },
@@ -16441,7 +16991,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T13:00:00Z",
+          "example": "2024-04-01T10:00:00Z",
           "format": "date-time",
           "type": "string"
         }
