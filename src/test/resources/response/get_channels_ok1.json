@@ -3,7 +3,8 @@
     {
       "channel_code": "1234",
       "enabled": true,
-      "broker_description": "Regione Lazio"
+      "broker_description": "Regione Lazio",
+      "primitive_version": 1
     }
   ],
   "page_info": {

@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.59.2-1-PAGOPA-1732-flags-aca-standin-ciStation"
+    "version": "0.59.3"
   },
   "servers": [
     {
@@ -1039,6 +1039,161 @@
           },
           "404": {
             "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "X-Request-Id",
+          "in": "header",
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/brokers/{brokercode}/station-maintenances": {
+      "post": {
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "summary": "Create a maintenance for the specified station",
+        "operationId": "createStationMaintenance",
+        "parameters": [
+          {
+            "name": "brokercode",
+            "in": "path",
+            "description": "Broker's tax code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStationMaintenance"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationMaintenanceResource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemJson"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "headers": {
               "X-Request-Id": {
                 "description": "This header identifies the call",
@@ -18703,6 +18858,79 @@
           "config_key": {
             "type": "string",
             "example": "default_token_duration_validity_millis"
+          }
+        }
+      },
+      "CreateStationMaintenance": {
+        "required": [
+          "end_date_time",
+          "stand_in",
+          "start_date_time",
+          "station_code"
+        ],
+        "type": "object",
+        "properties": {
+          "start_date_time": {
+            "type": "string",
+            "description": "The start date time of the station maintenance",
+            "format": "date-time",
+            "example": "2024-04-01T13:00:00Z"
+          },
+          "end_date_time": {
+            "type": "string",
+            "description": "The end date time of the station maintenance",
+            "format": "date-time",
+            "example": "2024-04-01T13:00:00Z"
+          },
+          "stand_in": {
+            "type": "boolean",
+            "description": "StandIn flag"
+          },
+          "station_code": {
+            "type": "string",
+            "description": "Code of the station subject of the maintenance"
+          }
+        }
+      },
+      "StationMaintenanceResource": {
+        "required": [
+          "broker_code",
+          "end_date_time",
+          "maintenance_id",
+          "stand_in",
+          "start_date_time",
+          "station_code"
+        ],
+        "type": "object",
+        "properties": {
+          "maintenance_id": {
+            "type": "integer",
+            "description": "Maintenance's id",
+            "format": "int64"
+          },
+          "start_date_time": {
+            "type": "string",
+            "description": "The start date time of the station maintenance",
+            "format": "date-time",
+            "example": "2024-04-01T13:00:00Z"
+          },
+          "end_date_time": {
+            "type": "string",
+            "description": "The end date time of the station maintenance",
+            "format": "date-time",
+            "example": "2024-04-01T13:00:00Z"
+          },
+          "stand_in": {
+            "type": "boolean",
+            "description": "StandIn flag"
+          },
+          "station_code": {
+            "type": "string",
+            "description": "Code of the station subject of the maintenance"
+          },
+          "broker_code": {
+            "type": "string",
+            "description": "Code of the broker that owns the station"
           }
         }
       },
