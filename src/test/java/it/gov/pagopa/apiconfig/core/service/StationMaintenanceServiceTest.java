@@ -4,6 +4,7 @@ import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenance;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
@@ -22,8 +23,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -34,6 +41,7 @@ class StationMaintenanceServiceTest {
 
     private static final String BROKER_CODE = "brokerCode";
     private static final String STATION_CODE = "stationCode";
+    private static final Long MAINTENANCE_ID = 123L;
 
     @MockBean
     private ExtendedStationMaintenanceRepository stationMaintenanceRepository;
@@ -51,7 +59,7 @@ class StationMaintenanceServiceTest {
     private StationMaintenanceService sut;
 
     @Test
-    void createStationMaintenanceSuccessWithNoStandInOverride() {
+    void createStationMaintenanceSuccessWithoutStandInOverride() {
         when(stationMaintenanceRepository.findOverlappingMaintenance(anyString(), any(), any())).thenReturn(Collections.emptyList());
         when(summaryViewRepository.findById(any())).thenReturn(Optional.of(buildSummaryViewNotExtra()));
         when(stationRepository.findByIdStazione(STATION_CODE)).thenReturn(Optional.of(new Stazioni()));
@@ -71,6 +79,8 @@ class StationMaintenanceServiceTest {
         verify(stationMaintenanceRepository).save(stationMaintenanceCaptor.capture());
         StationMaintenance savedMaintenance = stationMaintenanceCaptor.getValue();
         assertEquals(createMaintenance.getStandIn(), savedMaintenance.getStandIn());
+        assertEquals(createMaintenance.getStartDateTime(), savedMaintenance.getStartDateTime());
+        assertEquals(createMaintenance.getEndDateTime(), savedMaintenance.getEndDateTime());
     }
 
     @Test
@@ -95,6 +105,8 @@ class StationMaintenanceServiceTest {
         StationMaintenance savedMaintenance = stationMaintenanceCaptor.getValue();
         assertNotEquals(createMaintenance.getStandIn(), savedMaintenance.getStandIn());
         assertTrue(savedMaintenance.getStandIn());
+        assertEquals(createMaintenance.getStartDateTime(), savedMaintenance.getStartDateTime());
+        assertEquals(createMaintenance.getEndDateTime(), savedMaintenance.getEndDateTime());
     }
 
     @Test
@@ -127,7 +139,7 @@ class StationMaintenanceServiceTest {
     @Test
     void createStationMaintenanceFailInvalidStartDate() {
         CreateStationMaintenance createMaintenance = buildCreateStationMaintenance(
-                OffsetDateTime.now(),
+                OffsetDateTime.now().withMinute(0).truncatedTo(ChronoUnit.MINUTES),
                 OffsetDateTime.now().plusDays(5).plusHours(2).withMinute(0).truncatedTo(ChronoUnit.MINUTES)
         );
 
@@ -240,6 +252,348 @@ class StationMaintenanceServiceTest {
         verify(stationMaintenanceRepository, never()).save(any());
     }
 
+    @Test
+    void updateStationMaintenanceSuccessScheduledMaintenanceWithoutStandInOverride() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+        when(stationMaintenanceRepository.findOverlappingMaintenance(anyString(), any(), any()))
+                .thenReturn(Collections.singletonList(oldMaintenance));
+        when(summaryViewRepository.findById(any())).thenReturn(Optional.of(buildSummaryViewNotExtra()));
+        when(stationMaintenanceRepository.save(any())).thenReturn(buildMaintenance());
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().plusDays(5).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().plusDays(5).plusHours(2).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .standIn(false)
+                .build();
+
+        StationMaintenanceResource result = assertDoesNotThrow(() ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(result);
+        assertEquals(BROKER_CODE, result.getBrokerCode());
+        assertEquals(STATION_CODE, result.getStationCode());
+
+        verify(stationMaintenanceRepository).save(stationMaintenanceCaptor.capture());
+        StationMaintenance savedMaintenance = stationMaintenanceCaptor.getValue();
+        assertEquals(updateStationMaintenance.getStandIn(), savedMaintenance.getStandIn());
+        assertEquals(updateStationMaintenance.getStartDateTime(), savedMaintenance.getStartDateTime());
+        assertEquals(updateStationMaintenance.getEndDateTime(), savedMaintenance.getEndDateTime());
+    }
+
+    @Test
+    void updateStationMaintenanceSuccessScheduledMaintenanceWithStandInOverride() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+        when(stationMaintenanceRepository.findOverlappingMaintenance(anyString(), any(), any()))
+                .thenReturn(Collections.singletonList(oldMaintenance));
+        when(summaryViewRepository.findById(any())).thenReturn(Optional.of(buildSummaryViewExtra()));
+        when(stationMaintenanceRepository.save(any())).thenReturn(buildMaintenance());
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().plusDays(5).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().plusDays(5).plusHours(2).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .standIn(false)
+                .build();
+
+        StationMaintenanceResource result = assertDoesNotThrow(() ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(result);
+        assertEquals(BROKER_CODE, result.getBrokerCode());
+        assertEquals(STATION_CODE, result.getStationCode());
+
+        verify(stationMaintenanceRepository).save(stationMaintenanceCaptor.capture());
+        StationMaintenance savedMaintenance = stationMaintenanceCaptor.getValue();
+        assertNotEquals(updateStationMaintenance.getStandIn(), savedMaintenance.getStandIn());
+        assertTrue(savedMaintenance.getStandIn());
+        assertEquals(updateStationMaintenance.getStartDateTime(), savedMaintenance.getStartDateTime());
+        assertEquals(updateStationMaintenance.getEndDateTime(), savedMaintenance.getEndDateTime());
+    }
+
+    @Test
+    void updateStationMaintenanceSuccessScheduledMaintenanceWithoutChangeStandIn() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+        when(stationMaintenanceRepository.findOverlappingMaintenance(anyString(), any(), any()))
+                .thenReturn(Collections.singletonList(oldMaintenance));
+        when(summaryViewRepository.findById(any())).thenReturn(Optional.of(buildSummaryViewExtra()));
+        when(stationMaintenanceRepository.save(any())).thenReturn(buildMaintenance());
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().plusDays(5).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().plusDays(5).plusHours(2).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        StationMaintenanceResource result = assertDoesNotThrow(() ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(result);
+        assertEquals(BROKER_CODE, result.getBrokerCode());
+        assertEquals(STATION_CODE, result.getStationCode());
+
+        verify(stationMaintenanceRepository).save(stationMaintenanceCaptor.capture());
+        StationMaintenance savedMaintenance = stationMaintenanceCaptor.getValue();
+        assertNotEquals(updateStationMaintenance.getStandIn(), savedMaintenance.getStandIn());
+        assertEquals(oldMaintenance.getStandIn(), savedMaintenance.getStandIn());
+        assertEquals(updateStationMaintenance.getStartDateTime(), savedMaintenance.getStartDateTime());
+        assertEquals(updateStationMaintenance.getEndDateTime(), savedMaintenance.getEndDateTime());
+    }
+
+    @Test
+    void updateStationMaintenanceSuccessInProgressMaintenance() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().minusHours(1));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+        when(stationMaintenanceRepository.findOverlappingMaintenance(anyString(), any(), any()))
+                .thenReturn(Collections.singletonList(oldMaintenance));
+        when(stationMaintenanceRepository.save(any())).thenReturn(buildMaintenance());
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().plusDays(5).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().plusHours(5).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .standIn(true)
+                .build();
+
+        StationMaintenanceResource result = assertDoesNotThrow(() ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(result);
+        assertEquals(BROKER_CODE, result.getBrokerCode());
+        assertEquals(STATION_CODE, result.getStationCode());
+
+        verify(stationMaintenanceRepository).save(stationMaintenanceCaptor.capture());
+        StationMaintenance savedMaintenance = stationMaintenanceCaptor.getValue();
+        assertNotEquals(updateStationMaintenance.getStandIn(), savedMaintenance.getStandIn());
+        assertNotEquals(updateStationMaintenance.getStartDateTime(), savedMaintenance.getStartDateTime());
+        assertEquals(updateStationMaintenance.getEndDateTime(), savedMaintenance.getEndDateTime());
+
+        verify(summaryViewRepository, never()).findById(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailScheduledMaintenanceInvalidStartDateNull() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder().build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID.title, e.getTitle());
+
+        verify(stationMaintenanceRepository, never()).findOverlappingMaintenance(anyString(), any(), any());
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailScheduledMaintenanceInvalidStartDate() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_START_DATE_TIME_NOT_VALID.title, e.getTitle());
+
+        verify(stationMaintenanceRepository, never()).findOverlappingMaintenance(anyString(), any(), any());
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailScheduledMaintenanceStartDateNotRoundedTo15Minutes() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().withMinute(12).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.title, e.getTitle());
+
+        verify(stationMaintenanceRepository, never()).findOverlappingMaintenance(anyString(), any(), any());
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailScheduledMaintenanceEndDateNotRoundedTo15Minutes() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().withMinute(34).truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.title, e.getTitle());
+
+        verify(stationMaintenanceRepository, never()).findOverlappingMaintenance(anyString(), any(), any());
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailScheduledMaintenanceEndDateBeforeStartDate() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().plusDays(5).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.title, e.getTitle());
+
+        verify(stationMaintenanceRepository, never()).findOverlappingMaintenance(anyString(), any(), any());
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailScheduledMaintenanceHasOverlappingMaintenance() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().plusDays(3));
+        StationMaintenance overlapping = buildMaintenance();
+        overlapping.setObjId(11111L);
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+        when(stationMaintenanceRepository.findOverlappingMaintenance(anyString(), any(), any()))
+                .thenReturn(Collections.singletonList(overlapping));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .startDateTime(OffsetDateTime.now().plusDays(5).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .endDateTime(OffsetDateTime.now().plusDays(6).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_HAS_OVERLAPPING.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_HAS_OVERLAPPING.title, e.getTitle());
+
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailInProgressMaintenanceEndDateNotRoundedTo15Minutes() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().minusHours(1));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .endDateTime(OffsetDateTime.now().withMinute(34).truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.title, e.getTitle());
+
+        verify(stationMaintenanceRepository, never()).findOverlappingMaintenance(anyString(), any(), any());
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailInProgressMaintenanceEndDateBeforeCurrentTimestamp() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().minusHours(1));
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .endDateTime(OffsetDateTime.now().minusHours(1).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_NOT_VALID.title, e.getTitle());
+
+        verify(stationMaintenanceRepository, never()).findOverlappingMaintenance(anyString(), any(), any());
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
+    @Test
+    void updateStationMaintenanceFailInProgressMaintenanceHasOverlappingMaintenance() {
+        StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().minusHours(1));
+        StationMaintenance overlapping = buildMaintenance();
+        overlapping.setObjId(11111L);
+
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(oldMaintenance));
+        when(stationMaintenanceRepository.findOverlappingMaintenance(anyString(), any(), any()))
+                .thenReturn(Collections.singletonList(overlapping));
+
+        UpdateStationMaintenance updateStationMaintenance = UpdateStationMaintenance.builder()
+                .endDateTime(OffsetDateTime.now().plusHours(1).withMinute(0).truncatedTo(ChronoUnit.MINUTES))
+                .build();
+
+        AppException e = assertThrows(AppException.class, () ->
+                sut.updateStationMaintenance(BROKER_CODE, MAINTENANCE_ID, updateStationMaintenance));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_HAS_OVERLAPPING.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_DATE_TIME_INTERVAL_HAS_OVERLAPPING.title, e.getTitle());
+
+        verify(summaryViewRepository, never()).findById(any());
+        verify(stationMaintenanceRepository, never()).save(any());
+    }
+
     private StationMaintenanceSummaryView buildSummaryViewNotExtra() {
         return StationMaintenanceSummaryView.builder()
                 .scheduledHours(10.0)
@@ -254,10 +608,20 @@ class StationMaintenanceServiceTest {
                 .build();
     }
 
+    private StationMaintenance buildMaintenanceParametrized(OffsetDateTime startDateTime) {
+        return StationMaintenance.builder()
+                .objId(MAINTENANCE_ID)
+                .station(Stazioni.builder().idStazione(STATION_CODE).build())
+                .startDateTime(startDateTime)
+                .endDateTime(startDateTime.plusHours(2))
+                .standIn(false)
+                .build();
+    }
+
     private StationMaintenance buildMaintenance() {
         return StationMaintenance.builder()
-                .objId(123L)
-                .station(new Stazioni())
+                .objId(MAINTENANCE_ID)
+                .station(Stazioni.builder().idStazione(STATION_CODE).build())
                 .startDateTime(OffsetDateTime.now())
                 .endDateTime(OffsetDateTime.now())
                 .standIn(false)
