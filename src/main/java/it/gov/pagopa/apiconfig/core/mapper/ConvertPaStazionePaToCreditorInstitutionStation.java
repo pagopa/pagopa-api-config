@@ -24,6 +24,8 @@ public class ConvertPaStazionePaToCreditorInstitutionStation
         .broadcast(source.getBroadcast())
         .mod4(source.getQuartoModello())
         .segregationCode(source.getSegregazione())
+        .aca(source.getAca())
+        .standIn(source.getStandin())
         .build();
   }
 }

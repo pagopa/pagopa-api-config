@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.59.4"
+    "version": "0.59.4-1-PAGOPA-1732-flags-aca-standin-ciStation"
   },
   "servers": [
     {
@@ -18305,6 +18305,12 @@
           },
           "broadcast": {
             "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
+            "type": "boolean"
           }
         }
       },
@@ -19251,6 +19257,12 @@
           },
           "broadcast": {
             "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
+            "type": "boolean"
           }
         }
       },
@@ -19727,6 +19739,12 @@
             "type": "boolean"
           },
           "broadcast": {
+            "type": "boolean"
+          },
+          "aca": {
+            "type": "boolean"
+          },
+          "stand_in": {
             "type": "boolean"
           }
         }
