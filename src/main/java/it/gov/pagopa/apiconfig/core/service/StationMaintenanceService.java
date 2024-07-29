@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Validated
@@ -232,6 +233,18 @@ public class StationMaintenanceService {
                 .build();
     }
 
+    /**
+     * Delete the maintenance with the provided id
+     *
+     * @param brokerCode    broker's tax code
+     * @param maintenanceId maintenance's id
+     */
+    public void deleteStationMaintenance(String brokerCode, Long maintenanceId) {
+        StationMaintenance stationMaintenance = this.stationMaintenanceRepository.findById(maintenanceId)
+                .orElseThrow(() -> new AppException(AppError.MAINTENANCE_NOT_FOUND, maintenanceId));
+        this.stationMaintenanceRepository.delete(stationMaintenance);
+    }
+
     private StationMaintenance updateScheduledStationMaintenance(
             String brokerCode,
             OffsetDateTime now,
@@ -342,12 +355,16 @@ public class StationMaintenanceService {
             double oldScheduledHours,
             String maintenanceYear
     ) {
-        StationMaintenanceSummaryView maintenanceSummary = this.summaryViewRepository.findById(
+        Optional<StationMaintenanceSummaryView> maintenanceSummaryViewOptional = this.summaryViewRepository.findById(
                 StationMaintenanceSummaryId.builder()
                         .maintenanceYear(maintenanceYear)
                         .brokerCode(brokerCode)
                         .build()
-        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, maintenanceYear));
+        );
+        if (maintenanceSummaryViewOptional.isEmpty()) {
+            return false;
+        }
+        StationMaintenanceSummaryView maintenanceSummary = maintenanceSummaryViewOptional.get();
         double consumedHours = maintenanceSummary.getUsedHours() + maintenanceSummary.getScheduledHours();
         double newHoursToBeScheduled = computeDateDifferenceInHours(startDateTime, endDateTime);
 

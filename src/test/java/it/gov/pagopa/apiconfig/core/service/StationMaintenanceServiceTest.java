@@ -696,6 +696,26 @@ class StationMaintenanceServiceTest {
         assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.title, e.getTitle());
     }
 
+    @Test
+    void deleteStationMaintenanceSuccess() {
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.of(buildMaintenance()));
+
+        assertDoesNotThrow(() -> sut.deleteStationMaintenance(BROKER_CODE, MAINTENANCE_ID));
+    }
+
+    @Test
+    void deleteStationMaintenanceFail() {
+        when(stationMaintenanceRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        AppException e = assertThrows(AppException.class, () -> sut.deleteStationMaintenance(BROKER_CODE, MAINTENANCE_ID));
+
+        assertNotNull(e);
+        assertEquals(AppError.MAINTENANCE_NOT_FOUND.httpStatus, e.getHttpStatus());
+        assertEquals(AppError.MAINTENANCE_NOT_FOUND.title, e.getTitle());
+    }
+
     private StationMaintenanceSummaryView buildSummaryViewNotExtra() {
         return StationMaintenanceSummaryView.builder()
                 .scheduledHours(10.0)
