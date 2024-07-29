@@ -1,11 +1,14 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import it.gov.pagopa.apiconfig.core.config.MappingsConfiguration;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenance;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
@@ -17,10 +20,13 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -36,7 +42,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = StationMaintenanceService.class)
+@SpringBootTest(classes = {StationMaintenanceService.class, MappingsConfiguration.class})
 class StationMaintenanceServiceTest {
 
     private static final String BROKER_CODE = "brokerCode";
@@ -594,6 +600,36 @@ class StationMaintenanceServiceTest {
         verify(stationMaintenanceRepository, never()).save(any());
     }
 
+    @Test
+    void getStationMaintenancesSuccess() {
+        List<StationMaintenance> list = Collections.singletonList(buildMaintenance());
+        when(stationMaintenanceRepository.findAllByFilters(
+                anyString(),
+                anyString(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+        )).thenReturn(new PageImpl<>(list));
+
+
+        StationMaintenanceListResource result = assertDoesNotThrow(() ->
+                sut.getStationMaintenances(
+                        BROKER_CODE,
+                        STATION_CODE,
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        PageRequest.of(0, 10)
+                ));
+
+        assertNotNull(result);
+        assertEquals(list.size(), result.getMaintenanceList().size());
+        assertEquals(list.size(), result.getPageInfo().getItemsFound());
+    }
+
     private StationMaintenanceSummaryView buildSummaryViewNotExtra() {
         return StationMaintenanceSummaryView.builder()
                 .scheduledHours(10.0)
@@ -611,7 +647,12 @@ class StationMaintenanceServiceTest {
     private StationMaintenance buildMaintenanceParametrized(OffsetDateTime startDateTime) {
         return StationMaintenance.builder()
                 .objId(MAINTENANCE_ID)
-                .station(Stazioni.builder().idStazione(STATION_CODE).build())
+                .station(Stazioni.builder()
+                        .idStazione(STATION_CODE)
+                        .intermediarioPa(IntermediariPa.builder()
+                                .idIntermediarioPa(BROKER_CODE)
+                                .build())
+                        .build())
                 .startDateTime(startDateTime)
                 .endDateTime(startDateTime.plusHours(2))
                 .standIn(false)
@@ -621,7 +662,12 @@ class StationMaintenanceServiceTest {
     private StationMaintenance buildMaintenance() {
         return StationMaintenance.builder()
                 .objId(MAINTENANCE_ID)
-                .station(Stazioni.builder().idStazione(STATION_CODE).build())
+                .station(Stazioni.builder()
+                        .idStazione(STATION_CODE)
+                        .intermediarioPa(IntermediariPa.builder()
+                                .idIntermediarioPa(BROKER_CODE)
+                                .build())
+                        .build())
                 .startDateTime(OffsetDateTime.now())
                 .endDateTime(OffsetDateTime.now())
                 .standIn(false)

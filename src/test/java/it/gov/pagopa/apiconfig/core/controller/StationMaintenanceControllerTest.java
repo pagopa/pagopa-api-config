@@ -1,7 +1,9 @@
 package it.gov.pagopa.apiconfig.core.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.apiconfig.core.model.PageInfo;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.service.StationMaintenanceService;
@@ -14,11 +16,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -64,6 +70,26 @@ class StationMaintenanceControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
+    @Test
+    void getStationMaintenancesTest() throws Exception {
+        when(stationMaintenanceService.getStationMaintenances(anyString(), anyString(), any(), any(), any(), any(), any()))
+                .thenReturn(StationMaintenanceListResource.builder()
+                        .maintenanceList(Collections.singletonList(buildMaintenanceResource()))
+                        .pageInfo(buildPageInfo())
+                        .build());
+
+        mockMvc.perform(get("/brokers/{brokercode}/station-maintenances", BROKER_CODE)
+                        .param("stationCode", STATION_CODE)
+                        .param("startDateTimeBefore", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("startDateTimeAfter", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("endDateTimeBefore", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("endDateTimeAfter", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("limit", "10")
+                        .param("page", "0")
+                ).andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
     private StationMaintenanceResource buildMaintenanceResource() {
         return StationMaintenanceResource.builder()
                 .maintenanceId(123L)
@@ -89,6 +115,16 @@ class StationMaintenanceControllerTest {
                 .startDateTime(OffsetDateTime.now())
                 .endDateTime(OffsetDateTime.now())
                 .standIn(true)
+                .build();
+    }
+
+    private PageInfo buildPageInfo() {
+        return PageInfo.builder()
+                .totalPages(1)
+                .page(0)
+                .limit(10)
+                .totalItems(1L)
+                .itemsFound(1)
                 .build();
     }
 }
