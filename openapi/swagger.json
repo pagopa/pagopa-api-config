@@ -14767,7 +14767,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_key": {
@@ -14789,7 +14789,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_value": {
