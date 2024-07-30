@@ -606,7 +606,7 @@ class StationMaintenanceServiceTest {
     @Test
     void getStationMaintenanceSuccessWhenValidData() {
         StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().minusHours(1));
-        when(stationMaintenanceRepository.findByIdAndBrokerCode(anyLong(),any()))
+        when(stationMaintenanceRepository.findById(anyLong()))
                 .thenReturn(Optional.of(oldMaintenance));
         StationMaintenanceResource result = assertDoesNotThrow(
                 () -> sut.getStationMaintenance("test", 0L));
@@ -616,11 +616,9 @@ class StationMaintenanceServiceTest {
 
     @Test
     void getStationMaintenanceExceptionWhenMissingData() {
-        when(stationMaintenanceRepository.findByIdAndBrokerCode(anyLong(),any()))
-                .thenReturn(Optional.empty());
+        when(stationMaintenanceRepository.findById(anyLong())).thenReturn(Optional.empty());
         Assert.assertThrows(AppException.class, () ->
                 sut.getStationMaintenance("test", 0L));
-
     }
 
     @Test
@@ -709,12 +707,15 @@ class StationMaintenanceServiceTest {
                         .build())
         ).thenReturn(Optional.empty());
 
-        AppException e = assertThrows(AppException.class, () ->
+        MaintenanceHoursSummaryResource result = assertDoesNotThrow(() ->
                 sut.getBrokerMaintenancesSummary(BROKER_CODE, "2024"));
 
-        assertNotNull(e);
-        assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.httpStatus, e.getHttpStatus());
-        assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.title, e.getTitle());
+        assertNotNull(result);
+        assertEquals("0", result.getUsedHours());
+        assertEquals("0", result.getScheduledHours());
+        assertEquals("36", result.getRemainingHours());
+        assertEquals("0", result.getExtraHours());
+        assertEquals("36", result.getAnnualHoursLimit());
     }
 
     @Test
