@@ -212,7 +212,7 @@ public class StationMaintenanceService {
                         .maintenanceYear(maintenanceYear)
                         .brokerCode(brokerCode)
                         .build()
-        ).orElseThrow(() -> new AppException(AppError.MAINTENANCE_SUMMARY_NOT_FOUND, brokerCode, maintenanceYear));
+        ).orElse(buildEmptySummary());
 
         Double usedHours = maintenanceSummary.getUsedHours();
         Double scheduledHours = maintenanceSummary.getScheduledHours();
@@ -231,6 +231,32 @@ public class StationMaintenanceService {
                 .extraHours(transformHoursToStringFormat(extraHours))
                 .annualHoursLimit(transformHoursToStringFormat(annualHoursLimit))
                 .build();
+    }
+
+    /**
+     * Recovers a station maintenance, given its brokerCode and maintenanceId.
+     * If the provided brokerCode doesn't match the one related to the persisted one for the given maintenance,
+     * it will throw the maintenance not found exception
+     *
+     * @param brokerCode    brokerCode to be used as filter in the maintenance recovery
+     * @param maintenanceId station maintenance id to be used for the detail recovery
+     * @return station maintenance data, provided in an instance of StationMaintenanceResource
+     * @throws AppException thrown when a maintenance, given the input data, has not been found
+     */
+    public StationMaintenanceResource getStationMaintenance(String brokerCode, Long maintenanceId) {
+        StationMaintenance stationMaintenance = this.stationMaintenanceRepository.findByIdAndBrokerCode(
+                        maintenanceId, brokerCode)
+                .orElseThrow(() -> new AppException(AppError.MAINTENANCE_NOT_FOUND, maintenanceId));
+
+        return StationMaintenanceResource.builder()
+                .maintenanceId(stationMaintenance.getObjId())
+                .brokerCode(brokerCode)
+                .startDateTime(stationMaintenance.getStartDateTime())
+                .endDateTime(stationMaintenance.getEndDateTime())
+                .standIn(stationMaintenance.getStandIn())
+                .stationCode(stationMaintenance.getStation().getIdStazione())
+                .build();
+
     }
 
     /**
@@ -389,32 +415,6 @@ public class StationMaintenanceService {
         return dateTime.getMinute() % 15 != 0;
     }
 
-    /**
-     * Recovers a station maintenance, given its brokerCode and maintenanceId.
-     * If the the provided brokerCode doesnt match the one related to the persisted one for the given maintenance,
-     * it will throw the maintenance not found exception
-     * @param brokerCode brokerCode to be used as filter in the maintenance recovery
-     * @param maintenanceId station maintentance id to be used for the detail recovery
-     * @return station maintenance data, provided in an instance of StationMaintenanceResource
-     * @throws AppException thrown when a maintenance, given the input data, has not been found
-     */
-    public StationMaintenanceResource getStationMaintenance(String brokerCode, Long maintenanceId) {
-        StationMaintenance stationMaintenance = this.stationMaintenanceRepository.findByIdAndBrokerCode(
-                maintenanceId, brokerCode)
-                .orElseThrow(() -> new AppException(AppError.MAINTENANCE_NOT_FOUND, maintenanceId));
-
-        return StationMaintenanceResource.builder()
-                .maintenanceId(stationMaintenance.getObjId())
-                .brokerCode(brokerCode)
-                .startDateTime(stationMaintenance.getStartDateTime())
-                .endDateTime(stationMaintenance.getEndDateTime())
-                .standIn(stationMaintenance.getStandIn())
-                .stationCode(stationMaintenance.getStation().getIdStazione())
-                .build();
-
-    }
-
-
     private String transformHoursToStringFormat(Double hours) {
         if (hours == 0) {
             return "0";
@@ -435,4 +435,10 @@ public class StationMaintenanceService {
         return String.valueOf(intValue);
     }
 
+    private StationMaintenanceSummaryView buildEmptySummary() {
+        return StationMaintenanceSummaryView.builder()
+                .usedHours(0.0)
+                .scheduledHours(0.0)
+                .build();
+    }
 }

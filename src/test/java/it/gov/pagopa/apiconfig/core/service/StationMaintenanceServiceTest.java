@@ -709,12 +709,15 @@ class StationMaintenanceServiceTest {
                         .build())
         ).thenReturn(Optional.empty());
 
-        AppException e = assertThrows(AppException.class, () ->
+        MaintenanceHoursSummaryResource result = assertDoesNotThrow(() ->
                 sut.getBrokerMaintenancesSummary(BROKER_CODE, "2024"));
 
-        assertNotNull(e);
-        assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.httpStatus, e.getHttpStatus());
-        assertEquals(AppError.MAINTENANCE_SUMMARY_NOT_FOUND.title, e.getTitle());
+        assertNotNull(result);
+        assertEquals("0", result.getUsedHours());
+        assertEquals("0", result.getScheduledHours());
+        assertEquals("36", result.getRemainingHours());
+        assertEquals("0", result.getExtraHours());
+        assertEquals("36", result.getAnnualHoursLimit());
     }
 
     @Test
