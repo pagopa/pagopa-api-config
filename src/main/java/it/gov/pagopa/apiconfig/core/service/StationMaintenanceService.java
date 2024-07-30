@@ -244,19 +244,10 @@ public class StationMaintenanceService {
      * @throws AppException thrown when a maintenance, given the input data, has not been found
      */
     public StationMaintenanceResource getStationMaintenance(String brokerCode, Long maintenanceId) {
-        StationMaintenance stationMaintenance = this.stationMaintenanceRepository.findByIdAndBrokerCode(
-                        maintenanceId, brokerCode)
+        StationMaintenance stationMaintenance = this.stationMaintenanceRepository.findById(maintenanceId)
                 .orElseThrow(() -> new AppException(AppError.MAINTENANCE_NOT_FOUND, maintenanceId));
 
-        return StationMaintenanceResource.builder()
-                .maintenanceId(stationMaintenance.getObjId())
-                .brokerCode(brokerCode)
-                .startDateTime(stationMaintenance.getStartDateTime())
-                .endDateTime(stationMaintenance.getEndDateTime())
-                .standIn(stationMaintenance.getStandIn())
-                .stationCode(stationMaintenance.getStation().getIdStazione())
-                .build();
-
+        return this.mapper.map(stationMaintenance, StationMaintenanceResource.class);
     }
 
     /**

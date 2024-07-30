@@ -606,7 +606,7 @@ class StationMaintenanceServiceTest {
     @Test
     void getStationMaintenanceSuccessWhenValidData() {
         StationMaintenance oldMaintenance = buildMaintenanceParametrized(OffsetDateTime.now().minusHours(1));
-        when(stationMaintenanceRepository.findByIdAndBrokerCode(anyLong(),any()))
+        when(stationMaintenanceRepository.findById(anyLong()))
                 .thenReturn(Optional.of(oldMaintenance));
         StationMaintenanceResource result = assertDoesNotThrow(
                 () -> sut.getStationMaintenance("test", 0L));
@@ -616,11 +616,9 @@ class StationMaintenanceServiceTest {
 
     @Test
     void getStationMaintenanceExceptionWhenMissingData() {
-        when(stationMaintenanceRepository.findByIdAndBrokerCode(anyLong(),any()))
-                .thenReturn(Optional.empty());
+        when(stationMaintenanceRepository.findById(anyLong())).thenReturn(Optional.empty());
         Assert.assertThrows(AppException.class, () ->
                 sut.getStationMaintenance("test", 0L));
-
     }
 
     @Test
