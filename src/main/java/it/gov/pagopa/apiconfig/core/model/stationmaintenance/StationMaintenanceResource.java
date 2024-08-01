@@ -33,10 +33,10 @@ public class StationMaintenanceResource {
 
     @JsonProperty("start_date_time")
     @NotNull
-    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+    @JsonFormat(pattern = Constants.DateTimeFormat.ZONED_DATE_TIME_FORMAT)
     @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(
-            example = "2024-04-01T10:00:00.000Z",
+            example = "2024-04-01T10:00:00.000+02:00",
             required = true,
             description = "The start date time of the station maintenance")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -44,10 +44,10 @@ public class StationMaintenanceResource {
 
     @JsonProperty("end_date_time")
     @NotNull
-    @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+    @JsonFormat(pattern = Constants.DateTimeFormat.ZONED_DATE_TIME_FORMAT)
     @JsonSerialize(using = OffsetDateTimeSerializer.class)
     @Schema(
-            example = "2024-04-01T13:00:00.000Z",
+            example = "2024-04-01T13:00:00.000+02:00",
             required = true,
             description = "The end date time of the station maintenance")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

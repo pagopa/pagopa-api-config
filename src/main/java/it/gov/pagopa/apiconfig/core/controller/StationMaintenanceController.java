@@ -70,13 +70,13 @@ public class StationMaintenanceController {
     public ResponseEntity<StationMaintenanceListResource> getStationMaintenances(
             @Parameter(description = "Broker's tax code") @PathVariable("brokercode") String brokerCode,
             @Parameter(description = "Station's code") @RequestParam(required = false) String stationCode,
-            @Parameter(description = "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')", example = "2024-04-01T10:00:00.000Z")
+            @Parameter(description = "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)", example = "2024-04-01T10:00:00.000+02:00")
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDateTimeBefore,
-            @Parameter(description = "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')", example = "2024-04-01T10:00:00.000Z")
+            @Parameter(description = "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)", example = "2024-04-01T10:00:00.000+02:00")
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDateTimeAfter,
-            @Parameter(description = "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')", example = "2024-04-01T13:00:00.000Z")
+            @Parameter(description = "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)", example = "2024-04-01T13:00:00.000+02:00")
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDateTimeBefore,
-            @Parameter(description = "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')", example = "2024-04-01T13:00:00.000Z")
+            @Parameter(description = "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)", example = "2024-04-01T13:00:00.000+02:00")
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDateTimeAfter,
             @Parameter(description = "Number of items for page") @RequestParam(required = false, defaultValue = "50") @Positive Integer limit,
             @Parameter(description = "Page number") @RequestParam(required = false, defaultValue = "0") @Min(0) @PositiveOrZero Integer page
