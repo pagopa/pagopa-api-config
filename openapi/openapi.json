@@ -1134,46 +1134,46 @@
           {
             "name": "startDateTimeBefore",
             "in": "query",
-            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
             "required": false,
             "schema": {
               "type": "string",
               "format": "date-time"
             },
-            "example": "2024-04-01T10:00:00.000Z"
+            "example": "2024-04-01T10:00:00.000+02:00"
           },
           {
             "name": "startDateTimeAfter",
             "in": "query",
-            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
             "required": false,
             "schema": {
               "type": "string",
               "format": "date-time"
             },
-            "example": "2024-04-01T10:00:00.000Z"
+            "example": "2024-04-01T10:00:00.000+02:00"
           },
           {
             "name": "endDateTimeBefore",
             "in": "query",
-            "description": "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "description": "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
             "required": false,
             "schema": {
               "type": "string",
               "format": "date-time"
             },
-            "example": "2024-04-01T13:00:00.000Z"
+            "example": "2024-04-01T13:00:00.000+02:00"
           },
           {
             "name": "endDateTimeAfter",
             "in": "query",
-            "description": "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "description": "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
             "required": false,
             "schema": {
               "type": "string",
               "format": "date-time"
             },
-            "example": "2024-04-01T13:00:00.000Z"
+            "example": "2024-04-01T13:00:00.000+02:00"
           },
           {
             "name": "limit",
@@ -19443,13 +19443,13 @@
             "type": "string",
             "description": "The start date time of the station maintenance",
             "format": "date-time",
-            "example": "2024-04-01T10:00:00Z"
+            "example": "2024-04-01T10:00:00+02:00"
           },
           "end_date_time": {
             "type": "string",
             "description": "The end date time of the station maintenance",
             "format": "date-time",
-            "example": "2024-04-01T13:00:00Z"
+            "example": "2024-04-01T13:00:00+02:00"
           },
           "stand_in": {
             "type": "boolean",
@@ -19477,13 +19477,13 @@
             "type": "string",
             "description": "The start date time of the station maintenance",
             "format": "date-time",
-            "example": "2024-04-01T10:00:00Z"
+            "example": "2024-04-01T10:00:00+02:00"
           },
           "end_date_time": {
             "type": "string",
             "description": "The end date time of the station maintenance",
             "format": "date-time",
-            "example": "2024-04-01T13:00:00Z"
+            "example": "2024-04-01T13:00:00+02:00"
           },
           "stand_in": {
             "type": "boolean",
@@ -19714,13 +19714,13 @@
             "type": "string",
             "description": "The start date time of the station maintenance",
             "format": "date-time",
-            "example": "2024-04-01T10:00:00Z"
+            "example": "2024-04-01T10:00:00+02:00"
           },
           "end_date_time": {
             "type": "string",
             "description": "The end date time of the station maintenance",
             "format": "date-time",
-            "example": "2024-04-01T13:00:00Z"
+            "example": "2024-04-01T13:00:00+02:00"
           },
           "stand_in": {
             "type": "boolean",
