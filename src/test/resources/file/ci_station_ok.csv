@@ -1,3 +1,3 @@
-cf,idstazione,ambiente,broadcast,auxdigit,codicesegregazione,applicationcode,datavalidita,operazione
-1110001,80007580279_01,COLL,N,3,47,,2022-03-21,A
-00168480242,1123,ESER,N,3,47,,2022-03-21,A
+cf,idstazione,ambiente,broadcast,auxdigit,codicesegregazione,applicationcode,datavalidita,operazione,aca,standIn
+1110001,80007580279_01,COLL,N,3,47,,2022-03-21,A,1,1
+00168480242,1123,ESER,N,3,47,,2022-03-21,A,1,1
