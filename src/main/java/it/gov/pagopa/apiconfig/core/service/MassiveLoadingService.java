@@ -177,22 +177,29 @@ public class MassiveLoadingService {
         Long applicationCode =
             item.getApplicationCode() != null ? Long.parseLong(item.getApplicationCode()) : null;
 
+        Boolean aca = item.getAca() == null || item.getAca().equals(1L);
+        Boolean standIn = item.getStandIn() == null || item.getStandIn().equals(1L);
+
         CreditorInstitutionStationEdit data =
-            CreditorInstitutionStationEdit.builder()
-                .stationCode(item.getStationId())
-                .auxDigit(item.getAuxDigit())
-                .applicationCode(applicationCode)
-                .segregationCode(segregationCode)
-                .broadcast(item.getBroadcast() == CreditorInstitutionStation.YesNo.S)
-                .mod4(false)
-                .build();
+          CreditorInstitutionStationEdit.builder()
+              .stationCode(item.getStationId())
+              .auxDigit(item.getAuxDigit())
+              .applicationCode(applicationCode)
+              .segregationCode(segregationCode)
+              .broadcast(item.getBroadcast() == CreditorInstitutionStation.YesNo.S)
+              .mod4(false)
+              .aca(aca)
+              .standIn(standIn)
+              .build();
         creditorInstitutionsService.createCreditorInstitutionStation(
             item.getCreditorInstitutionId(), data);
+
       } else if (item.getOperation().equals(CreditorInstitutionStation.Operation.C)) {
         creditorInstitutionsService.deleteCreditorInstitutionStation(
             item.getCreditorInstitutionId(), item.getStationId());
       }
     }
+
   }
 
   /**

@@ -39,6 +39,12 @@ public class CreditorInstitutionStation {
   @CsvBindByName(column = "operazione")
   private Operation operation;
 
+  @CsvBindByName(required = true, column = "aca")
+  private Long aca; // 0 if false, 1 if true
+
+  @CsvBindByName(required = true, column = "standIn")
+  private Long standIn; // 0 if false, 1 if true
+
   // ESER: prod, COLL: dev|uat
   public enum Env {
     ESER,
