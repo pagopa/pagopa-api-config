@@ -172,11 +172,4 @@ public class StationDetails extends Station {
   @JsonProperty("primitive_version")
   private Integer primitiveVersion;
 
-  @JsonProperty("create_date")
-  @Schema(description = "Station creation date")
-  @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
-  @JsonSerialize(using = OffsetDateTimeSerializer.class)
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private OffsetDateTime createDate;
-
 }
