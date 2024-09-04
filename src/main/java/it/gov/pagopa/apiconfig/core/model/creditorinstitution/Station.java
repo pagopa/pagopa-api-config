@@ -1,19 +1,27 @@
 package it.gov.pagopa.apiconfig.core.model.creditorinstitution;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import it.gov.pagopa.apiconfig.core.util.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.OffsetDateTime;
 
 /** Station */
 @Data
@@ -51,4 +59,12 @@ public class Station {
   @Schema(description = "Describe the station connection's type, true synchronous, false asynchronous")
   @JsonProperty("is_connection_sync")
   private Boolean isConnectionSync;
+
+  @JsonProperty("create_date")
+  @Schema(description = "Station creation date")
+  @JsonFormat(pattern = Constants.DateTimeFormat.DATE_TIME_FORMAT)
+  @JsonSerialize(using = OffsetDateTimeSerializer.class)
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime createDate;
+
 }

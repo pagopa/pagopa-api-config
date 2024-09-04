@@ -8,6 +8,7 @@ import org.modelmapper.spi.MappingContext;
 import javax.validation.Valid;
 
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.isConnectionSync;
+import static it.gov.pagopa.apiconfig.core.util.CommonUtil.toOffsetDateTime;
 
 public class ConvertStazioniToStation implements Converter<Stazioni, Station> {
 
@@ -20,6 +21,7 @@ public class ConvertStazioniToStation implements Converter<Stazioni, Station> {
                 .brokerDescription(source.getIntermediarioPa().getCodiceIntermediario())
                 .version(source.getVersione())
                 .isConnectionSync(isConnectionSync(source))
+                .createDate(toOffsetDateTime(source.getDataCreazione()))
                 .build();
     }
 }

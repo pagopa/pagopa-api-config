@@ -31,6 +31,8 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,6 +111,7 @@ public class StationsService {
         }
         brokerCodeToObjId(stationDetails);
         Stazioni stazioni = modelMapper.map(stationDetails, Stazioni.class);
+        stazioni.setDataCreazione(Timestamp.from(Instant.now()));
         stazioniRepository.save(stazioni);
         return stationDetails;
     }
