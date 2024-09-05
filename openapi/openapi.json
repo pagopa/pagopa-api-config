@@ -16206,7 +16206,7 @@
         }, {
           "name" : "connectionTypeFilter",
           "in" : "query",
-          "description" : "Connection type filter (NONE|SYNC|ASYNC)",
+          "description" : "Connection type filter (NONE | SYNC| ASYNC)",
           "required" : false,
           "schema" : {
             "type" : "string",

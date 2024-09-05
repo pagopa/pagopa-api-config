@@ -134,7 +134,7 @@ public class StationsController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime createDateAfter,
             @Parameter(description = "Used to retrieve all stations that where created before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)", example = "2024-04-01T13:00:00.000+02:00")
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime createDateBefore,
-            @Parameter(description = "Connection type filter (NONE|SYNC|ASYNC)")
+            @Parameter(description = "Connection type filter (NONE | SYNC| ASYNC)")
             @RequestParam(required = false, defaultValue = "NONE") StationConnectionTypeFilter connectionTypeFilter,
             @RequestParam(required = false, name = "ordering", defaultValue = "DESC")
             @Parameter(description = "Direction of ordering. Results are ordered by code")
