@@ -1,12 +1,9 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Station;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitutions;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Stations;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
 import it.gov.pagopa.apiconfig.core.specification.PaStazionePaSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
@@ -24,15 +21,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,6 +80,9 @@ public class StationsService {
             @Nullable String brokerCode,
             @Nullable String brokerDescription,
             @Nullable String creditorInstitutionCode,
+            @Nullable OffsetDateTime createDateAfter,
+            @Nullable OffsetDateTime createDateBefore,
+            @Nullable StationConnectionTypeFilter connectionTypeFilter,
             @Valid FilterAndOrder filterAndOrder) {
         Pageable pageable = PageRequest.of(pageNumber, limit);
         // convert code to FK
@@ -93,7 +96,10 @@ public class StationsService {
                         .orElse(null);
 
         Page<Stazioni> page =
-                queryStazioni(fkIntermediario, fkPa, brokerDescription, filterAndOrder, pageable);
+                queryStazioni(
+                        fkIntermediario, fkPa, brokerDescription,
+                        createDateAfter, createDateBefore,
+                        connectionTypeFilter, filterAndOrder, pageable);
         return Stations.builder()
                 .stationsList(getStationsList(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))
@@ -313,10 +319,13 @@ public class StationsService {
             Long fkIntermediario,
             Long fkPa,
             String brokerDescription,
+            OffsetDateTime createDateAfter,
+            OffsetDateTime createDateBefore,
+            StationConnectionTypeFilter connectionTypeFilter,
             FilterAndOrder filterAndOrder,
             Pageable pageable) {
         if (StringUtils.isEmpty(brokerDescription)) { // avoiding unnecessary table join
-            return queryStazioni(fkIntermediario, fkPa, filterAndOrder, pageable);
+            return queryStazioni(fkIntermediario, fkPa, createDateAfter, createDateBefore, connectionTypeFilter, filterAndOrder, pageable);
         } else {
             if (fkPa != null) {
                 return stazioniRepository.findAllByFilters(
@@ -324,10 +333,16 @@ public class StationsService {
                         fkPa,
                         filterAndOrder.getFilter().getCode(),
                         brokerDescription,
+                        createDateBefore,
+                        createDateAfter,
+                        Optional.ofNullable(connectionTypeFilter).orElse(StationConnectionTypeFilter.NONE).name(),
                         pageable);
             } else {
                 return stazioniRepository.findAllByFilters(
-                        fkIntermediario, filterAndOrder.getFilter().getCode(), brokerDescription, pageable);
+                        fkIntermediario, filterAndOrder.getFilter().getCode(),
+                        brokerDescription, createDateAfter, createDateBefore,
+                        Optional.ofNullable(connectionTypeFilter).orElse(StationConnectionTypeFilter.NONE).name(),
+                        pageable);
             }
         }
     }
@@ -340,13 +355,23 @@ public class StationsService {
      * @return the result page of the query
      */
     private Page<Stazioni> queryStazioni(
-            Long fkIntermediario, Long fkPa, FilterAndOrder filterAndOrder, Pageable pageable) {
+            Long fkIntermediario,
+            Long fkPa,
+            OffsetDateTime createDateAfter,
+            OffsetDateTime createDateBefore,
+            StationConnectionTypeFilter connectionTypeFilter,
+            FilterAndOrder filterAndOrder,
+            Pageable pageable) {
         if (fkPa != null) {
             return stazioniRepository.findAllByFilters(
-                    fkIntermediario, fkPa, filterAndOrder.getFilter().getCode(), pageable);
+                    fkIntermediario, fkPa, filterAndOrder.getFilter().getCode(), createDateBefore, createDateAfter,
+                    Optional.ofNullable(connectionTypeFilter).orElse(StationConnectionTypeFilter.NONE).name(),
+                    pageable);
         } else {
             return stazioniRepository.findAllByFilters(
-                    fkIntermediario, filterAndOrder.getFilter().getCode(), pageable);
+                    fkIntermediario, filterAndOrder.getFilter().getCode(), createDateBefore, createDateAfter,
+                    Optional.ofNullable(connectionTypeFilter).orElse(StationConnectionTypeFilter.NONE).name(),
+                    pageable);
         }
     }
 }

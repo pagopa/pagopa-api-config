@@ -16184,6 +16184,36 @@
             "type" : "string"
           }
         }, {
+          "name" : "createDateAfter",
+          "in" : "query",
+          "description" : "Used to retrieve all stations that where created after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "example" : "2024-04-01T10:00:00.000+02:00"
+        }, {
+          "name" : "createDateBefore",
+          "in" : "query",
+          "description" : "Used to retrieve all stations that where created before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "example" : "2024-04-01T13:00:00.000+02:00"
+        }, {
+          "name" : "connectionTypeFilter",
+          "in" : "query",
+          "description" : "Connection type filter (NONE|SYNC|ASYNC)",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "NONE",
+            "enum" : [ "NONE", "SYNC", "ASYNC" ]
+          }
+        }, {
           "name" : "ordering",
           "in" : "query",
           "description" : "Direction of ordering. Results are ordered by code",

@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitutions;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
-import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Stations;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.model.filterandorder.Order;
 import it.gov.pagopa.apiconfig.core.service.StationsService;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
@@ -21,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +38,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.time.OffsetDateTime;
 
 @RestController()
 @RequestMapping(path = "/stations")
@@ -131,6 +130,12 @@ public class StationsController {
             String creditorInstitutionCode,
             @RequestParam(required = false, name = "code") @Parameter(description = "Filter by code")
             String filterByCode,
+            @Parameter(description = "Used to retrieve all stations that where created after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)", example = "2024-04-01T10:00:00.000+02:00")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime createDateAfter,
+            @Parameter(description = "Used to retrieve all stations that where created before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)", example = "2024-04-01T13:00:00.000+02:00")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime createDateBefore,
+            @Parameter(description = "Connection type filter (NONE|SYNC|ASYNC)")
+            @RequestParam(required = false, defaultValue = "NONE") StationConnectionTypeFilter connectionTypeFilter,
             @RequestParam(required = false, name = "ordering", defaultValue = "DESC")
             @Parameter(description = "Direction of ordering. Results are ordered by code")
             Sort.Direction ordering) {
@@ -141,6 +146,9 @@ public class StationsController {
                         brokerCode,
                         brokerDescription,
                         creditorInstitutionCode,
+                        createDateAfter,
+                        createDateBefore,
+                        connectionTypeFilter,
                         CommonUtil.getFilterAndOrder(filterByCode, null, Order.Station.CODE, ordering)));
     }
 
