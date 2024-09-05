@@ -86,7 +86,9 @@ public class CommonUtil {
      * @return convert offsetDateTime to {@link Timestamp}
      */
     public static Timestamp toTimestamp(OffsetDateTime offsetDateTime) {
-        return Timestamp.from(offsetDateTime.toInstant());
+        return offsetDateTime != null ?
+            Timestamp.from(offsetDateTime.toInstant())
+            : null;
     }
 
     /**

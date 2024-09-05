@@ -2,6 +2,7 @@ package it.gov.pagopa.apiconfig.core.mapper;
 
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Protocol;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
+import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import javax.validation.Valid;
@@ -52,6 +53,7 @@ public class ConvertStationDetailsToStazioni implements Converter<StationDetails
         .rtEnabled(true)
         .invioRtIstantaneo(source.getRtInstantaneousDispatch())
         .versionePrimitive(source.getPrimitiveVersion())
+        .dataCreazione(CommonUtil.toTimestamp(source.getCreateDate()))
         .build();
   }
 

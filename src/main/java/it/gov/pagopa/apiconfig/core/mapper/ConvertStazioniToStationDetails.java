@@ -10,6 +10,7 @@ import org.modelmapper.spi.MappingContext;
 import javax.validation.Valid;
 
 import static it.gov.pagopa.apiconfig.core.util.CommonUtil.isConnectionSync;
+import static it.gov.pagopa.apiconfig.core.util.CommonUtil.toOffsetDateTime;
 
 public class ConvertStazioniToStationDetails implements Converter<Stazioni, StationDetails> {
 
@@ -61,6 +62,7 @@ public class ConvertStazioniToStationDetails implements Converter<Stazioni, Stat
                 .rtInstantaneousDispatch(source.getInvioRtIstantaneo())
                 .primitiveVersion(source.getVersionePrimitive())
                 .isConnectionSync(isConnectionSync(source))
+                .createDate(toOffsetDateTime(source.getDataCreazione()))
                 .build();
     }
 }

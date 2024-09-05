@@ -3,6 +3,7 @@ package it.gov.pagopa.apiconfig.core.service;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationConnectionTypeFilter;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitutions;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Stations;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static it.gov.pagopa.apiconfig.TestUtil.*;
@@ -51,13 +53,13 @@ class StationsServiceTest {
   void getStations() throws IOException, JSONException {
     Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyLong(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), any(), any(), anyString(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyString(), anyString(), any(), any(), any(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), anyString(), any(), any(), any(), any(Pageable.class)))
         .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
@@ -65,7 +67,9 @@ class StationsServiceTest {
 
     Stations result =
         stationsService.getStations(
-            50, 0, "1234", null, "4321", getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+            50, 0, "1234", null, "4321",
+                null, null, StationConnectionTypeFilter.NONE,
+                getMockFilterAndOrder(Order.CreditorInstitution.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_stations_ok1.json");
     JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -75,13 +79,14 @@ class StationsServiceTest {
   void getStations_withBrokerDescription() throws IOException, JSONException {
     Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyLong(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), any(),
+            any(), any(),any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyString(), anyString(), any(), any(), any(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), anyString(), any(), any(), any(), any(Pageable.class)))
         .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.ofNullable(getMockPa()));
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
@@ -94,6 +99,8 @@ class StationsServiceTest {
             "1234",
             "some_description",
             "4321",
+            null, null,
+            StationConnectionTypeFilter.NONE,
             getMockFilterAndOrder(Order.CreditorInstitution.CODE));
     String actual = TestUtil.toJson(result);
     String expected = TestUtil.readJsonFromFile("response/get_stations_ok1.json");
@@ -104,13 +111,13 @@ class StationsServiceTest {
   void getStations_invalidCI() throws IOException, JSONException {
     Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyLong(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), any(), any(), any(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyString(), anyString(), any(), any(), any(), any(Pageable.class)))
         .thenReturn(page);
     when(stazioniRepository.findAllByFilters(
-            anyLong(), anyLong(), anyString(), anyString(), any(Pageable.class)))
+            anyLong(), anyLong(), anyString(), anyString(), any(), any(), any(), any(Pageable.class)))
         .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.empty());
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
@@ -125,6 +132,9 @@ class StationsServiceTest {
                 "1234",
                 "some_description",
                 "4321",
+                null,
+                null,
+                StationConnectionTypeFilter.NONE,
                 getMockFilterAndOrder(Order.CreditorInstitution.CODE)));
   }
 
@@ -132,7 +142,7 @@ class StationsServiceTest {
   void getStations_nullBrokerAndCI() throws IOException, JSONException {
     Page<Stazioni> page = TestUtil.mockPage(Lists.newArrayList(getMockStazioni()), 50, 0);
     when(stazioniRepository.findAllByFilters(
-            isNull(), anyString(), anyString(), any(Pageable.class)))
+            isNull(), anyString(), anyString(), any(), any(), any(), any(Pageable.class)))
         .thenReturn(page);
     when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.empty());
     when(intermediariPaRepository.findByIdIntermediarioPa(anyString()))
@@ -144,6 +154,9 @@ class StationsServiceTest {
             0,
             null,
             "some_description",
+            null,
+            null,
+            null,
             null,
             getMockFilterAndOrder(Order.CreditorInstitution.CODE));
     String actual = TestUtil.toJson(result);
@@ -324,4 +337,5 @@ class StationsServiceTest {
       fail();
     }
   }
+
 }
