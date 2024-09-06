@@ -204,6 +204,7 @@ public class TestUtil {
         .targetPortPof(443L)
         .targetPathPof("/")
         .versionePrimitive(1)
+        .flagStandin(false)
         .build();
   }
 
@@ -368,6 +369,7 @@ public class TestUtil {
         .threadNumber(2L)
         .rtInstantaneousDispatch(false)
         .primitiveVersion(1)
+        .flagStandin(false)
         .build();
   }
 
@@ -810,6 +812,7 @@ public class TestUtil {
         .agid(true)
         .flagPspCp(false)
         .primitiveVersion(1)
+        .flagStandin(false)
         .build();
   }
 

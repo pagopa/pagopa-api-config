@@ -163,4 +163,12 @@ public class StationDetails extends Station {
   @Schema(required = true, description = "Primitive number version")
   @JsonProperty("primitive_version")
   private Integer primitiveVersion;
+
+  @JsonProperty("flag_standin")
+  @Schema(
+          required = true,
+          description =
+                  "Represents the authorization to use the standin mode with this station")
+  @NotNull
+  private Boolean flagStandin;
 }

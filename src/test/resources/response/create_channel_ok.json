@@ -21,5 +21,6 @@
   "digital_stamp_brand": false,
   "agid": true,
   "flag_psp_cp": false,
-  "primitive_version": 1
+  "primitive_version": 1,
+  "flag_standin": false
 }
