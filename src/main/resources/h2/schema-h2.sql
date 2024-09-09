@@ -123,6 +123,8 @@ create table NODO4_CFG.PA_STAZIONE_PA
     QUARTO_MODELLO char not null,
     BROADCAST      char    not null default 'N',
     PAGAMENTO_SPONTANEO char    not null default 'N',
+    ACA            char not null default 'N',
+    STANDIN        char not null default 'N',
     constraint PK_PA_STAZIONE_PA
         primary key (OBJ_ID),
     constraint FK_PA_STAZIONE_PA_PA
@@ -336,6 +338,7 @@ create table NODO4_CFG.CANALI_NODO
     FLAG_PSP_CP           char                  default 'N',
     VERSIONE_PRIMITIVE    numeric(2)            default 1,
     FLAG_TRAVASO          char                  default 'N',
+    FLAG_STANDIN          char                  default 'N',
     constraint PK_CANALI_NODO
         primary key (OBJ_ID),
     constraint FK_CANALI_SERV_PLUGIN

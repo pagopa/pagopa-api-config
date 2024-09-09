@@ -45,11 +45,11 @@ INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORT
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP, INVIO_RT_ISTANTANEO,
-                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE)
+                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE, FLAG_STANDIN)
 VALUES (2, '80007580279_01', 'Y', 'NodoDeiPagamentiDellaPATest.sia.eu', 'password', 80, 'HTTP',
         'paygov.collaudo.regione.veneto.it', 'nodo-regionale-fesp/paaInviaRispostaPagamento.html', 443, null,
         'openspcoop/PD/RT6TPDREGVENETO', 'Y', 'openspcoop/PD/CCP6TPDREGVENETO', 2, 'HTTPS', 'HTTP', null, null, null,
-        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 1);
+        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 1, 'N');
 
 INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORTA, PROTOCOLLO,
                                 REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING, SERVIZIO, RT_ENABLED,
@@ -57,11 +57,11 @@ INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORT
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP, INVIO_RT_ISTANTANEO,
-                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE)
+                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE, FLAG_STANDIN)
 VALUES (3, '1123', 'Y', 'site.eu', 'password', 80, 'HTTP',
         'site.it', 'page.html', 443, null,
         'service/', 'Y', 'service/', 2, 'HTTPS', 'HTTP', null, null, null,
-        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 2);
+        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 2, 'N');
 
 INSERT INTO NODO4_CFG.PA_STAZIONE_PA (OBJ_ID, PROGRESSIVO, FK_PA, FK_STAZIONE, AUX_DIGIT, SEGREGAZIONE, QUARTO_MODELLO, BROADCAST)
 VALUES (430, 1, 190, 2, null, 1, 'N', 'N');
@@ -146,16 +146,16 @@ insert into NODO4_CFG.CANALI_NODO (OBJ_ID, REDIRECT_IP, REDIRECT_PATH, REDIRECT_
                                    MODELLO_PAGAMENTO, MULTI_PAYMENT, RAGIONE_SOCIALE, RPT_RT_COMPLIANT, WSAPI,
                                    REDIRECT_PROTOCOLLO, ID_SERV_PLUGIN, ID_CLUSTER, ID_FESP_INSTANCE, LENTO, RT_PUSH,
                                    AGID_CHANNEL, ON_US, CARRELLO_CARTE, RECOVERY, MARCA_BOLLO_DIGITALE, FLAG_IO,FLAG_PSP_CP,
-                                   VERSIONE_PRIMITIVE, FLAG_TRAVASO)
+                                   VERSIONE_PRIMITIVE, FLAG_TRAVASO, FLAG_STANDIN)
 values (1, null, null, null, null, 'ATTIVATO_PRESSO_PSP', 'N', null, 'N', null, 'HTTP', null, 'CL_1', null, 'N', 'Y',
-        'N', 'N', 'N', 'Y', 'N', 'N', 'N', 1, 'N');
+        'N', 'N', 'N', 'Y', 'N', 'N', 'N', 1, 'N', 'N');
 insert into NODO4_CFG.CANALI_NODO (OBJ_ID, REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING,
                                    MODELLO_PAGAMENTO, MULTI_PAYMENT, RAGIONE_SOCIALE, RPT_RT_COMPLIANT, WSAPI,
                                    REDIRECT_PROTOCOLLO, ID_SERV_PLUGIN, ID_CLUSTER, ID_FESP_INSTANCE, LENTO, RT_PUSH,
                                    AGID_CHANNEL, ON_US, CARRELLO_CARTE, RECOVERY, MARCA_BOLLO_DIGITALE, FLAG_IO, FLAG_PSP_CP,
-                                   VERSIONE_PRIMITIVE, FLAG_TRAVASO)
+                                   VERSIONE_PRIMITIVE, FLAG_TRAVASO, FLAG_STANDIN)
 values (2, null, null, null, null, 'MODELLO_PAGAMENTO', 'N', null, 'N', null, 'HTTP', null, 'CL_2', null, 'N', 'Y',
-        'N', 'N', 'N', 'Y', 'N', 'N', 'N', 1, 'N');
+        'N', 'N', 'N', 'Y', 'N', 'N', 'N', 1, 'N', 'N');
 
 
 
