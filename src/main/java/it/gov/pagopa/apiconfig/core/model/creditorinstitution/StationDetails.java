@@ -168,9 +168,9 @@ public class StationDetails extends Station {
     @JsonProperty("primitive_version")
     private Integer primitiveVersion;
 
-    @JsonProperty("verify_payment_option_enabled")
-    private Boolean verifyPaymentOptionEnabled = false;
+    @JsonProperty("is_payment_options_enabled")
+    private Boolean isPaymentOptionsEnabled = false;
 
-    @JsonProperty("verify_payment_option_endpoint")
-    private String verifyPaymentOptionEndpoint;
+    @JsonProperty("rest_endpoint")
+    private String restEndpoint;
 }

@@ -61,8 +61,8 @@ public class ConvertStazioniToStationDetails implements Converter<Stazioni, Stat
                 .rtInstantaneousDispatch(source.getInvioRtIstantaneo())
                 .primitiveVersion(source.getVersionePrimitive())
                 .isConnectionSync(isConnectionSync(source))
-                .verifyPaymentOptionEnabled(source.getVerifyPaymentOptionEnabled())
-                .verifyPaymentOptionEndpoint(source.getVerifyPaymentOptionEndpoint())
+                .isPaymentOptionsEnabled(source.getIsPaymentOptionsEnabled())
+                .restEndpoint(source.getRestEndpoint())
                 .build();
     }
 }

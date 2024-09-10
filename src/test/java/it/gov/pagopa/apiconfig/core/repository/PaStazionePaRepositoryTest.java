@@ -47,7 +47,7 @@ class PaStazionePaRepositoryTest {
     Stazioni stazioni = TestUtil.getMockStazioni();
     stazioni.setObjId(1L);
     stazioni.setIntermediarioPa(inter);
-    stazioni.setVerifyPaymentOptionEnabled(false);
+    stazioni.setIsPaymentOptionsEnabled(false);
     stazione = stazioniRepository.save(stazioni);
 
     PaStazionePa entity = TestUtil.getMockPaStazionePa();

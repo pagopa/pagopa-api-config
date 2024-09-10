@@ -53,8 +53,8 @@ public class ConvertStationDetailsToStazioni implements Converter<StationDetails
                 .rtEnabled(true)
                 .invioRtIstantaneo(source.getRtInstantaneousDispatch())
                 .versionePrimitive(source.getPrimitiveVersion())
-                .verifyPaymentOptionEnabled(source.getVerifyPaymentOptionEnabled())
-                .verifyPaymentOptionEndpoint(source.getVerifyPaymentOptionEndpoint())
+                .isPaymentOptionsEnabled(source.getIsPaymentOptionsEnabled())
+                .restEndpoint(source.getRestEndpoint())
                 .build();
     }
 
