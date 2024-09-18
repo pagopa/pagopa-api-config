@@ -18716,6 +18716,12 @@
             "type": "integer",
             "description": "Primitive number version",
             "format": "int32"
+          },
+          "is_payment_options_enabled": {
+            "type": "boolean"
+          },
+          "rest_endpoint": {
+            "type": "string"
           }
         }
       },
