@@ -28,7 +28,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.15"
+    tag: "0.59.15-1-PAGOPA-1622-sviluppo-api-config-gestione-flag-stand-in-per-wsdl"
     pullPolicy: Always
   livenessProbe:
     httpGet:
