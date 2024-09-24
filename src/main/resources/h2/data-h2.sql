@@ -45,11 +45,12 @@ INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORT
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP, INVIO_RT_ISTANTANEO,
-                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE, FLAG_STANDIN)
+                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF,
+                                VERSIONE_PRIMITIVE, FLAG_STANDIN, IS_PAYMENT_OPTIONS_ENABLED, REST_ENDPOINT)
 VALUES (2, '80007580279_01', 'Y', 'NodoDeiPagamentiDellaPATest.sia.eu', 'password', 80, 'HTTP',
         'paygov.collaudo.regione.veneto.it', 'nodo-regionale-fesp/paaInviaRispostaPagamento.html', 443, null,
         'openspcoop/PD/RT6TPDREGVENETO', 'Y', 'openspcoop/PD/CCP6TPDREGVENETO', 2, 'HTTPS', 'HTTP', null, null, null,
-        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 1, 'N');
+        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 1, 'N', false, 'aaaa');
 
 INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORTA, PROTOCOLLO,
                                 REDIRECT_IP, REDIRECT_PATH, REDIRECT_PORTA, REDIRECT_QUERY_STRING, SERVIZIO, RT_ENABLED,
@@ -57,11 +58,12 @@ INSERT INTO NODO4_CFG.STAZIONI (OBJ_ID, ID_STAZIONE, ENABLED, IP, PASSWORD, PORT
                                 PORTA_4MOD, SERVIZIO_4MOD, PROXY_ENABLED, PROXY_HOST, PROXY_PORT, PROXY_USERNAME,
                                 PROXY_PASSWORD, TIMEOUT, NUM_THREAD,
                                 TIMEOUT_A, TIMEOUT_B, TIMEOUT_C, FLAG_ONLINE, VERSIONE, SERVIZIO_NMP, INVIO_RT_ISTANTANEO,
-                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF, VERSIONE_PRIMITIVE, FLAG_STANDIN)
+                                TARGET_HOST, TARGET_PORT, TARGET_PATH, TARGET_HOST_POF, TARGET_PORT_POF, TARGET_PATH_POF,
+                                VERSIONE_PRIMITIVE, FLAG_STANDIN, IS_PAYMENT_OPTIONS_ENABLED, REST_ENDPOINT)
 VALUES (3, '1123', 'Y', 'site.eu', 'password', 80, 'HTTP',
         'site.it', 'page.html', 443, null,
         'service/', 'Y', 'service/', 2, 'HTTPS', 'HTTP', null, null, null,
-        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 2, 'N');
+        'Y', '10.101.1.95', 8080, null, null, 120, 2, 15, 30, 120, 'Y', 1, null, 'N', 'localhost', 443, '/', 'localhost', 443, '/', 2, 'N', false, 'bbbb');
 
 INSERT INTO NODO4_CFG.PA_STAZIONE_PA (OBJ_ID, PROGRESSIVO, FK_PA, FK_STAZIONE, AUX_DIGIT, SEGREGAZIONE, QUARTO_MODELLO, BROADCAST)
 VALUES (430, 1, 190, 2, null, 1, 'N', 'N');

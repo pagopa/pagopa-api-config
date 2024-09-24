@@ -104,6 +104,8 @@ create table NODO4_CFG.STAZIONI
     TARGET_PORT_POF           numeric,
     TARGET_PATH_POF           varchar(100),
     VERSIONE_PRIMITIVE    numeric(2)   default 1,
+    IS_PAYMENT_OPTIONS_ENABLED boolean NOT NULL,
+    REST_ENDPOINT              varchar(100),
     constraint PK_STAZIONI
         primary key (OBJ_ID),
     constraint UQ_ID_STAZIONE
