@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.59.15-2-PAGOPA-1622-sviluppo-api-config-gestione-flag-stand-in-per-wsdl"
+    "version": "0.59.17"
   },
   "host": "localhost:8080",
   "basePath": "/",
@@ -867,40 +867,40 @@
             "type": "string"
           },
           {
-            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
+            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
             "format": "date-time",
             "in": "query",
             "name": "startDateTimeBefore",
             "required": false,
             "type": "string",
-            "x-example": "2024-04-01T10:00:00.000+02:00"
+            "x-example": "2024-04-01T10:00:00.000Z"
           },
           {
-            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
+            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
             "format": "date-time",
             "in": "query",
             "name": "startDateTimeAfter",
             "required": false,
             "type": "string",
-            "x-example": "2024-04-01T10:00:00.000+02:00"
+            "x-example": "2024-04-01T10:00:00.000Z"
           },
           {
-            "description": "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
+            "description": "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
             "format": "date-time",
             "in": "query",
             "name": "endDateTimeBefore",
             "required": false,
             "type": "string",
-            "x-example": "2024-04-01T13:00:00.000+02:00"
+            "x-example": "2024-04-01T13:00:00.000Z"
           },
           {
-            "description": "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
+            "description": "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
             "format": "date-time",
             "in": "query",
             "name": "endDateTimeAfter",
             "required": false,
             "type": "string",
-            "x-example": "2024-04-01T13:00:00.000+02:00"
+            "x-example": "2024-04-01T13:00:00.000Z"
           },
           {
             "default": 50,
@@ -15259,7 +15259,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validitÃ  token",
+          "example": " default millisecondi validità token",
           "type": "string"
         },
         "config_key": {
@@ -15281,7 +15281,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validitÃ  token",
+          "example": " default millisecondi validità token",
           "type": "string"
         },
         "config_value": {
@@ -15362,7 +15362,7 @@
       "properties": {
         "end_date_time": {
           "description": "The end date time of the station maintenance",
-          "example": "2024-04-01T13:00:00+02:00",
+          "example": "2024-04-01T13:00:00Z",
           "format": "date-time",
           "type": "string"
         },
@@ -15372,7 +15372,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T10:00:00+02:00",
+          "example": "2024-04-01T10:00:00Z",
           "format": "date-time",
           "type": "string"
         },
@@ -16923,7 +16923,7 @@
         },
         "end_date_time": {
           "description": "The end date time of the station maintenance",
-          "example": "2024-04-01T13:00:00+02:00",
+          "example": "2024-04-01T13:00:00Z",
           "format": "date-time",
           "type": "string"
         },
@@ -16938,7 +16938,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T10:00:00+02:00",
+          "example": "2024-04-01T10:00:00Z",
           "format": "date-time",
           "type": "string"
         },
@@ -16979,7 +16979,7 @@
       "properties": {
         "end_date_time": {
           "description": "The end date time of the station maintenance",
-          "example": "2024-04-01T13:00:00+02:00",
+          "example": "2024-04-01T13:00:00Z",
           "format": "date-time",
           "type": "string"
         },
@@ -16989,7 +16989,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T10:00:00+02:00",
+          "example": "2024-04-01T10:00:00Z",
           "format": "date-time",
           "type": "string"
         }

@@ -3,7 +3,7 @@ name: core
 description: APIs to manage configuration for CI and PSP of pagoPA
 type: application
 version: 0.171.0
-appVersion: 0.59.15-2-PAGOPA-1622-sviluppo-api-config-gestione-flag-stand-in-per-wsdl
+appVersion: 0.59.17
 dependencies:
   - name: microservice-chart
     version: 2.8.0
