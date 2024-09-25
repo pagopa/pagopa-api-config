@@ -4,7 +4,7 @@
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
     "title": "core",
-    "version": "0.59.17"
+    "version": "0.59.17-1-PAGOPA-1622"
   },
   "host": "localhost:8080",
   "basePath": "/",
@@ -1190,18 +1190,6 @@
                 "description": "This header identifies the call",
                 "type": "string"
               }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "headers": {
-              "X-Request-Id": {
-                "description": "This header identifies the call",
-                "type": "string"
-              }
-            },
-            "schema": {
-              "$ref": "#/definitions/ProblemJson"
             }
           },
           "429": {
@@ -15012,6 +15000,10 @@
           "description": "Represents the authorization to carry out the transfer of the information present in additional payment information in the tags relating to payment by card for the PA in V1",
           "type": "boolean"
         },
+        "flag_standin": {
+          "description": "Represents the authorization to use the standin mode with this channel",
+          "type": "boolean"
+        },
         "ip": {
           "type": "string"
         },
@@ -15155,6 +15147,7 @@
         "digital_stamp_brand",
         "enabled",
         "flag_psp_cp",
+        "flag_standin",
         "on_us",
         "payment_model",
         "port",
@@ -16731,6 +16724,10 @@
         "flag_online": {
           "type": "boolean"
         },
+        "flag_standin": {
+          "description": "Represents the authorization to use the standin mode with this station",
+          "type": "boolean"
+        },
         "invio_rt_istantaneo": {
           "type": "boolean"
         },
@@ -16886,6 +16883,7 @@
       "required": [
         "broker_code",
         "enabled",
+        "flag_standin",
         "port",
         "primitive_version",
         "protocol",
