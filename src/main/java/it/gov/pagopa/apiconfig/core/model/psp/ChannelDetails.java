@@ -192,6 +192,14 @@ public class ChannelDetails extends Channel {
   @NotNull
   private Boolean flagPspCp;
 
+  @JsonProperty("flag_standin")
+  @Schema(
+          required = true,
+          description =
+                  "Represents the authorization to use the standin mode with this channel")
+  @NotNull
+  private Boolean flagStandin;
+
   @JsonIgnore private IntermediariPsp fkIntermediarioPsp;
 
   @JsonIgnore private WfespPluginConf fkWfespPluginConf;

@@ -66,6 +66,7 @@ public class ConvertChannelDetailsToCanali implements Converter<ChannelDetails, 
         .agidChannel(source.getAgid())
         .flagTravaso(source.getFlagPspCp())
         .versionePrimitive(source.getPrimitiveVersion())
+        .flagStandin(source.getFlagStandin())
         .build();
   }
 
