@@ -214,7 +214,7 @@ public class StationMaintenanceService {
             OffsetDateTime endDateTimeBefore,
             OffsetDateTime endDateTimeAfter
     ) {
-        Page<StationMaintenance> response = this.stationMaintenanceRepository.findAllByFilters(
+        Page<StationMaintenance> response = this.stationMaintenanceRepository.findAllStationsMaintenances(
                 startDateTimeBefore,
                 startDateTimeAfter,
                 endDateTimeBefore,

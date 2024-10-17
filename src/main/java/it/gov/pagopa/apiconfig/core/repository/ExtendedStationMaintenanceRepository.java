@@ -26,4 +26,19 @@ public interface ExtendedStationMaintenanceRepository extends StationMaintenance
             @Param("startDateTime") OffsetDateTime startDateTime,
             @Param("endDateTime") OffsetDateTime endDateTime
     );
+
+    @Query(value =
+            "SELECT m " +
+                    "FROM StationMaintenance m " +
+                    "WHERE (cast(cast(:startDateTimeBefore as text) as timestamp) IS NULL OR m.startDateTime < cast(cast(:startDateTimeBefore as text) as timestamp)) " +
+                    "AND (cast(cast(:startDateTimeAfter as text) as timestamp) IS NULL OR m.startDateTime > cast(cast(:startDateTimeAfter as text) as timestamp)) " +
+                    "AND (cast(cast(:endDateTimeBefore as text) as timestamp) IS NULL OR m.endDateTime < cast(cast(:endDateTimeBefore as text) as timestamp)) " +
+                    "AND (cast(cast(:endDateTimeAfter as text) as timestamp) IS NULL OR m.endDateTime > cast(cast(:endDateTimeAfter as text) as timestamp))" +
+                    ")")
+    List<StationMaintenance> findAllStationsMaintenances(
+            @Param("startDateTimeBefore") OffsetDateTime startDateTimeBefore,
+            @Param("startDateTimeAfter") OffsetDateTime startDateTimeAfter,
+            @Param("endDateTimeBefore") OffsetDateTime endDateTimeBefore,
+            @Param("endDateTimeAfter") OffsetDateTime endDateTimeAfter
+    );
 }

@@ -653,7 +653,7 @@ class StationMaintenanceServiceTest {
     @Test
     void getAllStationsMaintenancesSuccess() {
         List<StationMaintenance> list = Collections.singletonList(buildMaintenance());
-        when(stationMaintenanceRepository.findAllByFilters(
+        when(stationMaintenanceRepository.findAllStationsMaintenances(
                 any(),
                 any(),
                 any(),
