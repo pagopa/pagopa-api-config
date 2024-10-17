@@ -651,6 +651,28 @@ class StationMaintenanceServiceTest {
     }
 
     @Test
+    void getAllStationsMaintenancesSuccess() {
+        List<StationMaintenance> list = Collections.singletonList(buildMaintenance());
+        when(stationMaintenanceRepository.findAllStationsMaintenances(
+                any(),
+                any(),
+                any(),
+                any()
+        )).thenReturn(list);
+
+        StationMaintenanceListResource result = assertDoesNotThrow(() ->
+                sut.getAllStationsMaintenances(
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now(),
+                        OffsetDateTime.now()
+                ));
+
+        assertNotNull(result);
+        assertEquals(list.size(), result.getMaintenanceList().size());
+    }
+
+    @Test
     void getBrokerMaintenancesSummarySuccessWithoutExtra() {
         StationMaintenanceSummaryView summaryView = StationMaintenanceSummaryView.builder()
                 .usedHours(10.25)

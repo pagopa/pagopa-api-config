@@ -120,6 +120,23 @@ class StationMaintenanceControllerTest {
     }
 
     @Test
+    void getAllStationsMaintenancesTest() throws Exception {
+        when(stationMaintenanceService.getAllStationsMaintenances(any(), any(), any(), any()))
+                .thenReturn(StationMaintenanceListResource.builder()
+                        .maintenanceList(Collections.singletonList(buildMaintenanceResource()))
+                        .pageInfo(buildPageInfo())
+                        .build());
+
+        mockMvc.perform(get("/station-maintenances")
+                        .param("startDateTimeBefore", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("startDateTimeAfter", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("endDateTimeBefore", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .param("endDateTimeAfter", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                ).andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
     void getBrokerMaintenancesSummaryTest() throws Exception {
         when(stationMaintenanceService.getBrokerMaintenancesSummary(anyString(), anyString()))
                 .thenReturn(MaintenanceHoursSummaryResource.builder()

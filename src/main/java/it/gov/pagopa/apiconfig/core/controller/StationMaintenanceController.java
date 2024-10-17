@@ -53,6 +53,39 @@ public class StationMaintenanceController {
         this.stationMaintenanceService = stationMaintenanceService;
     }
 
+    @Operation(summary = "Get a list of all stations' maintenance filtered by dates",
+            security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = StationMaintenanceListResource.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))
+    })
+    @GetMapping(value = "/station-maintenances", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<StationMaintenanceListResource> getAllStationsMaintenances(
+            @Parameter(description = "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')", example = "2024-04-01T10:00:00.000Z")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDateTimeBefore,
+            @Parameter(description = "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')", example = "2024-04-01T10:00:00.000Z")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDateTimeAfter,
+            @Parameter(description = "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')", example = "2024-04-01T13:00:00.000Z")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDateTimeBefore,
+            @Parameter(description = "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')", example = "2024-04-01T13:00:00.000Z")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDateTimeAfter
+    ) {
+        return ResponseEntity.ok(
+                this.stationMaintenanceService.getAllStationsMaintenances(
+                        startDateTimeBefore,
+                        startDateTimeAfter,
+                        endDateTimeBefore,
+                        endDateTimeAfter
+                ));
+    }
+
     @Operation(summary = "Get a paginated list of station's maintenance for the specified broker",
             security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
     @ApiResponses(value = {
