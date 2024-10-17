@@ -226,6 +226,12 @@ public class StationMaintenanceService {
 
         return StationMaintenanceListResource.builder()
                 .maintenanceList(maintenanceList)
+                .pageInfo(PageInfo.builder()
+                        .page(0)
+                        .totalItems((long) response.size())
+                        .totalPages(1)
+                        .itemsFound(response.size())
+                        .build())
                 .build();
     }
 
