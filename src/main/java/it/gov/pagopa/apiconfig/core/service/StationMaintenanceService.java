@@ -200,6 +200,41 @@ public class StationMaintenanceService {
     }
 
     /**
+     * Retrieve a list of all stations' maintenances with the provided filters.
+     *
+     * @param startDateTimeBefore used to filter out all maintenance that have the start date time before this date time
+     * @param startDateTimeAfter  used to filter out all maintenance that have the start date time after this date time
+     * @param endDateTimeBefore   used to filter out all maintenance that have the end date time before this date time
+     * @param endDateTimeAfter    used to filter out all maintenance that have the end date time after this date time
+     * @return the requested page of maintenances
+     */
+    public StationMaintenanceListResource getAllStationsMaintenances(
+            OffsetDateTime startDateTimeBefore,
+            OffsetDateTime startDateTimeAfter,
+            OffsetDateTime endDateTimeBefore,
+            OffsetDateTime endDateTimeAfter
+    ) {
+        Page<StationMaintenance> response = this.stationMaintenanceRepository.findAllByFilters(
+                startDateTimeBefore,
+                startDateTimeAfter,
+                endDateTimeBefore,
+                endDateTimeAfter
+        );
+        List<StationMaintenanceResource> maintenanceList = response.getContent().parallelStream()
+                .map(maintenance -> this.mapper.map(maintenance, StationMaintenanceResource.class))
+                .toList();
+
+        return StationMaintenanceListResource.builder()
+                .maintenanceList(maintenanceList)
+                .pageInfo(PageInfo.builder()
+                        .totalItems(response.getTotalElements())
+                        .totalPages(response.getTotalPages())
+                        .itemsFound(response.getNumberOfElements())
+                        .build())
+                .build();
+    }
+
+    /**
      * Retrieve the maintenance's hours summary of the specified broker for the provided year
      *
      * @param brokerCode      broker's tax code
