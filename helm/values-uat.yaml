@@ -28,7 +28,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.19"
+    tag: "0.59.19-1-PPANTT-142-get-all-maintenances"
     pullPolicy: Always
   livenessProbe:
     httpGet:
