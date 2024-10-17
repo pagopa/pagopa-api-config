@@ -501,6 +501,137 @@
         "summary": "Create a broker"
       }
     },
+    "/brokers/station-maintenances": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "format": "date-time",
+            "in": "query",
+            "name": "startDateTimeBefore",
+            "required": false,
+            "type": "string",
+            "x-example": "2024-04-01T10:00:00.000Z"
+          },
+          {
+            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "format": "date-time",
+            "in": "query",
+            "name": "startDateTimeAfter",
+            "required": false,
+            "type": "string",
+            "x-example": "2024-04-01T10:00:00.000Z"
+          },
+          {
+            "description": "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "format": "date-time",
+            "in": "query",
+            "name": "endDateTimeBefore",
+            "required": false,
+            "type": "string",
+            "x-example": "2024-04-01T13:00:00.000Z"
+          },
+          {
+            "description": "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "format": "date-time",
+            "in": "query",
+            "name": "endDateTimeAfter",
+            "required": false,
+            "type": "string",
+            "x-example": "2024-04-01T13:00:00.000Z"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/StationMaintenanceListResource"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "getAllStationsMaintenances",
+        "summary": "Get a list of all stations' maintenance filtered by dates"
+      }
+    },
     "/brokers/{brokercode}": {
       "parameters": [
         {
@@ -867,40 +998,40 @@
             "type": "string"
           },
           {
-            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
             "format": "date-time",
             "in": "query",
             "name": "startDateTimeBefore",
             "required": false,
             "type": "string",
-            "x-example": "2024-04-01T10:00:00.000Z"
+            "x-example": "2024-04-01T10:00:00.000+02:00"
           },
           {
-            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
             "format": "date-time",
             "in": "query",
             "name": "startDateTimeAfter",
             "required": false,
             "type": "string",
-            "x-example": "2024-04-01T10:00:00.000Z"
+            "x-example": "2024-04-01T10:00:00.000+02:00"
           },
           {
-            "description": "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "description": "End date of maintenance, used to retrieve all maintenance that start before the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
             "format": "date-time",
             "in": "query",
             "name": "endDateTimeBefore",
             "required": false,
             "type": "string",
-            "x-example": "2024-04-01T13:00:00.000Z"
+            "x-example": "2024-04-01T13:00:00.000+02:00"
           },
           {
-            "description": "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')",
+            "description": "End date of maintenance, used to retrieve all maintenance that start after the provided date (yyyy-MM-dd'T'HH:mm:ss.SSSXXX)",
             "format": "date-time",
             "in": "query",
             "name": "endDateTimeAfter",
             "required": false,
             "type": "string",
-            "x-example": "2024-04-01T13:00:00.000Z"
+            "x-example": "2024-04-01T13:00:00.000+02:00"
           },
           {
             "default": 50,
@@ -15259,7 +15390,7 @@
           "type": "string"
         },
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_key": {
@@ -15281,7 +15412,7 @@
     "ConfigurationKeyBase": {
       "properties": {
         "config_description": {
-          "example": " default millisecondi validità token",
+          "example": " default millisecondi validitÃ  token",
           "type": "string"
         },
         "config_value": {
@@ -15362,7 +15493,7 @@
       "properties": {
         "end_date_time": {
           "description": "The end date time of the station maintenance",
-          "example": "2024-04-01T13:00:00Z",
+          "example": "2024-04-01T13:00:00+02:00",
           "format": "date-time",
           "type": "string"
         },
@@ -15372,7 +15503,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T10:00:00Z",
+          "example": "2024-04-01T10:00:00+02:00",
           "format": "date-time",
           "type": "string"
         },
@@ -16741,6 +16872,9 @@
           "description": "Describe the station connection's type, true synchronous, false asynchronous",
           "type": "boolean"
         },
+        "is_payment_options_enabled": {
+          "type": "boolean"
+        },
         "password": {
           "type": "string"
         },
@@ -16818,6 +16952,9 @@
           "type": "string"
         },
         "redirect_query_string": {
+          "type": "string"
+        },
+        "rest_endpoint": {
           "type": "string"
         },
         "service": {
@@ -16916,6 +17053,7 @@
       "type": "object"
     },
     "StationMaintenanceResource": {
+      "description": "List of station's maintenance",
       "properties": {
         "broker_code": {
           "description": "Code of the broker that owns the station",
@@ -16923,7 +17061,7 @@
         },
         "end_date_time": {
           "description": "The end date time of the station maintenance",
-          "example": "2024-04-01T13:00:00Z",
+          "example": "2024-04-01T13:00:00+02:00",
           "format": "date-time",
           "type": "string"
         },
@@ -16938,7 +17076,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T10:00:00Z",
+          "example": "2024-04-01T10:00:00+02:00",
           "format": "date-time",
           "type": "string"
         },
@@ -16979,7 +17117,7 @@
       "properties": {
         "end_date_time": {
           "description": "The end date time of the station maintenance",
-          "example": "2024-04-01T13:00:00Z",
+          "example": "2024-04-01T13:00:00+02:00",
           "format": "date-time",
           "type": "string"
         },
@@ -16989,7 +17127,7 @@
         },
         "start_date_time": {
           "description": "The start date time of the station maintenance",
-          "example": "2024-04-01T10:00:00Z",
+          "example": "2024-04-01T10:00:00+02:00",
           "format": "date-time",
           "type": "string"
         }

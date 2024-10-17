@@ -658,7 +658,7 @@ class StationMaintenanceServiceTest {
                 any(),
                 any(),
                 any()
-        )).thenReturn(new PageImpl<>(list));
+        )).thenReturn(list);
 
         StationMaintenanceListResource result = assertDoesNotThrow(() ->
                 sut.getAllStationsMaintenances(
@@ -670,7 +670,6 @@ class StationMaintenanceServiceTest {
 
         assertNotNull(result);
         assertEquals(list.size(), result.getMaintenanceList().size());
-        assertEquals(list.size(), result.getPageInfo().getItemsFound());
     }
 
     @Test

@@ -214,23 +214,18 @@ public class StationMaintenanceService {
             OffsetDateTime endDateTimeBefore,
             OffsetDateTime endDateTimeAfter
     ) {
-        Page<StationMaintenance> response = this.stationMaintenanceRepository.findAllStationsMaintenances(
+        List<StationMaintenance> response = this.stationMaintenanceRepository.findAllStationsMaintenances(
                 startDateTimeBefore,
                 startDateTimeAfter,
                 endDateTimeBefore,
                 endDateTimeAfter
         );
-        List<StationMaintenanceResource> maintenanceList = response.getContent().parallelStream()
+        List<StationMaintenanceResource> maintenanceList = response.parallelStream()
                 .map(maintenance -> this.mapper.map(maintenance, StationMaintenanceResource.class))
                 .toList();
 
         return StationMaintenanceListResource.builder()
                 .maintenanceList(maintenanceList)
-                .pageInfo(PageInfo.builder()
-                        .totalItems(response.getTotalElements())
-                        .totalPages(response.getTotalPages())
-                        .itemsFound(response.getNumberOfElements())
-                        .build())
                 .build();
     }
 

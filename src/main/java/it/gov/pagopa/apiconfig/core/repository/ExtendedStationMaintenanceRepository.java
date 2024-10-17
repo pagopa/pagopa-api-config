@@ -33,8 +33,7 @@ public interface ExtendedStationMaintenanceRepository extends StationMaintenance
                     "WHERE (cast(cast(:startDateTimeBefore as text) as timestamp) IS NULL OR m.startDateTime < cast(cast(:startDateTimeBefore as text) as timestamp)) " +
                     "AND (cast(cast(:startDateTimeAfter as text) as timestamp) IS NULL OR m.startDateTime > cast(cast(:startDateTimeAfter as text) as timestamp)) " +
                     "AND (cast(cast(:endDateTimeBefore as text) as timestamp) IS NULL OR m.endDateTime < cast(cast(:endDateTimeBefore as text) as timestamp)) " +
-                    "AND (cast(cast(:endDateTimeAfter as text) as timestamp) IS NULL OR m.endDateTime > cast(cast(:endDateTimeAfter as text) as timestamp))" +
-                    ")")
+                    "AND (cast(cast(:endDateTimeAfter as text) as timestamp) IS NULL OR m.endDateTime > cast(cast(:endDateTimeAfter as text) as timestamp))")
     List<StationMaintenance> findAllStationsMaintenances(
             @Param("startDateTimeBefore") OffsetDateTime startDateTimeBefore,
             @Param("startDateTimeAfter") OffsetDateTime startDateTimeAfter,
