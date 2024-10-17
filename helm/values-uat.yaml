@@ -28,7 +28,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.21"
+    tag: "0.59.22"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -144,7 +144,7 @@ postgresql:
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
-    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-u-weu-nodo-flexible-postgresql.postgres.database.azure.com:6432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://nodo-db.u.internal.postgresql.pagopa.it:6432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
     SPRING_DATASOURCE_USERNAME: 'cfg'
     SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
