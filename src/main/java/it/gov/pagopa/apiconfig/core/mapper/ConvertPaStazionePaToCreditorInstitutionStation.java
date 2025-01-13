@@ -26,6 +26,7 @@ public class ConvertPaStazionePaToCreditorInstitutionStation
         .segregationCode(source.getSegregazione())
         .aca(source.getAca())
         .standIn(source.getStandin())
+        .spontaneousPayment(source.getPagamentoSpontaneo())
         .build();
   }
 }

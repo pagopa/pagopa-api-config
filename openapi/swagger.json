@@ -15690,6 +15690,9 @@
           "minimum": 0,
           "type": "integer"
         },
+        "spontaneous_payment": {
+          "type": "boolean"
+        },
         "stand_in": {
           "type": "boolean"
         },
@@ -16807,6 +16810,9 @@
         "segregation_code": {
           "format": "int64",
           "type": "integer"
+        },
+        "spontaneous_payment": {
+          "type": "boolean"
         },
         "stand_in": {
           "type": "boolean"

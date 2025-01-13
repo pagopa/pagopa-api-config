@@ -44,4 +44,8 @@ public class StationCreditorInstitution extends CreditorInstitution {
   @Nullable
   @JsonProperty("stand_in")
   private Boolean standIn;
+
+  @Nullable
+  @JsonProperty("spontaneous_payment")
+  private Boolean spontaneousPayment;
 }
