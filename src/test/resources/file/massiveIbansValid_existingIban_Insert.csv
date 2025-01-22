@@ -1,3 +1,3 @@
-iddominio,codiceipa,ragionesociale,descrizione,iban,idsellerbank,dataattivazioneiban,operazione
-00168480242,istsc_sais011002,C.PISACANE SAPRI,desc xxx,IT84H0706676470000000822789,,2024-12-01,I
-11100011111,ccplia3,CPIA 2 - ITALO CALVINO,desc yyy,IT84H0706676470000000822789,,2024-12-01,I
+iddominio,ragionesociale,descrizione,iban,dataattivazioneiban,operazione
+00168480242,C.PISACANE SAPRI,desc xxx,IT84H0706676470000000822789,2024-12-01,I
+11100011111,CPIA 2 - ITALO CALVINO,desc yyy,IT84H0706676470000000822789,2024-12-01,I

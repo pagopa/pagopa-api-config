@@ -1,3 +1,3 @@
-iddominio,codiceipa,ragionesociale,descrizione,iban,idsellerbank,dataattivazioneiban,operazione
-11911191002,istsc_sais011002,C.PISACANE SAPRI,desc xxx,IT60X0542811101000000123456,,2024-12-01,I
-12345678904,istsc_sais011002,C.PISACANE SAPRI,desc xxx,IT60X0542811101000000123456,,2024-12-01,D
+iddominio,ragionesociale,descrizione,iban,dataattivazioneiban,operazione
+11911191002,C.PISACANE SAPRI,desc xxx,IT60X0542811101000000123456,2024-12-01,I
+12345678904,C.PISACANE SAPRI,desc xxx,IT60X0542811101000000123456,2024-12-01,D
