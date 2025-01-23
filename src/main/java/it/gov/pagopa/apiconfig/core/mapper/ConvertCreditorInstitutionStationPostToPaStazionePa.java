@@ -23,6 +23,7 @@ public class ConvertCreditorInstitutionStationPostToPaStazionePa
         .fkStazione(source.getFkStazioni())
         .aca(source.getAca())
         .standin(source.getStandIn())
+        .pagamentoSpontaneo(source.getSpontaneousPayment())
         .build();
   }
 }

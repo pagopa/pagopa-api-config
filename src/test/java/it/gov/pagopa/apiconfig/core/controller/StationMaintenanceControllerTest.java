@@ -127,7 +127,7 @@ class StationMaintenanceControllerTest {
                         .pageInfo(buildPageInfo())
                         .build());
 
-        mockMvc.perform(get("/station-maintenances")
+        mockMvc.perform(get("/brokers/station-maintenances")
                         .param("startDateTimeBefore", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
                         .param("startDateTimeAfter", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
                         .param("endDateTimeBefore", OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
