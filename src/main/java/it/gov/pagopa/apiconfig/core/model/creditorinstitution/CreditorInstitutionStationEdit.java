@@ -64,6 +64,10 @@ public class CreditorInstitutionStationEdit {
   @JsonProperty("stand_in")
   private Boolean standIn;
 
+  @Nullable
+  @JsonProperty("spontaneous_payment")
+  private Boolean spontaneousPayment;
+
   @JsonIgnore private Pa fkPa;
 
   @JsonIgnore private Stazioni fkStazioni;
