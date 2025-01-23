@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.59.23"
+    "version": "0.59.24"
   },
   "servers": [
     {
@@ -19093,6 +19093,9 @@
           },
           "stand_in": {
             "type": "boolean"
+          },
+          "spontaneous_payment": {
+            "type": "boolean"
           }
         }
       },
@@ -20051,6 +20054,9 @@
           },
           "stand_in": {
             "type": "boolean"
+          },
+          "spontaneous_payment": {
+            "type": "boolean"
           }
         }
       },
@@ -20533,6 +20539,9 @@
             "type": "boolean"
           },
           "stand_in": {
+            "type": "boolean"
+          },
+          "spontaneous_payment": {
             "type": "boolean"
           }
         }
