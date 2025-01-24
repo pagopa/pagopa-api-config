@@ -15,9 +15,6 @@ public class IbanMassLoadCsv {
     @CsvBindByName(required = true, column = "iddominio")
     private String creditorInstitutionCode;
 
-    @CsvBindByName(required = true, column = "codiceipa")
-    private String codiceIpa;
-
     @CsvBindByName(required = true, column = "ragionesociale")
     private String ragioneSociale;
 
@@ -26,9 +23,6 @@ public class IbanMassLoadCsv {
 
     @CsvBindByName(required = true, column = "iban")
     private String iban;
-
-    @CsvBindByName(required = false, column = "idsellerbank")
-    private String idSellerBank;
 
     @CsvBindByName(required = true, column = "dataattivazioneiban")
     private String ibanActiveDate;
