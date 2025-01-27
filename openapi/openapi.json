@@ -19026,6 +19026,13 @@
             "type": "string",
             "example": "Comune di Lorem Ipsum"
           },
+          "description": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "The description of the Creditor Institution",
+            "example": "Descrizione dell'Ente Creditore"
+          },
           "cbill_code": {
             "type": "string",
             "example": "1234567890100"
@@ -20030,6 +20037,13 @@
             "minLength": 0,
             "type": "string",
             "example": "Comune di Lorem Ipsum"
+          },
+          "description": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "description": "The description of the Creditor Institution",
+            "example": "Descrizione dell'Ente Creditore"
           },
           "application_code": {
             "type": "integer",
