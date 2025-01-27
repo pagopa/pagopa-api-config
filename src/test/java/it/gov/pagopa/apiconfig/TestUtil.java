@@ -214,6 +214,7 @@ public class TestUtil {
         .idDominio("00168480242")
         .enabled(true)
         .ragioneSociale("Comune di Bassano del Grappa")
+        .description("Comune di Bassano del Grappa")
         .cbill("56I10")
         .capDomicilioFiscale("00111")
         .pagamentoPressoPsp(true)

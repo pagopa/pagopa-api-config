@@ -16,6 +16,7 @@ public class ConvertPaToCreditorInstitution implements Converter<Pa, CreditorIns
         .creditorInstitutionCode(pa.getIdDominio())
         .enabled(pa.getEnabled())
         .businessName(CommonUtil.deNull((pa.getRagioneSociale())))
+        .description(CommonUtil.deNull(pa.getDescription()))
         .build();
   }
 }
