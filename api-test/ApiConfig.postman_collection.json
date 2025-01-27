@@ -1172,6 +1172,44 @@
 					"response": []
 				},
 				{
+					"name": "getCreditorInstitutionsByIban",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"getCreditorInstitutionsByIban\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-config-host}}/{{api-config-base-path}}/ibans/:iban/",
+							"host": [
+								"{{api-config-host}}"
+							],
+							"path": [
+								"{{api-config-base-path}}",
+								"ibans",
+								":iban"
+							],
+							"variable": [
+								{
+									"key": "iban",
+									"value": "{{iban}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "geByIban",
 					"event": [
 						{
