@@ -28,7 +28,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.24-1-PIDM-65-remove-deprecated-iban-upload-fields"
+    tag: "0.59.25"
     pullPolicy: Always
   livenessProbe:
     httpGet:
