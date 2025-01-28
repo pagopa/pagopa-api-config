@@ -20,6 +20,7 @@ public class ConvertPaStazionePaToStationCreditorInstitution
         return StationCreditorInstitution.builder()
                 .creditorInstitutionCode(pa.getIdDominio())
                 .businessName(pa.getRagioneSociale())
+                .description(pa.getDescription())
                 .enabled(pa.getEnabled())
                 .auxDigit(source.getAuxDigit())
                 .applicationCode(source.getProgressivo())

@@ -39,4 +39,11 @@ public class CreditorInstitution {
   @NotNull
   @Size(max = 70)
   private String businessName;
+
+  @JsonProperty("description")
+  @Schema(
+          example = "Comune di Roma",
+          description = "The description of the Creditor Institution")
+  @Size(max = 255)
+  private String description;
 }
