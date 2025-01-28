@@ -19031,7 +19031,7 @@
             "minLength": 0,
             "type": "string",
             "description": "The description of the Creditor Institution",
-            "example": "Descrizione dell'Ente Creditore"
+            "example": "Comune di Roma"
           },
           "cbill_code": {
             "type": "string",
@@ -20043,7 +20043,7 @@
             "minLength": 0,
             "type": "string",
             "description": "The description of the Creditor Institution",
-            "example": "Descrizione dell'Ente Creditore"
+            "example": "Comune di Roma"
           },
           "application_code": {
             "type": "integer",
@@ -20465,7 +20465,7 @@
             "minLength": 0,
             "type": "string",
             "description": "The description of the Creditor Institution",
-            "example": "Descrizione dell'Ente Creditore"
+            "example": "Comune di Roma"
           }
         }
       },

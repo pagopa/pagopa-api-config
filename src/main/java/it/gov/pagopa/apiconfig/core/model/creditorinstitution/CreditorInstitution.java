@@ -42,7 +42,7 @@ public class CreditorInstitution {
 
   @JsonProperty("description")
   @Schema(
-          example = "Descrizione dell'Ente Creditore",
+          example = "Comune di Roma",
           description = "The description of the Creditor Institution")
   @Size(max = 255)
   private String description;

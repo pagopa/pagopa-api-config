@@ -19,6 +19,7 @@ public class ConvertPaToCreditorInstitutionDetails
         .creditorInstitutionCode(pa.getIdDominio())
         .enabled(pa.getEnabled())
         .businessName(CommonUtil.deNull(pa.getRagioneSociale()))
+        .description(pa.getDescription())
         .cbillCode(pa.getCbill())
         .address(
             CreditorInstitutionAddress.builder()
