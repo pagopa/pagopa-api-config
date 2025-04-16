@@ -166,8 +166,8 @@ postgresql:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
 # Configuration for Oracle
-oracle:
-  enabled: false
+# oracle:
+#   enabled: false
 #  !!merge <<: *microservice-chart
 #  ingress:
 #    !!merge <<: *ingress
