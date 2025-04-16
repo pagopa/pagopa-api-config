@@ -2,16 +2,16 @@ apiVersion: v2
 name: core
 description: APIs to manage configuration for CI and PSP of pagoPA
 type: application
-version: 0.184.0
-appVersion: 0.59.27
+version: 0.185.0
+appVersion: 0.59.27-1-remore-oracle-deploy
 dependencies:
   - name: microservice-chart
     version: 2.8.0
     repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
     alias: postgresql
     condition: postgresql.enabled
-  - name: microservice-chart
-    version: 2.8.0
-    repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
-    alias: oracle
-    condition: oracle.enabled
+# - name: microservice-chart
+#   version: 2.8.0
+#   repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
+#   alias: oracle
+#   condition: oracle.enabled

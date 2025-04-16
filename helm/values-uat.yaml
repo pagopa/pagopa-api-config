@@ -28,7 +28,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.27"
+    tag: "0.59.27-1-remore-oracle-deploy"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -156,8 +156,8 @@ postgresql:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
 # Configuration for Oracle
-oracle:
-  enabled: false
+# oracle:
+#   enabled: false
 #  !!merge <<: *microservice-chart
 #  ingress:
 #    !!merge <<: *ingress
