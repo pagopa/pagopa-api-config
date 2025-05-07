@@ -23,17 +23,21 @@ on:
         type: choice
         description: Select the new Semantic Version
         options:
-          - major
-          - minor
           - patch
-          - buildNumber
-          - skip
-        default: skip
+          - skip_or_promote
+          - new_release
+          - breaking_change
       beta:
         required: false
         type: boolean
         description: deploy beta version on AKS
         default: false
+
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 permissions:
   packages: write
