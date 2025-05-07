@@ -56,26 +56,52 @@ jobs:
       semver: ${{ steps.get_semver.outputs.semver }}
       environment: ${{ steps.output.outputs.environment }}
     steps:
-      - name: Get semver
-        id: get_semver
-        uses: pagopa/github-actions-template/semver-setup@0018ad6b766a082c35ec88cd9f18de6b54fd59d1 # v1.4.2
+      - name: pull request rejected
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged != true
+        run: |
+          echo "❌ PR was closed without a merge"
+          exit 1
 
-      - if: ${{ github.event.inputs.environment == null || github.event.inputs.environment == 'dev' }}
+      # Set Semver
+      - run: echo "SEMVER=patch" >> $GITHUB_ENV
+
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'skip')) }}
+        run: echo "SEMVER=skip" >> $GITHUB_ENV
+
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'patch')) }}
+        run: echo "SEMVER=patch" >> $GITHUB_ENV
+
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'minor')) }}
+        run: echo "SEMVER=minor" >> $GITHUB_ENV
+
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'major')) }}
+        run: echo "SEMVER=major" >> $GITHUB_ENV
+
+      # force semver if dev, !=main or skip release
+      - if: ${{ inputs.version == 'new_release' }}
+        run: echo "SEMVER=minor" >> $GITHUB_ENV
+
+      - if: ${{ inputs.version == 'breaking_change' }}
+        run: echo "SEMVER=major" >> $GITHUB_ENV
+
+      - if: ${{ github.ref_name != 'main' }}
+        run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
+
+      - if: ${{ inputs.version == 'skip_or_promote' }}
+        run: echo "SEMVER=skip" >> $GITHUB_ENV
+      - id: get_semver
+        name: Set Output
+        run: echo "semver=${{env.SEMVER}}" >> $GITHUB_OUTPUT
+
+      # Set Environment
+      - run: echo "ENVIRNOMENT=${{ inputs.environment}}" >> $GITHUB_ENV
+
+      - if: ${{ inputs.environment == null }}
         run: echo "ENVIRNOMENT=dev" >> $GITHUB_ENV
 
-      - if: ${{ github.event.inputs.environment == 'uat' }}
-        run: echo "ENVIRONMENT=uat" >> $GITHUB_ENV
-
-      - if: ${{ github.event.inputs.environment == 'prod' }}
-        run: echo "ENVIRONMENT=prod" >> $GITHUB_ENV
-
-      - if: ${{ github.event.inputs.environment == 'all' }}
-        run: echo "ENVIRONMENT=all" >> $GITHUB_ENV
-
-      - id: output
+      - id: get_env
         name: Set Output
-        run: |
-          echo "environment=${{env.ENVIRONMENT}}" >> $GITHUB_OUTPUT
+        run: echo "environment=${{env.ENVIRNOMENT}}" >> $GITHUB_OUTPUT
 
   release:
     name: Create a New Release
