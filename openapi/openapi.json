@@ -4,7 +4,7 @@
     "title": "core",
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.59.28-2-PIDM-487-wl-identity-helm-7-5-0"
+    "version": "0.59.28-3-PIDM-487-wl-identity-helm-7-5-0"
   },
   "servers": [
     {
