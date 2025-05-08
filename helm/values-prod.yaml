@@ -28,7 +28,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.28-4-PIDM-487-wl-identity-helm-7-5-0"
+    tag: "0.59.28-5-PIDM-487-wl-identity-helm-7-5-0"
     pullPolicy: Always
   livenessProbe:
     httpGet:
