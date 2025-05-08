@@ -58,7 +58,7 @@ microservice-chart: &microservice-chart
     servicePort: 8080
     proxyBodySize: 4m
   serviceAccount:
-    name: "api-config-workload-identity"
+    name: "apiconfig-workload-identity"
   azure:
     workloadIdentityClientId: <workload-identity-client-id-set-automatically-by-gha>
   podAnnotations: {}
