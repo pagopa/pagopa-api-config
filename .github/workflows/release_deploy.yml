@@ -3,6 +3,8 @@ name: Release And Deploy
 # Controls when the workflow will run
 on:
   pull_request:
+    branches:
+      - main
     types: [ closed ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -19,20 +21,23 @@ on:
       version:
         required: false
         type: choice
-        description: Select the version
+        description: Select the new Semantic Version
         options:
-          - ''
-          - skip
-          - promote
+          - patch
+          - skip_or_promote
           - new_release
           - breaking_change
-
       beta:
         required: false
         type: boolean
         description: deploy beta version on AKS
         default: false
 
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 permissions:
   packages: write
@@ -57,10 +62,19 @@ jobs:
           echo "❌ PR was closed without a merge"
           exit 1
 
-      # Set Semvar
+      # Set Semver
       - run: echo "SEMVER=patch" >> $GITHUB_ENV
 
-      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'breaking-change')) }}
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'skip')) }}
+        run: echo "SEMVER=skip" >> $GITHUB_ENV
+
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'patch')) }}
+        run: echo "SEMVER=patch" >> $GITHUB_ENV
+
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'minor')) }}
+        run: echo "SEMVER=minor" >> $GITHUB_ENV
+
+      - if: ${{ (github.event.pull_request.merged && contains(github.event.pull_request.labels.*.name, 'major')) }}
         run: echo "SEMVER=major" >> $GITHUB_ENV
 
       # force semver if dev, !=main or skip release
@@ -73,9 +87,8 @@ jobs:
       - if: ${{ github.ref_name != 'main' }}
         run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
 
-      - if: ${{ inputs.version == 'skip' ||  inputs.version == 'promote' }}
+      - if: ${{ inputs.version == 'skip_or_promote' }}
         run: echo "SEMVER=skip" >> $GITHUB_ENV
-
       - id: get_semver
         name: Set Output
         run: echo "semver=${{env.SEMVER}}" >> $GITHUB_OUTPUT
@@ -89,7 +102,6 @@ jobs:
       - id: get_env
         name: Set Output
         run: echo "environment=${{env.ENVIRNOMENT}}" >> $GITHUB_OUTPUT
-
 
   release:
     name: Create a New Release
@@ -105,7 +117,7 @@ jobs:
           semver: ${{ needs.setup.outputs.semver }}
           github_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           beta: ${{ inputs.beta }}
-          skip_ci: false
+          skip_ci: ${{ inputs.beta }}
 
   image:
     needs: [ setup, release ]
