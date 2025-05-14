@@ -38,7 +38,7 @@ jobs:
           cluster_name: ${{ vars.CLUSTER_NAME }}
           resource_group: ${{ vars.CLUSTER_RESOURCE_GROUP }}
           app_name: ${{ env.APP_NAME }}
-          helm_upgrade_options: "--debug --set microservice-chart.azure.workloadIdentityClientId=${{vars.WORKLOAD_IDENTITY_ID}} --set postgresql.enabled=\"true\" --set oracle.enabled=\"true\""
+          helm_upgrade_options: "--debug --set microservice-chart.azure.workloadIdentityClientId=${{vars.WORKLOAD_IDENTITY_ID}} --set postgres.azure.workloadIdentityClientId=${{vars.WORKLOAD_IDENTITY_ID}} --set postgresql.enabled=\"true\" --set oracle.enabled=\"true\""
           timeout: '15m0s'
 
 #  update_openapi:
