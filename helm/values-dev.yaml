@@ -28,7 +28,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.28"
+    tag: "0.59.28-10-PIDM-487-wl-identity-helm-7-5-0"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -46,6 +46,7 @@ microservice-chart: &microservice-chart
     periodSeconds: 10
   deployment:
     create: true
+    replicas: 1
   service:
     create: true
     type: ClusterIP
@@ -57,7 +58,9 @@ microservice-chart: &microservice-chart
     servicePort: 8080
     proxyBodySize: 4m
   serviceAccount:
-    create: false
+    name: "apiconfig-workload-identity"
+  azure:
+    workloadIdentityClientId: <workload-identity-client-id-set-automatically-by-gha>
   podAnnotations: {}
   podSecurityContext:
     seccompProfile:
