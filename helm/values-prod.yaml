@@ -46,6 +46,7 @@ microservice-chart: &microservice-chart
     periodSeconds: 10
   deployment:
     create: true
+    replicas: 2 # same as HPA minReplica
   service:
     create: true
     type: ClusterIP
