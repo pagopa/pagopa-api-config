@@ -75,13 +75,18 @@ public class CreditorInstitutionsController {
             @Parameter(description = "Order by creditor institution's tax code or business name") @RequestParam(required = false, name = "orderby", defaultValue = "CODE") Order.CreditorInstitution orderBy,
             @Parameter(description = "Direction of ordering") @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering,
             @Parameter(description = "Number of elements on one page") @RequestParam(required = false, defaultValue = "50") @Positive Integer limit,
-            @Parameter(description = "Page number", required = true) @RequestParam @PositiveOrZero Integer page
+            @Parameter(description = "Page number", required = true) @RequestParam @PositiveOrZero Integer page,
+            @Parameter(description = "filter by CBILL", required = true) @RequestParam Boolean hasCBILL,
+            @Parameter(description = "filter by valid iban", required = true) @RequestParam Boolean hasValidIban
     ) {
         return ResponseEntity.ok(
                 this.creditorInstitutionsService.getCreditorInstitutions(
                         limit,
                         page,
-                        CommonUtil.getFilterAndOrder(filterByCode, filterByName, enabled, orderBy, ordering))
+                        CommonUtil.getFilterAndOrder(filterByCode, filterByName, enabled, orderBy, ordering),
+                        hasCBILL,
+                        hasValidIban
+                )
         );
     }
 

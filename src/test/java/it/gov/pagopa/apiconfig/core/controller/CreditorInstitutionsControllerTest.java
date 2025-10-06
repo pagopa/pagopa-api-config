@@ -54,7 +54,7 @@ class CreditorInstitutionsControllerTest {
     @BeforeEach
     void setUp() {
         when(creditorInstitutionsService.getCreditorInstitutions(
-                anyInt(), anyInt(), any(FilterAndOrder.class)))
+                anyInt(), anyInt(), any(FilterAndOrder.class), hasCBILL, hasValidIban))
                 .thenReturn(getMockCreditorInstitutions());
         when(creditorInstitutionsService.getCreditorInstitution("1234"))
                 .thenReturn(getMockCreditorInstitutionDetails());

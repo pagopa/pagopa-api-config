@@ -30,7 +30,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.modelmapper.ModelMapper;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +98,7 @@ class CreditorInstitutionsServiceTest {
 
         CreditorInstitutions result =
                 creditorInstitutionsService.getCreditorInstitutions(
-                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), hasCBILL, hasValidIban);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_empty.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -113,7 +112,7 @@ class CreditorInstitutionsServiceTest {
 
         CreditorInstitutions result =
                 creditorInstitutionsService.getCreditorInstitutions(
-                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), hasCBILL, hasValidIban);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -127,7 +126,7 @@ class CreditorInstitutionsServiceTest {
 
         CreditorInstitutions result =
                 creditorInstitutionsService.getCreditorInstitutions(
-                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), hasCBILL, hasValidIban);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
