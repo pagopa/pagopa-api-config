@@ -29,9 +29,7 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStation
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionStationList;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutions;
 import static it.gov.pagopa.apiconfig.TestUtil.getMockCreditorInstitutionsView;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,7 +52,7 @@ class CreditorInstitutionsControllerTest {
     @BeforeEach
     void setUp() {
         when(creditorInstitutionsService.getCreditorInstitutions(
-                anyInt(), anyInt(), any(FilterAndOrder.class), hasCBILL, hasValidIban))
+                anyInt(), anyInt(), any(FilterAndOrder.class), nullable(Boolean.class), nullable(Boolean.class)))
                 .thenReturn(getMockCreditorInstitutions());
         when(creditorInstitutionsService.getCreditorInstitution("1234"))
                 .thenReturn(getMockCreditorInstitutionDetails());
