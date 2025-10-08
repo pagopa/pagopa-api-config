@@ -9659,7 +9659,7 @@
           "name" : "hasCBILL",
           "in" : "query",
           "description" : "filter by CBILL",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "boolean"
           }
@@ -9667,7 +9667,7 @@
           "name" : "hasValidIban",
           "in" : "query",
           "description" : "filter by valid iban",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "boolean"
           }
