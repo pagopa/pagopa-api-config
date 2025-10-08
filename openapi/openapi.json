@@ -9658,7 +9658,7 @@
         }, {
           "name" : "hasCBILL",
           "in" : "query",
-          "description" : "filter by CBILL",
+          "description" : "Filter used to include creditor institutions with or without CBILL parameter",
           "required" : false,
           "schema" : {
             "type" : "boolean"
@@ -9666,7 +9666,7 @@
         }, {
           "name" : "hasValidIban",
           "in" : "query",
-          "description" : "filter by valid iban",
+          "description" : "Filter used to include creditor institutions with or without at least one valid iban",
           "required" : false,
           "schema" : {
             "type" : "boolean"
