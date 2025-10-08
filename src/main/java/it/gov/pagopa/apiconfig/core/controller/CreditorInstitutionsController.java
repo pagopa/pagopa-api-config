@@ -76,8 +76,8 @@ public class CreditorInstitutionsController {
             @Parameter(description = "Direction of ordering") @RequestParam(required = false, name = "ordering", defaultValue = "DESC") Sort.Direction ordering,
             @Parameter(description = "Number of elements on one page") @RequestParam(required = false, defaultValue = "50") @Positive Integer limit,
             @Parameter(description = "Page number", required = true) @RequestParam @PositiveOrZero Integer page,
-            @Parameter(description = "filter by CBILL") @RequestParam(required = false) Boolean hasCBILL,
-            @Parameter(description = "filter by valid iban") @RequestParam(required = false) Boolean hasValidIban
+            @Parameter(description = "Filter used to include creditor institutions with or without CBILL parameter") @RequestParam(required = false) Boolean hasCBILL,
+            @Parameter(description = "Filter used to include creditor institutions with or without at least one valid iban") @RequestParam(required = false) Boolean hasValidIban
     ) {
         return ResponseEntity.ok(
                 this.creditorInstitutionsService.getCreditorInstitutions(
