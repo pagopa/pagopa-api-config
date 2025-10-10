@@ -133,6 +133,34 @@ class CreditorInstitutionsServiceTest {
     }
 
     @Test
+    void getECs_ok3_hasCBILLFilter() throws IOException, JSONException {
+        List<Pa> ts = Lists.newArrayList(getMockPa());
+        Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
+        when(paRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
+
+        CreditorInstitutions result =
+                creditorInstitutionsService.getCreditorInstitutions(
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), true, false);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getECs_ok4_hasValidIbanFilter() throws IOException, JSONException {
+        List<Pa> ts = Lists.newArrayList(getMockPa());
+        Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
+        when(paRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
+
+        CreditorInstitutions result =
+                creditorInstitutionsService.getCreditorInstitutions(
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), false, true);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
     void getEC_ok() throws IOException, JSONException {
         when(paRepository.findByIdDominio("1234")).thenReturn(Optional.of(getMockPa()));
 
