@@ -1,4 +1,4 @@
-package it.gov.pagopa.apiconfig.core.util;
+package it.gov.pagopa.apiconfig.core.specification;
 
 import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterAndOrder;
 import it.gov.pagopa.apiconfig.starter.entity.Pa;
