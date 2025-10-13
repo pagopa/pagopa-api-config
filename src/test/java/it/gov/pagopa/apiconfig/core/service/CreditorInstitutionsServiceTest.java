@@ -27,6 +27,7 @@ import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
@@ -118,15 +119,22 @@ class CreditorInstitutionsServiceTest {
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
-    @Test
-    void getECs_ok2() throws IOException, JSONException {
+
+    @ParameterizedTest
+    @CsvSource({
+            "false, false",
+            "false, true",
+            "true, false",
+            "true, true"
+    })
+    void getECs_ok2(boolean hasCBILL, boolean hasValidIban) throws IOException, JSONException {
         List<Pa> ts = Lists.newArrayList(getMockPa());
         Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
         when(paRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         CreditorInstitutions result =
                 creditorInstitutionsService.getCreditorInstitutions(
-                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), false, false);
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), hasCBILL, hasValidIban);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);

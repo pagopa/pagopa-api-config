@@ -34,7 +34,7 @@ class PaSpecificationTest {
   @Autowired EntityManager em;
 
   @BeforeAll
-  public void setUp() {
+  void setUp() {
     root = em.getCriteriaBuilder().createQuery().from(Pa.class);
     query = em.getCriteriaBuilder().createQuery();
     builder = em.getCriteriaBuilder();
