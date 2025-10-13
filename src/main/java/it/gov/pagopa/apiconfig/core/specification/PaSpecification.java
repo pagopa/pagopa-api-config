@@ -55,7 +55,7 @@ public class PaSpecification {
     }
 
     private static void baseFilters(FilterAndOrder filterAndOrder, Root<Pa> root, CriteriaBuilder criteriaBuilder, List<Predicate> predicates) {
-        if (filterAndOrder != null && filterAndOrder.getFilter() != null) {
+        if (filterAndOrder != null) {
             String code = filterAndOrder.getFilter().getCode();
             String name = filterAndOrder.getFilter().getName();
             Boolean enabled = filterAndOrder.getFilter().getEnabled();
