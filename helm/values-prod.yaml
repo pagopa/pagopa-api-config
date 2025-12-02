@@ -2,11 +2,6 @@ microservice-chart: &microservice-chart
   namespace: "apiconfig"
   nameOverride: ""
   fullnameOverride: ""
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
   canaryDelivery:
     create: false
     ingress:
@@ -28,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.30"
+    tag: "0.59.33"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -46,6 +41,12 @@ microservice-chart: &microservice-chart
     periodSeconds: 10
   deployment:
     create: true
+    replicas: 2 # same as HPA minReplica
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 0
+        maxSurge: 1
   service:
     create: true
     type: ClusterIP

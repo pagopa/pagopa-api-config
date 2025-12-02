@@ -14,6 +14,7 @@ import it.gov.pagopa.apiconfig.core.model.filterandorder.FilterPaView;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.CbillMassiveLoadCsv;
 import it.gov.pagopa.apiconfig.core.specification.PaStazionePaSpecification;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
+import it.gov.pagopa.apiconfig.core.specification.PaSpecification;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.repository.*;
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,25 +83,22 @@ public class CreditorInstitutionsService {
     /**
      * Retrieve a paginated list of creditor institutions that match the provided filters
      *
-     * @param limit the size of the page
-     * @param pageNumber the page number
+     * @param limit          the size of the page
+     * @param pageNumber     the page number
      * @param filterAndOrder the filters
+     * @param hasCBILL       if true, only creditor institutions with a CBILL code are returned
+     * @param hasValidIban   if true, only creditor institutions with at least one valid IBAN are returned
      * @return a paginated list of creditor institutions
      */
     public CreditorInstitutions getCreditorInstitutions(
             @NotNull Integer limit,
             @NotNull Integer pageNumber,
-            @Valid FilterAndOrder filterAndOrder
-    ) {
+            @Valid FilterAndOrder filterAndOrder,
+            Boolean hasCBILL,
+            Boolean hasValidIban) {
         Pageable pageable = PageRequest.of(pageNumber, limit, CommonUtil.getSort(filterAndOrder));
-        var filters =
-                CommonUtil.getFilters(
-                        Pa.builder()
-                                .idDominio(filterAndOrder.getFilter().getCode())
-                                .ragioneSociale(filterAndOrder.getFilter().getName())
-                                .enabled(filterAndOrder.getFilter().getEnabled())
-                                .build());
-        Page<Pa> page = this.paRepository.findAll(filters, pageable);
+        Specification<Pa> paSpecification = PaSpecification.build(filterAndOrder, hasCBILL, hasValidIban);
+        Page<Pa> page = this.paRepository.findAll(paSpecification, pageable);
         return CreditorInstitutions.builder()
                 .creditorInstitutionList(getCreditorInstitutions(page))
                 .pageInfo(CommonUtil.buildPageInfo(page))

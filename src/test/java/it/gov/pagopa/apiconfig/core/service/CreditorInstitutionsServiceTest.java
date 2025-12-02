@@ -27,10 +27,10 @@ import org.assertj.core.util.Lists;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.modelmapper.ModelMapper;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,11 +95,11 @@ class CreditorInstitutionsServiceTest {
     @Test
     void getECs_empty() throws IOException, JSONException {
         Page<Pa> page = TestUtil.mockPage(Collections.emptyList(), 50, 0);
-        when(paRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+        when(paRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         CreditorInstitutions result =
                 creditorInstitutionsService.getCreditorInstitutions(
-                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), false, false);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_empty.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
@@ -109,25 +109,60 @@ class CreditorInstitutionsServiceTest {
     void getECs_ok1() throws IOException, JSONException {
         List<Pa> content = Lists.newArrayList(getMockPa());
         Page<Pa> page = TestUtil.mockPage(content, 50, 0);
-        when(paRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+        when(paRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         CreditorInstitutions result =
                 creditorInstitutionsService.getCreditorInstitutions(
-                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), false, false);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok1.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 
-    @Test
-    void getECs_ok2() throws IOException, JSONException {
+
+    @ParameterizedTest
+    @CsvSource({
+            "false, false",
+            "false, true",
+            "true, false",
+            "true, true"
+    })
+    void getECs_ok2(boolean hasCBILL, boolean hasValidIban) throws IOException, JSONException {
         List<Pa> ts = Lists.newArrayList(getMockPa());
         Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
-        when(paRepository.findAll(any(), any(Pageable.class))).thenReturn(page);
+        when(paRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         CreditorInstitutions result =
                 creditorInstitutionsService.getCreditorInstitutions(
-                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE));
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), hasCBILL, hasValidIban);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getECs_ok3_hasCBILLFilter() throws IOException, JSONException {
+        List<Pa> ts = Lists.newArrayList(getMockPa());
+        Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
+        when(paRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
+
+        CreditorInstitutions result =
+                creditorInstitutionsService.getCreditorInstitutions(
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), true, false);
+        String actual = TestUtil.toJson(result);
+        String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getECs_ok4_hasValidIbanFilter() throws IOException, JSONException {
+        List<Pa> ts = Lists.newArrayList(getMockPa());
+        Page<Pa> page = TestUtil.mockPage(ts, 50, 0);
+        when(paRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
+
+        CreditorInstitutions result =
+                creditorInstitutionsService.getCreditorInstitutions(
+                        50, 0, getMockFilterAndOrder(Order.CreditorInstitution.CODE), false, true);
         String actual = TestUtil.toJson(result);
         String expected = TestUtil.readJsonFromFile("response/get_creditorinstitutions_ok2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
