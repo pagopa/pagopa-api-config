@@ -35,8 +35,9 @@ keyvault=$(yq  -r '."microservice-chart".keyvault.name' ../helm/values-$ENV.yaml
 secret=$(yq  -r '."microservice-chart".envSecret' ../helm/values-$ENV.yaml)
 for line in $(echo "$secret" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
   IFS='=' read -r -a array <<< "$line"
-  response=$(az keyvault secret show --vault-name $keyvault --name "${array[1]}")
-  value=$(echo "$response" | jq -r '.value')
+  name=$(printf '%s' "${array[1]}" | tr -d '\r')
+  response=$(az keyvault secret show --vault-name $keyvault --name "$name")
+  value=$(echo $response | jq -r '.value')
   echo "${array[0]}=$value" >> .env
 done
 
