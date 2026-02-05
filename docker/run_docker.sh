@@ -27,24 +27,22 @@ if test -f "$FILE"; then
 fi
 config=$(yq  -r '."microservice-chart".envConfig' ../helm/values-$ENV.yaml)
 IFS=$'\n'
-for line in $(echo "$config" | yq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
+for line in $(echo "$config" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
     echo "$line" >> .env
 done
 
 keyvault=$(yq  -r '."microservice-chart".keyvault.name' ../helm/values-$ENV.yaml)
 secret=$(yq  -r '."microservice-chart".envSecret' ../helm/values-$ENV.yaml)
-for line in $(echo "$secret" | yq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
+for line in $(echo "$secret" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
   IFS='=' read -r -a array <<< "$line"
   response=$(az keyvault secret show --vault-name $keyvault --name "${array[1]}")
-  response=$(echo "$response" | tr -d '\n')
-  value=$(echo "$response" | yq -r '.value')
-  value=$(echo "$value" | sed 's/\$/\$\$/g')
-  value=$(echo "$value" | tr -d '\n')
+  value=$(echo "$response" | jq -r '.value')
   echo "${array[0]}=$value" >> .env
 done
 
 
 stack_name=$(cd .. && basename "$PWD")
+#docker compose -p "${stack_name}" up -d --remove-orphans --force-recreate --build
 echo $GITHUB_TOKEN_READ_PACKAGES >> ./secrets
 DOCKER_BUILDKIT=1 docker build -t ${image} --secret id=GH_TOKEN,src=./secrets ..
 docker run -d -p8080:8080 --env-file .env ${image}
@@ -55,21 +53,8 @@ attempt_counter=0
 max_attempts=50
 until $(curl --output /dev/null --silent --head --fail http://localhost:8080/actuator/info); do
     if [ ${attempt_counter} -eq ${max_attempts} ];then
-          echo ""
-          echo "--------------------------------------------------"
-          echo "❌ Max attempts reached: Service failed to start."
-          echo "--------------------------------------------------"
-
-          echo "🔍 1. Docker Container Status:"
-          docker ps -a
-
-          echo ""
-          echo "🔍 2. Application Logs (Last 100 lines):"
-          container_id=$(docker ps -n 1 -q)
-          docker logs --tail 100 $container_id
-
-          echo "--------------------------------------------------"
-          exit 1
+      echo "Max attempts reached"
+      exit 1
     fi
 
     printf '.'
