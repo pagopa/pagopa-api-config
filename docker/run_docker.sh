@@ -53,8 +53,21 @@ attempt_counter=0
 max_attempts=50
 until $(curl --output /dev/null --silent --head --fail http://localhost:8080/actuator/info); do
     if [ ${attempt_counter} -eq ${max_attempts} ];then
-      echo "Max attempts reached"
-      exit 1
+          echo ""
+          echo "--------------------------------------------------"
+          echo "❌ Max attempts reached: Service failed to start."
+          echo "--------------------------------------------------"
+
+          echo "🔍 1. Docker Container Status:"
+          docker ps -a
+
+          echo ""
+          echo "🔍 2. Application Logs (Last 100 lines):"
+          container_id=$(docker ps -n 1 -q)
+          docker logs --tail 100 $container_id
+
+          echo "--------------------------------------------------"
+          exit 1
     fi
 
     printf '.'
