@@ -16,7 +16,7 @@ async function updateIban(creditorInstitution, iban, body) {
 }
 
 async function getIbanEnhanced(creditorInstitution) {
-    return get(app_host + `/creditorinstitutions/${creditorInstitution}/ibans/enhanced`)
+    return get(app_host + `/creditorinstitutions/${creditorInstitution}/ibans`)
 }
 
 async function createMassiveIbansByCsv(body) {
