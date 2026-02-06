@@ -113,7 +113,7 @@ microservice-chart: &microservice-chart
     OTEL_TRACES_SAMPLER: "always_on"
     WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
-    SPRING_DATASOURCE_URL: 'jdbc:postgresql://nodo-db.d.internal.postgresql.pagopa.it:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
+    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
     SPRING_DATASOURCE_USERNAME: 'cfg'
     SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
     SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
