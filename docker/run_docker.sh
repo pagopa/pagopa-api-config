@@ -42,6 +42,10 @@ for line in $(echo "$secret" | jq -r '. | to_entries[] | select(.key) | "\(.key)
   echo "${array[0]}=$value" >> .env
 done
 
+if [ "$ENV" = "dev" ]; then
+  grep -v "SPRING_DATASOURCE_URL" .env > .env.tmp && mv .env.tmp .env
+  echo "SPRING_DATASOURCE_URL=jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg" >> .env
+fi
 
 stack_name=$(cd .. && basename "$PWD")
 #docker compose -p "${stack_name}" up -d --remove-orphans --force-recreate --build

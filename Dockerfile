@@ -5,8 +5,11 @@ FROM maven:3.9.5-amazoncorretto-17-al2023@sha256:eeaa7ab572d931f7273fc5cf3142992
 WORKDIR /build
 COPY . .
 RUN --mount=type=secret,id=GH_TOKEN,dst=/tmp/secret_token export GITHUB_TOKEN_READ_PACKAGES="$(cat /tmp/secret_token)" \
-  && mvn clean package -Dmaven.test.skip=true
-
+    && mvn clean package -Dmaven.test.skip=true \
+    -Dmaven.resolver.transport=wagon \
+    -Dmaven.wagon.http.ssl.insecure=true \
+    -Dmaven.wagon.http.ssl.allowall=true \
+    -Dmaven.wagon.http.ssl.ignore.validity.dates=true
 
 FROM amazoncorretto:17.0.9-alpine3.18@sha256:df48bf2e183230040890460ddb4359a10aa6c7aad24bd88899482c52053c7e17 as builder
 COPY --from=buildtime /build/target/*.jar application.jar
