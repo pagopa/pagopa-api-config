@@ -111,16 +111,6 @@ microservice-chart: &microservice-chart
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
-    WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
-    APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
-    SPRING_DATASOURCE_URL: 'jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg'
-    SPRING_DATASOURCE_USERNAME: 'cfg'
-    SPRING_DATASOURCE_DRIVER: 'org.postgresql.Driver'
-    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.PostgreSQLDialect'
-    DATABASE_SCHEMA: 'cfg'
-    HEALTHCHECK_QUERY: "select 1"
-    API_CONFIG_CACHE_HOST: 'https://api.dev.platform.pagopa.it/api-config-cache/p/v1'
-    API_CONFIG_CACHE_REFRESH: "true"
   envSecret: &envSecret
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-d-connection-string'
@@ -170,24 +160,3 @@ postgresql:
   envSecret:
     !!merge <<: *envSecret
     SPRING_DATASOURCE_PASSWORD: 'postgresql-db-cfg-password'
-# Configuration for Oracle
-# oracle:
-#   enabled: false
-#  !!merge <<: *microservice-chart
-#  ingress:
-#    !!merge <<: *ingress
-#    path: /pagopa-api-config-core-service/o/(.*)
-#  envConfig:
-#    !!merge <<: *envConfig
-#    WEBSITE_SITE_NAME: 'pagopaapiconfig-oracle'
-#    APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-oracle"
-#    SPRING_DATASOURCE_URL: "jdbc:oracle:thin:@(DESCRIPTION=(ENABLE=BROKEN)(ADDRESS=(PROTOCOL=tcp)(PORT=1522)(HOST=db-nodo-pagamenti.d.db-nodo-pagamenti.com))(CONNECT_DATA=(SERVICE_NAME=NDPSPCT_PP_NODO4_CFG))(SO_KEEPALIVE=true)(TCP_KEEPIDLE=60)(TCP_KEEPINTVL=30)(TCP_KEEPCNT=15))"
-#    SPRING_DATASOURCE_USERNAME: 'NODO4_CFG'
-#    SPRING_DATASOURCE_DRIVER: 'oracle.jdbc.OracleDriver'
-#    SPRING_JPA_DB_PLATFORM: 'org.hibernate.dialect.Oracle12cDialect'
-#    DATABASE_SCHEMA: 'NODO4_CFG'
-#    API_CONFIG_CACHE_HOST: 'https://api.dev.platform.pagopa.it/api-config-cache/o/v1'
-#    API_CONFIG_CACHE_REFRESH: "true"
-#  envSecret:
-#    !!merge <<: *envSecret
-#    SPRING_DATASOURCE_PASSWORD: 'oracle-db-cfg-password'
