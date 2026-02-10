@@ -78,3 +78,14 @@ resource "github_actions_secret" "repo_secrets" {
   plaintext_value = each.value
 }
 
+resource "github_actions_secret" "slack_webhook_integration_test" {
+  repository       = "pagopa-api-config"
+  secret_name      = "SLACK_WEBHOOK_URL_INTEGRATION_TEST"
+  plaintext_value  = data.azurerm_key_vault_secret.key_vault_integration_test_webhook_slack.value
+}
+
+resource "github_actions_secret" "slack_webhook_deploy" {
+  repository       = "pagopa-api-config"
+  secret_name      = "SLACK_WEBHOOK_URL_DEPLOY"
+  plaintext_value  = data.azurerm_key_vault_secret.key_vault_deploy_webhook_slack.value
+}

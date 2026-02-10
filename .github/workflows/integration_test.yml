@@ -79,7 +79,7 @@ jobs:
           message_format: '{emoji} <{run_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
           footer: 'Linked to <{workflow_url}| workflow file>'
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_INTEGRATION_TEST }}
 
   delete_github_deployments:
     runs-on: ubuntu-latest
