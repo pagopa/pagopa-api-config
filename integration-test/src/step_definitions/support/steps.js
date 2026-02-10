@@ -1,6 +1,6 @@
 const {When, Then} = require('@cucumber/cucumber')
 const assert = require("assert");
-const {createNewIban, deleteIban, updateIban, getIbanEnhanced} = require("./logic/ibanLogic")
+const {createNewIban, deleteIban, updateIban, getCreditorInstitutionsIbans} = require("./logic/ibanLogic")
 const {buildIbanCreate, buildIbanUpdate} = require("./builder/buildIban")
 const {buildCDI} = require("./builder/buildCDI")
 const {createCDI, deleteCDI} = require("./logic/cdiLogic")
@@ -35,7 +35,7 @@ When('the client {string} Iban {string}', async (method, iban) => {
 });
 
 When('the client gets the Ibans for an EC', async () => {
-    responseToCheck = await getIbanEnhanced(creditorInstitution);
+    responseToCheck = await getCreditorInstitutionsIbans(creditorInstitution);
 });
 
 Then('the client {string} the iban {string}', async (method, iban) => {

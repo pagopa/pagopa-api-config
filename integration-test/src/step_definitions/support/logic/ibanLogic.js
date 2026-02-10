@@ -15,7 +15,7 @@ async function updateIban(creditorInstitution, iban, body) {
     return put(app_host + `/creditorinstitutions/${creditorInstitution}/ibans/${iban}`, body)
 }
 
-async function getIbanEnhanced(creditorInstitution) {
+async function getCreditorInstitutionsIbans(creditorInstitution) {
     return get(app_host + `/creditorinstitutions/${creditorInstitution}/ibans`)
 }
 
@@ -31,6 +31,6 @@ module.exports = {
     createNewIban,
     deleteIban,
     updateIban,
-    getIbanEnhanced,
+    getCreditorInstitutionsIbans,
     createMassiveIbansByCsv
 }
