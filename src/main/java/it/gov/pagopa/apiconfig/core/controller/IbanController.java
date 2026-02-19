@@ -105,8 +105,7 @@ public class IbanController {
   }
 
   /**
-   * GET /creditorinstitutions/{creditorinstitutioncode}/ibans/enhanced?label={value} : Get creditor
-   * institution ibans
+   * GET /creditorinstitutions/{creditorinstitutioncode}/ibans/list : Get creditor institution ibans
    *
    * @param creditorInstitutionCode Organization fiscal code, the fiscal code of the Organization.
    *     (required)

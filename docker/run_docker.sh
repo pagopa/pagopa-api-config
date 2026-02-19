@@ -16,7 +16,7 @@ if [ "$ENV" = "local" ]; then
   image="service-local:latest"
   ENV="dev"
 else
-  repository=$(yq -r '."microservice-chart".image.repository' ../helm/values-$ENV.yaml)
+  repository=$(yq -r '.postgresql.image.repository' ../helm/values-$ENV.yaml)
   image="${repository}:latest"
 fi
 export image=${image}
@@ -25,21 +25,27 @@ FILE=.env
 if test -f "$FILE"; then
     rm .env
 fi
-config=$(yq  -r '."microservice-chart".envConfig' ../helm/values-$ENV.yaml)
+config=$(yq  -r '.postgresql.envConfig' ../helm/values-$ENV.yaml)
 IFS=$'\n'
 for line in $(echo "$config" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
     echo "$line" >> .env
 done
 
-keyvault=$(yq  -r '."microservice-chart".keyvault.name' ../helm/values-$ENV.yaml)
-secret=$(yq  -r '."microservice-chart".envSecret' ../helm/values-$ENV.yaml)
+keyvault=$(yq  -r '.postgresql.keyvault.name' ../helm/values-$ENV.yaml)
+secret=$(yq  -r '.postgresql.envSecret' ../helm/values-$ENV.yaml)
+
 for line in $(echo "$secret" | jq -r '. | to_entries[] | select(.key) | "\(.key)=\(.value)"'); do
   IFS='=' read -r -a array <<< "$line"
-  response=$(az keyvault secret show --vault-name $keyvault --name "${array[1]}")
-  value=$(echo "$response" | jq -r '.value')
+  name=$(printf '%s' "${array[1]}" | tr -d '\r')
+  response=$(az keyvault secret show --vault-name $keyvault --name "$name")
+  value=$(echo $response | jq -r '.value')
   echo "${array[0]}=$value" >> .env
 done
 
+if [ "$ENV" = "dev" ]; then
+  grep -v "SPRING_DATASOURCE_URL" .env > .env.tmp && mv .env.tmp .env
+  echo "SPRING_DATASOURCE_URL=jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg" >> .env
+fi
 
 stack_name=$(cd .. && basename "$PWD")
 #docker compose -p "${stack_name}" up -d --remove-orphans --force-recreate --build

@@ -10,5 +10,7 @@ services:
       context: ../
     env_file:
       - ./.env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pagopa-d-weu-nodo-flexible-postgresql.postgres.database.azure.com:5432/nodo?sslmode=require&prepareThreshold=0&currentSchema=cfg
     ports:
       - "8080:8080"

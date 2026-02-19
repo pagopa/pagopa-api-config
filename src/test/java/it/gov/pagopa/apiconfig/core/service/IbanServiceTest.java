@@ -13,6 +13,7 @@ import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
 import it.gov.pagopa.apiconfig.starter.repository.*;
 import org.assertj.core.util.Lists;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,10 @@ import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -1108,9 +1112,8 @@ class IbanServiceTest {
         when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any())).thenReturn(List.of(getMockIbanMaster_2()));
 
         File zip = TestUtil.readFile("file/massiveIbansValid_Insert.csv");
-        MockMultipartFile file =
-                new MockMultipartFile(
-                        "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+        MockMultipartFile file = getMockMultipartFile(zip);
+
         try {
             ibanService.createMassiveIbansByCsv(file);
         } catch (Exception e) {
@@ -1121,9 +1124,8 @@ class IbanServiceTest {
         when(ibanRepository.findByIban(anyString())).thenReturn(ibanEntity);
 
         zip = TestUtil.readFile("file/massiveIbansValid_Update_Delete.csv");
-        file =
-                new MockMultipartFile(
-                        "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+        file = getMockMultipartFile(zip);
+
         try {
             ibanService.createMassiveIbansByCsv(file);
         } catch (Exception e) {
@@ -1131,18 +1133,30 @@ class IbanServiceTest {
         }
     }
 
+    private static @NotNull MockMultipartFile getMockMultipartFile(File zip) throws IOException {
+        String content = Files.readString(zip.toPath());
+
+        String tomorrow = LocalDate.now().plusDays(1).toString();
+        content = content.replace("2025-12-01", tomorrow);
+
+        return new MockMultipartFile(
+                "file",
+                zip.getName(),
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                content.getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
     @Test
     void massiveCreateIbansByCsv_existingIban_ok() throws IOException {
-
         when(paRepository.findByIdDominio(anyString())).thenReturn(Optional.of(getMockPa()));
         when(codifichePaRepository.findAllByFkPa_ObjId(anyLong())).thenReturn(Lists.list(getMockCodifichePa()));
         when(ibanMasterRepository.findByFkIbanAndFkPa(any(), any())).thenReturn(List.of(getMockIbanMaster_2()));
         when(ibanRepository.saveAll(any(List.class))).thenReturn(List.of(getMockIban("00168480242")));
 
         File zip = TestUtil.readFile("file/massiveIbansValid_existingIban_Insert.csv");
-        MockMultipartFile file =
-                new MockMultipartFile(
-                        "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+        MockMultipartFile file = getMockMultipartFile(zip);
+
         try {
             ibanService.createMassiveIbansByCsv(file);
         } catch (Exception e) {
