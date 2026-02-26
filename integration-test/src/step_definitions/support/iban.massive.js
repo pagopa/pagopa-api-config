@@ -9,7 +9,7 @@ let responseToCheck;
 
 // Determine environment-specific resource path
 const isUAT = process.env.APP_HOST && process.env.APP_HOST.includes('uat');
-const resourcePath = isUAT ? "step_definitions/support/resources/uat/" : "step_definitions/support/resources/";
+const resourcePath = isUAT ? "step_definitions/support/resources/uat/" : "step_definitions/support/resources/dev/";
 
 // preventive cancellation to avoid dirty cases
 BeforeAll(async function () {

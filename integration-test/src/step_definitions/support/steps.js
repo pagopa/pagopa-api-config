@@ -7,12 +7,8 @@ const {createCDI, deleteCDI} = require("./logic/cdiLogic")
 const {makeIdMix, makeIdNumber} = require("./utility/helpers")
 const { setTimeout } = require("timers/promises");
 
-const app_host = process.env.APP_HOST;
-
 let creditorInstitution = process.env.CREDITOR_INSTITUTION
-// Use different PSP based on environment
-const isUAT = app_host && app_host.includes('uat');
-const defaultPSP = isUAT ? 'BPPIITRRXXX' : 'BPPIITRRZZZ';
+const defaultPSP = process.env.DEFAULT_PSP;
 let body;
 let responseToCheck;
 // pattern is '[0-9A-Z]{6,14}_[0-9]{2}-[0-9]{2}-[0-9]{4}'
