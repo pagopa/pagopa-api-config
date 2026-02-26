@@ -1,13 +1,39 @@
 
 // a valid CDI for DEV test
 function buildCDI(identificativoFlusso, identificativoPSP) {
+	const isUAT = process.env.APP_HOST && process.env.APP_HOST.includes('uat');
+	
+	const pspConfigs = {
+		'BPPIITRRXXX': { // UAT
+			codiceABI: '07601',
+			codiceBIC: 'BPPIITRRXXX',
+			identificativoIntermediario: '97103880585',
+			identificativoCanale: '97103880585_01',
+			tipoVersamento: 'BP'
+		},
+		'BPPIITRRZZZ': { // DEV
+			codiceABI: '01600',
+			codiceBIC: 'BPPIITRRZZZ',
+			identificativoIntermediario: '17103880000',
+			identificativoCanale: '00001060966_01',
+			tipoVersamento: 'BBT'
+		}
+	};
+	
+	const config = pspConfigs[identificativoPSP] || (isUAT ? pspConfigs['BPPIITRRXXX'] : pspConfigs['BPPIITRRZZZ']);
+	const codiceABI = config.codiceABI;
+	const codiceBIC = config.codiceBIC;
+	const identificativoIntermediario = config.identificativoIntermediario;
+	const identificativoCanale = config.identificativoCanale;
+	const tipoVersamento = config.tipoVersamento;
+	
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <informativaPSP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:noNamespaceSchemaLocation="CatalogoDatiInformativi_1_0_11.xsd">
   <identificativoFlusso>${identificativoFlusso}</identificativoFlusso>
   <identificativoPSP>${identificativoPSP}</identificativoPSP>
   <ragioneSociale>Poste Italiane</ragioneSociale>
-  <codiceABI>01600</codiceABI>
-  <codiceBIC>BPPIITRRZZZ</codiceBIC>
+  <codiceABI>${codiceABI}</codiceABI>
+  <codiceBIC>${codiceBIC}</codiceBIC>
   <mybankIDVS>MYBANK11</mybankIDVS>
   <informativaMaster>
     <dataPubblicazione>2023-04-13T00:01:00</dataPubblicazione>
@@ -19,9 +45,9 @@ function buildCDI(identificativoFlusso, identificativoPSP) {
   </informativaMaster>
   <listaInformativaDetail>
     <informativaDetail>
-      <identificativoIntermediario>17103880000</identificativoIntermediario>
-      <identificativoCanale>00001060966_01</identificativoCanale>
-      <tipoVersamento>BBT</tipoVersamento>
+      <identificativoIntermediario>${identificativoIntermediario}</identificativoIntermediario>
+      <identificativoCanale>${identificativoCanale}</identificativoCanale>
+      <tipoVersamento>${tipoVersamento}</tipoVersamento>
       <modelloPagamento>1</modelloPagamento>
       <priorita>1</priorita>
       <canaleApp>0</canaleApp>
