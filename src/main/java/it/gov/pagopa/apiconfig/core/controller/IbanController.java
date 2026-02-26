@@ -184,9 +184,11 @@ public class IbanController {
       @NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")
       String creditorInstitutionCode,
       @RequestParam(required = false, name = "label") @Parameter(description = "Filter by label")
-          String filterByLabel) {
+      String filterByLabel,
+      @RequestParam(required = false, name = "iban") @Parameter(description = "Filter by iban") String filterByIban) {
 
-    return ResponseEntity.ok(ibansService.getIbans(creditorInstitutionCode, limit, page, filterByLabel));
+      return ResponseEntity
+              .ok(ibansService.getIbans(creditorInstitutionCode, limit, page, filterByLabel, filterByIban));
   }
 
   /**
