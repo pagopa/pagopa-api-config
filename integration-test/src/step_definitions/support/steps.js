@@ -66,11 +66,14 @@ Then('the response {string} is equal to {string}', (field, description) => {
 
 // entered a specific step's timeout to override the default (to prevent timeout error)
 When('the client creates a CDI with a runtime random IdentificativoFlusso and an IdentificativoPSP valued as {string}', {timeout: 20000}, async (identificativoPSP) => {
+    // Generate new randomIdFlusso for each scenario
+    randomIdFlusso = makeIdMix(14) + "_" + makeIdNumber(2) + "-" + makeIdNumber(2) + "-" + makeIdNumber(4);
+    
     let pspToUse;
     
     if (isLocal) {
-        // For local environment, always use buildCDIH2 with the PSP from feature file
-        body = buildCDIH2(randomIdFlusso, identificativoPSP);
+        // For local environment, always use buildCDIH2 with empty PSP (H2 database default)
+        body = buildCDIH2(randomIdFlusso, '');
     } else if (isUAT && (identificativoPSP === 'BPPIITRRZZZ' || identificativoPSP === '')) {
         // For UAT, replace DEV PSP or empty PSP with UAT PSP
         pspToUse = 'BPPIITRRXXX';
