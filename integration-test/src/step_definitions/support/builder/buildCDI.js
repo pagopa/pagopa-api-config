@@ -266,6 +266,5 @@ function buildCDIH2(identificativoFlusso, identificativoPSP) {
 }
 
 module.exports = {
-    buildCDI,
-    buildCDIH2
+    buildCDI
 }
