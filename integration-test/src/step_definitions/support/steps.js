@@ -72,8 +72,8 @@ When('the client creates a CDI with a runtime random IdentificativoFlusso and an
     let pspToUse;
     
     if (isLocal) {
-        // For local environment, always use buildCDIH2 with empty PSP (H2 database default)
-        body = buildCDIH2(randomIdFlusso, '');
+        // For local environment, always use buildCDIH2 with BPPIITRRZZZ (H2 database PSP)
+        body = buildCDIH2(randomIdFlusso, 'BPPIITRRZZZ');
     } else if (isUAT && (identificativoPSP === 'BPPIITRRZZZ' || identificativoPSP === '')) {
         // For UAT, replace DEV PSP or empty PSP with UAT PSP
         pspToUse = 'BPPIITRRXXX';
@@ -93,7 +93,10 @@ When('the client deletes the created CDI with an IdentificativoPSP valued as {st
     
     let pspToUse;
     
-    if (isUAT && (identificativoPSP === 'BPPIITRRZZZ' || identificativoPSP === '')) {
+    if (isLocal) {
+        // For local environment, always use BPPIITRRZZZ (H2 database PSP)
+        pspToUse = 'BPPIITRRZZZ';
+    } else if (isUAT && (identificativoPSP === 'BPPIITRRZZZ' || identificativoPSP === '')) {
         // For UAT, replace DEV PSP or empty PSP with UAT PSP
         pspToUse = 'BPPIITRRXXX';
     } else {
