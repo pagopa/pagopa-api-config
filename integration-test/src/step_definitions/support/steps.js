@@ -66,16 +66,38 @@ Then('the response {string} is equal to {string}', (field, description) => {
 
 // entered a specific step's timeout to override the default (to prevent timeout error)
 When('the client creates a CDI with a runtime random IdentificativoFlusso and an IdentificativoPSP valued as {string}', {timeout: 20000}, async (identificativoPSP) => {
-    const pspToUse = identificativoPSP || defaultPSP;
-    // Use buildCDIH2 for local environment, buildCDI for DEV/UAT
-    body = isLocal ? buildCDIH2(randomIdFlusso, pspToUse) : buildCDI(randomIdFlusso, pspToUse);
+    let pspToUse;
+    
+    if (isLocal) {
+        // For local environment, always use buildCDIH2 with the PSP from feature file
+        body = buildCDIH2(randomIdFlusso, identificativoPSP);
+    } else if (isUAT && (identificativoPSP === 'BPPIITRRZZZ' || identificativoPSP === '')) {
+        // For UAT, replace DEV PSP or empty PSP with UAT PSP
+        pspToUse = 'BPPIITRRXXX';
+        body = buildCDI(randomIdFlusso, pspToUse);
+    } else {
+        // For DEV or when a specific PSP is provided (like CHARITYNEXI), use it as-is
+        pspToUse = identificativoPSP || defaultPSP;
+        body = buildCDI(randomIdFlusso, pspToUse);
+    }
+    
     responseToCheck = await createCDI(body);
 });
 
 // entered a specific step's timeout to override the default (to prevent timeout error)
 When('the client deletes the created CDI with an IdentificativoPSP valued as {string}', {timeout: 20000}, async (identificativoPSP) => {
     await setTimeout(5000);
-    const pspToUse = identificativoPSP || defaultPSP;
+    
+    let pspToUse;
+    
+    if (isUAT && (identificativoPSP === 'BPPIITRRZZZ' || identificativoPSP === '')) {
+        // For UAT, replace DEV PSP or empty PSP with UAT PSP
+        pspToUse = 'BPPIITRRXXX';
+    } else {
+        // For DEV/Local or when a specific PSP is provided, use it as-is
+        pspToUse = identificativoPSP || defaultPSP;
+    }
+    
     responseToCheck = await deleteCDI(randomIdFlusso, pspToUse);
 });	
 
