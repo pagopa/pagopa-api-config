@@ -96,6 +96,7 @@ microservice-chart: &microservice-chart
     XSD_ICA: 'https://raw.githubusercontent.com/pagopa/pagopa-api/develop/xsd-common/InformativaContoAccredito_1_2_1.xsd'
     XSD_COUNTERPART: 'https://raw.githubusercontent.com/pagopa/pagopa-api/develop/xsd-common/TabellaDelleControparti_1_0_8.xsd'
     XSD_CDI: 'https://raw.githubusercontent.com/pagopa/pagopa-api/develop/xsd-common/CatalogoDatiInformativiPSP.xsd'
+    SYNC_CDI: "true"
     NODO_MONITORING_HOST: 'https://api.uat.platform.pagopa.it/nodo-monitoring/monitoring/v1'
     NODO_MONITORING_REFRESH: "true"
     AFM_UTILS_RETRY_MAX_ATTEMPTS: "1"
