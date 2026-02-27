@@ -12,6 +12,7 @@ import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
 import it.gov.pagopa.apiconfig.starter.repository.*;
+import it.gov.pagopa.apiconfig.core.repository.IbanMasterCustomRepository;
 import org.assertj.core.util.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -69,6 +70,9 @@ class IbanServiceTest {
     private IbanMasterRepository ibanMasterRepository;
 
     @MockBean
+    private IbanMasterCustomRepository ibanMasterCustomRepository;
+
+    @MockBean
     private IbanAttributeRepository ibanAttributeRepository;
 
     @MockBean
@@ -111,13 +115,14 @@ class IbanServiceTest {
         when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
         // executing logic and check assertions
         IbansEnhanced result =
-                ibanService.getIbans(organizationFiscalCode, 50, 0, "STANDIN");
+                ibanService.getIbans(organizationFiscalCode, 50, 0, "STANDIN", null);
         String actual = TestUtil.toJson(result);
         // Force date value for check
         JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
         obj.put("publication_date", "2023-05-23T10:38:07.165Z");
         obj.put("validity_date", "2023-06-07T13:48:15.166Z");
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
+        obj.remove("active");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
                 TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
@@ -147,13 +152,14 @@ class IbanServiceTest {
         when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
         // executing logic and check assertions
         IbansEnhanced result =
-                ibanService.getIbans(pa2.getIdDominio(), 50, 0, "STANDIN");
+                ibanService.getIbans(pa2.getIdDominio(), 50, 0, "STANDIN", null);
         String actual = TestUtil.toJson(result);
         // Force date value for check
         JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
         obj.put("publication_date", "2023-05-23T10:38:07.165Z");
         obj.put("validity_date", "2023-06-07T13:48:15.166Z");
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
+        obj.remove("active");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
                 TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
@@ -185,13 +191,14 @@ class IbanServiceTest {
         when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
         // executing logic and check assertions
         IbansEnhanced result =
-                ibanService.getIbans(organizationFiscalCode, 50, 0, null);
+                ibanService.getIbans(organizationFiscalCode, 50, 0, null, null);
         String actual = TestUtil.toJson(result);
         // Force date value for check
         JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
         obj.put("publication_date", "2023-05-23T10:38:07.165Z");
         obj.put("validity_date", "2023-06-07T13:48:15.166Z");
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
+        obj.remove("active");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
                 TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
@@ -221,7 +228,7 @@ class IbanServiceTest {
         when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
         // executing logic and check assertions
         IbansEnhanced result =
-                ibanService.getIbans(organizationFiscalCode, 50, 0, "CUP");
+                ibanService.getIbans(organizationFiscalCode, 50, 0, "CUP", null);
         String actual = TestUtil.toJson(result);
         String expected =
                 TestUtil.toJson(IbansEnhanced.builder()
@@ -247,7 +254,7 @@ class IbanServiceTest {
         AppException ex =
                 assertThrows(
                         AppException.class,
-                        () -> ibanService.getIbans(organizationFiscalCode, 50, 0, "CUP"));
+                        () -> ibanService.getIbans(organizationFiscalCode, 50, 0, "CUP", null));
         assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
     }
 
@@ -1036,7 +1043,7 @@ class IbanServiceTest {
                 .thenReturn(emptyIbanMasters);
         when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
         // executing logic and check assertions
-        IbansEnhanced result = ibanService.getIbans(organizationFiscalCode, 50, 0,"testAca");
+        IbansEnhanced result = ibanService.getIbans(organizationFiscalCode, 50, 0,"testAca", null);
 
         assertEquals(1, result.getIbanEnhancedList().size());
         assertEquals(nowTime.minusYears(1), result.getIbanEnhancedList().get(0).getPublicationDate().toLocalDateTime());
@@ -1064,7 +1071,7 @@ class IbanServiceTest {
                 .thenReturn(emptyIbanMasters);
         when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
         // executing logic and check assertions
-        IbansEnhanced result = ibanService.getIbans(organizationFiscalCode,50,0,"testAca");
+        IbansEnhanced result = ibanService.getIbans(organizationFiscalCode,50,0,"testAca", null);
 
         assertEquals(0, result.getIbanEnhancedList().size());
     }
@@ -1237,5 +1244,103 @@ class IbanServiceTest {
 
         assertEquals(TestUtil.toJson(response), TestUtil.toJson(ibanLabel));
         Assertions.assertNotEquals(TestUtil.toJson(response), TestUtil.toJson(mockIbanAttribute));
+    }
+
+    @Test
+    void getIbansEnhanced_withIbanAndLabel_200()
+            throws IOException,
+            JSONException,
+            org.springframework.boot.configurationprocessor.json.JSONException {
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        IbanEnhanced iban =
+                getMockIbanEnhanced(
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"),
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+        Iban mockIban = getMockIban(iban, organizationFiscalCode);
+        Page<IbanMaster> mockIbanMasters = TestUtil.mockPage(getMockIbanMasters(creditorInstitution, iban, mockIban), 50, 0);
+        Pageable pageable = PageRequest.of(0, 50);
+        String ibanValue = "IT99C0222211111000000000000";
+        String label = "STANDIN";
+        
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterCustomRepository.findByFkPaAndIbanValueAndLabel(
+                creditorInstitution.getObjId(), ibanValue, label, pageable))
+                .thenReturn(mockIbanMasters);
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        
+        IbansEnhanced result =
+                ibanService.getIbans(organizationFiscalCode, 50, 0, label, ibanValue);
+        String actual = TestUtil.toJson(result);
+        
+        JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
+        obj.put("publication_date", "2023-05-23T10:38:07.165Z");
+        obj.put("validity_date", "2023-06-07T13:48:15.166Z");
+        obj.put("due_date", "2023-06-07T13:48:15.166Z");
+        obj.remove("active");
+        actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
+        String expected =
+                TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getIbansEnhanced_withIbanNoLabel_200()
+            throws IOException,
+            JSONException,
+            org.springframework.boot.configurationprocessor.json.JSONException {
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        IbanEnhanced iban =
+                getMockIbanEnhanced(
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"),
+                        OffsetDateTime.parse("2023-06-07T13:48:15.166Z"));
+        Iban mockIban = getMockIban(iban, organizationFiscalCode);
+        Page<IbanMaster> mockIbanMasters = TestUtil.mockPage(getMockIbanMasters(creditorInstitution, iban, mockIban), 50, 0);
+        Pageable pageable = PageRequest.of(0, 50);
+        String ibanValue = "IT99C0222211111000000000000";
+        
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterCustomRepository.findByFkPaAndIbanValue(
+                creditorInstitution.getObjId(), ibanValue, pageable))
+                .thenReturn(mockIbanMasters);
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        
+        IbansEnhanced result =
+                ibanService.getIbans(organizationFiscalCode, 50, 0, null, ibanValue);
+        String actual = TestUtil.toJson(result);
+        
+        JSONObject obj = new JSONObject(actual).getJSONArray("ibans_enhanced").getJSONObject(0);
+        obj.put("publication_date", "2023-05-23T10:38:07.165Z");
+        obj.put("validity_date", "2023-06-07T13:48:15.166Z");
+        obj.put("due_date", "2023-06-07T13:48:15.166Z");
+        obj.remove("active");
+        actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
+        String expected =
+                TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    void getIbansEnhanced_withIbanNotFound_EmptyResult() {
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        Page<IbanMaster> emptyPage = TestUtil.mockPage(new ArrayList<>(), 50, 0);
+        Pageable pageable = PageRequest.of(0, 50);
+        String ibanValue = "IT99C0222211111000000000000";
+        
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterCustomRepository.findByFkPaAndIbanValue(
+                creditorInstitution.getObjId(), ibanValue, pageable))
+                .thenReturn(emptyPage);
+        
+        IbansEnhanced result =
+                ibanService.getIbans(organizationFiscalCode, 50, 0, null, ibanValue);
+        
+        assertEquals(0, result.getIbanEnhancedList().size());
+        assertEquals(0, result.getPageInfo().getItemsFound());
     }
 }

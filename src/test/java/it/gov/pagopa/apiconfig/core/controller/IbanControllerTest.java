@@ -54,7 +54,7 @@ class IbanControllerTest {
   void setUp() {
     when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234"))
         .thenReturn(getMockIbans());
-    when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString()))
+    when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), anyString()))
         .thenReturn(
             getMockIbansEnhanced(
                 OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
@@ -72,9 +72,40 @@ class IbanControllerTest {
   @ParameterizedTest
   @CsvSource({"/creditorinstitutions/12345678911/ibans/list/?limit=50&page=0&label=STANDIN"})
   void testGetsEnhanced(String url) throws Exception {
+    when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), any()))
+        .thenReturn(
+            getMockIbansEnhanced(
+                OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
+                OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
     mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+    @ParameterizedTest
+    @CsvSource({ "/creditorinstitutions/12345678911/ibans/list/?limit=50&page=0&iban=IT99C0222211111000000000000" })
+    void testGetsEnhancedByIban(String url) throws Exception {
+        when(ibanService.getIbans(anyString(), anyInt(), anyInt(), any(), anyString()))
+                .thenReturn(
+                        getMockIbansEnhanced(
+                                OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
+                                OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+  @ParameterizedTest
+  @CsvSource({ "/creditorinstitutions/12345678911/ibans/list/?limit=50&page=0&label=STANDIN&iban=IT99C0222211111000000000000" })
+  void testGetsEnhancedByLabelAndIban(String url) throws Exception {
+      when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), anyString()))
+              .thenReturn(
+                      getMockIbansEnhanced(
+                              OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
+                              OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
+      mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+              .andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }
 
   @Test

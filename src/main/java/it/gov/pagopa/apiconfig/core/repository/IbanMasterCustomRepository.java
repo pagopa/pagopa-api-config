@@ -10,16 +10,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IbanMasterCustomRepository extends JpaRepository<IbanMaster, Long> {
 
-       @Query("select master from IbanMaster master, IbanAttributeMaster attribute, IbanAttribute label " +
+       @Query("select master from IbanMaster master, IbanAttributeMaster attribute, IbanAttribute label, Iban iban " +
        "where master.objId = attribute.fkIbanMaster " +
        "and attribute.fkAttribute = label.objId " +
+       "and master.fkIban = iban.objId " +
        "and master.fkPa = ?1 " +
-       "and master.fkIban = ?2 " +
+       "and iban.iban = ?2 " +
        "and label.attributeName = ?3")
-       Page<IbanMaster> findByFkPaAndFkIbanAndLabel(Long fkPa, Long fkIban, String label, Pageable pageable);
+       Page<IbanMaster> findByFkPaAndIbanValueAndLabel(Long fkPa, String ibanValue, String label, Pageable pageable);
 
-       @Query("select master from IbanMaster master " +
-       "where master.fkPa = ?1 " +
-       "and master.fkIban = ?2")
-       Page<IbanMaster> findByFkPaAndFkIban(Long fkPa, Long fkIban, Pageable pageable);
+       @Query("select master from IbanMaster master, Iban iban " +
+       "where master.fkIban = iban.objId " +
+       "and master.fkPa = ?1 " +
+       "and iban.iban = ?2")
+       Page<IbanMaster> findByFkPaAndIbanValue(Long fkPa, String ibanValue, Pageable pageable);
 }

@@ -43,6 +43,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -237,26 +238,20 @@ public class IbanService {
             Pa pa = getPaIfExists(organizationFiscalCode);
 
             Page<IbanMaster> ibanMasters;
+            
+            boolean hasIban = StringUtils.hasText(iban);
+            boolean hasLabel = StringUtils.hasText(label);
 
-            if (iban != null && !iban.isEmpty()) {
-                Optional<Iban> ibanEntity = ibanRepository.findByIban(iban);
-                if (ibanEntity.isPresent()) {
-                    if (label != null && !label.isEmpty()) {
-                        ibanMasters = ibanMasterCustomRepository.findByFkPaAndFkIbanAndLabel(
-                            pa.getObjId(), ibanEntity.get().getObjId(), label, pageable);
-                    } else {
-                        ibanMasters = ibanMasterCustomRepository.findByFkPaAndFkIban(
-                            pa.getObjId(), ibanEntity.get().getObjId(), pageable);
-                    }
-                } else {
-                    ibanMasters = Page.empty(pageable);
-                }
+            if (hasIban) {
+                ibanMasters = hasLabel 
+                    ? ibanMasterCustomRepository.findByFkPaAndIbanValueAndLabel(
+                        pa.getObjId(), iban, label, pageable)
+                    : ibanMasterCustomRepository.findByFkPaAndIbanValue(
+                        pa.getObjId(), iban, pageable);
             } else {
-                if (label != null && !label.isEmpty()) {
-                    ibanMasters = ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label, pageable);
-                } else {
-                    ibanMasters = ibanMasterRepository.findByFkPa(pa.getObjId(), pageable);
-                }
+                ibanMasters = hasLabel
+                    ? ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label, pageable)
+                    : ibanMasterRepository.findByFkPa(pa.getObjId(), pageable);
             }
 
             List<IbanEnhanced> ibanEnhancedList = ibanMasters.stream()
