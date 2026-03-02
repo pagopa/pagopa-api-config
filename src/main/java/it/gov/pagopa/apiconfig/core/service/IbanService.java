@@ -55,7 +55,7 @@ import it.gov.pagopa.apiconfig.core.model.MassiveCheck;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
-import it.gov.pagopa.apiconfig.core.repository.IbanMasterCustomRepository;
+import it.gov.pagopa.apiconfig.core.repository.IbanMasterSearchRepository;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.*;
@@ -94,7 +94,7 @@ public class IbanService {
     private IbanMasterRepository ibanMasterRepository;
 
     @Autowired
-    private IbanMasterCustomRepository ibanMasterCustomRepository;
+    private IbanMasterSearchRepository ibanMasterSearchRepository;
 
     @Autowired
     private IbanAttributeRepository ibanAttributeRepository;
@@ -244,9 +244,9 @@ public class IbanService {
 
             if (hasIban) {
                 ibanMasters = hasLabel 
-                    ? ibanMasterCustomRepository.findByFkPaAndIbanValueAndLabel(
+                    ? ibanMasterSearchRepository.findByFkPaAndIbanValueAndLabel(
                         pa.getObjId(), iban, label, pageable)
-                    : ibanMasterCustomRepository.findByFkPaAndIbanValue(
+                    : ibanMasterSearchRepository.findByFkPaAndIbanValue(
                         pa.getObjId(), iban, pageable);
             } else {
                 ibanMasters = hasLabel
@@ -266,10 +266,10 @@ public class IbanService {
             }
 
             return IbansEnhanced.builder()
-                    .ibanEnhancedList(ibanEnhancedList)
-                    .pageInfo(CommonUtil.buildPageInfo(ibanMasters))
-                    .build();
-        }
+                        .ibanEnhancedList(ibanEnhancedList)
+                        .pageInfo(CommonUtil.buildPageInfo(ibanMasters))
+                        .build();
+            }
 
     public String deleteIban(
             @NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")

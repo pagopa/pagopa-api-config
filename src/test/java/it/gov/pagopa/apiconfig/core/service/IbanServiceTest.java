@@ -12,7 +12,7 @@ import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
 import it.gov.pagopa.apiconfig.starter.repository.*;
-import it.gov.pagopa.apiconfig.core.repository.IbanMasterCustomRepository;
+import it.gov.pagopa.apiconfig.core.repository.IbanMasterSearchRepository;
 import org.assertj.core.util.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -70,7 +70,7 @@ class IbanServiceTest {
     private IbanMasterRepository ibanMasterRepository;
 
     @MockBean
-    private IbanMasterCustomRepository ibanMasterCustomRepository;
+    private IbanMasterSearchRepository ibanMasterSearchRepository;
 
     @MockBean
     private IbanAttributeRepository ibanAttributeRepository;
@@ -122,7 +122,6 @@ class IbanServiceTest {
         obj.put("publication_date", "2023-05-23T10:38:07.165Z");
         obj.put("validity_date", "2023-06-07T13:48:15.166Z");
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
-        obj.remove("active");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
                 TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
@@ -159,7 +158,6 @@ class IbanServiceTest {
         obj.put("publication_date", "2023-05-23T10:38:07.165Z");
         obj.put("validity_date", "2023-06-07T13:48:15.166Z");
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
-        obj.remove("active");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
                 TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
@@ -198,7 +196,6 @@ class IbanServiceTest {
         obj.put("publication_date", "2023-05-23T10:38:07.165Z");
         obj.put("validity_date", "2023-06-07T13:48:15.166Z");
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
-        obj.remove("active");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
                 TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
@@ -1265,7 +1262,7 @@ class IbanServiceTest {
         
         when(paRepository.findByIdDominio(organizationFiscalCode))
                 .thenReturn(Optional.of(creditorInstitution));
-        when(ibanMasterCustomRepository.findByFkPaAndIbanValueAndLabel(
+        when(ibanMasterSearchRepository.findByFkPaAndIbanValueAndLabel(
                 creditorInstitution.getObjId(), ibanValue, label, pageable))
                 .thenReturn(mockIbanMasters);
         when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
@@ -1278,7 +1275,6 @@ class IbanServiceTest {
         obj.put("publication_date", "2023-05-23T10:38:07.165Z");
         obj.put("validity_date", "2023-06-07T13:48:15.166Z");
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
-        obj.remove("active");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
                 TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
@@ -1303,7 +1299,7 @@ class IbanServiceTest {
         
         when(paRepository.findByIdDominio(organizationFiscalCode))
                 .thenReturn(Optional.of(creditorInstitution));
-        when(ibanMasterCustomRepository.findByFkPaAndIbanValue(
+        when(ibanMasterSearchRepository.findByFkPaAndIbanValue(
                 creditorInstitution.getObjId(), ibanValue, pageable))
                 .thenReturn(mockIbanMasters);
         when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
@@ -1316,7 +1312,6 @@ class IbanServiceTest {
         obj.put("publication_date", "2023-05-23T10:38:07.165Z");
         obj.put("validity_date", "2023-06-07T13:48:15.166Z");
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
-        obj.remove("active");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
                 TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
@@ -1333,7 +1328,7 @@ class IbanServiceTest {
         
         when(paRepository.findByIdDominio(organizationFiscalCode))
                 .thenReturn(Optional.of(creditorInstitution));
-        when(ibanMasterCustomRepository.findByFkPaAndIbanValue(
+        when(ibanMasterSearchRepository.findByFkPaAndIbanValue(
                 creditorInstitution.getObjId(), ibanValue, pageable))
                 .thenReturn(emptyPage);
         
