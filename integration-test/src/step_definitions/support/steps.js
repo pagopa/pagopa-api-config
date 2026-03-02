@@ -7,9 +7,8 @@ const {createCDI, deleteCDI} = require("./logic/cdiLogic")
 const {makeIdMix, makeIdNumber} = require("./utility/helpers")
 const { setTimeout } = require("timers/promises");
 
-const app_host = process.env.APP_HOST;
-
 let creditorInstitution = process.env.CREDITOR_INSTITUTION
+const defaultPSP = process.env.DEFAULT_PSP;
 let body;
 let responseToCheck;
 // pattern is '[0-9A-Z]{6,14}_[0-9]{2}-[0-9]{2}-[0-9]{4}'
@@ -62,13 +61,15 @@ Then('the response {string} is equal to {string}', (field, description) => {
 
 // entered a specific step's timeout to override the default (to prevent timeout error)
 When('the client creates a CDI with a runtime random IdentificativoFlusso and an IdentificativoPSP valued as {string}', {timeout: 20000}, async (identificativoPSP) => {
-    body = buildCDI(randomIdFlusso, identificativoPSP);
+    const pspToUse = (identificativoPSP === 'BPPIITRRZZZ') ? defaultPSP : identificativoPSP;
+    body = buildCDI(randomIdFlusso, pspToUse);
     responseToCheck = await createCDI(body);
 });
 
 // entered a specific step's timeout to override the default (to prevent timeout error)
 When('the client deletes the created CDI with an IdentificativoPSP valued as {string}', {timeout: 20000}, async (identificativoPSP) => {
     await setTimeout(5000);
-    responseToCheck = await deleteCDI(randomIdFlusso, identificativoPSP);
-});	
+    const pspToUse = (identificativoPSP === 'BPPIITRRZZZ') ? defaultPSP : identificativoPSP;
+    responseToCheck = await deleteCDI(randomIdFlusso, pspToUse);
+});
 
