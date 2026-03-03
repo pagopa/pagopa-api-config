@@ -1257,7 +1257,7 @@ class IbanServiceTest {
         Iban mockIban = getMockIban(iban, organizationFiscalCode);
         Page<IbanMaster> mockIbanMasters = TestUtil.mockPage(getMockIbanMasters(creditorInstitution, iban, mockIban), 50, 0);
         Pageable pageable = PageRequest.of(0, 50);
-        String ibanValue = "IT99C0222211111000000000000";
+        String ibanValue = "IT84H0706676470000000822789";
         String label = "STANDIN";
         
         when(paRepository.findByIdDominio(organizationFiscalCode))
@@ -1295,7 +1295,7 @@ class IbanServiceTest {
         Iban mockIban = getMockIban(iban, organizationFiscalCode);
         Page<IbanMaster> mockIbanMasters = TestUtil.mockPage(getMockIbanMasters(creditorInstitution, iban, mockIban), 50, 0);
         Pageable pageable = PageRequest.of(0, 50);
-        String ibanValue = "IT99C0222211111000000000000";
+        String ibanValue = "IT84H0706676470000000822789";
         
         when(paRepository.findByIdDominio(organizationFiscalCode))
                 .thenReturn(Optional.of(creditorInstitution));
@@ -1324,7 +1324,7 @@ class IbanServiceTest {
         String organizationFiscalCode = creditorInstitution.getIdDominio();
         Page<IbanMaster> emptyPage = TestUtil.mockPage(new ArrayList<>(), 50, 0);
         Pageable pageable = PageRequest.of(0, 50);
-        String ibanValue = "IT99C0222211111000000000000";
+        String ibanValue = "IT84H0706676470000000822789";
         
         when(paRepository.findByIdDominio(organizationFiscalCode))
                 .thenReturn(Optional.of(creditorInstitution));
