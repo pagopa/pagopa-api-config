@@ -1338,4 +1338,21 @@ class IbanServiceTest {
         assertEquals(0, result.getIbanEnhancedList().size());
         assertEquals(0, result.getPageInfo().getItemsFound());
     }
+
+    @Test
+    void getIbansEnhanced_withInvalidIban_400() {
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        String invalidIbanValue = "INVALID_IBAN_VALUE";
+        
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        
+        AppException ex =
+                assertThrows(
+                        AppException.class,
+                        () -> ibanService.getIbans(organizationFiscalCode, 50, 0, null, invalidIbanValue));
+        
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, ex.getHttpStatus());
+    }
 }

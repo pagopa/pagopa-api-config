@@ -243,6 +243,9 @@ public class IbanService {
             boolean hasLabel = StringUtils.hasText(label);
 
             if (hasIban) {
+                if (!IBANValidator.getInstance().isValid(iban)) {
+                    throw new AppException(AppError.IBAN_LABEL_NOT_VALID, iban);
+                }
                 ibanMasters = hasLabel 
                     ? ibanMasterSearchRepository.findByFkPaAndIbanValueAndLabel(
                         pa.getObjId(), iban, label, pageable)
