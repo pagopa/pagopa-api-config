@@ -258,7 +258,7 @@ public class IbanService {
             }
 
             List<IbanEnhanced> ibanEnhancedList = ibanMasters.stream()
-                    .map(elem -> convertEntitiesToModel(Pa.builder().build(), elem.getIban(), elem.getIbanAttributesMasters(), elem))
+                    .map(elem -> convertEntitiesToModel(pa, elem.getIban(), elem.getIbanAttributesMasters(), elem))
                     .collect(Collectors.toList());
 
             if(ibanEnhancedList.isEmpty() && (acaLabel.equals(label) || cupLabel.equals(label))) {

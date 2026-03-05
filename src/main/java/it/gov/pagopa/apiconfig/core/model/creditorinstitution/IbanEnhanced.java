@@ -99,4 +99,10 @@ public class IbanEnhanced {
   @JsonProperty("labels")
   @Schema(description = "The labels array associated with the iban")
   private List<IbanLabel> labels;
+
+  // Explicit getter to prevent Jackson from serializing both "active" and "is_active"
+  @com.fasterxml.jackson.annotation.JsonIgnore
+  public boolean isActive() {
+    return this.isActive;
+  }
 }
