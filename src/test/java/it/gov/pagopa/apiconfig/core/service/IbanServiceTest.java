@@ -160,7 +160,7 @@ class IbanServiceTest {
         obj.put("due_date", "2023-06-07T13:48:15.166Z");
         actual = new JSONObject(actual).put("ibans_enhanced", new JSONArray().put(obj)).toString();
         String expected =
-                TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced.json");
+                TestUtil.readJsonFromFile("response/get_creditorinstitution_ibans_enhanced_pa2.json");
         JSONAssert.assertEquals(expected, actual, JSONCompareMode.STRICT);
     }
 

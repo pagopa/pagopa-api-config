@@ -1,0 +1,27 @@
+{
+  "ibans_enhanced": [
+    {
+      "ci_owner": "00168480242",
+      "company_name": "Comune di Firenze",
+      "description": "Riscossione tributi",
+      "iban": "IT99C0222211111000000000000",
+      "is_active": true,
+      "labels": [
+        {
+          "description": "The iban to use for ACA/Standin payments",
+          "name": "STANDIN"
+        }
+      ],
+      "publication_date": "2023-05-23T10:38:07.165Z",
+      "validity_date": "2023-06-07T13:48:15.166Z",
+      "due_date": "2023-06-07T13:48:15.166Z"
+    }
+  ],
+  "page_info": {
+    "page": 0,
+    "limit": 50,
+    "items_found": 1,
+    "total_pages": 1,
+    "total_items": 1
+  }
+}
