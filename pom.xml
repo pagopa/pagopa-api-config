@@ -12,7 +12,7 @@
 
   <groupId>it.gov.pagopa.apiconfig</groupId>
   <artifactId>core</artifactId>
-  <version>0.59.35-1-PIDM-1440-update-api-ibans-list</version>
+  <version>0.59.35-2-PIDM-1440-update-api-ibans-list</version>
   <description>Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti</description>
 
   <properties>
