@@ -1394,5 +1394,33 @@ class IbanServiceTest {
         assertEquals(1, result.getIbanEnhancedList().size());
         assertEquals(mockIban.getIban(), result.getIbanEnhancedList().get(0).getIbanValue());
     }
+
+    @Test
+    void getIbansEnhanced_withCUPLabelOnly_shouldReturnFallback() {
+        Pa creditorInstitution = getMockPa();
+        String organizationFiscalCode = creditorInstitution.getIdDominio();
+        Iban mockIban = getMockIban(organizationFiscalCode);
+        LocalDateTime nowTime = LocalDateTime.now();
+        IbanMaster lastPublishedIban = getMockIbanMasterValidityDateInsertedDate(
+                creditorInstitution, mockIban, 
+                Timestamp.valueOf(nowTime.minusYears(1)), 
+                Timestamp.valueOf(nowTime.minusYears(1)));
+        lastPublishedIban.setIbanAttributesMasters(getMockIbanAttributeMasters(lastPublishedIban));
+        
+        Pageable pageable = PageRequest.of(0, 50);
+        Page<IbanMaster> emptyPage = TestUtil.mockPage(new ArrayList<>(), 50, 0);
+        creditorInstitution.setIbanMasters(Arrays.asList(lastPublishedIban));
+        
+        when(paRepository.findByIdDominio(organizationFiscalCode))
+                .thenReturn(Optional.of(creditorInstitution));
+        when(ibanMasterRepository.findByFkPaAndLabel(creditorInstitution.getObjId(), "testCup", pageable))
+                .thenReturn(emptyPage);
+        when(ibanRepository.findById(anyLong())).thenReturn(Optional.of(mockIban));
+        
+        IbansEnhanced result = ibanService.getIbans(organizationFiscalCode, 50, 0, "testCup", null);
+        
+        assertEquals(1, result.getIbanEnhancedList().size());
+        assertEquals(mockIban.getIban(), result.getIbanEnhancedList().get(0).getIbanValue());
+    }
 }
 
