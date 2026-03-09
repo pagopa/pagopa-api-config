@@ -23,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.35-1-PIDM-1440-update-api-ibans-list"
+    tag: "0.59.35-2-PIDM-1440-update-api-ibans-list"
     pullPolicy: Always
   livenessProbe:
     httpGet:
