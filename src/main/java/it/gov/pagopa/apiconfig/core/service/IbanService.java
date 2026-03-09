@@ -261,7 +261,7 @@ public class IbanService {
                     .map(elem -> convertEntitiesToModel(pa, elem.getIban(), elem.getIbanAttributesMasters(), elem))
                     .collect(Collectors.toList());
 
-            if(ibanEnhancedList.isEmpty() && (acaLabel.equals(label) || cupLabel.equals(label))) {
+            if(ibanEnhancedList.isEmpty() && !hasIban && (acaLabel.equals(label) || cupLabel.equals(label))) {
                 IbanMaster lastPublishedIban = getLastPublishedIban(pa);
                 if(lastPublishedIban != null) {
                     ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
