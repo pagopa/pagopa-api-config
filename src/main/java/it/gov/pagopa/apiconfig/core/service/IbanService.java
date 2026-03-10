@@ -230,49 +230,49 @@ public class IbanService {
     }
 
     public IbansEnhanced getIbans(@NotNull @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid") String organizationFiscalCode,
-                                      @Positive Integer limit,
-                                      @PositiveOrZero Integer pageNumber,
-                                      String label,
-                                      String iban) {
-            Pageable pageable = PageRequest.of(pageNumber, limit);
-            Pa pa = getPaIfExists(organizationFiscalCode);
+                                   @Positive Integer limit,
+                                   @PositiveOrZero Integer pageNumber,
+                                   String label,
+                                   String iban) {
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Pa pa = getPaIfExists(organizationFiscalCode);
 
-            Page<IbanMaster> ibanMasters;
-            
-            boolean hasIban = StringUtils.hasText(iban);
-            boolean hasLabel = StringUtils.hasText(label);
+        Page<IbanMaster> ibanMasters;
+        
+        boolean hasIban = StringUtils.hasText(iban);
+        boolean hasLabel = StringUtils.hasText(label);
 
-            if (hasIban) {
-                if (!IBANValidator.getInstance().isValid(iban)) {
-                    throw new AppException(AppError.IBAN_LABEL_NOT_VALID, iban);
-                }
-                ibanMasters = hasLabel 
-                    ? ibanMasterSearchRepository.findByFkPaAndIbanValueAndLabel(
-                        pa.getObjId(), iban, label, pageable)
-                    : ibanMasterSearchRepository.findByFkPaAndIbanValue(
-                        pa.getObjId(), iban, pageable);
-            } else {
-                ibanMasters = hasLabel
-                    ? ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label, pageable)
-                    : ibanMasterRepository.findByFkPa(pa.getObjId(), pageable);
+        if (hasIban) {
+            if (!IBANValidator.getInstance().isValid(iban)) {
+                throw new AppException(AppError.IBAN_NOT_VALID, iban);
             }
+            ibanMasters = hasLabel 
+                ? ibanMasterSearchRepository.findByFkPaAndIbanValueAndLabel(
+                    pa.getObjId(), iban, label, pageable)
+                : ibanMasterSearchRepository.findByFkPaAndIbanValue(
+                    pa.getObjId(), iban, pageable);
+        } else {
+            ibanMasters = hasLabel
+                ? ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label, pageable)
+                : ibanMasterRepository.findByFkPa(pa.getObjId(), pageable);
+        }
 
-            List<IbanEnhanced> ibanEnhancedList = ibanMasters.stream()
-                    .map(elem -> convertEntitiesToModel(pa, elem.getIban(), elem.getIbanAttributesMasters(), elem))
-                    .collect(Collectors.toList());
+        List<IbanEnhanced> ibanEnhancedList = ibanMasters.stream()
+                .map(elem -> convertEntitiesToModel(pa, elem.getIban(), elem.getIbanAttributesMasters(), elem))
+                .collect(Collectors.toList());
 
-            if(ibanEnhancedList.isEmpty() && !hasIban && (acaLabel.equals(label) || cupLabel.equals(label))) {
-                IbanMaster lastPublishedIban = getLastPublishedIban(pa);
-                if(lastPublishedIban != null) {
-                    ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
-                }
+        if(ibanEnhancedList.isEmpty() && !hasIban && (acaLabel.equals(label) || cupLabel.equals(label))) {
+            IbanMaster lastPublishedIban = getLastPublishedIban(pa);
+            if(lastPublishedIban != null) {
+                ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
             }
+        }
 
-            return IbansEnhanced.builder()
-                        .ibanEnhancedList(ibanEnhancedList)
-                        .pageInfo(CommonUtil.buildPageInfo(ibanMasters))
-                        .build();
-            }
+        return IbansEnhanced.builder()
+                    .ibanEnhancedList(ibanEnhancedList)
+                    .pageInfo(CommonUtil.buildPageInfo(ibanMasters))
+                    .build();
+    }
 
     public String deleteIban(
             @NotBlank @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid")

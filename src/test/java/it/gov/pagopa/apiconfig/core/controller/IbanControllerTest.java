@@ -44,43 +44,46 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class IbanControllerTest {
 
-  @Autowired private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-  @MockBean private CreditorInstitutionsService creditorInstitutionsService;
+    @MockBean
+    private CreditorInstitutionsService creditorInstitutionsService;
 
-  @MockBean private IbanService ibanService;
+    @MockBean
+    private IbanService ibanService;
 
-  @BeforeEach
-  void setUp() {
-    when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234"))
-        .thenReturn(getMockIbans());
-    when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), anyString()))
-        .thenReturn(
-            getMockIbansEnhanced(
-                OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
-                OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
-  }
+    @BeforeEach
+    void setUp() {
+        when(creditorInstitutionsService.getCreditorInstitutionsIbans("1234"))
+                .thenReturn(getMockIbans());
+        when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), anyString()))
+                .thenReturn(
+                        getMockIbansEnhanced(
+                                OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
+                                OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
+    }
 
-  @ParameterizedTest
-  @CsvSource({"/creditorinstitutions/1234/ibans"})
-  void testGets(String url) throws Exception {
-    mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @ParameterizedTest
+    @CsvSource({ "/creditorinstitutions/1234/ibans" })
+    void testGets(String url) throws Exception {
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-  @ParameterizedTest
-  @CsvSource({"/creditorinstitutions/12345678911/ibans/list/?limit=50&page=0&label=STANDIN"})
-  void testGetsEnhanced(String url) throws Exception {
-    when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), any()))
-        .thenReturn(
-            getMockIbansEnhanced(
-                OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
-                OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
-    mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @ParameterizedTest
+    @CsvSource({ "/creditorinstitutions/12345678911/ibans/list/?limit=50&page=0&label=STANDIN" })
+    void testGetsEnhanced(String url) throws Exception {
+        when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), any()))
+                .thenReturn(
+                        getMockIbansEnhanced(
+                                OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
+                                OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
     @ParameterizedTest
     @CsvSource({ "/creditorinstitutions/12345678911/ibans/list/?limit=50&page=0&iban=IT99C0222211111000000000000" })
@@ -95,176 +98,174 @@ class IbanControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
-  @ParameterizedTest
-  @CsvSource({ "/creditorinstitutions/12345678911/ibans/list/?limit=50&page=0&label=STANDIN&iban=IT99C0222211111000000000000" })
-  void testGetsEnhancedByLabelAndIban(String url) throws Exception {
-      when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), anyString()))
-              .thenReturn(
-                      getMockIbansEnhanced(
-                              OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
-                              OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
-      mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
-              .andExpect(status().isOk())
-              .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @ParameterizedTest
+    @CsvSource({
+            "/creditorinstitutions/12345678911/ibans/list/?limit=50&page=0&label=STANDIN&iban=IT99C0222211111000000000000" })
+    void testGetsEnhancedByLabelAndIban(String url) throws Exception {
+        when(ibanService.getIbans(anyString(), anyInt(), anyInt(), anyString(), anyString()))
+                .thenReturn(
+                        getMockIbansEnhanced(
+                                OffsetDateTime.parse("2023-06-07T13:48:15.166+02"),
+                                OffsetDateTime.parse("2023-06-07T13:48:15.166+02")));
+        mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-  @Test
-  void createIban_201() throws Exception {
-    mvc.perform(
-            post("/creditorinstitutions/1234/ibans")
-                .content(
-                    TestUtil.toJson(
-                        getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now())))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated());
-  }
+    @Test
+    void createIban_201() throws Exception {
+        mvc.perform(
+                post("/creditorinstitutions/1234/ibans")
+                        .content(
+                                TestUtil.toJson(
+                                        getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now())))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
 
-  @Test
-  void createIban_400() throws Exception {
-    IbanEnhanced ibanEnhanced = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
-    when(ibanService.createIban(anyString(), any(IbanEnhanced.class)))
-        .thenThrow(ConstraintViolationException.class);
-    mvc.perform(
-            post("/creditorinstitutions/1234/ibans")
-                .content(TestUtil.toJson(ibanEnhanced))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @Test
+    void createIban_400() throws Exception {
+        IbanEnhanced ibanEnhanced = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+        when(ibanService.createIban(anyString(), any(IbanEnhanced.class)))
+                .thenThrow(ConstraintViolationException.class);
+        mvc.perform(
+                post("/creditorinstitutions/1234/ibans")
+                        .content(TestUtil.toJson(ibanEnhanced))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-  @Test
-  void createIban_422() throws Exception {
-    IbanEnhanced ibanEnhanced = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
-    ibanEnhanced.getLabels().get(0).setName("FAKE");
-    when(ibanService.createIban(anyString(), any(IbanEnhanced.class)))
-        .thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
-    mvc.perform(
-            post("/creditorinstitutions/1234/ibans")
-                .content(TestUtil.toJson(ibanEnhanced))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnprocessableEntity())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @Test
+    void createIban_422() throws Exception {
+        IbanEnhanced ibanEnhanced = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+        ibanEnhanced.getLabels().get(0).setName("FAKE");
+        when(ibanService.createIban(anyString(), any(IbanEnhanced.class)))
+                .thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
+        mvc.perform(
+                post("/creditorinstitutions/1234/ibans")
+                        .content(TestUtil.toJson(ibanEnhanced))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-  @Test
-  void createIban_500() throws Exception {
-    when(ibanService.createIban(anyString(), any(IbanEnhanced.class)))
-        .thenThrow(OptimisticLockingFailureException.class);
-    mvc.perform(
-            post("/creditorinstitutions/1234/ibans")
-                .content(
-                    TestUtil.toJson(
-                        getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now())))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isInternalServerError())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @Test
+    void createIban_500() throws Exception {
+        when(ibanService.createIban(anyString(), any(IbanEnhanced.class)))
+                .thenThrow(OptimisticLockingFailureException.class);
+        mvc.perform(
+                post("/creditorinstitutions/1234/ibans")
+                        .content(
+                                TestUtil.toJson(
+                                        getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now())))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-  @Test
-  void updateIban_200() throws Exception {
-    mvc.perform(
-            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
-                .content(
-                    TestUtil.toJson(
-                        getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now())))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
-  }
+    @Test
+    void updateIban_200() throws Exception {
+        mvc.perform(
+                put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
+                        .content(
+                                TestUtil.toJson(
+                                        getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now())))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 
-  @Test
-  void updateIban_400() throws Exception {
-    IbanEnhanced ibanEnhanced = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
-    when(ibanService.updateIban(anyString(), anyString(), any(IbanEnhanced.class)))
-        .thenThrow(ConstraintViolationException.class);
-    mvc.perform(
-            put("/creditorinstitutions/1234/ibans/fake")
-                .content(TestUtil.toJson(ibanEnhanced))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @Test
+    void updateIban_400() throws Exception {
+        IbanEnhanced ibanEnhanced = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+        when(ibanService.updateIban(anyString(), anyString(), any(IbanEnhanced.class)))
+                .thenThrow(ConstraintViolationException.class);
+        mvc.perform(
+                put("/creditorinstitutions/1234/ibans/fake")
+                        .content(TestUtil.toJson(ibanEnhanced))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-  @Test
-  void updateIban_422() throws Exception {
-    IbanEnhanced ibanEnhanced = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
-    ibanEnhanced.getLabels().get(0).setName("IT99C0222211111000000000000");
-    when(ibanService.updateIban(anyString(), anyString(), any(IbanEnhanced.class)))
-        .thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
-    mvc.perform(
-            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
-                .content(TestUtil.toJson(ibanEnhanced))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnprocessableEntity())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @Test
+    void updateIban_422() throws Exception {
+        IbanEnhanced ibanEnhanced = getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now());
+        ibanEnhanced.getLabels().get(0).setName("IT99C0222211111000000000000");
+        when(ibanService.updateIban(anyString(), anyString(), any(IbanEnhanced.class)))
+                .thenThrow(new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "", ""));
+        mvc.perform(
+                put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
+                        .content(TestUtil.toJson(ibanEnhanced))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-  @Test
-  void updateIban_500() throws Exception {
-    when(ibanService.updateIban(anyString(), anyString(), any(IbanEnhanced.class)))
-        .thenThrow(OptimisticLockingFailureException.class);
-    mvc.perform(
-            put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
-                .content(
-                    TestUtil.toJson(
-                        getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now())))
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isInternalServerError())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @Test
+    void updateIban_500() throws Exception {
+        when(ibanService.updateIban(anyString(), anyString(), any(IbanEnhanced.class)))
+                .thenThrow(OptimisticLockingFailureException.class);
+        mvc.perform(
+                put("/creditorinstitutions/1234/ibans/IT99C0222211111000000000000")
+                        .content(
+                                TestUtil.toJson(
+                                        getMockIbanEnhanced(OffsetDateTime.now(), OffsetDateTime.now())))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
-  @Test
-  void deleteIban() throws Exception {
-    mvc.perform(
-        post("/creditorinstitutions/1234/ibans")
-            .content(TestUtil.toJson(getMockIbanEnhanced_2()))
-            .contentType(MediaType.APPLICATION_JSON));
-    mvc.perform(
-            delete("/creditorinstitutions/1234/ibans/IT99C0222211111000000000003")
-                .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
-  }
-  
-  @Test
-  void createMassiveIbans() throws Exception {
-    File zip = TestUtil.readFile("file/massiveIbansValid.zip");
-    MockMultipartFile multipartFile =
-        new MockMultipartFile(
-            "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
-    String url = "/creditorinstitutions/ibans";
+    @Test
+    void deleteIban() throws Exception {
+        mvc.perform(
+                post("/creditorinstitutions/1234/ibans")
+                        .content(TestUtil.toJson(getMockIbanEnhanced_2()))
+                        .contentType(MediaType.APPLICATION_JSON));
+        mvc.perform(
+                delete("/creditorinstitutions/1234/ibans/IT99C0222211111000000000003")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 
-    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
-        .andExpect(status().isCreated());
-  }
-  
-  @Test
-  void createMassiveIbansByCsv() throws Exception {
-    File zip = TestUtil.readFile("file/massiveIbansValid_Insert.csv");
-    MockMultipartFile multipartFile =
-        new MockMultipartFile(
-            "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
-    String url = "/creditorinstitutions/ibans/csv";
+    @Test
+    void createMassiveIbans() throws Exception {
+        File zip = TestUtil.readFile("file/massiveIbansValid.zip");
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+        String url = "/creditorinstitutions/ibans";
 
-    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
-        .andExpect(status().isOk());
-    
-    zip = TestUtil.readFile("file/massiveIbansValid_Update_Delete.csv");
-    multipartFile =
-            new MockMultipartFile(
+        mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createMassiveIbansByCsv() throws Exception {
+        File zip = TestUtil.readFile("file/massiveIbansValid_Insert.csv");
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
+        String url = "/creditorinstitutions/ibans/csv";
+
+        mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+
+        zip = TestUtil.readFile("file/massiveIbansValid_Update_Delete.csv");
+        multipartFile = new MockMultipartFile(
                 "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
 
-    mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
-            .andExpect(status().isOk());
-  }
+        mvc.perform(multipart(url).file(multipartFile).contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+    }
 
-  @Test
-  void upsertIbanLabel_200() throws Exception {
-    IbanLabel ibanLabel = IbanLabel.builder().name("newlabel").description("description").build();
-    when(ibanService.upsertIbanLabel(any(IbanLabel.class)))
-            .thenReturn(ibanLabel);
-    mvc.perform(post("/creditorinstitutions/ibans/labels")
-                    .content(TestUtil.toJson(ibanLabel))
-                    .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-  }
+    @Test
+    void upsertIbanLabel_200() throws Exception {
+        IbanLabel ibanLabel = IbanLabel.builder().name("newlabel").description("description").build();
+        when(ibanService.upsertIbanLabel(any(IbanLabel.class)))
+                .thenReturn(ibanLabel);
+        mvc.perform(post("/creditorinstitutions/ibans/labels")
+                .content(TestUtil.toJson(ibanLabel))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 }

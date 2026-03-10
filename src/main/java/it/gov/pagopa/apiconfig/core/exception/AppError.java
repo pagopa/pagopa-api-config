@@ -207,6 +207,11 @@ public enum AppError {
 	      "IBAN already exist",
 	      "The IBAN with code %s already exists"),
 
+  IBAN_NOT_VALID(
+      HttpStatus.UNPROCESSABLE_ENTITY,
+      "IBAN not valid",
+      "The IBAN value %s is not valid"),
+
   IBAN_LABEL_NOT_VALID(
       HttpStatus.UNPROCESSABLE_ENTITY,
       "IBAN label not valid",
