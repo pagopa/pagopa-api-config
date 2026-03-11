@@ -256,7 +256,6 @@ public class IbanService {
                 ? ibanMasterSearchRepository.findByFkPaAndLabel(pa.getObjId(), label, pageable)
                 : ibanMasterSearchRepository.findByFkPa(pa.getObjId(), pageable);
         }
-
         List<IbanEnhanced> ibanEnhancedList = ibanMasters.stream()
                 .map(elem -> convertEntitiesToModel(pa, elem.getIban(), elem.getIbanAttributesMasters(), elem))
                 .collect(Collectors.toList());
