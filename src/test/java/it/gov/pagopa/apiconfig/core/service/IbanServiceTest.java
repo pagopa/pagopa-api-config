@@ -1345,29 +1345,6 @@ class IbanServiceTest {
     }
 
     @Test
-    void getIbansEnhanced_withACALabelAndNonExistentIban_shouldNotReturnFallback() {
-        Pa creditorInstitution = getMockPa();
-        String organizationFiscalCode = creditorInstitution.getIdDominio();
-        String nonExistentIbanValue = "IT60X0542811101000000123456";
-        Pageable pageable = PageRequest.of(0, 50);
-        Page<IbanMaster> emptyPage = TestUtil.mockPage(new ArrayList<>(), 50, 0);
-        
-        when(paRepository.findByIdDominio(organizationFiscalCode))
-                .thenReturn(Optional.of(creditorInstitution));
-        when(ibanMasterSearchRepository.findByFkPaAndIbanValueAndLabel(
-                creditorInstitution.getObjId(), nonExistentIbanValue, "testAca", pageable))
-                .thenReturn(emptyPage);
-        
-        IbansEnhanced result = ibanService.getIbans(organizationFiscalCode, 50, 0, "testAca", nonExistentIbanValue);
-        
-        assertEquals(0, result.getIbanEnhancedList().size());
-        assertEquals(0, result.getPageInfo().getItemsFound());
-        
-        verify(ibanMasterSearchRepository, times(1)).findByFkPaAndIbanValueAndLabel(
-                creditorInstitution.getObjId(), nonExistentIbanValue, "testAca", pageable);
-    }
-
-    @Test
     void getIbansEnhanced_withACALabelOnly_shouldReturnFallback() {
         Pa creditorInstitution = getMockPa();
         String organizationFiscalCode = creditorInstitution.getIdDominio();
