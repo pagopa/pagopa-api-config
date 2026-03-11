@@ -1,14 +1,14 @@
 package it.gov.pagopa.apiconfig.core.repository;
 
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
-import it.gov.pagopa.apiconfig.starter.repository.IbanRepository;
+import it.gov.pagopa.apiconfig.starter.repository.IbanMasterRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IbanMasterSearchRepository extends IbanRepository {
+public interface IbanMasterSearchRepository extends IbanMasterRepository {
 
        @Query("SELECT master FROM IbanMaster master " +
               "JOIN IbanAttributeMaster attribute ON master.objId = attribute.fkIbanMaster " +

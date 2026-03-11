@@ -75,7 +75,6 @@ public class IbanService {
     private final int thresholdSize;
     private final PaRepository paRepository;
     private final IbanRepository ibanRepository;
-    private final IbanMasterRepository ibanMasterRepository;
     private final IbanMasterSearchRepository ibanMasterSearchRepository;
     private final IbanAttributeRepository ibanAttributeRepository;
     private final IbanAttributeMasterRepository ibanAttributeMasterRepository;
@@ -92,7 +91,6 @@ public class IbanService {
             @Value("${zip.size}") int thresholdSize,
             PaRepository paRepository,
             IbanRepository ibanRepository,
-            IbanMasterRepository ibanMasterRepository,
             IbanMasterSearchRepository ibanMasterSearchRepository,
             IbanAttributeRepository ibanAttributeRepository,
             IbanAttributeMasterRepository ibanAttributeMasterRepository,
@@ -107,7 +105,6 @@ public class IbanService {
         this.thresholdSize = thresholdSize;
         this.paRepository = paRepository;
         this.ibanRepository = ibanRepository;
-        this.ibanMasterRepository = ibanMasterRepository;
         this.ibanMasterSearchRepository = ibanMasterSearchRepository;
         this.ibanAttributeRepository = ibanAttributeRepository;
         this.ibanAttributeMasterRepository = ibanAttributeMasterRepository;
@@ -137,7 +134,7 @@ public class IbanService {
         // check if IBAN is a postal IBAN and if it is already related to an existing Creditor
         // Institution
         if (isPostalIban(iban.getIbanValue())
-                && !ibanMasterRepository.findByFkIban(ibanToBeCreated.getObjId()).isEmpty())
+                && !ibanMasterSearchRepository.findByFkIban(ibanToBeCreated.getObjId()).isEmpty())
             throw new AppException(
                     AppError.POSTAL_IBAN_ALREADY_ASSOCIATED,
                     iban.getIbanValue(),
@@ -220,7 +217,7 @@ public class IbanService {
                 .map(IbanAttributeMaster::getObjId)
                 .collect(Collectors.toList());
         ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDelete);
-        ibanMasterRepository.saveAndFlush(ibanCIRelationToBeUpdated);
+        ibanMasterSearchRepository.saveAndFlush(ibanCIRelationToBeUpdated);
         List<IbanAttributeMaster> updatedIbanAttributes =
                 saveIbanLabelRelation(iban, ibanCIRelationToBeUpdated);
 
@@ -256,8 +253,8 @@ public class IbanService {
                     pa.getObjId(), iban, pageable);
         } else {
             ibanMasters = hasLabel
-                ? ibanMasterRepository.findByFkPaAndLabel(pa.getObjId(), label, pageable)
-                : ibanMasterRepository.findByFkPa(pa.getObjId(), pageable);
+                ? ibanMasterSearchRepository.findByFkPaAndLabel(pa.getObjId(), label, pageable)
+                : ibanMasterSearchRepository.findByFkPa(pa.getObjId(), pageable);
         }
 
         List<IbanEnhanced> ibanEnhancedList = ibanMasters.stream()
@@ -294,7 +291,7 @@ public class IbanService {
 
         // Get all ibanMaster relations
         List<IbanMaster> ibanMastersToBeDeleted =
-                ibanMasterRepository.findByFkIbanAndFkPa(
+                ibanMasterSearchRepository.findByFkIbanAndFkPa(
                         ibanToBeDeleted.getObjId(), existingCreditorInstitution.getObjId());
 
         // Get all ibanAttributesMaster relations
@@ -307,8 +304,8 @@ public class IbanService {
 
         // Delete all relations listed before
         ibanAttributeMasterRepository.deleteAll(ibanAttributeMastersToBeDeleted);
-        ibanMasterRepository.deleteAll(ibanMastersToBeDeleted);
-        if (ibanMasterRepository.findByFkIban(ibanToBeDeleted.getObjId()).isEmpty()) {
+        ibanMasterSearchRepository.deleteAll(ibanMastersToBeDeleted);
+        if (ibanMasterSearchRepository.findByFkIban(ibanToBeDeleted.getObjId()).isEmpty()) {
             ibanRepository.delete(ibanToBeDeleted);
         }
 
@@ -439,7 +436,7 @@ public class IbanService {
     }
 
     private Optional<IbanMaster> getIbanMaster(Iban iban, Pa creditorInstitution) {
-        return ibanMasterRepository
+        return ibanMasterSearchRepository
                 .findByFkIbanAndFkPa(iban.getObjId(), creditorInstitution.getObjId())
                 .stream()
                 .findFirst();
@@ -478,7 +475,7 @@ public class IbanService {
         ibanMaster.setDescription(iban.getDescription());
         ibanMaster.setPa(creditorInstitution); // setting CI object reference
         ibanMaster.setIban(ibanToBeCreated); // setting IBAN object reference
-        return ibanMasterRepository.save(ibanMaster);
+        return ibanMasterSearchRepository.save(ibanMaster);
     }
 
     private List<IbanAttributeMaster> saveIbanLabelRelation(
@@ -725,7 +722,7 @@ public class IbanService {
                 // update the properties of the existing iban
                 modelMapper.map(loadedIban, i);
 
-                List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(i.getObjId(), pa.getObjId());
+                List<IbanMaster> m = ibanMasterSearchRepository.findByFkIbanAndFkPa(i.getObjId(), pa.getObjId());
 
                 if (CollectionUtils.isNotEmpty(m)) {
                     // there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
@@ -743,7 +740,7 @@ public class IbanService {
         }
 
         ibanRepository.saveAll(ibanToSaveList);
-        ibanMasterRepository.saveAll(ibanMasterToSaveList);
+        ibanMasterSearchRepository.saveAll(ibanMasterToSaveList);
     }
 
     /**
@@ -930,7 +927,7 @@ public class IbanService {
 			// update the properties of the existing iban
 			modelMapper.map(loadedIbanMaster.getIban(), ibanToUpdate);
 
-			List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToUpdate.getObjId(), pa.getObjId());
+			List<IbanMaster> m = ibanMasterSearchRepository.findByFkIbanAndFkPa(ibanToUpdate.getObjId(), pa.getObjId());
 
 			if (CollectionUtils.isNotEmpty(m)) {
 				// there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
@@ -946,7 +943,7 @@ public class IbanService {
 			}
 
     	}
-    	ibanMasterRepository.saveAll(ibanMasterToUpdateList);
+    	ibanMasterSearchRepository.saveAll(ibanMasterToUpdateList);
     }
 
     private void deleteIbans(List<IbanMaster> ibanMasterDeleteList, List<IbanMaster> ibanMasterInsertList) {
@@ -971,7 +968,7 @@ public class IbanService {
     		// delete the relation in the iban_master
     		Pa pa = this.getPaIfExists(iban.getFiscalCode());
     		// there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
-    		List<IbanMaster> m = ibanMasterRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
+    		List<IbanMaster> m = ibanMasterSearchRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
     		if (CollectionUtils.isEmpty(m)) {throw new AppException(AppError.IBAN_NOT_ASSOCIATED, iban.getIban(), iban.getFiscalCode());}
     		ibanMasterIdToDeleteList.add(m.get(0).getObjId());
     		List<IbanAttributeMaster> ibanAttributeMasterList = m.get(0).getIbanAttributesMasters() != null? m.get(0).getIbanAttributesMasters() : new ArrayList<>();
@@ -980,7 +977,7 @@ public class IbanService {
 
         }
         ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDeleteList);
-        ibanMasterRepository.deleteByIds(ibanMasterIdToDeleteList);
+        ibanMasterSearchRepository.deleteByIds(ibanMasterIdToDeleteList);
         ibanRepository.deleteByIds(ibanToDeleteList);
     }
 
@@ -994,7 +991,7 @@ public class IbanService {
     		    }
     		});
     	}
-        ibanMasterRepository.saveAll(ibanMasterToSaveList);
+        ibanMasterSearchRepository.saveAll(ibanMasterToSaveList);
     }
 
     private void validateIban(IbanMaster loadedIbanMaster, Iban iban, Pa pa) {
