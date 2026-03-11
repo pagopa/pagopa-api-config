@@ -35,7 +35,6 @@ import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.validator.routines.IBANValidator;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -69,50 +68,54 @@ public class IbanService {
 
     public static final String FILE_BAD_REQUEST = "Bad request for the massive loading of IBANs";
 
-    @Value("${iban.abi.poste}")
-    private String postalIbanAbi;
+    private final String postalIbanAbi;
+    private final String cupLabel;
+    private final String acaLabel;
+    private final int thresholdEntries;
+    private final int thresholdSize;
+    private final PaRepository paRepository;
+    private final IbanRepository ibanRepository;
+    private final IbanMasterRepository ibanMasterRepository;
+    private final IbanMasterSearchRepository ibanMasterSearchRepository;
+    private final IbanAttributeRepository ibanAttributeRepository;
+    private final IbanAttributeMasterRepository ibanAttributeMasterRepository;
+    private final CodifichePaRepository codifichePaRepository;
+    private final EncodingsService encodingsService;
+    private final ModelMapper modelMapper;
+    private final AzureStorageInteraction azureStorageInteraction;
 
-    @Value("${iban.labels.cup}")
-    private String cupLabel;
-
-    @Value("${iban.labels.aca}")
-    private String acaLabel;
-
-    @Value("${zip.entries}")
-    private int thresholdEntries; // Maximum number of entries allowed in the zip file
-
-    @Value("${zip.size}")
-    private int thresholdSize; // Max size of zip file content
-
-    @Autowired
-    private PaRepository paRepository;
-
-    @Autowired
-    private IbanRepository ibanRepository;
-
-    @Autowired
-    private IbanMasterRepository ibanMasterRepository;
-
-    @Autowired
-    private IbanMasterSearchRepository ibanMasterSearchRepository;
-
-    @Autowired
-    private IbanAttributeRepository ibanAttributeRepository;
-
-    @Autowired
-    private IbanAttributeMasterRepository ibanAttributeMasterRepository;
-
-    @Autowired
-    private CodifichePaRepository codifichePaRepository;
-
-    @Autowired
-    private EncodingsService encodingsService;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private AzureStorageInteraction azureStorageInteraction;
+    public IbanService(
+            @Value("${iban.abi.poste}") String postalIbanAbi,
+            @Value("${iban.labels.cup}") String cupLabel,
+            @Value("${iban.labels.aca}") String acaLabel,
+            @Value("${zip.entries}") int thresholdEntries,
+            @Value("${zip.size}") int thresholdSize,
+            PaRepository paRepository,
+            IbanRepository ibanRepository,
+            IbanMasterRepository ibanMasterRepository,
+            IbanMasterSearchRepository ibanMasterSearchRepository,
+            IbanAttributeRepository ibanAttributeRepository,
+            IbanAttributeMasterRepository ibanAttributeMasterRepository,
+            CodifichePaRepository codifichePaRepository,
+            EncodingsService encodingsService,
+            ModelMapper modelMapper,
+            AzureStorageInteraction azureStorageInteraction) {
+        this.postalIbanAbi = postalIbanAbi;
+        this.cupLabel = cupLabel;
+        this.acaLabel = acaLabel;
+        this.thresholdEntries = thresholdEntries;
+        this.thresholdSize = thresholdSize;
+        this.paRepository = paRepository;
+        this.ibanRepository = ibanRepository;
+        this.ibanMasterRepository = ibanMasterRepository;
+        this.ibanMasterSearchRepository = ibanMasterSearchRepository;
+        this.ibanAttributeRepository = ibanAttributeRepository;
+        this.ibanAttributeMasterRepository = ibanAttributeMasterRepository;
+        this.codifichePaRepository = codifichePaRepository;
+        this.encodingsService = encodingsService;
+        this.modelMapper = modelMapper;
+        this.azureStorageInteraction = azureStorageInteraction;
+    }
 
     public IbanEnhanced createIban(
             @Pattern(regexp = "\\d{11}", message = "CI fiscal code not valid") @NotBlank
@@ -261,7 +264,7 @@ public class IbanService {
                 .map(elem -> convertEntitiesToModel(pa, elem.getIban(), elem.getIbanAttributesMasters(), elem))
                 .collect(Collectors.toList());
 
-        if(ibanEnhancedList.isEmpty() && !hasIban && (acaLabel.equals(label) || cupLabel.equals(label))) {
+        if(ibanEnhancedList.isEmpty() && (acaLabel.equals(label) || cupLabel.equals(label))) {
             IbanMaster lastPublishedIban = getLastPublishedIban(pa);
             if(lastPublishedIban != null) {
                 ibanEnhancedList.add(convertEntitiesToModel(pa, lastPublishedIban.getIban(), lastPublishedIban.getIbanAttributesMasters(), lastPublishedIban));
