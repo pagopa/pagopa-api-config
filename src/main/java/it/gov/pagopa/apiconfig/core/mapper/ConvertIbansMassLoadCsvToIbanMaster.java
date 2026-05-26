@@ -1,7 +1,6 @@
 package it.gov.pagopa.apiconfig.core.mapper;
 
 import it.gov.pagopa.apiconfig.core.model.massiveloading.*;
-import it.gov.pagopa.apiconfig.core.util.CommonUtil;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.spi.MappingContext;
@@ -37,7 +36,7 @@ public class ConvertIbansMassLoadCsvToIbanMaster extends AbstractConverter<Ibans
 
 			IbanMaster ibanMaster = IbanMaster.builder()
 					.description(ibanRow.getDescription())
-					.validityDate(Timestamp.valueOf(LocalDate.from(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN).parse(ibanRow.getIbanActiveDate())).atStartOfDay()))
+					.validityDate(Timestamp.valueOf(LocalDate.from(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN).parse(ibanRow.getActivationDate())).atStartOfDay()))
 					.insertedDate(Timestamp.from(Instant.now()))
 					.iban(ibanEntity)
 					.build();	  

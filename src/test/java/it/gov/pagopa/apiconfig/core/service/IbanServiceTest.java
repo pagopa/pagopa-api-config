@@ -1104,7 +1104,7 @@ class IbanServiceTest {
         MockMultipartFile file = getMockMultipartFile(zip);
 
         try {
-            ibanService.createMassiveIbansByCsv(file);
+            ibanService.processMassiveIbanOperationByCsv(file);
         } catch (Exception e) {
             fail(e);
         }
@@ -1116,7 +1116,7 @@ class IbanServiceTest {
         file = getMockMultipartFile(zip);
 
         try {
-            ibanService.createMassiveIbansByCsv(file);
+            ibanService.processMassiveIbanOperationByCsv(file);
         } catch (Exception e) {
             fail(e);
         }
@@ -1147,7 +1147,7 @@ class IbanServiceTest {
         MockMultipartFile file = getMockMultipartFile(zip);
 
         try {
-            ibanService.createMassiveIbansByCsv(file);
+            ibanService.processMassiveIbanOperationByCsv(file);
         } catch (Exception e) {
             fail(e);
         }
@@ -1170,7 +1170,7 @@ class IbanServiceTest {
                 new MockMultipartFile(
                         "file", zip.getName(), MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(zip));
         try {
-            ibanService.createMassiveIbansByCsv(file);
+            ibanService.processMassiveIbanOperationByCsv(file);
             fail();
         } catch (AppException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());

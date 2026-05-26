@@ -557,7 +557,7 @@ public class IbanController {
                     content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
             @RequestParam("file")
             MultipartFile file) {
-        ibansService.createMassiveIbansByCsv(file);
+        ibansService.processMassiveIbanOperationByCsv(file);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

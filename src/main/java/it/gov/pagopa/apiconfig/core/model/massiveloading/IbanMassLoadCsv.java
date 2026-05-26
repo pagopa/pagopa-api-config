@@ -15,19 +15,19 @@ public class IbanMassLoadCsv {
     @CsvBindByName(required = true, column = "iddominio")
     private String creditorInstitutionCode;
 
-    @CsvBindByName(required = true, column = "ragionesociale")
-    private String ragioneSociale;
-
-    @CsvBindByName(required = false, column = "descrizione")
+    @CsvBindByName(column = "descrizione")
     private String description;
 
     @CsvBindByName(required = true, column = "iban")
     private String iban;
 
-    @CsvBindByName(required = true, column = "dataattivazioneiban")
-    private String ibanActiveDate;
+    @CsvBindByName(column = "dataattivazioneiban")
+    private String activationDate;
+
+    @CsvBindByName(column = "datascadenzaiban")
+    private String dueDate;
 
     @CsvBindByName(required = true, column = "operazione")
-    private String operazione;
+    private OperationEnum operation;
 
 }
