@@ -36,7 +36,7 @@ public class ConvertIbansMassLoadCsvToIbanMaster extends AbstractConverter<Ibans
 
 			IbanMaster ibanMaster = IbanMaster.builder()
 					.description(ibanRow.getDescription())
-					.validityDate(Timestamp.valueOf(LocalDate.from(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN).parse(ibanRow.getActivationDate())).atStartOfDay()))
+//					.validityDate(Timestamp.valueOf(LocalDate.from(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN).parse(ibanRow.getActivationDate())).atStartOfDay()))
 					.insertedDate(Timestamp.from(Instant.now()))
 					.iban(ibanEntity)
 					.build();	  

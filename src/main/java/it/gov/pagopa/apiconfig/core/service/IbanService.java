@@ -378,7 +378,7 @@ public class IbanService {
                 }
 
                 if(OperationEnum.I.equals(csvRow.getOperation())) {
-                    if (!StringUtils.hasText(csvRow.getActivationDate())) {
+                    if (csvRow.getActivationDate() == null) {
                         splitByOp.errors.add(
                                 "Missing required field 'dataattivazioneiban' for insert operation of IBAN: " + csvRow.getIban()
                         );
@@ -407,8 +407,6 @@ public class IbanService {
                     }
 
                     splitByOp.toUpdate.add(csvRow);
-                } else {
-                    splitByOp.errors.add( "Column \"operazione\" must be equal to either \"I\", \"D|C\" or \"U|M\"");
                 }
             }
         );
@@ -457,17 +455,26 @@ public class IbanService {
                     .withIgnoreLeadingWhiteSpace(true)
                     .withThrowExceptions(false)
                     .build();
-        }
 
-        List<IbanMassLoadCsv> loadedIbans = parsedCSV.parse();
-        List<CsvException> errors = parsedCSV.getCapturedExceptions();
+            List<IbanMassLoadCsv> loadedIbans = parsedCSV.parse();
+            List<CsvException> errors = parsedCSV.getCapturedExceptions();
 
-        if (!errors.isEmpty()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            errors.forEach(error -> stringBuilder.append(String.format("|%s |", error.getMessage())));
-            throw new AppException(IBANS_BAD_REQUEST, stringBuilder);
+            if (!errors.isEmpty()) {
+                StringBuilder stringBuilder = new StringBuilder();
+                errors.forEach(error -> stringBuilder.append(
+                        String.format("Row %d: %s | ", error.getLineNumber(), error.getMessage())
+                ));
+
+                throw new AppException(IBANS_BAD_REQUEST, stringBuilder);
+            }
+            return loadedIbans;
+        } catch (RuntimeException e) {
+            String msg = e.getMessage();
+            if (msg != null && msg.contains("Error capturing CSV header")) {
+                msg = "CSV not valid: either missing/invalid header or missing required field value";
+            }
+            throw new AppException(IBANS_BAD_REQUEST, msg);
         }
-        return loadedIbans;
     }
 
     private IbanMaster getLastPublishedIban(Pa pa) {
@@ -966,23 +973,16 @@ public class IbanService {
                 this.createBarcodeIfNotExist(iban, pa, encodings);
             }
 
-            LocalDateTime validityDate = LocalDate.from(
-                    DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
-                            .parse(loadedIban.getActivationDate()))
-                    .atStartOfDay();
+            LocalDateTime validityDate = loadedIban.getActivationDate().atStartOfDay();
             checkValidityDate(validityDate);
 
             LocalDateTime dueDate;
             if (loadedIban.getDueDate() != null) {
-                dueDate = LocalDate.from(
-                        DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
-                                .parse(loadedIban.getDueDate()))
-                        .atStartOfDay();
+                dueDate = loadedIban.getDueDate().atStartOfDay();
                 checkDueDate(validityDate, dueDate);
             } else {
                 dueDate = LocalDateTime.now().plusYears(1L);
             }
-
 
             Iban newIban = existingIban;
             if (existingIban == null) {
@@ -993,14 +993,21 @@ public class IbanService {
                         .build();
             }
 
-            newIban.getIbanMasters().add(IbanMaster.builder()
+            IbanMaster ibanMaster = IbanMaster.builder()
                     .iban(newIban)
                     .pa(pa)
                     .ibanStatus(IbanStatus.ENABLED)
                     .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
                     .validityDate(Timestamp.valueOf(validityDate))
                     .description(loadedIban.getDescription())
-                    .build());
+                    .build();
+            if (newIban.getIbanMasters() == null) {
+                List<IbanMaster> ibanMasters = new ArrayList<>();
+                ibanMasters.add(ibanMaster);
+                newIban.setIbanMasters(ibanMasters);
+            } else {
+                newIban.getIbanMasters().add(ibanMaster);
+            }
 
             ibanToInsertList.add(newIban);
         }
@@ -1074,9 +1081,8 @@ public class IbanService {
                 this.createBarcodeIfNotExist(iban, pa, encodings);
             }
 
-            LocalDateTime dueDate;
             if (loadedIban.getDueDate() != null) {
-                dueDate = LocalDate.from(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN).parse(loadedIban.getDueDate())).atStartOfDay();
+                LocalDateTime dueDate = loadedIban.getDueDate().atStartOfDay();
                 checkDueDate(existingIbanMaster.getValidityDate().toLocalDateTime(), dueDate);
 
                 existingIban.setDueDate(Timestamp.valueOf(dueDate));
