@@ -18,12 +18,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,9 +52,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class IbanServiceProcessMassiveIbanOperationByCsvTest {
 
-    public static final String IBAN_1 = "VALIDIBANII0000000000000001";
-    public static final String IBAN_2 = "VALIDIBANII0000000000000002";
-    public static final String IBAN_3 = "VALIDIBANII0000000000000003";
+    public static final String IBAN_1 = "IT84H0706676470000000822789";
+    public static final String IBAN_2 = "IT74L0306905020100000046450";
+    public static final String IBAN_3 = "IT59A0760112000000080969991";
     public static final String EC_FISCAL_CODE = "11111111111";
     @Mock
     private PaRepository paRepository;
@@ -147,10 +148,16 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         assertTrue(ex.getMessage().contains("CSV not valid: either missing/invalid header or missing required field value"));
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+            "duplicate_iban_ko.csv, Multiple operation on the same IBAN are not allowed",
+            "update_unexpected_activation_date_ko.csv, Unexpected field 'dataattivazioneiban' provided for update operation",
+            "update_no_updatable_field_provided_ko.csv, No updatable fields provided for update operation",
+            "not_existing_operation_ko.csv, for column operazione. Allowed values: I (insert), D/C (delete), U/M (update)",
+    })
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_KO_duplicateIbanInFile() {
-        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/duplicate_iban_ko.csv");
+    void processMassiveIbanOperationByCsv_KO_badRequest(String fileName, String expectedErrMsg) {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/" + fileName);
 
 
         AppException ex = assertThrows(
@@ -159,7 +166,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         );
 
         assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
-        assertTrue(ex.getMessage().contains("Multiple operation on the same IBAN are not allowed"));
+        assertTrue(ex.getMessage().contains(expectedErrMsg));
     }
 
     @ParameterizedTest
@@ -178,10 +185,15 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         assertTrue(ex.getMessage().contains("Missing required field 'dataattivazioneiban'"));
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "delete_unexpected_activation_date_ko.csv",
+            "delete_unexpected_description_ko.csv",
+            "delete_unexpected_due_date_ko.csv"
+    })
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_error_deleteWithUnexpectedFields() {
-        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/delete_unexpected_fields_ko.csv");
+    void processMassiveIbanOperationByCsv_error_deleteWithUnexpectedFields(String fileName) {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/" + fileName);
 
 
         AppException ex = assertThrows(
@@ -193,10 +205,15 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         assertTrue(ex.getMessage().contains("Unexpected fields provided for delete operation"));
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "insert_invalid_iban.csv",
+            "update_invalid_iban.csv",
+            "delete_invalid_iban.csv"
+    })
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_error_updateWithActivationDate() {
-        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/update_unexpected_activation_date_ko.csv");
+    void processMassiveIbanOperationByCsv_error_invalidIbanValue(String fileName) {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/" + fileName);
 
         AppException ex = assertThrows(
                 AppException.class,
@@ -204,29 +221,27 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         );
 
         assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
-        assertTrue(ex.getMessage().contains("Unexpected field 'dataattivazioneiban' provided for update operation"));
+        assertTrue(ex.getMessage().contains("The provided IBAN is invalid:"));
     }
 
     @Test
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_error_updateWithoutUpdatableFields() {
-        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/update_no_updatable_field_provided_ko.csv");
+    void processMassiveIbanOperationByCsv_KO_updateFailsAfterInsert_deleteNotExecuted() {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/all_operation_ok.csv");
 
+        Pa pa = buildPa(1L, EC_FISCAL_CODE);
+        when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
+        when(codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())).thenReturn(new ArrayList<>());
 
-        AppException ex = assertThrows(
-                AppException.class,
-                () -> ibanService.processMassiveIbanOperationByCsv(file)
-        );
+        // Insert row: IBAN is new and insert path reaches saveAll
+        when(ibanRepository.findByIban(IBAN_1)).thenReturn(Optional.empty());
 
-        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
-        assertTrue(ex.getMessage().contains("No updatable fields provided for update operation"));
-    }
-
-    @Test
-    @SneakyThrows
-    void processMassiveIbanOperationByCsv_error_invalidOperationValue() {
-        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/not_existing_operation_ko.csv");
-
+        // Update row: IBAN exists but relation PA-IBAN is missing -> update fails
+        Iban existingUpdateIban = buildIban(20L, IBAN_2, EC_FISCAL_CODE);
+        existingUpdateIban.setIbanMasters(Collections.emptyList());
+        when(ibanRepository.findByIban(IBAN_2)).thenReturn(Optional.of(existingUpdateIban));
+        when(ibanMasterSearchRepository.findByFkIbanAndFkPa(existingUpdateIban.getObjId(), pa.getObjId()))
+                .thenReturn(Collections.emptyList());
 
         AppException ex = assertThrows(
                 AppException.class,
@@ -234,7 +249,14 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         );
 
         assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
-        assertTrue(ex.getMessage().contains("for column operazione. Allowed values: I (insert), D/C (delete), U/M (update)"));
+
+        // Insert was attempted before update failure.
+        verify(ibanRepository, times(1)).saveAll(anyList());
+
+        // Delete phase must not start.
+        verify(ibanAttributeMasterRepository, never()).deleteByIds(anyList());
+        verify(ibanMasterSearchRepository, never()).deleteByIds(anyList());
+        verify(ibanRepository, never()).deleteByIds(anyList());
     }
 
     private MultipartFile loadCsvFile(String path) throws IOException {
@@ -244,7 +266,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         return new MockMultipartFile(
                 "file",
                 csv.getName(),
-                MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                "text/csv",
                 csvContent.getBytes(StandardCharsets.UTF_8)
         );
     }
@@ -294,4 +316,3 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         return Timestamp.valueOf(LocalDateTime.now().plusYears(5));
     }
 }
-
