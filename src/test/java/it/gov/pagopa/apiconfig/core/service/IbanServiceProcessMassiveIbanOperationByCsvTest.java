@@ -43,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +53,8 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
 
     public static final String IBAN_1 = "IT84H0706676470000000822789";
     public static final String IBAN_2 = "IT74L0306905020100000046450";
-    public static final String IBAN_3 = "IT59A0760112000000080969991";
+    public static final String IBAN_3 = "IT04I0103061821000000248378";
+    public static final String POSTAL_IBAN = "IT59A0760112000000080969991";
     public static final String EC_FISCAL_CODE = "11111111111";
     @Mock
     private PaRepository paRepository;
@@ -120,22 +120,55 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         when(ibanRepository.findByIban(IBAN_3)).thenReturn(Optional.of(existingDeleteIban));
         when(ibanMasterSearchRepository.findByFkIbanAndFkPa(existingDeleteIban.getObjId(), pa.getObjId())).thenReturn(List.of(deleteAssociation));
 
-        when(ibanRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(ibanMasterSearchRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
-
         assertDoesNotThrow(() -> ibanService.processMassiveIbanOperationByCsv(file));
 
         verify(ibanRepository, times(2)).saveAll(anyList());
-        verify(ibanMasterSearchRepository, atLeastOnce()).saveAll(anyList());
+        verify(ibanMasterSearchRepository).saveAll(anyList());
         verify(ibanAttributeMasterRepository).deleteByIds(anyList());
         verify(ibanMasterSearchRepository).deleteByIds(anyList());
         verify(ibanRepository).deleteByIds(anyList());
     }
 
+    @Test
+    @SneakyThrows
+    void processMassiveIbanOperationByCsv_OK_insertPostalIban() {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/insert_postal_iban_ok.csv");
+
+        Pa pa = buildPa(1L, EC_FISCAL_CODE);
+        when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
+        when(codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())).thenReturn(new ArrayList<>());
+        when(ibanRepository.findByIban(POSTAL_IBAN)).thenReturn(Optional.empty());
+
+        assertDoesNotThrow(() -> ibanService.processMassiveIbanOperationByCsv(file));
+
+        verify(ibanRepository).saveAll(anyList());
+    }
+
+    @Test
+    @SneakyThrows
+    void processMassiveIbanOperationByCsv_OK_updatePostalIban() {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/update_postal_iban_ok.csv");
+
+        Pa pa = buildPa(1L, EC_FISCAL_CODE);
+        Iban existingIban = buildIban(20L, POSTAL_IBAN, EC_FISCAL_CODE);
+        IbanMaster ibanMaster = buildIbanMaster(201L, pa, existingIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        existingIban.setIbanMasters(List.of(ibanMaster));
+
+        when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
+        when(codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())).thenReturn(new ArrayList<>());
+        when(ibanRepository.findByIban(POSTAL_IBAN)).thenReturn(Optional.of(existingIban));
+        when(ibanMasterSearchRepository.findByFkIbanAndFkPa(existingIban.getObjId(), pa.getObjId())).thenReturn(List.of(ibanMaster));
+
+        assertDoesNotThrow(() -> ibanService.processMassiveIbanOperationByCsv(file));
+
+        verify(ibanRepository).saveAll(anyList());
+        verify(ibanMasterSearchRepository).saveAll(anyList());
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"missing_required_header_ko.csv", "missing_required_field_value_ko.csv"})
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_error_missingRequiredHeader(String fileName) {
+    void processMassiveIbanOperationByCsv_KO_missingRequiredHeader(String fileName) {
         MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/" + fileName);
 
 
@@ -192,7 +225,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
             "delete_unexpected_due_date_ko.csv"
     })
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_error_deleteWithUnexpectedFields(String fileName) {
+    void processMassiveIbanOperationByCsv_KO_deleteWithUnexpectedFields(String fileName) {
         MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/" + fileName);
 
 
@@ -212,7 +245,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
             "delete_invalid_iban.csv"
     })
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_error_invalidIbanValue(String fileName) {
+    void processMassiveIbanOperationByCsv_KO_invalidIbanValue(String fileName) {
         MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/" + fileName);
 
         AppException ex = assertThrows(
@@ -233,10 +266,8 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
         when(codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())).thenReturn(new ArrayList<>());
 
-        // Insert row: IBAN is new and insert path reaches saveAll
         when(ibanRepository.findByIban(IBAN_1)).thenReturn(Optional.empty());
 
-        // Update row: IBAN exists but relation PA-IBAN is missing -> update fails
         Iban existingUpdateIban = buildIban(20L, IBAN_2, EC_FISCAL_CODE);
         existingUpdateIban.setIbanMasters(Collections.emptyList());
         when(ibanRepository.findByIban(IBAN_2)).thenReturn(Optional.of(existingUpdateIban));
@@ -250,13 +281,89 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
 
-        // Insert was attempted before update failure.
         verify(ibanRepository, times(1)).saveAll(anyList());
-
-        // Delete phase must not start.
         verify(ibanAttributeMasterRepository, never()).deleteByIds(anyList());
         verify(ibanMasterSearchRepository, never()).deleteByIds(anyList());
         verify(ibanRepository, never()).deleteByIds(anyList());
+    }
+
+    @Test
+    @SneakyThrows
+    void processMassiveIbanOperationByCsv_KO_insertExistingIban() {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/insert_ok.csv");
+
+        Pa pa = buildPa(1L, EC_FISCAL_CODE);
+        Iban existingIban = buildIban(20L, IBAN_1, EC_FISCAL_CODE);
+        IbanMaster ibanMaster = buildIbanMaster(201L, pa, existingIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        existingIban.setIbanMasters(List.of(ibanMaster));
+
+        when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
+        when(ibanRepository.findByIban(IBAN_1)).thenReturn(Optional.of(existingIban));
+
+        AppException ex = assertThrows(
+                AppException.class,
+                () -> ibanService.processMassiveIbanOperationByCsv(file)
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+        assertTrue(ex.getMessage().contains("already exists"));
+
+        verify(ibanRepository, never()).saveAll(anyList());
+        verify(ibanMasterSearchRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    @SneakyThrows
+    void processMassiveIbanOperationByCsv_KO_insertAlreadyAssociatedPostalIban() {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/insert_postal_iban_ok.csv");
+
+        Pa pa = buildPa(1L, EC_FISCAL_CODE);
+        Pa paPostalIban = buildPa(2L, "234513");
+        Iban existingIban = buildIban(20L, POSTAL_IBAN, "234513");
+        IbanMaster ibanMaster = buildIbanMaster(201L, paPostalIban, existingIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        existingIban.setIbanMasters(List.of(ibanMaster));
+
+        when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
+        when(codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())).thenReturn(new ArrayList<>());
+        when(ibanRepository.findByIban(POSTAL_IBAN)).thenReturn(Optional.of(existingIban));
+
+        AppException ex = assertThrows(
+                AppException.class,
+                () -> ibanService.processMassiveIbanOperationByCsv(file)
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+        assertTrue(ex.getMessage().contains("already associated to one CI, this type of IBAN cannot be"));
+
+        verify(ibanRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    @SneakyThrows
+    void processMassiveIbanOperationByCsv_KO_updateAlreadyAssociatedPostalIban() {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/update_postal_iban_ok.csv");
+
+        Pa pa = buildPa(1L, EC_FISCAL_CODE);
+        Pa paPostalIban = buildPa(2L, "234513");
+        Iban existingIban = buildIban(20L, POSTAL_IBAN, "234513");
+        IbanMaster ibanMaster = buildIbanMaster(201L, paPostalIban, existingIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        existingIban.setIbanMasters(List.of(ibanMaster));
+
+        when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
+        when(codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())).thenReturn(new ArrayList<>());
+        when(ibanRepository.findByIban(POSTAL_IBAN)).thenReturn(Optional.of(existingIban));
+        when(ibanMasterSearchRepository.findByFkIbanAndFkPa(existingIban.getObjId(), pa.getObjId())).thenReturn(List.of(ibanMaster));
+
+        AppException ex = assertThrows(
+                AppException.class,
+                () -> ibanService.processMassiveIbanOperationByCsv(file)
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+        assertTrue(ex.getMessage().contains("already associated to one CI, this type of IBAN cannot be"));
+
+        verify(ibanRepository, never()).saveAll(anyList());
+        verify(ibanMasterSearchRepository, never()).saveAll(anyList());
     }
 
     private MultipartFile loadCsvFile(String path) throws IOException {
