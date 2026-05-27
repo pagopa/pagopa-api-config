@@ -554,7 +554,7 @@ public class IbanController {
             @Parameter(
                     description = "CSV file regarding various Ibans actions",
                     required = true,
-                    content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                    content = @Content(mediaType = "text/csv"))
             @RequestParam("file")
             MultipartFile file) {
         ibansService.processMassiveIbanOperationByCsv(file);
