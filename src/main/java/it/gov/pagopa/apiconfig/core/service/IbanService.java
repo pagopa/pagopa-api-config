@@ -1009,8 +1009,12 @@ public class IbanService {
 
             ibanToInsertList.add(newIban);
         }
-        // save Iban and IbanMaster entity
-        ibanRepository.saveAll(ibanToInsertList);
+
+        if (!ibanToInsertList.isEmpty()) {
+            // save Iban and IbanMaster entity
+            ibanRepository.saveAll(ibanToInsertList);
+        }
+
     }
 
 	private void insertIbans(List<IbanMaster> ibanMasterList) {
@@ -1092,8 +1096,15 @@ public class IbanService {
                 ibanMasterToUpdateList.add(existingIbanMaster);
             }
     	}
-        ibanRepository.saveAll(ibanToUpdateList);
-    	ibanMasterSearchRepository.saveAll(ibanMasterToUpdateList);
+
+        if (!ibanToUpdateList.isEmpty()) {
+            ibanRepository.saveAll(ibanToUpdateList);
+        }
+
+        if (!ibanMasterToUpdateList.isEmpty()) {
+            ibanMasterSearchRepository.saveAll(ibanMasterToUpdateList);
+        }
+
     }
 
     private void updateIbans(List<IbanMaster> ibanMasterList) {
@@ -1160,9 +1171,20 @@ public class IbanService {
     				.map(IbanAttributeMaster::getObjId).toList());
 
         }
-        ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDeleteList);
-        ibanMasterSearchRepository.deleteByIds(ibanMasterIdToDeleteList);
-        ibanRepository.deleteByIds(ibanToDeleteList);
+
+        if (!ibanAttributeMasterToDeleteList.isEmpty()) {
+            ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDeleteList);
+            return;
+        }
+
+        if (!ibanMasterIdToDeleteList.isEmpty()) {
+            ibanMasterSearchRepository.deleteByIds(ibanMasterIdToDeleteList);
+            return;
+        }
+
+        if (!ibanToDeleteList.isEmpty()) {
+            ibanRepository.deleteByIds(ibanToDeleteList);
+        }
     }
 
     private void deleteIbans(List<IbanMaster> ibanMasterDeleteList, List<IbanMaster> ibanMasterInsertList) {
