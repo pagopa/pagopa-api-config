@@ -955,7 +955,7 @@ public class IbanService {
                     && existingIban.getIbanMasters().stream()
                     .anyMatch(master -> master.getFkPa().equals(pa.getObjId()))
             ) {
-                throw new AppException(AppError.IBAN_ALREADY_EXIST, iban);
+                throw new AppException(AppError.IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
             }
 
             List<CodifichePa> encodings = codifichePaRepository
@@ -1174,12 +1174,10 @@ public class IbanService {
 
         if (!ibanAttributeMasterToDeleteList.isEmpty()) {
             ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDeleteList);
-            return;
         }
 
         if (!ibanMasterIdToDeleteList.isEmpty()) {
             ibanMasterSearchRepository.deleteByIds(ibanMasterIdToDeleteList);
-            return;
         }
 
         if (!ibanToDeleteList.isEmpty()) {
