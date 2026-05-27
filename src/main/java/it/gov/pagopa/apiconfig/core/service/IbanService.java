@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -65,7 +64,6 @@ import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
 import it.gov.pagopa.apiconfig.starter.repository.*;
 
 import static it.gov.pagopa.apiconfig.core.exception.AppError.IBANS_BAD_REQUEST;
-import static it.gov.pagopa.apiconfig.core.util.CommonUtil.DATE_FORMAT_PATTERN;
 
 @Service
 @Validated
@@ -356,8 +354,8 @@ public class IbanService {
             IbanMassiveByOperation ibanMassiveByOperation = splitAndValidateIbanByOperation(validatedCsv);
 
             massiveInsertIban(ibanMassiveByOperation.toInsert);
-            massiveUpdateIbans(ibanMassiveByOperation.toUpdate);
-            massiveDeleteIbans(ibanMassiveByOperation.toDelete);
+            massiveUpdateIban(ibanMassiveByOperation.toUpdate);
+            massiveDeleteIban(ibanMassiveByOperation.toDelete);
         } catch (IOException | RuntimeException e) {
             throw new AppException(
                     HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem in the file examination - " + e.getMessage(), e);
@@ -394,7 +392,7 @@ public class IbanService {
                     }
 
                     splitByOp.toDelete.add(csvRow);
-                } else if(OperationEnum.UPDATE_OP.contains(csvRow.getOperation())) {
+                } else if (OperationEnum.UPDATE_OP.contains(csvRow.getOperation())) {
                     if (csvRow.getActivationDate() != null) {
                         splitByOp.errors.add(
                                 "Unexpected field 'dataattivazioneiban' provided for update operation of IBAN: " + csvRow.getIban()
@@ -946,7 +944,7 @@ public class IbanService {
 
         for(IbanMassLoadCsv loadedIban : ibanList) {
             String iban = loadedIban.getIban();
-            if (IBANValidator.getInstance().isValid(iban)) {
+            if (!IBANValidator.getInstance().isValid(iban)) {
                 throw new AppException(IBANS_BAD_REQUEST, "The provided IBAN is invalid: " + iban);
             }
 
@@ -1045,13 +1043,13 @@ public class IbanService {
         manageIbanMasterList(ibanMasterToInsertList, ibanRepository.saveAll(ibanToInsertList));
     }
 
-    private void massiveUpdateIbans(List<IbanMassLoadCsv> ibanList) {
+    private void massiveUpdateIban(List<IbanMassLoadCsv> ibanList) {
     	List<IbanMaster> ibanMasterToUpdateList = new ArrayList<>();
     	List<Iban> ibanToUpdateList = new ArrayList<>();
 
     	for(IbanMassLoadCsv loadedIban : ibanList) {
             String iban = loadedIban.getIban();
-            if (IBANValidator.getInstance().isValid(iban)) {
+            if (!IBANValidator.getInstance().isValid(iban)) {
                 throw new AppException(IBANS_BAD_REQUEST, "The provided IBAN is invalid: " + iban);
             }
 
@@ -1130,14 +1128,14 @@ public class IbanService {
     	ibanMasterSearchRepository.saveAll(ibanMasterToUpdateList);
     }
 
-    private void massiveDeleteIbans(List<IbanMassLoadCsv> ibanList) {
+    private void massiveDeleteIban(List<IbanMassLoadCsv> ibanList) {
         List<Long> ibanToDeleteList = new ArrayList<>();
         List<Long> ibanMasterIdToDeleteList = new ArrayList<>();
         List<Long> ibanAttributeMasterToDeleteList = new ArrayList<>();
 
         for(IbanMassLoadCsv loadedIban : ibanList) {
             String iban = loadedIban.getIban();
-            if (IBANValidator.getInstance().isValid(iban)) {
+            if (!IBANValidator.getInstance().isValid(iban)) {
                 throw new AppException(IBANS_BAD_REQUEST, "The provided IBAN is invalid: " + iban);
             }
 
