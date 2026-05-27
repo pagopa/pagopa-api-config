@@ -106,15 +106,15 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         when(ibanRepository.findByIban(IBAN_1)).thenReturn(Optional.empty());
 
         Iban existingUpdateIban = buildIban(20L, IBAN_2, EC_FISCAL_CODE);
-        IbanMaster updateAssociation = buildIbanMaster(201L, pa, existingUpdateIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        IbanMaster updateAssociation = buildIbanMaster(201L, pa, existingUpdateIban.getObjId(), Collections.emptyList());
         existingUpdateIban.setIbanMasters(List.of(updateAssociation));
 
         when(ibanRepository.findByIban(IBAN_2)).thenReturn(Optional.of(existingUpdateIban));
         when(ibanMasterSearchRepository.findByFkIbanAndFkPa(existingUpdateIban.getObjId(), pa.getObjId())).thenReturn(List.of(updateAssociation));
 
         Iban existingDeleteIban = buildIban(30L, IBAN_3, EC_FISCAL_CODE);
-        IbanAttributeMaster ibanAttributeMaster = buildIbanAttributeMaster(500L);
-        IbanMaster deleteAssociation = buildIbanMaster(301L, pa, existingDeleteIban.getObjId(), futureValidityDate(), List.of(ibanAttributeMaster));
+        IbanAttributeMaster ibanAttributeMaster = buildIbanAttributeMaster();
+        IbanMaster deleteAssociation = buildIbanMaster(301L, pa, existingDeleteIban.getObjId(), List.of(ibanAttributeMaster));
         existingDeleteIban.setIbanMasters(List.of(deleteAssociation));
 
         when(ibanRepository.findByIban(IBAN_3)).thenReturn(Optional.of(existingDeleteIban));
@@ -151,7 +151,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
 
         Pa pa = buildPa(1L, EC_FISCAL_CODE);
         Iban existingIban = buildIban(20L, POSTAL_IBAN, EC_FISCAL_CODE);
-        IbanMaster ibanMaster = buildIbanMaster(201L, pa, existingIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        IbanMaster ibanMaster = buildIbanMaster(201L, pa, existingIban.getObjId(), Collections.emptyList());
         existingIban.setIbanMasters(List.of(ibanMaster));
 
         when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
@@ -289,12 +289,12 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
 
     @Test
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_KO_insertExistingIban() {
+    void processMassiveIbanOperationByCsv_KO_insertIbanAlreadyAssociated() {
         MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/insert_ok.csv");
 
         Pa pa = buildPa(1L, EC_FISCAL_CODE);
         Iban existingIban = buildIban(20L, IBAN_1, EC_FISCAL_CODE);
-        IbanMaster ibanMaster = buildIbanMaster(201L, pa, existingIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        IbanMaster ibanMaster = buildIbanMaster(201L, pa, existingIban.getObjId(), Collections.emptyList());
         existingIban.setIbanMasters(List.of(ibanMaster));
 
         when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
@@ -306,7 +306,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         );
 
         assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
-        assertTrue(ex.getMessage().contains("already exists"));
+        assertTrue(ex.getMessage().contains("already associated to the creditor institution"));
 
         verify(ibanRepository, never()).saveAll(anyList());
         verify(ibanMasterSearchRepository, never()).saveAll(anyList());
@@ -320,7 +320,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         Pa pa = buildPa(1L, EC_FISCAL_CODE);
         Pa paPostalIban = buildPa(2L, "234513");
         Iban existingIban = buildIban(20L, POSTAL_IBAN, "234513");
-        IbanMaster ibanMaster = buildIbanMaster(201L, paPostalIban, existingIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        IbanMaster ibanMaster = buildIbanMaster(201L, paPostalIban, existingIban.getObjId(), Collections.emptyList());
         existingIban.setIbanMasters(List.of(ibanMaster));
 
         when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
@@ -346,7 +346,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         Pa pa = buildPa(1L, EC_FISCAL_CODE);
         Pa paPostalIban = buildPa(2L, "234513");
         Iban existingIban = buildIban(20L, POSTAL_IBAN, "234513");
-        IbanMaster ibanMaster = buildIbanMaster(201L, paPostalIban, existingIban.getObjId(), futureValidityDate(), Collections.emptyList());
+        IbanMaster ibanMaster = buildIbanMaster(201L, paPostalIban, existingIban.getObjId(), Collections.emptyList());
         existingIban.setIbanMasters(List.of(ibanMaster));
 
         when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
@@ -400,7 +400,6 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
             Long objId,
             Pa pa,
             Long fkIban,
-            Timestamp validityDate,
             List<IbanAttributeMaster> attributes
     ) {
         IbanMaster ibanMaster = IbanMaster.builder()
@@ -408,15 +407,15 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
                 .fkPa(pa.getObjId())
                 .fkIban(fkIban)
                 .ibanStatus(IbanMaster.IbanStatus.ENABLED)
-                .validityDate(validityDate)
+                .validityDate(futureValidityDate())
                 .insertedDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         ibanMaster.setIbanAttributesMasters(new ArrayList<>(attributes));
         return ibanMaster;
     }
 
-    private IbanAttributeMaster buildIbanAttributeMaster(Long objId) {
-        return IbanAttributeMaster.builder().objId(objId).build();
+    private IbanAttributeMaster buildIbanAttributeMaster() {
+        return IbanAttributeMaster.builder().objId(500L).build();
     }
 
     private Timestamp futureValidityDate() {
