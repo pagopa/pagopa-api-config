@@ -7,6 +7,7 @@ import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.PageInfo;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Encoding.CodeTypeEnum;
+import it.gov.pagopa.apiconfig.core.repository.ExtendedCodifichePaRepository;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.*;
@@ -76,7 +77,7 @@ class IbanServiceTest {
     private IbanAttributeMasterRepository ibanAttributeMasterRepository;
 
     @MockBean
-    private CodifichePaRepository codifichePaRepository;
+    private ExtendedCodifichePaRepository codifichePaRepository;
 
     @MockBean
     private AzureStorageInteraction azureStorageInteraction;

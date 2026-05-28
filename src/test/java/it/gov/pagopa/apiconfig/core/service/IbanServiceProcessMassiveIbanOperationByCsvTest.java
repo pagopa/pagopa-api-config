@@ -2,8 +2,10 @@ package it.gov.pagopa.apiconfig.core.service;
 
 import it.gov.pagopa.apiconfig.TestUtil;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.repository.ExtendedCodifichePaRepository;
 import it.gov.pagopa.apiconfig.core.repository.IbanMasterSearchRepository;
 import it.gov.pagopa.apiconfig.core.scheduler.storage.AzureStorageInteraction;
+import it.gov.pagopa.apiconfig.starter.entity.CodifichePa;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
 import it.gov.pagopa.apiconfig.starter.entity.IbanAttributeMaster;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster;
@@ -43,6 +45,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -67,7 +71,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
     @Mock
     private IbanAttributeMasterRepository ibanAttributeMasterRepository;
     @Mock
-    private CodifichePaRepository codifichePaRepository;
+    private ExtendedCodifichePaRepository codifichePaRepository;
     @Mock
     private EncodingsService encodingsService;
     @Mock
@@ -163,6 +167,31 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
 
         verify(ibanRepository).saveAll(anyList());
         verify(ibanMasterSearchRepository).saveAll(anyList());
+    }
+
+    @Test
+    @SneakyThrows
+    void processMassiveIbanOperationByCsv_OK_deletePostalIban() {
+        MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/delete_postal_iban_ok.csv");
+
+        Pa pa = buildPa(1L, EC_FISCAL_CODE);
+        Iban existingIban = buildIban(20L, POSTAL_IBAN, EC_FISCAL_CODE);
+        IbanAttributeMaster ibanAttributeMaster = buildIbanAttributeMaster();
+        IbanMaster ibanMaster = buildIbanMaster(201L, pa, existingIban.getObjId(), List.of(ibanAttributeMaster));
+        existingIban.setIbanMasters(List.of(ibanMaster));
+
+        when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
+        when(ibanRepository.findByIban(POSTAL_IBAN)).thenReturn(Optional.of(existingIban));
+        when(ibanMasterSearchRepository.findByFkIbanAndFkPa(existingIban.getObjId(), pa.getObjId())).thenReturn(List.of(ibanMaster));
+        when(codifichePaRepository.findByCodicePaAndFkPa_ObjId(anyString(), anyLong()))
+                .thenReturn(Optional.of(CodifichePa.builder().id(98L).build()));
+
+        assertDoesNotThrow(() -> ibanService.processMassiveIbanOperationByCsv(file));
+
+        verify(ibanRepository).deleteByIds(anyList());
+        verify(ibanMasterSearchRepository).deleteByIds(anyList());
+        verify(ibanAttributeMasterRepository).deleteByIds(anyList());
+        verify(codifichePaRepository).deleteByIds(anyList());
     }
 
     @ParameterizedTest

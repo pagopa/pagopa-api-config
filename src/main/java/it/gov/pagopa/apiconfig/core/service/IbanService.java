@@ -33,7 +33,9 @@ import com.opencsv.exceptions.CsvException;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.*;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbanMassLoadCsv;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.OperationEnum;
+import it.gov.pagopa.apiconfig.core.repository.ExtendedCodifichePaRepository;
 import it.gov.pagopa.apiconfig.starter.entity.Iban;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.validator.routines.IBANValidator;
 import org.modelmapper.ModelMapper;
@@ -65,6 +67,7 @@ import it.gov.pagopa.apiconfig.starter.repository.*;
 
 import static it.gov.pagopa.apiconfig.core.exception.AppError.IBANS_BAD_REQUEST;
 
+@Slf4j
 @Service
 @Validated
 @Transactional
@@ -82,7 +85,7 @@ public class IbanService {
     private final IbanMasterSearchRepository ibanMasterSearchRepository;
     private final IbanAttributeRepository ibanAttributeRepository;
     private final IbanAttributeMasterRepository ibanAttributeMasterRepository;
-    private final CodifichePaRepository codifichePaRepository;
+    private final ExtendedCodifichePaRepository codifichePaRepository;
     private final EncodingsService encodingsService;
     private final ModelMapper modelMapper;
     private final AzureStorageInteraction azureStorageInteraction;
@@ -98,7 +101,7 @@ public class IbanService {
             IbanMasterSearchRepository ibanMasterSearchRepository,
             IbanAttributeRepository ibanAttributeRepository,
             IbanAttributeMasterRepository ibanAttributeMasterRepository,
-            CodifichePaRepository codifichePaRepository,
+            ExtendedCodifichePaRepository codifichePaRepository,
             EncodingsService encodingsService,
             ModelMapper modelMapper,
             AzureStorageInteraction azureStorageInteraction) {
@@ -353,8 +356,11 @@ public class IbanService {
 //                    validatedCsv.stream().collect(Collectors.groupingBy(IbanMassLoadCsv::getCreditorInstitutionCode));
             IbanMassiveByOperation ibanMassiveByOperation = splitAndValidateIbanByOperation(validatedCsv);
 
+            log.debug("IBANs to be inserted: {}", ibanMassiveByOperation.toInsert.size());
             massiveInsertIban(ibanMassiveByOperation.toInsert);
+            log.debug("IBANs to be updated: {}", ibanMassiveByOperation.toUpdate.size());
             massiveUpdateIban(ibanMassiveByOperation.toUpdate);
+            log.debug("IBANs to be deleted: {}", ibanMassiveByOperation.toDelete.size());
             massiveDeleteIban(ibanMassiveByOperation.toDelete);
         } catch (IOException | RuntimeException e) {
             throw new AppException(
@@ -1143,6 +1149,7 @@ public class IbanService {
         List<Long> ibanToDeleteList = new ArrayList<>();
         List<Long> ibanMasterIdToDeleteList = new ArrayList<>();
         List<Long> ibanAttributeMasterToDeleteList = new ArrayList<>();
+        List<Long> encodingToDeleteList = new ArrayList<>();
 
         for(IbanMassLoadCsv loadedIban : ibanList) {
             String iban = loadedIban.getIban();
@@ -1163,13 +1170,22 @@ public class IbanService {
     			ibanToDeleteList.add(existingIban.getObjId());
     		}
 
+            if (isPostalIban(iban)) {
+                String encoding = iban.substring(iban.length() - 12);
+                codifichePaRepository.findByCodicePaAndFkPa_ObjId(encoding, pa.getObjId())
+                        .ifPresent(e -> encodingToDeleteList.add(e.getId()));
+            }
+
     		ibanMasterIdToDeleteList.add(existingIbanMaster.getObjId());
     		List<IbanAttributeMaster> ibanAttributeMasterList =
                     Optional.ofNullable(existingIbanMaster.getIbanAttributesMasters()).orElse(new ArrayList<>());
 
     		ibanAttributeMasterToDeleteList.addAll(ibanAttributeMasterList.stream()
     				.map(IbanAttributeMaster::getObjId).toList());
+        }
 
+        if (!encodingToDeleteList.isEmpty()) {
+            codifichePaRepository.deleteByIds(ibanAttributeMasterToDeleteList);
         }
 
         if (!ibanAttributeMasterToDeleteList.isEmpty()) {
