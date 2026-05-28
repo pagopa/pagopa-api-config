@@ -1023,36 +1023,6 @@ public class IbanService {
 
     }
 
-	private void insertIbans(List<IbanMaster> ibanMasterList) {
-        List<Iban> ibanToInsertList = new ArrayList<>();
-        List<IbanMaster> ibanMasterToInsertList = new ArrayList<>();
-        for(IbanMaster loadedIbanMaster : ibanMasterList) {
-        	Iban iban = loadedIbanMaster.getIban();
-        	Pa pa = this.getPaIfExists(iban.getFiscalCode());
-        	Iban ibanEntityToCheck = ibanRepository.findByIban(iban.getIban()).orElse(null);
-        	// if the iban does not already exist or if it is associated with another PA --> it's inserted
-            if(null == ibanEntityToCheck ||
-            		ibanEntityToCheck.getIbanMasters().isEmpty() || // check that it is an orphan iban (ie without associations in the iban_master table)
-            		ibanEntityToCheck.getIbanMasters().stream().noneMatch(im -> im.getFkPa().equals(pa.getObjId()))) {
-            	this.validateIban(loadedIbanMaster, iban, pa);
-    			// set the necessary info for persistence
-            	loadedIbanMaster.setPa(pa);
-            	// before add check that the iban is not already present in the list (two or more rows with the same iban in the file) or table
-            	if (ibanToInsertList.stream().filter(i -> i.getIban().equals(iban.getIban())).findAny().isEmpty() && null == ibanEntityToCheck) {
-            		ibanToInsertList.add(iban);
-            	} else if (null != ibanEntityToCheck) {
-            		// if the iban already existed in table associated with another PA --> only create the new relationship on iban_master with the new PA
-            		loadedIbanMaster.setIban(ibanEntityToCheck);
-            	}
-                ibanMasterToInsertList.add(loadedIbanMaster);
-            } else {
-            	throw new AppException(AppError.IBAN_ALREADY_EXIST, iban.getIban());
-            }
-        }
-        // save Iban and IbanMaster entity
-        manageIbanMasterList(ibanMasterToInsertList, ibanRepository.saveAll(ibanToInsertList));
-    }
-
     private void massiveUpdateIban(List<IbanMassLoadCsv> ibanList) {
     	List<IbanMaster> ibanMasterToUpdateList = new ArrayList<>();
     	List<Iban> ibanToUpdateList = new ArrayList<>();
@@ -1113,38 +1083,6 @@ public class IbanService {
 
     }
 
-    private void updateIbans(List<IbanMaster> ibanMasterList) {
-    	List<IbanMaster> ibanMasterToUpdateList = new ArrayList<>();
-    	for(IbanMaster loadedIbanMaster : ibanMasterList) {
-    		Iban iban = loadedIbanMaster.getIban();
-    		Pa pa = this.getPaIfExists(iban.getFiscalCode());
-    		this.validateIban(loadedIbanMaster, iban, pa);
-    		loadedIbanMaster.setPa(pa);
-    		// checks if the iban exists and if so updates the information
-    		Iban ibanToUpdate = ibanRepository.findByIban(iban.getIban()).orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban.getIban()));
-    		loadedIbanMaster.getIban().setObjId(ibanToUpdate.getObjId());
-			// update the properties of the existing iban
-			modelMapper.map(loadedIbanMaster.getIban(), ibanToUpdate);
-
-			List<IbanMaster> m = ibanMasterSearchRepository.findByFkIbanAndFkPa(ibanToUpdate.getObjId(), pa.getObjId());
-
-			if (CollectionUtils.isNotEmpty(m)) {
-				// there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
-				loadedIbanMaster.setObjId(m.get(0).getObjId());
-				// update the properties of the existing iban master
-				modelMapper.map(loadedIbanMaster, m.get(0));
-				loadedIbanMaster = m.get(0);
-				loadedIbanMaster.setIban(ibanToUpdate);
-
-				ibanMasterToUpdateList.add(loadedIbanMaster);
-			} else {
-				throw new AppException(AppError.IBAN_NOT_ASSOCIATED, iban.getIban(), iban.getFiscalCode());
-			}
-
-    	}
-    	ibanMasterSearchRepository.saveAll(ibanMasterToUpdateList);
-    }
-
     private void massiveDeleteIban(List<IbanMassLoadCsv> ibanList) {
         List<Long> ibanToDeleteList = new ArrayList<>();
         List<Long> ibanMasterIdToDeleteList = new ArrayList<>();
@@ -1200,69 +1138,4 @@ public class IbanService {
             ibanRepository.deleteByIds(ibanToDeleteList);
         }
     }
-
-    private void deleteIbans(List<IbanMaster> ibanMasterDeleteList, List<IbanMaster> ibanMasterInsertList) {
-        List<Long> ibanToDeleteList = new ArrayList<>();
-        List<Long> ibanMasterIdToDeleteList = new ArrayList<>();
-        List<Long> ibanAttributeMasterToDeleteList = new ArrayList<>();
-        for(IbanMaster loadedIbanMaster : ibanMasterDeleteList) {
-        	Iban iban = loadedIbanMaster.getIban();
-        	// checks if the iban exists
-    		Iban ibanToDelete = ibanRepository.findByIban(iban.getIban()).orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban.getIban()));
-
-    		// before add check:
-    		// 1. the iban is not already present in the list (two or more delete rows in the file with the same iban)
-    		// 2. the same iban is not present in the insert list
-    		// 3. has only one relationship in the iban_master table
-    		if (ibanToDeleteList.stream().filter(i -> ibanToDelete.getObjId().equals(i)).findAny().isEmpty()
-    				&& ibanMasterInsertList.stream().filter(ins -> ins.getIban().getIban().equals(ibanToDelete.getIban())).findAny().isEmpty()
-    				&& null != ibanToDelete.getIbanMasters()
-    				&& (ibanToDelete.getIbanMasters().isEmpty() || ibanToDelete.getIbanMasters().size() == 1)){
-    			ibanToDeleteList.add(ibanToDelete.getObjId());
-    		}
-    		// delete the relation in the iban_master
-    		Pa pa = this.getPaIfExists(iban.getFiscalCode());
-    		// there is only one occurrence for the pa-iban association (unique constraint) --> one element in the list
-    		List<IbanMaster> m = ibanMasterSearchRepository.findByFkIbanAndFkPa(ibanToDelete.getObjId(), pa.getObjId());
-    		if (CollectionUtils.isEmpty(m)) {throw new AppException(AppError.IBAN_NOT_ASSOCIATED, iban.getIban(), iban.getFiscalCode());}
-    		ibanMasterIdToDeleteList.add(m.get(0).getObjId());
-    		List<IbanAttributeMaster> ibanAttributeMasterList = m.get(0).getIbanAttributesMasters() != null? m.get(0).getIbanAttributesMasters() : new ArrayList<>();
-    		ibanAttributeMasterToDeleteList.addAll (ibanAttributeMasterList.stream()
-    				.map(IbanAttributeMaster::getObjId).collect(Collectors.toList()));
-
-        }
-        ibanAttributeMasterRepository.deleteByIds(ibanAttributeMasterToDeleteList);
-        ibanMasterSearchRepository.deleteByIds(ibanMasterIdToDeleteList);
-        ibanRepository.deleteByIds(ibanToDeleteList);
-    }
-
-
-    private void manageIbanMasterList(List<IbanMaster> ibanMasterToSaveList, List<Iban> savedIbanList) {
-    	for (Iban savedIban: savedIbanList) {
-    		ibanMasterToSaveList.forEach(master -> {
-    		    if (master.getIban().getIban().equalsIgnoreCase(savedIban.getIban())) {
-    		    	// when find the record update the iban with the one saved in the database
-    		        master.setIban(savedIban);
-    		    }
-    		});
-    	}
-        ibanMasterSearchRepository.saveAll(ibanMasterToSaveList);
-    }
-
-    private void validateIban(IbanMaster loadedIbanMaster, Iban iban, Pa pa) {
-		// checks if the PA is associated with a qr-code (if this is not the case, the association is created)
-		List<CodifichePa> encodings = codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId());
-		this.createQrCodeIfNotExist(pa, encodings);
-		it.gov.pagopa.apiconfig.core.model.massiveloading.Iban ibanToCheck = it.gov.pagopa.apiconfig.core.model.massiveloading.Iban.builder()
-		.dueDate(new SimpleDateFormat(CommonUtil.DATE_FORMAT_PATTERN).format(iban.getDueDate()))
-		.validityDate(new SimpleDateFormat(CommonUtil.DATE_FORMAT_PATTERN).format(loadedIbanMaster.getValidityDate()))
-		.ibanValue(iban.getIban())
-		.build();
-		// validate the iban
-		this.checkSingleIban(pa, encodings, ibanToCheck).stream()
-		.filter(item -> item.getValid().equals(CheckItem.Validity.NOT_VALID))
-		.findAny().ifPresent(check -> {throw new AppException(
-			IBANS_BAD_REQUEST,
-			String.format("[%s] %s", check.getValue(), check.getNote()));});
-	}
 }
