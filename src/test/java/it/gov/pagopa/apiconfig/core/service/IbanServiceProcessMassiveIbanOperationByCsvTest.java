@@ -353,7 +353,6 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         existingIban.setIbanMasters(List.of(ibanMaster));
 
         when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
-        when(codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())).thenReturn(new ArrayList<>());
         when(ibanRepository.findByIban(POSTAL_IBAN)).thenReturn(Optional.of(existingIban));
 
         AppException ex = assertThrows(
@@ -379,7 +378,6 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
         existingIban.setIbanMasters(List.of(ibanMaster));
 
         when(paRepository.findByIdDominio(EC_FISCAL_CODE)).thenReturn(Optional.of(pa));
-        when(codifichePaRepository.findAllByFkPa_ObjId(pa.getObjId())).thenReturn(new ArrayList<>());
         when(ibanRepository.findByIban(POSTAL_IBAN)).thenReturn(Optional.of(existingIban));
         when(ibanMasterSearchRepository.findByFkIbanAndFkPa(existingIban.getObjId(), pa.getObjId())).thenReturn(List.of(ibanMaster));
 

@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -956,63 +955,21 @@ public class IbanService {
 
             Pa pa = getPaIfExists(loadedIban.getCreditorInstitutionCode());
             Iban existingIban = ibanRepository.findByIban(iban).orElse(null);
-            // if the iban already exist, and it is already associated with the same PA --> error
-            if (existingIban != null
-                    && existingIban.getIbanMasters().stream()
-                    .anyMatch(master -> master.getFkPa().equals(pa.getObjId()))
-            ) {
-                throw new AppException(AppError.IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
-            }
-
-            List<CodifichePa> encodings = codifichePaRepository
-                    .findAllByFkPa_ObjId(pa.getObjId());
-            this.createQrCodeIfNotExist(pa, encodings);
-            if (isPostalIban(iban)) {
-                if (existingIban != null && !existingIban.getIbanMasters().isEmpty()) {
-                    throw new AppException(
-                            AppError.POSTAL_IBAN_ALREADY_ASSOCIATED,
-                            iban,
-                            pa.getIdDominio());
+            if (existingIban != null) {
+                if (isIbanAlreadyOwned(existingIban, pa)) {
+                    throw new AppException(AppError.IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
                 }
-                this.createBarcodeIfNotExist(iban, pa, encodings);
+                if (isPostalIbanAlreadyAssociated(iban, existingIban)) {
+                    throw new AppException(AppError.POSTAL_IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
+                }
             }
 
+            checkEncodingsAssociation(iban, pa);
             LocalDateTime validityDate = loadedIban.getActivationDate().atStartOfDay();
             checkValidityDate(validityDate);
+            LocalDateTime dueDate = computeAndValidateDueDate(loadedIban, validityDate);
 
-            LocalDateTime dueDate;
-            if (loadedIban.getDueDate() != null) {
-                dueDate = loadedIban.getDueDate().atStartOfDay();
-                checkDueDate(validityDate, dueDate);
-            } else {
-                dueDate = LocalDateTime.now().plusYears(1L);
-            }
-
-            Iban newIban = existingIban;
-            if (existingIban == null) {
-                newIban = Iban.builder()
-                        .iban(iban)
-                        .fiscalCode(loadedIban.getCreditorInstitutionCode())
-                        .dueDate(Timestamp.valueOf(dueDate))
-                        .build();
-            }
-
-            IbanMaster ibanMaster = IbanMaster.builder()
-                    .iban(newIban)
-                    .pa(pa)
-                    .ibanStatus(IbanStatus.ENABLED)
-                    .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
-                    .validityDate(Timestamp.valueOf(validityDate))
-                    .description(loadedIban.getDescription())
-                    .build();
-            if (newIban.getIbanMasters() == null) {
-                List<IbanMaster> ibanMasters = new ArrayList<>();
-                ibanMasters.add(ibanMaster);
-                newIban.setIbanMasters(ibanMasters);
-            } else {
-                newIban.getIbanMasters().add(ibanMaster);
-            }
-
+            Iban newIban = buildNewIban(loadedIban, existingIban, dueDate, pa, validityDate);
             ibanToInsertList.add(newIban);
         }
 
@@ -1042,22 +999,11 @@ public class IbanService {
                     getIbanMaster(existingIban, pa)
                             .orElseThrow(() -> new AppException(AppError.IBAN_NOT_ASSOCIATED, iban, pa.getIdDominio()));
 
-            List<CodifichePa> encodings = codifichePaRepository
-                    .findAllByFkPa_ObjId(pa.getObjId());
-            this.createQrCodeIfNotExist(pa, encodings);
-            if (isPostalIban(iban)) {
-                if (!existingIban.getIbanMasters().stream()
-                        .filter(master -> !master.getFkPa().equals(pa.getObjId()))
-                        .toList()
-                        .isEmpty()
-                ) {
-                    throw new AppException(
-                            AppError.POSTAL_IBAN_ALREADY_ASSOCIATED,
-                            iban,
-                            pa.getIdDominio());
-                }
-                this.createBarcodeIfNotExist(iban, pa, encodings);
+            if (isPostalIbanOwnedByOtherPa(iban, existingIban, pa)) {
+                throw new AppException(AppError.POSTAL_IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
             }
+
+            checkEncodingsAssociation(iban, pa);
 
             if (loadedIban.getDueDate() != null) {
                 LocalDateTime dueDate = loadedIban.getDueDate().atStartOfDay();
@@ -1137,5 +1083,68 @@ public class IbanService {
         if (!ibanToDeleteList.isEmpty()) {
             ibanRepository.deleteByIds(ibanToDeleteList);
         }
+    }
+
+    private Iban buildNewIban(
+            IbanMassLoadCsv loadedIban,
+            Iban existingIban,
+            LocalDateTime dueDate,
+            Pa pa,
+            LocalDateTime validityDate
+    ) {
+        Iban newIban = existingIban;
+        if (existingIban == null) {
+            newIban = Iban.builder()
+                    .iban(loadedIban.getIban())
+                    .fiscalCode(loadedIban.getCreditorInstitutionCode())
+                    .dueDate(Timestamp.valueOf(dueDate))
+                    .build();
+        }
+
+        IbanMaster ibanMaster = IbanMaster.builder()
+                .iban(newIban)
+                .pa(pa)
+                .ibanStatus(IbanStatus.ENABLED)
+                .insertedDate(CommonUtil.toTimestamp(OffsetDateTime.now(ZoneOffset.UTC)))
+                .validityDate(Timestamp.valueOf(validityDate))
+                .description(loadedIban.getDescription())
+                .build();
+
+        if (newIban.getIbanMasters() == null) {
+            List<IbanMaster> ibanMasters = new ArrayList<>();
+            ibanMasters.add(ibanMaster);
+            newIban.setIbanMasters(ibanMasters);
+        } else {
+            newIban.getIbanMasters().add(ibanMaster);
+        }
+
+        return newIban;
+    }
+
+    private LocalDateTime computeAndValidateDueDate(IbanMassLoadCsv loadedIban, LocalDateTime validityDate) {
+        LocalDateTime dueDate;
+        if (loadedIban.getDueDate() != null) {
+            dueDate = loadedIban.getDueDate().atStartOfDay();
+            checkDueDate(validityDate, dueDate);
+        } else {
+            dueDate = LocalDateTime.now().plusYears(1L);
+        }
+        return dueDate;
+    }
+
+    private boolean isPostalIbanAlreadyAssociated(String iban, Iban existingIban) {
+        return isPostalIban(iban) && !existingIban.getIbanMasters().isEmpty();
+    }
+
+    private boolean isIbanAlreadyOwned(Iban existingIban, Pa pa) {
+        return existingIban.getIbanMasters().stream()
+                .anyMatch(master -> master.getFkPa().equals(pa.getObjId()));
+    }
+
+    private boolean isPostalIbanOwnedByOtherPa(String iban, Iban existingIban, Pa pa) {
+        return isPostalIban(iban) && !existingIban.getIbanMasters().stream()
+                .filter(master -> !master.getFkPa().equals(pa.getObjId()))
+                .toList()
+                .isEmpty();
     }
 }
