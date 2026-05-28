@@ -351,8 +351,6 @@ public class IbanService {
     public void processMassiveIbanOperationByCsv(MultipartFile file) {
         try {
             List<IbanMassLoadCsv> validatedCsv = parseAndValidateCsv(file);
-//            Map<String, List<IbanMassLoadCsv>> groupedByCI =
-//                    validatedCsv.stream().collect(Collectors.groupingBy(IbanMassLoadCsv::getCreditorInstitutionCode));
             IbanMassiveByOperation ibanMassiveByOperation = splitAndValidateIbanByOperation(validatedCsv);
 
             log.debug("IBANs to be inserted: {}", ibanMassiveByOperation.toInsert.size());
