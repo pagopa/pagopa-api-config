@@ -666,6 +666,13 @@ public class IbanController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = ProblemJson.class))),
                     @ApiResponse(
+                            responseCode = "422",
+                            description = "Unprocessable Entity",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
                             responseCode = "429",
                             description = "Too many requests",
                             content = @Content(schema = @Schema())),

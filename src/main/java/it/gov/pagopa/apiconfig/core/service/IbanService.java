@@ -64,7 +64,10 @@ import it.gov.pagopa.apiconfig.starter.entity.*;
 import it.gov.pagopa.apiconfig.starter.entity.IbanMaster.IbanStatus;
 import it.gov.pagopa.apiconfig.starter.repository.*;
 
+import static it.gov.pagopa.apiconfig.core.exception.AppError.*;
 import static it.gov.pagopa.apiconfig.core.exception.AppError.IBANS_BAD_REQUEST;
+import static it.gov.pagopa.apiconfig.core.exception.AppError.IBAN_ALREADY_ASSOCIATED;
+import static it.gov.pagopa.apiconfig.core.exception.AppError.IBAN_NOT_VALID;
 
 @Slf4j
 @Service
@@ -141,7 +144,7 @@ public class IbanService {
         if (isPostalIban(iban.getIbanValue())
                 && !ibanMasterSearchRepository.findByFkIban(ibanToBeCreated.getObjId()).isEmpty())
             throw new AppException(
-                    AppError.POSTAL_IBAN_ALREADY_ASSOCIATED,
+                    POSTAL_IBAN_ALREADY_ASSOCIATED,
                     iban.getIbanValue(),
                     existingCreditorInstitution.getIdDominio());
         // check if IBAN was already associated to creditor institution. If already associated, throw an
@@ -150,7 +153,7 @@ public class IbanService {
                 .ifPresent(
                         s -> {
                             throw new AppException(
-                                    AppError.IBAN_ALREADY_ASSOCIATED,
+                                    IBAN_ALREADY_ASSOCIATED,
                                     iban.getIbanValue(),
                                     existingCreditorInstitution.getIdDominio());
                         });
@@ -193,7 +196,7 @@ public class IbanService {
 		Iban existingIban =
 				ibanRepository
 				.findByIban(ibanCode)
-				.orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, organizationFiscalCode));
+				.orElseThrow(() -> new AppException(IBAN_NOT_FOUND, organizationFiscalCode));
 		if (CommonUtil.checkIfLocalDatesNotEquals(iban.getDueDate().toLocalDateTime(), existingIban.getDueDate().toLocalDateTime())) {
 			this.checkDueDate(iban.getValidityDate().toLocalDateTime(), iban.getDueDate().toLocalDateTime());
 		}
@@ -208,7 +211,7 @@ public class IbanService {
 				.orElseThrow(
 						() ->
 						new AppException(
-								AppError.IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
+								IBAN_NOT_ASSOCIATED, iban.getIbanValue(), organizationFiscalCode));
 		if (CommonUtil.checkIfLocalDatesNotEquals(iban.getValidityDate().toLocalDateTime(), existingIbanMaster.getValidityDate().toLocalDateTime())) {
 			this.checkValidityDate(iban.getValidityDate().toLocalDateTime());
 		}
@@ -248,7 +251,7 @@ public class IbanService {
 
         if (hasIban) {
             if (!IBANValidator.getInstance().isValid(iban)) {
-                throw new AppException(AppError.IBAN_NOT_VALID, iban);
+                throw new AppException(IBAN_NOT_VALID, iban);
             }
             ibanMasters = hasLabel 
                 ? ibanMasterSearchRepository.findByFkPaAndIbanValueAndLabel(
@@ -534,7 +537,7 @@ public class IbanService {
         // retrieve the creditor institution and throw exception if not found
         Optional<Pa> creditorInstitutionOpt = paRepository.findByIdDominio(organizationFiscalCode);
         return creditorInstitutionOpt.orElseThrow(
-                () -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
+                () -> new AppException(CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
     }
 
     private Optional<IbanMaster> getIbanMaster(Iban iban, Pa creditorInstitution) {
@@ -598,7 +601,7 @@ public class IbanService {
 			 */
             IbanAttribute ibanAttribute =
                     Optional.ofNullable(validLabels.get(label.getName()))
-                            .orElseThrow(() -> new AppException(AppError.IBAN_LABEL_NOT_VALID, label.getName()));
+                            .orElseThrow(() -> new AppException(IBAN_LABEL_NOT_VALID, label.getName()));
             IbanAttributeMaster ibanAttributesMasterToBeCreated =
                     IbanAttributeMaster.builder()
                             .fkIbanMaster(ibanCIRelation.getObjId())
@@ -651,7 +654,7 @@ public class IbanService {
     private Iban getIbanIfExists(String ibanValue) {
         return ibanRepository
                 .findByIban(ibanValue)
-                .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, ibanValue));
+                .orElseThrow(() -> new AppException(IBAN_NOT_FOUND, ibanValue));
     }
 
     private List<CheckItem> createIbansByFile(InputStream inputStream) throws IOException {
@@ -805,7 +808,7 @@ public class IbanService {
      */
     private Pa getPaIfExists(String organizationFiscalCode) {
         return paRepository.findByIdDominio(organizationFiscalCode)
-                .orElseThrow(() -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
+                .orElseThrow(() -> new AppException(CREDITOR_INSTITUTION_NOT_FOUND, organizationFiscalCode));
     }
 
 
@@ -993,17 +996,17 @@ public class IbanService {
         for(IbanMassLoadCsv loadedIban : ibanList) {
             String iban = loadedIban.getIban();
             if (!IBANValidator.getInstance().isValid(iban)) {
-                throw new AppException(IBANS_BAD_REQUEST, "The provided IBAN is invalid: " + iban);
+                throw new AppException(IBAN_NOT_VALID, iban);
             }
 
             Pa pa = getPaIfExists(loadedIban.getCreditorInstitutionCode());
             Iban existingIban = ibanRepository.findByIban(iban).orElse(null);
             if (existingIban != null) {
                 if (isIbanAlreadyOwned(existingIban, pa)) {
-                    throw new AppException(AppError.IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
+                    throw new AppException(IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
                 }
                 if (isPostalIbanAlreadyAssociated(iban, existingIban)) {
-                    throw new AppException(AppError.POSTAL_IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
+                    throw new AppException(POSTAL_IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
                 }
             }
 
@@ -1030,20 +1033,20 @@ public class IbanService {
     	for(IbanMassLoadCsv loadedIban : ibanList) {
             String iban = loadedIban.getIban();
             if (!IBANValidator.getInstance().isValid(iban)) {
-                throw new AppException(IBANS_BAD_REQUEST, "The provided IBAN is invalid: " + iban);
+                throw new AppException(IBAN_NOT_VALID, iban);
             }
 
             Pa pa = getPaIfExists(loadedIban.getCreditorInstitutionCode());
             Iban existingIban = ibanRepository.findByIban(iban)
-                    .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban));
+                    .orElseThrow(() -> new AppException(IBAN_NOT_FOUND, iban));
             // check if IBAN was already associated to creditor institution. If not associated, throw an
             // exception
             IbanMaster existingIbanMaster =
                     getIbanMaster(existingIban, pa)
-                            .orElseThrow(() -> new AppException(AppError.IBAN_NOT_ASSOCIATED, iban, pa.getIdDominio()));
+                            .orElseThrow(() -> new AppException(IBAN_NOT_ASSOCIATED, iban, pa.getIdDominio()));
 
             if (isPostalIbanOwnedByOtherPa(iban, existingIban, pa)) {
-                throw new AppException(AppError.POSTAL_IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
+                throw new AppException(POSTAL_IBAN_ALREADY_ASSOCIATED, iban, pa.getIdDominio());
             }
 
             checkEncodingsAssociation(iban, pa);
@@ -1081,15 +1084,15 @@ public class IbanService {
         for(IbanMassLoadCsv loadedIban : ibanList) {
             String iban = loadedIban.getIban();
             if (!IBANValidator.getInstance().isValid(iban)) {
-                throw new AppException(IBANS_BAD_REQUEST, "The provided IBAN is invalid: " + iban);
+                throw new AppException(IBAN_NOT_VALID, iban);
             }
 
             Pa pa = getPaIfExists(loadedIban.getCreditorInstitutionCode());
             Iban existingIban = ibanRepository.findByIban(iban)
-                    .orElseThrow(() -> new AppException(AppError.IBAN_NOT_FOUND, iban));
+                    .orElseThrow(() -> new AppException(IBAN_NOT_FOUND, iban));
             IbanMaster existingIbanMaster =
                     getIbanMaster(existingIban, pa)
-                            .orElseThrow(() -> new AppException(AppError.IBAN_NOT_ASSOCIATED, iban, pa.getIdDominio()));
+                            .orElseThrow(() -> new AppException(IBAN_NOT_ASSOCIATED, iban, pa.getIdDominio()));
 
 
     		// the iban has only one relationship in the iban_master table

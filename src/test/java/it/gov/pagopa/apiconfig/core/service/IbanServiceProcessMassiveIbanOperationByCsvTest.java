@@ -281,8 +281,8 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
                 () -> ibanService.processMassiveIbanOperationByCsv(file)
         );
 
-        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
-        assertTrue(ex.getMessage().contains("The provided IBAN is invalid:"));
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, ex.getHttpStatus());
+        assertTrue(ex.getMessage().contains("is not valid"));
     }
 
     @Test
