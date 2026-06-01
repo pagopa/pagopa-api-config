@@ -287,7 +287,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
 
     @Test
     @SneakyThrows
-    void processMassiveIbanOperationByCsv_KO_updateFailsAfterInsert_deleteNotExecuted() {
+    void processMassiveIbanOperationByCsv_KO_updateFailsWithNotFoundAfterInsert_deleteNotExecuted() {
         MultipartFile file = loadCsvFile("file/massiveIbanOperationByCsv/all_operation_ok.csv");
 
         Pa pa = buildPa(1L, EC_FISCAL_CODE);
@@ -307,7 +307,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
                 () -> ibanService.processMassiveIbanOperationByCsv(file)
         );
 
-        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getHttpStatus());
 
         verify(ibanRepository, times(1)).saveAll(anyList());
         verify(ibanAttributeMasterRepository, never()).deleteByIds(anyList());
@@ -333,7 +333,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
                 () -> ibanService.processMassiveIbanOperationByCsv(file)
         );
 
-        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+        assertEquals(HttpStatus.CONFLICT, ex.getHttpStatus());
         assertTrue(ex.getMessage().contains("already associated to the creditor institution"));
 
         verify(ibanRepository, never()).saveAll(anyList());
@@ -359,7 +359,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
                 () -> ibanService.processMassiveIbanOperationByCsv(file)
         );
 
-        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+        assertEquals(HttpStatus.CONFLICT, ex.getHttpStatus());
         assertTrue(ex.getMessage().contains("already associated to one CI, this type of IBAN cannot be"));
 
         verify(ibanRepository, never()).saveAll(anyList());
@@ -385,7 +385,7 @@ class IbanServiceProcessMassiveIbanOperationByCsvTest {
                 () -> ibanService.processMassiveIbanOperationByCsv(file)
         );
 
-        assertEquals(HttpStatus.BAD_REQUEST, ex.getHttpStatus());
+        assertEquals(HttpStatus.CONFLICT, ex.getHttpStatus());
         assertTrue(ex.getMessage().contains("already associated to one CI, this type of IBAN cannot be"));
 
         verify(ibanRepository, never()).saveAll(anyList());

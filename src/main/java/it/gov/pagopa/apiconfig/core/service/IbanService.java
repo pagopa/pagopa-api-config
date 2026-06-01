@@ -349,20 +349,15 @@ public class IbanService {
 
 
     public void processMassiveIbanOperationByCsv(MultipartFile file) {
-        try {
-            List<IbanMassLoadCsv> validatedCsv = parseAndValidateCsv(file);
-            IbanMassiveByOperation ibanMassiveByOperation = splitAndValidateIbanByOperation(validatedCsv);
+        List<IbanMassLoadCsv> validatedCsv = parseAndValidateCsv(file);
+        IbanMassiveByOperation ibanMassiveByOperation = splitAndValidateIbanByOperation(validatedCsv);
 
-            log.debug("IBANs to be inserted: {}", ibanMassiveByOperation.toInsert.size());
-            massiveInsertIban(ibanMassiveByOperation.toInsert);
-            log.debug("IBANs to be updated: {}", ibanMassiveByOperation.toUpdate.size());
-            massiveUpdateIban(ibanMassiveByOperation.toUpdate);
-            log.debug("IBANs to be deleted: {}", ibanMassiveByOperation.toDelete.size());
-            massiveDeleteIban(ibanMassiveByOperation.toDelete);
-        } catch (IOException | RuntimeException e) {
-            throw new AppException(
-                    HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem in the file examination - " + e.getMessage(), e);
-        }
+        log.debug("IBANs to be inserted: {}", ibanMassiveByOperation.toInsert.size());
+        massiveInsertIban(ibanMassiveByOperation.toInsert);
+        log.debug("IBANs to be updated: {}", ibanMassiveByOperation.toUpdate.size());
+        massiveUpdateIban(ibanMassiveByOperation.toUpdate);
+        log.debug("IBANs to be deleted: {}", ibanMassiveByOperation.toDelete.size());
+        massiveDeleteIban(ibanMassiveByOperation.toDelete);
     }
 
     private IbanMassiveByOperation splitAndValidateIbanByOperation(List<IbanMassLoadCsv> ibanCsv) {
@@ -436,7 +431,7 @@ public class IbanService {
         return abiCode.equals(postalIbanAbi);
     }
 
-    private List<IbanMassLoadCsv> parseAndValidateCsv(MultipartFile file) throws IOException {
+    private List<IbanMassLoadCsv> parseAndValidateCsv(MultipartFile file) {
         // read CSV
         CsvToBean<IbanMassLoadCsv> parsedCSV;
         try (Reader reader = new StringReader(new String(file.getInputStream().readAllBytes(), StandardCharsets.UTF_8))) {
@@ -475,6 +470,9 @@ public class IbanService {
                 msg = "CSV not valid: either missing/invalid header or missing required field value";
             }
             throw new AppException(IBANS_BAD_REQUEST, msg);
+        } catch (IOException e) {
+            throw new AppException(
+                    HttpStatus.BAD_REQUEST, FILE_BAD_REQUEST, "Problem in the file examination - " + e.getMessage(), e);
         }
     }
 
