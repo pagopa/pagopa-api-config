@@ -348,6 +348,45 @@ public class IbanService {
     }
 
 
+    /**
+     * Processes a CSV file containing a batch of IBAN operations (insert, update, delete) and applies
+     * them to the persistence layer in a single transactional unit.
+     *
+     * <p>The CSV file is expected to be UTF-8 encoded, comma-separated, with the following columns
+     * (header names are case-sensitive):
+     * <ul>
+     *   <li>{@code iddominio} – fiscal code of the Creditor Institution (11 digits, mandatory).</li>
+     *   <li>{@code iban} – IBAN code (mandatory).</li>
+     *   <li>{@code operazione} – operation type (mandatory): {@code I} (insert), {@code U}/{@code M}
+     *       (update), {@code D}/{@code C} (delete).</li>
+     *   <li>{@code descrizione} – IBAN description (optional, used on insert/update).</li>
+     *   <li>{@code dataattivazioneiban} – activation/validity date in {@code yyyy-MM-dd} format
+     *       (mandatory on insert, forbidden on update/delete).</li>
+     *   <li>{@code datascadenzaiban} – due date in {@code yyyy-MM-dd} format (optional on
+     *       insert/update, forbidden on delete; defaults to <em>today + 1 year</em> on insert when
+     *       omitted).</li>
+     * </ul>
+     *
+     * <p>Processing pipeline:
+     * <ol>
+     *   <li>{@link #parseAndValidateCsv(MultipartFile)} parses the file and reports syntactic
+     *       errors (missing/invalid header, invalid date format, missing mandatory fields, ...).</li>
+     *   <li>{@link #splitAndValidateIbanByOperation(List)} groups rows by operation type, enforces
+     *       per-operation field rules and rejects duplicated IBANs within the same file.</li>
+     *   <li>{@link #massiveInsertIban(List)}, {@link #massiveUpdateIban(List)} and
+     *       {@link #massiveDeleteIban(List)} are invoked in order to persist the changes.</li>
+     * </ol>
+     *
+     * <p>The whole method runs inside the class-level {@link Transactional} boundary: if any row
+     * fails validation or persistence, all previously applied changes are rolled back and the
+     * underlying {@link AppException} is propagated to the caller.
+     *
+     * @param file the multipart CSV file containing the IBAN operations to perform; must not be
+     *             {@code null}.
+     * @throws AppException if the CSV is malformed, a row violates the per-operation rules, an IBAN
+     *                      is duplicated within the file, or any business rule is violated during
+     *                      insert/update/delete
+     */
     public void processMassiveIbanOperationByCsv(MultipartFile file) {
         List<IbanMassLoadCsv> validatedCsv = parseAndValidateCsv(file);
         IbanMassiveByOperation ibanMassiveByOperation = splitAndValidateIbanByOperation(validatedCsv);
