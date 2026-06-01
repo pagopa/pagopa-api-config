@@ -401,50 +401,8 @@ public class IbanService {
 
     private IbanMassiveByOperation splitAndValidateIbanByOperation(List<IbanMassLoadCsv> ibanCsv) {
         IbanMassiveByOperation splitByOp = new IbanMassiveByOperation();
-        Set<String> seen = new HashSet<>();
 
-        ibanCsv.forEach(
-            csvRow -> {
-                String iban = csvRow.getIban();
-                if (!seen.add(iban)) {
-                    splitByOp.errors.add(
-                            "IBAN: " + csvRow.getIban() + " already inserted in the file. Multiple operation on the same IBAN are not allowed."
-                    );
-                }
-
-                if(OperationEnum.I.equals(csvRow.getOperation())) {
-                    if (csvRow.getActivationDate() == null) {
-                        splitByOp.errors.add(
-                                "Missing required field 'dataattivazioneiban' for insert operation of IBAN: " + csvRow.getIban()
-                        );
-                    }
-
-                    splitByOp.toInsert.add(csvRow);
-                } else if(OperationEnum.DELETE_OP.contains(csvRow.getOperation())) {
-                    if (csvRow.getDescription() != null
-                            || csvRow.getActivationDate() != null
-                            || csvRow.getDueDate() != null
-                    ) {
-                        splitByOp.errors.add("Unexpected fields provided for delete operation of IBAN: " + csvRow.getIban());
-                    }
-
-                    splitByOp.toDelete.add(csvRow);
-                } else if (OperationEnum.UPDATE_OP.contains(csvRow.getOperation())) {
-                    if (csvRow.getActivationDate() != null) {
-                        splitByOp.errors.add(
-                                "Unexpected field 'dataattivazioneiban' provided for update operation of IBAN: " + csvRow.getIban()
-                        );
-                    }
-                    if (csvRow.getDueDate() == null && csvRow.getDescription() == null) {
-                        splitByOp.errors.add(
-                                "No updatable fields provided for update operation of IBAN: " + csvRow.getIban()
-                        );
-                    }
-
-                    splitByOp.toUpdate.add(csvRow);
-                }
-            }
-        );
+        ibanCsv.forEach(csvRow -> handleCsvRow(csvRow, splitByOp));
 
         if (!splitByOp.errors.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -454,14 +412,64 @@ public class IbanService {
         return splitByOp;
     }
 
+    private void handleCsvRow(IbanMassLoadCsv csvRow, IbanMassiveByOperation splitByOp) {
+        if (!splitByOp.seen.add(csvRow.getIban())) {
+            splitByOp.errors.add(
+                    "IBAN: " + csvRow.getIban() + " already inserted in the file. Multiple operation on the same IBAN are not allowed."
+            );
+        }
+
+        OperationEnum operation = csvRow.getOperation();
+        if (OperationEnum.I.equals(operation)) {
+            handleInsertRow(csvRow, splitByOp);
+        } else if (OperationEnum.DELETE_OP.contains(operation)) {
+            handleDeleteRow(csvRow, splitByOp);
+        } else if (OperationEnum.UPDATE_OP.contains(operation)) {
+            handleUpdateRow(csvRow, splitByOp);
+        }
+    }
+
+    private void handleInsertRow(IbanMassLoadCsv csvRow, IbanMassiveByOperation splitByOp) {
+        if (csvRow.getActivationDate() == null) {
+            splitByOp.errors.add(
+                    "Missing required field 'dataattivazioneiban' for insert operation of IBAN: " + csvRow.getIban()
+            );
+        }
+        splitByOp.toInsert.add(csvRow);
+    }
+
+    private void handleDeleteRow(IbanMassLoadCsv csvRow, IbanMassiveByOperation splitByOp) {
+        if (csvRow.getDescription() != null
+                || csvRow.getActivationDate() != null
+                || csvRow.getDueDate() != null) {
+            splitByOp.errors.add("Unexpected fields provided for delete operation of IBAN: " + csvRow.getIban());
+        }
+        splitByOp.toDelete.add(csvRow);
+    }
+
+    private void handleUpdateRow(IbanMassLoadCsv csvRow, IbanMassiveByOperation splitByOp) {
+        if (csvRow.getActivationDate() != null) {
+            splitByOp.errors.add(
+                    "Unexpected field 'dataattivazioneiban' provided for update operation of IBAN: " + csvRow.getIban()
+            );
+        }
+        if (csvRow.getDueDate() == null && csvRow.getDescription() == null) {
+            splitByOp.errors.add(
+                    "No updatable fields provided for update operation of IBAN: " + csvRow.getIban()
+            );
+        }
+        splitByOp.toUpdate.add(csvRow);
+    }
+
     private record IbanMassiveByOperation(
             List<IbanMassLoadCsv> toInsert,
             List<IbanMassLoadCsv> toDelete,
             List<IbanMassLoadCsv> toUpdate,
-            List<String> errors
+            List<String> errors,
+            Set<String> seen
     ) {
         public IbanMassiveByOperation() {
-            this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashSet<>());
         }
     }
 
