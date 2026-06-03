@@ -579,10 +579,6 @@ public class IbanController {
                             description = "Unauthorized",
                             content = @Content(schema = @Schema())),
                     @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content(schema = @Schema())),
-                    @ApiResponse(
                             responseCode = "404",
                             description = "Not Found",
                             content =
@@ -592,6 +588,13 @@ public class IbanController {
                     @ApiResponse(
                             responseCode = "409",
                             description = "Conflict",
+                            content =
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ProblemJson.class))),
+                    @ApiResponse(
+                            responseCode = "422",
+                            description = "Unprocessable Entity",
                             content =
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -661,13 +664,6 @@ public class IbanController {
                     @ApiResponse(
                             responseCode = "404",
                             description = "Not Found",
-                            content =
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ProblemJson.class))),
-                    @ApiResponse(
-                            responseCode = "422",
-                            description = "Unprocessable Entity",
                             content =
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
