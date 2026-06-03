@@ -1115,7 +1115,7 @@ public class IbanService {
         }
 
         if (!encodingToDeleteList.isEmpty()) {
-            codifichePaRepository.deleteByIds(ibanAttributeMasterToDeleteList);
+            codifichePaRepository.deleteByIds(encodingToDeleteList);
         }
 
         if (!ibanAttributeMasterToDeleteList.isEmpty()) {
