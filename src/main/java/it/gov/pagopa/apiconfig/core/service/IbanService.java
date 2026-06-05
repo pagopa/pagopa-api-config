@@ -90,7 +90,6 @@ public class IbanService {
     private final ExtendedCodifichePaRepository codifichePaRepository;
     private final EncodingsService encodingsService;
     private final ModelMapper modelMapper;
-    private final AzureStorageInteraction azureStorageInteraction;
 
     public IbanService(
             @Value("${iban.abi.poste}") String postalIbanAbi,
@@ -105,8 +104,7 @@ public class IbanService {
             IbanAttributeMasterRepository ibanAttributeMasterRepository,
             ExtendedCodifichePaRepository codifichePaRepository,
             EncodingsService encodingsService,
-            ModelMapper modelMapper,
-            AzureStorageInteraction azureStorageInteraction) {
+            ModelMapper modelMapper) {
         this.postalIbanAbi = postalIbanAbi;
         this.cupLabel = cupLabel;
         this.acaLabel = acaLabel;
@@ -120,7 +118,6 @@ public class IbanService {
         this.codifichePaRepository = codifichePaRepository;
         this.encodingsService = encodingsService;
         this.modelMapper = modelMapper;
-        this.azureStorageInteraction = azureStorageInteraction;
     }
 
     public IbanEnhanced createIban(
@@ -129,8 +126,6 @@ public class IbanService {
             @Valid @NotNull IbanEnhanced iban) {
         // retrieve the creditor institution and throw exception if not found
         Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
-        // Update Ica Table
-        azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
 
         this.checkAndSetup(iban, existingCreditorInstitution);
 
@@ -187,8 +182,7 @@ public class IbanService {
 		}
 		// retrieve the creditor institution and throw exception if not found
 		Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
-		// Update Ica Table
-		azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
+
 		this.checkEncodingsAssociation(iban.getIbanValue(), existingCreditorInstitution);
 
 		// retrieve the iban and throw exception if not found. If creditor institution is the owner, it
@@ -292,8 +286,6 @@ public class IbanService {
         // Get pa entity
         Pa existingCreditorInstitution = getCreditorInstitutionIfExists(organizationFiscalCode);
 
-        // Update Ica Table
-        azureStorageInteraction.updateECIcaTable(existingCreditorInstitution.getIdDominio());
 
         // Get all ibanMaster relations
         List<IbanMaster> ibanMastersToBeDeleted =
