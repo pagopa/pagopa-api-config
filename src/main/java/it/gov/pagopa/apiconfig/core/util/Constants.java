@@ -8,6 +8,7 @@ public class Constants {
   @UtilityClass
   public static class DateTimeFormat {
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
     public static final String ZONED_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
   }
 

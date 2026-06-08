@@ -28,7 +28,6 @@ import it.gov.pagopa.apiconfig.core.model.creditorinstitution.Station;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationCreditorInstitution;
 import it.gov.pagopa.apiconfig.core.model.creditorinstitution.StationDetails;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoad;
-import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMassLoadCsv;
 import it.gov.pagopa.apiconfig.core.model.massiveloading.IbansMaster;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPsp;
 import it.gov.pagopa.apiconfig.core.model.psp.BrokerPspDetails;
@@ -138,8 +137,6 @@ public class MappingsConfiguration {
         new ConvertPaStazionePaToCreditorInstitutionView();
     
     Converter<IbansMassLoad, IbansMaster> convertIbansMassLoadToIbanMaster = new ConvertIbansMassLoadToIbanMaster();
-
-    Converter<IbansMassLoadCsv, IbansMaster> convertIbansMassLoadCsvToIbanMaster = new ConvertIbansMassLoadCsvToIbanMaster();
 
     Converter<Cache, it.gov.pagopa.apiconfig.core.model.configuration.Cache> convertCacheToCacheModel = new ConvertCacheToCacheModel();
 
@@ -263,9 +260,6 @@ public class MappingsConfiguration {
 
     mapper.createTypeMap(IbansMassLoad.class, IbansMaster.class)
 			.setConverter(convertIbansMassLoadToIbanMaster);
-
-    mapper.createTypeMap(IbansMassLoadCsv.class, IbansMaster.class)
-            .setConverter(convertIbansMassLoadCsvToIbanMaster);
 
     mapper.createTypeMap(Cache.class, it.gov.pagopa.apiconfig.core.model.configuration.Cache.class)
             .setConverter(convertCacheToCacheModel);
