@@ -38,7 +38,7 @@ jobs:
       - name: Formatting
         id: format
         continue-on-error: true
-        uses: findologic/intellij-format-action@main
+        uses: findologic/intellij-format-action@71ab7ce630fef4398cb571a5ef46b2a3cee3e0d5 # main
         with:
           path: .
           fail-on-changes: false
