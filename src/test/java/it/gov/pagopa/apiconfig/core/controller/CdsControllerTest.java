@@ -12,8 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
 import it.gov.pagopa.apiconfig.core.service.CdsService;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
+import it.gov.pagopa.apiconfig.starter.entity.CdsSoggettoServizio;
 import it.gov.pagopa.apiconfig.starter.entity.CdsServizio;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,18 +65,36 @@ class CdsControllerTest {
     when(cdsService.createCdsSubject(any(CdsSoggetto.class))).thenReturn(cdsSoggetto);
     when(cdsService.updateCdsSubject(any(Long.class), any(CdsSoggetto.class)))
         .thenReturn(cdsSoggetto);
+
+    CdsSoggettoServizio cdsSoggettoServizio =
+        CdsSoggettoServizio.builder()
+            .id(1L)
+            .fkCdsSoggetto("1")
+            .fkCdsServizio("service-1")
+            .idSoggettoServizio("subject-service-1")
+            .descrizioneServizio("Descrizione soggetto servizio")
+            .commissione(Boolean.TRUE)
+            .build();
+    when(cdsService.getCdsSubjectServices(anyString())).thenReturn(List.of(cdsSoggettoServizio));
+    when(cdsService.getCdsSubjectService(anyString(), anyString())).thenReturn(cdsSoggettoServizio);
+    when(cdsService.createCdsSubjectService(anyString(), any(CdsSoggettoServizioRequestDto.class)))
+        .thenReturn(cdsSoggettoServizio);
+    when(
+            cdsService.updateCdsSubjectService(
+                anyString(), anyString(), any(CdsSoggettoServizioRequestDto.class)))
+        .thenReturn(cdsSoggettoServizio);
   }
 
   @Test
   void getCdsServices() throws Exception {
-    mvc.perform(get("/cds/service").contentType(MediaType.APPLICATION_JSON))
+    mvc.perform(get("/cds/services").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }
 
   @Test
   void getCdsService() throws Exception {
-    mvc.perform(get("/cds/service/service-1").contentType(MediaType.APPLICATION_JSON))
+    mvc.perform(get("/cds/services/service-1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }
@@ -92,7 +112,7 @@ class CdsControllerTest {
             .build();
 
     mvc.perform(
-            post("/cds/service")
+            post("/cds/services")
                 .content(TestUtil.toJson(request))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
@@ -112,7 +132,7 @@ class CdsControllerTest {
             .build();
 
     mvc.perform(
-            put("/cds/service/service-1")
+            put("/cds/services/service-1")
                 .content(TestUtil.toJson(request))
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -121,7 +141,7 @@ class CdsControllerTest {
 
   @Test
   void deleteCdsService() throws Exception {
-    mvc.perform(delete("/cds/service/service-1").contentType(MediaType.APPLICATION_JSON))
+    mvc.perform(delete("/cds/services/service-1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
 
@@ -175,6 +195,66 @@ class CdsControllerTest {
   @Test
   void deleteCdsSubject() throws Exception {
     mvc.perform(delete("/cds/subjects/1").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void getCdsSubjectServices() throws Exception {
+    mvc.perform(get("/cds/subjects/CI-1/services").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void getCdsSubjectService() throws Exception {
+    mvc.perform(get("/cds/subjects/CI-1/services/subject-service-1").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void createCdsSubjectService() throws Exception {
+    CdsSoggettoServizioRequestDto request =
+        CdsSoggettoServizioRequestDto.builder()
+            .id("subject-service-1")
+            .idSoggetto("1")
+            .idServizio("service-1")
+            .descrizioneServizio("Descrizione soggetto servizio")
+            .idStazione("STATION-1")
+            .commissione(Boolean.TRUE)
+            .build();
+
+    mvc.perform(
+            post("/cds/subjects/CI-1/services")
+                .content(TestUtil.toJson(request))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void updateCdsSubjectService() throws Exception {
+    CdsSoggettoServizioRequestDto request =
+        CdsSoggettoServizioRequestDto.builder()
+            .id("subject-service-1")
+            .idSoggetto("1")
+            .idServizio("service-1")
+            .descrizioneServizio("Descrizione soggetto servizio aggiornata")
+            .idStazione("STATION-1")
+            .commissione(Boolean.FALSE)
+            .build();
+
+    mvc.perform(
+            put("/cds/subjects/CI-1/services/subject-service-1")
+                .content(TestUtil.toJson(request))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void deleteCdsSubjectService() throws Exception {
+    mvc.perform(delete("/cds/subjects/CI-1/services/subject-service-1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
 }

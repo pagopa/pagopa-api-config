@@ -2,6 +2,7 @@ package it.gov.pagopa.apiconfig.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,8 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
 import it.gov.pagopa.apiconfig.core.service.CdsService;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
+import it.gov.pagopa.apiconfig.starter.entity.CdsSoggettoServizio;
 import it.gov.pagopa.apiconfig.starter.entity.CdsServizio;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -53,7 +56,7 @@ public class CdsController {
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = CdsServizio.class))),
+                    array = @ArraySchema(schema = @Schema(implementation = CdsServizio.class)))),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
@@ -81,7 +84,7 @@ public class CdsController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemJson.class)))
       })
-  @GetMapping(value = "/service", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/services", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<CdsServizio>> getCdsServices() {
     return ResponseEntity.ok(cdsService.getCdsServices());
   }
@@ -136,7 +139,7 @@ public class CdsController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemJson.class)))
       })
-  @GetMapping(value = "/service/{idservizio}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/services/{idservizio}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<CdsServizio> getCdsService(
       @NotBlank @Size(max = 50) @PathVariable("idservizio") String idServizio) {
     return ResponseEntity.ok(cdsService.getCdsService(idServizio));
@@ -192,7 +195,7 @@ public class CdsController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemJson.class)))
       })
-  @PostMapping(value = "/service", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/services", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<CdsServizio> createCdsService(
       @RequestBody @NotNull CdsServizio cdsServizio) {
     return ResponseEntity.status(HttpStatus.CREATED).body(cdsService.createCdsService(cdsServizio));
@@ -248,7 +251,7 @@ public class CdsController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemJson.class)))
       })
-  @PutMapping(value = "/service/{idservizio}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PutMapping(value = "/services/{idservizio}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<CdsServizio> updateCdsService(
       @NotBlank @Size(max = 50) @PathVariable("idservizio") String idServizio,
       @RequestBody @NotNull CdsServizio cdsServizio) {
@@ -302,7 +305,7 @@ public class CdsController {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ProblemJson.class)))
       })
-  @DeleteMapping(value = "/service/{idservizio}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @DeleteMapping(value = "/services/{idservizio}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Void> deleteCdsService(
       @NotBlank @Size(max = 50) @PathVariable("idservizio") String idServizio) {
     cdsService.deleteCdsService(idServizio);
@@ -324,7 +327,7 @@ public class CdsController {
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = CdsSoggetto.class))),
+                    array = @ArraySchema(schema = @Schema(implementation = CdsSoggetto.class)))),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
@@ -576,6 +579,318 @@ public class CdsController {
   public ResponseEntity<Void> deleteCdsSubject(
       @Parameter(description = "Subject's id") @PathVariable("subjectid") Long subjectId) {
     cdsService.deleteCdsSubject(subjectId);
+    return ResponseEntity.ok().build();
+  }
+
+  @Operation(
+      summary = "Get list of CDS subject services",
+      security = {
+        @SecurityRequirement(name = "ApiKey"),
+        @SecurityRequirement(name = "Authorization")
+      },
+      tags = {"Common Data Services"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = CdsSoggettoServizio.class)))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not Found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Too many requests",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Service unavailable",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @GetMapping(value = "/subjects/{subjectid}/services", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<CdsSoggettoServizio>> getCdsSubjectServices(
+      @Parameter(description = "Subject's creditor institution code")
+          @NotBlank
+          @Size(max = 35)
+          @PathVariable("subjectid")
+          String subjectId) {
+    return ResponseEntity.ok(cdsService.getCdsSubjectServices(subjectId));
+  }
+
+  @Operation(
+      summary = "Get CDS subject service details",
+      security = {
+        @SecurityRequirement(name = "ApiKey"),
+        @SecurityRequirement(name = "Authorization")
+      },
+      tags = {"Common Data Services"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CdsSoggettoServizio.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not Found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Too many requests",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Service unavailable",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @GetMapping(
+      value = "/subjects/{subjectid}/services/{idsoggettoservizio}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<CdsSoggettoServizio> getCdsSubjectService(
+      @Parameter(description = "Subject's creditor institution code")
+          @NotBlank
+          @Size(max = 35)
+          @PathVariable("subjectid")
+          String subjectId,
+      @NotBlank @Size(max = 50) @PathVariable("idsoggettoservizio") String idSoggettoServizio) {
+    return ResponseEntity.ok(cdsService.getCdsSubjectService(subjectId, idSoggettoServizio));
+  }
+
+  @Operation(
+      summary = "Create a CDS subject service",
+      security = {
+        @SecurityRequirement(name = "ApiKey"),
+        @SecurityRequirement(name = "Authorization")
+      },
+      tags = {"Common Data Services"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Created",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CdsSoggettoServizio.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Conflict",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Too many requests",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Service unavailable",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @PostMapping(value = "/subjects/{subjectid}/services", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<CdsSoggettoServizio> createCdsSubjectService(
+      @Parameter(description = "Subject's creditor institution code")
+          @NotBlank
+          @Size(max = 35)
+          @PathVariable("subjectid")
+          String subjectId,
+      @RequestBody @NotNull CdsSoggettoServizioRequestDto cdsSoggettoServizioRequestDto) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(cdsService.createCdsSubjectService(subjectId, cdsSoggettoServizioRequestDto));
+  }
+
+  @Operation(
+      summary = "Update a CDS subject service",
+      security = {
+        @SecurityRequirement(name = "ApiKey"),
+        @SecurityRequirement(name = "Authorization")
+      },
+      tags = {"Common Data Services"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = CdsSoggettoServizio.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not Found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Too many requests",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Service unavailable",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @PutMapping(
+      value = "/subjects/{subjectid}/services/{idsoggettoservizio}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<CdsSoggettoServizio> updateCdsSubjectService(
+      @Parameter(description = "Subject's creditor institution code")
+          @NotBlank
+          @Size(max = 35)
+          @PathVariable("subjectid")
+          String subjectId,
+      @NotBlank @Size(max = 50) @PathVariable("idsoggettoservizio") String idSoggettoServizio,
+      @RequestBody @NotNull CdsSoggettoServizioRequestDto cdsSoggettoServizioRequestDto) {
+    return ResponseEntity.ok(
+        cdsService.updateCdsSubjectService(
+            subjectId, idSoggettoServizio, cdsSoggettoServizioRequestDto));
+  }
+
+  @Operation(
+      summary = "Delete a CDS subject service",
+      security = {
+        @SecurityRequirement(name = "ApiKey"),
+        @SecurityRequirement(name = "Authorization")
+      },
+      tags = {"Common Data Services"})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Not Found",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class))),
+        @ApiResponse(
+            responseCode = "429",
+            description = "Too many requests",
+            content = @Content(schema = @Schema())),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Service unavailable",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemJson.class)))
+      })
+  @DeleteMapping(
+      value = "/subjects/{subjectid}/services/{idsoggettoservizio}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> deleteCdsSubjectService(
+      @Parameter(description = "Subject's creditor institution code")
+          @NotBlank
+          @Size(max = 35)
+          @PathVariable("subjectid")
+          String subjectId,
+      @NotBlank @Size(max = 50) @PathVariable("idsoggettoservizio") String idSoggettoServizio) {
+    cdsService.deleteCdsSubjectService(subjectId, idSoggettoServizio);
     return ResponseEntity.ok().build();
   }
 }

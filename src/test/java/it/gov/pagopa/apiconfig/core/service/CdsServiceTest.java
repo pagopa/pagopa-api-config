@@ -11,11 +11,17 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
+import it.gov.pagopa.apiconfig.starter.entity.CdsSoggettoServizio;
 import it.gov.pagopa.apiconfig.starter.entity.CdsServizio;
+import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.CdsSoggettoRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CdsSoggettoServizioRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CdsServizioRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -29,6 +35,8 @@ class CdsServiceTest {
 
   @MockBean private CdsServizioRepository cdsServizioRepository;
   @MockBean private CdsSoggettoRepository cdsSoggettoRepository;
+  @MockBean private CdsSoggettoServizioRepository cdsSoggettoServizioRepository;
+  @MockBean private PaStazionePaRepository paStazionePaRepository;
   @MockBean private PaRepository paRepository;
 
   @Autowired @InjectMocks private CdsService cdsService;
@@ -239,6 +247,113 @@ class CdsServiceTest {
     verify(cdsSoggettoRepository, times(1)).delete(existing);
   }
 
+  @Test
+  void getCdsSubjectServices() {
+    CdsSoggettoServizio cdsSoggettoServizio = getMockCdsSoggettoServizio();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
+    when(cdsServizioRepository.findAllFetching()).thenReturn(List.of(getMockCdsServizio()));
+    when(paStazionePaRepository.findAllFetching()).thenReturn(List.of(getMockPaStazionePa()));
+    when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of(cdsSoggettoServizio));
+
+    List<CdsSoggettoServizio> result = cdsService.getCdsSubjectServices("CI-1");
+
+    assertEquals(1, result.size());
+    assertEquals("subject-service-1", result.get(0).getIdSoggettoServizio());
+    assertEquals("STATION-1", result.get(0).getStazionePa().getFkStazione().getIdStazione());
+  }
+
+  @Test
+  void getCdsSubjectService() {
+    CdsSoggettoServizio cdsSoggettoServizio = getMockCdsSoggettoServizio();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
+    when(cdsServizioRepository.findAllFetching()).thenReturn(List.of(getMockCdsServizio()));
+    when(paStazionePaRepository.findAllFetching()).thenReturn(List.of(getMockPaStazionePa()));
+    when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of(cdsSoggettoServizio));
+
+    CdsSoggettoServizio result = cdsService.getCdsSubjectService("CI-1", "subject-service-1");
+
+    assertEquals("subject-service-1", result.getIdSoggettoServizio());
+  }
+
+  @Test
+  void createCdsSubjectService() {
+    CdsSoggettoServizioRequestDto request =
+        CdsSoggettoServizioRequestDto.builder()
+            .id("subject-service-1")
+            .idSoggetto("1")
+            .idServizio("service-1")
+            .descrizioneServizio("Descrizione soggetto servizio")
+            .idStazione("STATION-1")
+            .commissione(Boolean.TRUE)
+            .build();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
+    when(cdsServizioRepository.findAllFetching()).thenReturn(List.of(getMockCdsServizio()));
+    when(paStazionePaRepository.findAllFetching()).thenReturn(List.of(getMockPaStazionePa()));
+    when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of());
+    when(cdsSoggettoServizioRepository.save(any(CdsSoggettoServizio.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    CdsSoggettoServizio result = cdsService.createCdsSubjectService("CI-1", request);
+
+    assertEquals("1", result.getFkCdsSoggetto());
+    assertEquals("service-1", result.getFkCdsServizio());
+    assertEquals("subject-service-1", result.getIdSoggettoServizio());
+    verify(cdsSoggettoServizioRepository, times(1)).save(any(CdsSoggettoServizio.class));
+  }
+
+  @Test
+  void createCdsSubjectService_conflict() {
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
+    when(cdsServizioRepository.findAllFetching()).thenReturn(List.of(getMockCdsServizio()));
+    when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of(getMockCdsSoggettoServizio()));
+
+    AppException exception =
+        assertThrows(
+            AppException.class,
+            () -> cdsService.createCdsSubjectService("CI-1", getMockCdsSoggettoServizioRequestDto()));
+
+    assertEquals(AppError.CDS_SOGGETTO_SERVIZIO_CONFLICT.getHttpStatus(), exception.getHttpStatus());
+  }
+
+  @Test
+  void updateCdsSubjectService() {
+    CdsSoggettoServizio existing = getMockCdsSoggettoServizio();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
+    when(cdsServizioRepository.findAllFetching()).thenReturn(List.of(getMockCdsServizio()));
+    when(paStazionePaRepository.findAllFetching()).thenReturn(List.of(getMockPaStazionePa()));
+    when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of(existing));
+    when(cdsSoggettoServizioRepository.save(any(CdsSoggettoServizio.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    CdsSoggettoServizio result =
+        cdsService.updateCdsSubjectService(
+            "CI-1",
+            "subject-service-1",
+            CdsSoggettoServizioRequestDto.builder()
+                .id("subject-service-1")
+                .idSoggetto("1")
+                .idServizio("service-1")
+                .descrizioneServizio("Descrizione aggiornata")
+                .idStazione("STATION-1")
+                .commissione(Boolean.FALSE)
+                .build());
+
+    assertEquals("Descrizione aggiornata", result.getDescrizioneServizio());
+    assertEquals(Boolean.FALSE, result.getCommissione());
+    verify(cdsSoggettoServizioRepository, times(1)).save(existing);
+  }
+
+  @Test
+  void deleteCdsSubjectService() {
+    CdsSoggettoServizio existing = getMockCdsSoggettoServizio();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
+    when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of(existing));
+
+    cdsService.deleteCdsSubjectService("CI-1", "subject-service-1");
+
+    verify(cdsSoggettoServizioRepository, times(1)).delete(existing);
+  }
+
   private CdsServizio getMockCdsServizio() {
     return CdsServizio.builder()
         .id(1L)
@@ -255,6 +370,36 @@ class CdsServiceTest {
         .id(1L)
         .creditorInstitutionCode("CI-1")
         .creditorInstitutionDescription("Descrizione soggetto")
+        .build();
+  }
+
+  private CdsSoggettoServizio getMockCdsSoggettoServizio() {
+    return CdsSoggettoServizio.builder()
+        .id(1L)
+        .fkCdsSoggetto("1")
+        .fkCdsServizio("service-1")
+        .fkStazione("1")
+        .idSoggettoServizio("subject-service-1")
+        .descrizioneServizio("Descrizione soggetto servizio")
+        .commissione(Boolean.TRUE)
+        .build();
+  }
+
+  private CdsSoggettoServizioRequestDto getMockCdsSoggettoServizioRequestDto() {
+    return CdsSoggettoServizioRequestDto.builder()
+        .id("subject-service-1")
+        .idSoggetto("1")
+        .idServizio("service-1")
+        .descrizioneServizio("Descrizione soggetto servizio")
+        .idStazione("STATION-1")
+        .commissione(Boolean.TRUE)
+        .build();
+  }
+
+  private PaStazionePa getMockPaStazionePa() {
+    return PaStazionePa.builder()
+        .objId(1L)
+        .fkStazione(Stazioni.builder().idStazione("STATION-1").build())
         .build();
   }
 }

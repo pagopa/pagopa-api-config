@@ -2,12 +2,18 @@ package it.gov.pagopa.apiconfig.core.service;
 
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
 import it.gov.pagopa.apiconfig.starter.entity.CdsCategoria;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
+import it.gov.pagopa.apiconfig.starter.entity.CdsSoggettoServizio;
 import it.gov.pagopa.apiconfig.starter.entity.CdsServizio;
+import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
+import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
 import it.gov.pagopa.apiconfig.starter.repository.CdsSoggettoRepository;
+import it.gov.pagopa.apiconfig.starter.repository.CdsSoggettoServizioRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CdsServizioRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +28,8 @@ public class CdsService {
 
   @Autowired private CdsServizioRepository cdsServizioRepository;
   @Autowired private CdsSoggettoRepository cdsSoggettoRepository;
+  @Autowired private CdsSoggettoServizioRepository cdsSoggettoServizioRepository;
+  @Autowired private PaStazionePaRepository paStazionePaRepository;
   @Autowired private PaRepository paRepository;
 
   @Transactional(readOnly = true)
@@ -112,6 +120,88 @@ public class CdsService {
     cdsSoggettoRepository.delete(existing);
   }
 
+  @Transactional(readOnly = true)
+  public List<CdsSoggettoServizio> getCdsSubjectServices(String idSoggetto) {
+    String subjectObjectId = getSubjectObjectId(idSoggetto);
+    return cdsSoggettoServizioRepository.findAllFetching().stream()
+        .filter(Objects::nonNull)
+        .filter(elem -> Objects.equals(elem.getFkCdsSoggetto(), subjectObjectId))
+        .map(this::toResponseCdsSoggettoServizio)
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public CdsSoggettoServizio getCdsSubjectService(String idSoggetto, String idSoggettoServizio) {
+    return toResponseCdsSoggettoServizio(findCdsSubjectService(idSoggetto, idSoggettoServizio));
+  }
+
+  public CdsSoggettoServizio createCdsSubjectService(
+      String idSoggetto, CdsSoggettoServizioRequestDto cdsSoggettoServizioRequestDto) {
+    CdsSoggetto soggetto = findCdsSubjectByCreditorInstitutionCode(idSoggetto);
+    String subjectObjectId = requireSubjectObjectId(soggetto, idSoggetto);
+    requireIdSoggettoServizio(cdsSoggettoServizioRequestDto.getId());
+    requireIdServizio(cdsSoggettoServizioRequestDto.getIdServizio());
+    findCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
+
+    if (findCdsSubjectServiceOptional(subjectObjectId, cdsSoggettoServizioRequestDto.getId())
+        .isPresent()) {
+      throw new AppException(
+          AppError.CDS_SOGGETTO_SERVIZIO_CONFLICT,
+          cdsSoggettoServizioRequestDto.getId(),
+          idSoggetto);
+    }
+
+    String stationFk = resolveStationFk(cdsSoggettoServizioRequestDto.getIdStazione());
+
+    CdsSoggettoServizio entity =
+        CdsSoggettoServizio.builder()
+            .fkCdsSoggetto(subjectObjectId)
+            .fkCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio())
+            .fkStazione(stationFk)
+            .idSoggettoServizio(cdsSoggettoServizioRequestDto.getId())
+            .descrizioneServizio(cdsSoggettoServizioRequestDto.getDescrizioneServizio())
+            .dataInizioValidita(cdsSoggettoServizioRequestDto.getDataInizio())
+            .dataFineValidita(cdsSoggettoServizioRequestDto.getDataFine())
+            .commissione(cdsSoggettoServizioRequestDto.getCommissione())
+            .soggetto(soggetto)
+            .servizio(CdsServizio.builder().idServizio(cdsSoggettoServizioRequestDto.getIdServizio()).build())
+            .stazionePa(resolveStation(cdsSoggettoServizioRequestDto.getIdStazione()))
+            .build();
+    return toResponseCdsSoggettoServizio(cdsSoggettoServizioRepository.save(entity));
+  }
+
+  public CdsSoggettoServizio updateCdsSubjectService(
+      String idSoggetto,
+      String idSoggettoServizio,
+      CdsSoggettoServizioRequestDto cdsSoggettoServizioRequestDto) {
+    CdsSoggetto soggetto = findCdsSubjectByCreditorInstitutionCode(idSoggetto);
+    String subjectObjectId = requireSubjectObjectId(soggetto, idSoggetto);
+    CdsSoggettoServizio existing = findCdsSubjectService(idSoggetto, idSoggettoServizio);
+    requireIdServizio(cdsSoggettoServizioRequestDto.getIdServizio());
+    findCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
+    String stationFk = resolveStationFk(cdsSoggettoServizioRequestDto.getIdStazione());
+
+    existing.setFkCdsSoggetto(subjectObjectId);
+    existing.setFkCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
+    existing.setFkStazione(stationFk);
+    existing.setIdSoggettoServizio(idSoggettoServizio);
+    existing.setDescrizioneServizio(cdsSoggettoServizioRequestDto.getDescrizioneServizio());
+    existing.setDataInizioValidita(cdsSoggettoServizioRequestDto.getDataInizio());
+    existing.setDataFineValidita(cdsSoggettoServizioRequestDto.getDataFine());
+    existing.setCommissione(cdsSoggettoServizioRequestDto.getCommissione());
+    existing.setSoggetto(soggetto);
+    existing.setServizio(
+        CdsServizio.builder().idServizio(cdsSoggettoServizioRequestDto.getIdServizio()).build());
+    existing.setStazionePa(resolveStation(cdsSoggettoServizioRequestDto.getIdStazione()));
+
+    return toResponseCdsSoggettoServizio(cdsSoggettoServizioRepository.save(existing));
+  }
+
+  public void deleteCdsSubjectService(String idSoggetto, String idSoggettoServizio) {
+    CdsSoggettoServizio existing = findCdsSubjectService(idSoggetto, idSoggettoServizio);
+    cdsSoggettoServizioRepository.delete(existing);
+  }
+
   private CdsServizio findCdsServizio(String idServizio) {
     return findCdsServizioOptional(idServizio)
         .orElseThrow(() -> new AppException(AppError.CDS_SERVIZIO_NOT_FOUND, idServizio));
@@ -152,6 +242,131 @@ public class CdsService {
         .filter(Objects::nonNull)
         .filter(elem -> Objects.equals(elem.getId(), idSoggetto))
         .findFirst();
+  }
+
+  private CdsSoggetto findCdsSubjectByCreditorInstitutionCode(String creditorInstitutionCode) {
+    requireCreditorInstitutionCode(creditorInstitutionCode);
+    return findCdsSubjectByCreditorInstitutionCodeOptional(creditorInstitutionCode)
+        .orElseThrow(() -> new AppException(AppError.CDS_SOGGETTO_NOT_FOUND, creditorInstitutionCode));
+  }
+
+  private Optional<CdsSoggetto> findCdsSubjectByCreditorInstitutionCodeOptional(
+      String creditorInstitutionCode) {
+    return cdsSoggettoRepository.findAll().stream()
+        .filter(Objects::nonNull)
+        .filter(elem -> Objects.equals(elem.getCreditorInstitutionCode(), creditorInstitutionCode))
+        .findFirst();
+  }
+
+  private CdsSoggettoServizio findCdsSubjectService(String idSoggetto, String idSoggettoServizio) {
+    String subjectObjectId = getSubjectObjectId(idSoggetto);
+    requireIdSoggettoServizio(idSoggettoServizio);
+    return findCdsSubjectServiceOptional(subjectObjectId, idSoggettoServizio)
+        .orElseThrow(
+            () ->
+                new AppException(
+                    AppError.CDS_SOGGETTO_SERVIZIO_NOT_FOUND, idSoggettoServizio, idSoggetto));
+  }
+
+  private Optional<CdsSoggettoServizio> findCdsSubjectServiceOptional(
+      String subjectObjectId, String idSoggettoServizio) {
+    return cdsSoggettoServizioRepository.findAllFetching().stream()
+        .filter(Objects::nonNull)
+        .filter(elem -> Objects.equals(elem.getFkCdsSoggetto(), subjectObjectId))
+        .filter(elem -> Objects.equals(elem.getIdSoggettoServizio(), idSoggettoServizio))
+        .findFirst();
+  }
+
+  private String getSubjectObjectId(String creditorInstitutionCode) {
+    CdsSoggetto soggetto = findCdsSubjectByCreditorInstitutionCode(creditorInstitutionCode);
+    return requireSubjectObjectId(soggetto, creditorInstitutionCode);
+  }
+
+  private String requireSubjectObjectId(CdsSoggetto soggetto, String creditorInstitutionCode) {
+    if (soggetto.getId() == null) {
+      throw new AppException(AppError.CDS_SOGGETTO_NOT_FOUND, creditorInstitutionCode);
+    }
+    return String.valueOf(soggetto.getId());
+  }
+
+  private CdsSoggettoServizio toResponseCdsSoggettoServizio(CdsSoggettoServizio cdsSoggettoServizio) {
+    String idStazione = getStationIdFromFk(cdsSoggettoServizio.getFkStazione());
+    return CdsSoggettoServizio.builder()
+        .id(cdsSoggettoServizio.getId())
+        .fkCdsSoggetto(cdsSoggettoServizio.getFkCdsSoggetto())
+        .fkCdsServizio(cdsSoggettoServizio.getFkCdsServizio())
+        .fkStazione(cdsSoggettoServizio.getFkStazione())
+        .idSoggettoServizio(cdsSoggettoServizio.getIdSoggettoServizio())
+        .descrizioneServizio(cdsSoggettoServizio.getDescrizioneServizio())
+        .dataInizioValidita(cdsSoggettoServizio.getDataInizioValidita())
+        .dataFineValidita(cdsSoggettoServizio.getDataFineValidita())
+        .commissione(cdsSoggettoServizio.getCommissione())
+        .stazionePa(
+            idStazione == null
+                ? null
+                : PaStazionePa.builder().fkStazione(Stazioni.builder().idStazione(idStazione).build()).build())
+        .build();
+  }
+
+  private String getStationIdFromFk(String fkStazione) {
+    if (fkStazione == null || fkStazione.isBlank()) {
+      return null;
+    }
+    try {
+      Long stationFkObjId = Long.valueOf(fkStazione);
+      List<PaStazionePa> paStazionePaList = paStazionePaRepository.findAllFetching();
+      if (paStazionePaList == null) {
+        return null;
+      }
+      return paStazionePaList.stream()
+          .filter(Objects::nonNull)
+          .filter(elem -> Objects.equals(elem.getObjId(), stationFkObjId))
+          .map(PaStazionePa::getFkStazione)
+          .filter(Objects::nonNull)
+          .map(Stazioni::getIdStazione)
+          .filter(Objects::nonNull)
+          .findFirst()
+          .orElse(null);
+    } catch (NumberFormatException ignored) {
+      return null;
+    }
+  }
+
+  private String resolveStationFk(String idStazione) {
+    if (idStazione == null || idStazione.isBlank()) {
+      return null;
+    }
+
+    PaStazionePa station = resolveStation(idStazione);
+    if (station.getObjId() == null) {
+      throw new AppException(AppError.STATION_NOT_FOUND, idStazione);
+    }
+    return String.valueOf(station.getObjId());
+  }
+
+  private PaStazionePa resolveStation(String idStazione) {
+    if (idStazione == null || idStazione.isBlank()) {
+      return null;
+    }
+
+    return paStazionePaRepository.findAllFetching().stream()
+        .filter(Objects::nonNull)
+        .filter(elem -> elem.getFkStazione() != null)
+        .filter(elem -> Objects.equals(elem.getFkStazione().getIdStazione(), idStazione))
+        .findFirst()
+        .orElseThrow(() -> new AppException(AppError.STATION_NOT_FOUND, idStazione));
+  }
+
+  private void requireIdSoggettoServizio(String idSoggettoServizio) {
+    if (idSoggettoServizio == null || idSoggettoServizio.isBlank()) {
+      throw new AppException(AppError.CDS_SOGGETTO_SERVIZIO_BAD_REQUEST);
+    }
+  }
+
+  private void requireCreditorInstitutionCode(String creditorInstitutionCode) {
+    if (creditorInstitutionCode == null || creditorInstitutionCode.isBlank()) {
+      throw new AppException(AppError.CDS_SOGGETTO_BAD_REQUEST);
+    }
   }
 
   private void validateCreditorInstitutionExists(String creditorInstitutionCode) {
