@@ -155,6 +155,12 @@ public enum AppError {
       HttpStatus.NOT_FOUND, "Cds service not found", "No Cds service found with id: %s"),
   CDS_SERVIZIO_CONFLICT(
       HttpStatus.CONFLICT, "Cds service conflict", "Cds service code %s already exists"),
+  CDS_SOGGETTO_BAD_REQUEST(
+      HttpStatus.BAD_REQUEST, "Cds subject bad request", "Cds subject id is required"),
+  CDS_SOGGETTO_NOT_FOUND(
+      HttpStatus.NOT_FOUND, "Cds subject not found", "No Cds subject found with id: %s"),
+  CDS_SOGGETTO_CONFLICT(
+      HttpStatus.CONFLICT, "Cds subject conflict", "Cds subject code %s already exists"),
 
   CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
   CDI_CONFLICT(HttpStatus.CONFLICT, "CDI conflict", "CDI with code %s already exists"),

@@ -1,5 +1,6 @@
 package it.gov.pagopa.apiconfig.core.service;
 
+import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,9 +11,13 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
 import it.gov.pagopa.apiconfig.starter.entity.CdsServizio;
+import it.gov.pagopa.apiconfig.starter.repository.CdsSoggettoRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CdsServizioRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 class CdsServiceTest {
 
   @MockBean private CdsServizioRepository cdsServizioRepository;
+  @MockBean private CdsSoggettoRepository cdsSoggettoRepository;
+  @MockBean private PaRepository paRepository;
 
   @Autowired @InjectMocks private CdsService cdsService;
 
@@ -113,6 +120,125 @@ class CdsServiceTest {
     verify(cdsServizioRepository, times(1)).delete(existing);
   }
 
+  @Test
+  void getCdsSubjects() {
+    CdsSoggetto cdsSoggetto = getMockCdsSoggetto();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(cdsSoggetto));
+
+    List<CdsSoggetto> result = cdsService.getCdsSubjects();
+
+    assertEquals(1, result.size());
+    assertEquals(1L, result.get(0).getId());
+  }
+
+  @Test
+  void getCdsSubject() {
+    CdsSoggetto cdsSoggetto = getMockCdsSoggetto();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(cdsSoggetto));
+
+    CdsSoggetto result = cdsService.getCdsSubject(1L);
+
+    assertEquals(1L, result.getId());
+  }
+
+  @Test
+  void createCdsSubject() {
+    CdsSoggetto request =
+        CdsSoggetto.builder()
+            .id(1L)
+            .creditorInstitutionCode("CI-1")
+            .creditorInstitutionDescription("Descrizione soggetto")
+            .build();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of());
+    when(paRepository.findByIdDominio("CI-1")).thenReturn(Optional.of(getMockPa()));
+    when(cdsSoggettoRepository.save(any(CdsSoggetto.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    CdsSoggetto result = cdsService.createCdsSubject(request);
+
+    assertEquals(1L, result.getId());
+    assertEquals("CI-1", result.getCreditorInstitutionCode());
+    assertEquals("Descrizione soggetto", result.getCreditorInstitutionDescription());
+    verify(cdsSoggettoRepository, times(1)).save(any(CdsSoggetto.class));
+  }
+
+  @Test
+  void createCdsSubject_conflict() {
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
+
+    AppException exception =
+        assertThrows(AppException.class, () -> cdsService.createCdsSubject(getMockCdsSoggetto()));
+
+    assertEquals(AppError.CDS_SOGGETTO_CONFLICT.getHttpStatus(), exception.getHttpStatus());
+  }
+
+  @Test
+  void updateCdsSubject() {
+    CdsSoggetto existing = getMockCdsSoggetto();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(existing));
+    when(paRepository.findByIdDominio("CI-1-UPDATED")).thenReturn(Optional.of(getMockPa()));
+    when(cdsSoggettoRepository.save(any(CdsSoggetto.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    CdsSoggetto result =
+        cdsService.updateCdsSubject(
+            1L,
+            CdsSoggetto.builder()
+                .creditorInstitutionCode("CI-1-UPDATED")
+                .creditorInstitutionDescription("Descrizione aggiornata")
+                .build());
+
+    assertEquals("CI-1-UPDATED", result.getCreditorInstitutionCode());
+    assertEquals("Descrizione aggiornata", result.getCreditorInstitutionDescription());
+    verify(cdsSoggettoRepository, times(1)).save(existing);
+  }
+
+  @Test
+  void createCdsSubject_creditorInstitutionNotFound() {
+    CdsSoggetto request =
+        CdsSoggetto.builder()
+            .id(1L)
+            .creditorInstitutionCode("CI-NOT-FOUND")
+            .creditorInstitutionDescription("Descrizione soggetto")
+            .build();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of());
+    when(paRepository.findByIdDominio("CI-NOT-FOUND")).thenReturn(Optional.empty());
+
+    AppException exception = assertThrows(AppException.class, () -> cdsService.createCdsSubject(request));
+
+    assertEquals(AppError.CREDITOR_INSTITUTION_NOT_FOUND.getHttpStatus(), exception.getHttpStatus());
+  }
+
+  @Test
+  void updateCdsSubject_creditorInstitutionNotFound() {
+    CdsSoggetto existing = getMockCdsSoggetto();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(existing));
+    when(paRepository.findByIdDominio("CI-NOT-FOUND")).thenReturn(Optional.empty());
+
+    AppException exception =
+        assertThrows(
+            AppException.class,
+            () ->
+                cdsService.updateCdsSubject(
+                    1L,
+                    CdsSoggetto.builder()
+                        .creditorInstitutionCode("CI-NOT-FOUND")
+                        .creditorInstitutionDescription("Descrizione aggiornata")
+                        .build()));
+
+    assertEquals(AppError.CREDITOR_INSTITUTION_NOT_FOUND.getHttpStatus(), exception.getHttpStatus());
+  }
+
+  @Test
+  void deleteCdsSubject() {
+    CdsSoggetto existing = getMockCdsSoggetto();
+    when(cdsSoggettoRepository.findAll()).thenReturn(List.of(existing));
+
+    cdsService.deleteCdsSubject(1L);
+
+    verify(cdsSoggettoRepository, times(1)).delete(existing);
+  }
+
   private CdsServizio getMockCdsServizio() {
     return CdsServizio.builder()
         .id(1L)
@@ -121,6 +247,14 @@ class CdsServiceTest {
         .xsdRiferimento("schema.xsd")
         .version(1L)
         .categoriaId(10L)
+        .build();
+  }
+
+  private CdsSoggetto getMockCdsSoggetto() {
+    return CdsSoggetto.builder()
+        .id(1L)
+        .creditorInstitutionCode("CI-1")
+        .creditorInstitutionDescription("Descrizione soggetto")
         .build();
   }
 }
