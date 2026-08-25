@@ -12,6 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.TestUtil;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsServizioList;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoList;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioList;
 import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
 import it.gov.pagopa.apiconfig.core.service.CdsService;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
@@ -48,7 +51,8 @@ class CdsControllerTest {
             .categoria(it.gov.pagopa.apiconfig.starter.entity.CdsCategoria.builder().id(10L).build())
             .build();
 
-    when(cdsService.getCdsServices()).thenReturn(List.of(cdsServizio));
+    when(cdsService.getCdsServices())
+        .thenReturn(CdsServizioList.builder().services(List.of(cdsServizio)).build());
     when(cdsService.getCdsService(anyString())).thenReturn(cdsServizio);
     when(cdsService.createCdsService(any(CdsServizio.class))).thenReturn(cdsServizio);
     when(cdsService.updateCdsService(anyString(), any(CdsServizio.class))).thenReturn(cdsServizio);
@@ -60,7 +64,8 @@ class CdsControllerTest {
             .creditorInstitutionDescription("Descrizione soggetto")
             .build();
 
-    when(cdsService.getCdsSubjects()).thenReturn(List.of(cdsSoggetto));
+    when(cdsService.getCdsSubjects())
+        .thenReturn(CdsSoggettoList.builder().subjects(List.of(cdsSoggetto)).build());
     when(cdsService.getCdsSubject(1L)).thenReturn(cdsSoggetto);
     when(cdsService.createCdsSubject(any(CdsSoggetto.class))).thenReturn(cdsSoggetto);
     when(cdsService.updateCdsSubject(any(Long.class), any(CdsSoggetto.class)))
@@ -75,7 +80,9 @@ class CdsControllerTest {
             .descrizioneServizio("Descrizione soggetto servizio")
             .commissione(Boolean.TRUE)
             .build();
-    when(cdsService.getCdsSubjectServices(anyString())).thenReturn(List.of(cdsSoggettoServizio));
+    when(cdsService.getCdsSubjectServices(anyString()))
+        .thenReturn(
+            CdsSoggettoServizioList.builder().subjectServices(List.of(cdsSoggettoServizio)).build());
     when(cdsService.getCdsSubjectService(anyString(), anyString())).thenReturn(cdsSoggettoServizio);
     when(cdsService.createCdsSubjectService(anyString(), any(CdsSoggettoServizioRequestDto.class)))
         .thenReturn(cdsSoggettoServizio);

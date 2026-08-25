@@ -11,6 +11,9 @@ import static org.mockito.Mockito.when;
 import it.gov.pagopa.apiconfig.ApiConfig;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsServizioList;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoList;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioList;
 import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggettoServizio;
@@ -46,10 +49,10 @@ class CdsServiceTest {
     CdsServizio cdsServizio = getMockCdsServizio();
     when(cdsServizioRepository.findAllFetching()).thenReturn(List.of(cdsServizio));
 
-    List<CdsServizio> result = cdsService.getCdsServices();
+    CdsServizioList result = cdsService.getCdsServices();
 
-    assertEquals(1, result.size());
-    assertEquals("service-1", result.get(0).getIdServizio());
+    assertEquals(1, result.getServices().size());
+    assertEquals("service-1", result.getServices().get(0).getIdServizio());
   }
 
   @Test
@@ -133,10 +136,10 @@ class CdsServiceTest {
     CdsSoggetto cdsSoggetto = getMockCdsSoggetto();
     when(cdsSoggettoRepository.findAll()).thenReturn(List.of(cdsSoggetto));
 
-    List<CdsSoggetto> result = cdsService.getCdsSubjects();
+    CdsSoggettoList result = cdsService.getCdsSubjects();
 
-    assertEquals(1, result.size());
-    assertEquals(1L, result.get(0).getId());
+    assertEquals(1, result.getSubjects().size());
+    assertEquals(1L, result.getSubjects().get(0).getId());
   }
 
   @Test
@@ -255,11 +258,13 @@ class CdsServiceTest {
     when(paStazionePaRepository.findAllFetching()).thenReturn(List.of(getMockPaStazionePa()));
     when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of(cdsSoggettoServizio));
 
-    List<CdsSoggettoServizio> result = cdsService.getCdsSubjectServices("CI-1");
+    CdsSoggettoServizioList result = cdsService.getCdsSubjectServices("CI-1");
 
-    assertEquals(1, result.size());
-    assertEquals("subject-service-1", result.get(0).getIdSoggettoServizio());
-    assertEquals("STATION-1", result.get(0).getStazionePa().getFkStazione().getIdStazione());
+    assertEquals(1, result.getSubjectServices().size());
+    assertEquals("subject-service-1", result.getSubjectServices().get(0).getIdSoggettoServizio());
+    assertEquals(
+        "STATION-1",
+        result.getSubjectServices().get(0).getStazionePa().getFkStazione().getIdStazione());
   }
 
   @Test

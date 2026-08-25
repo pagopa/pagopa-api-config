@@ -2,7 +2,6 @@ package it.gov.pagopa.apiconfig.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,6 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsServizioList;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoList;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioList;
 import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
 import it.gov.pagopa.apiconfig.core.service.CdsService;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
@@ -56,7 +58,7 @@ public class CdsController {
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = CdsServizio.class)))),
+                    schema = @Schema(implementation = CdsServizioList.class))),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
@@ -85,7 +87,7 @@ public class CdsController {
                     schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(value = "/services", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<CdsServizio>> getCdsServices() {
+  public ResponseEntity<CdsServizioList> getCdsServices() {
     return ResponseEntity.ok(cdsService.getCdsServices());
   }
 
@@ -327,7 +329,7 @@ public class CdsController {
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = CdsSoggetto.class)))),
+                    schema = @Schema(implementation = CdsSoggettoList.class))),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
@@ -356,7 +358,7 @@ public class CdsController {
                     schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(value = "/subjects", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<CdsSoggetto>> getCdsSubjects() {
+  public ResponseEntity<CdsSoggettoList> getCdsSubjects() {
     return ResponseEntity.ok(cdsService.getCdsSubjects());
   }
 
@@ -597,7 +599,7 @@ public class CdsController {
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = CdsSoggettoServizio.class)))),
+                    schema = @Schema(implementation = CdsSoggettoServizioList.class))),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
@@ -633,7 +635,7 @@ public class CdsController {
                     schema = @Schema(implementation = ProblemJson.class)))
       })
   @GetMapping(value = "/subjects/{subjectid}/services", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<CdsSoggettoServizio>> getCdsSubjectServices(
+  public ResponseEntity<CdsSoggettoServizioList> getCdsSubjectServices(
       @Parameter(description = "Subject's creditor institution code")
           @NotBlank
           @Size(max = 35)

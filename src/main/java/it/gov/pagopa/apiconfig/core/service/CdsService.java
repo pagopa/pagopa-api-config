@@ -2,6 +2,9 @@ package it.gov.pagopa.apiconfig.core.service;
 
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsServizioList;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoList;
+import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioList;
 import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
 import it.gov.pagopa.apiconfig.starter.entity.CdsCategoria;
 import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
@@ -33,8 +36,8 @@ public class CdsService {
   @Autowired private PaRepository paRepository;
 
   @Transactional(readOnly = true)
-  public List<CdsServizio> getCdsServices() {
-    return cdsServizioRepository.findAllFetching();
+  public CdsServizioList getCdsServices() {
+    return CdsServizioList.builder().services(cdsServizioRepository.findAllFetching()).build();
   }
 
   @Transactional(readOnly = true)
@@ -80,8 +83,8 @@ public class CdsService {
   }
 
   @Transactional(readOnly = true)
-  public List<CdsSoggetto> getCdsSubjects() {
-    return cdsSoggettoRepository.findAll();
+  public CdsSoggettoList getCdsSubjects() {
+    return CdsSoggettoList.builder().subjects(cdsSoggettoRepository.findAll()).build();
   }
 
   @Transactional(readOnly = true)
@@ -121,13 +124,15 @@ public class CdsService {
   }
 
   @Transactional(readOnly = true)
-  public List<CdsSoggettoServizio> getCdsSubjectServices(String idSoggetto) {
+  public CdsSoggettoServizioList getCdsSubjectServices(String idSoggetto) {
     String subjectObjectId = getSubjectObjectId(idSoggetto);
-    return cdsSoggettoServizioRepository.findAllFetching().stream()
-        .filter(Objects::nonNull)
-        .filter(elem -> Objects.equals(elem.getFkCdsSoggetto(), subjectObjectId))
-        .map(this::toResponseCdsSoggettoServizio)
-        .toList();
+    List<CdsSoggettoServizio> subjectServices =
+        cdsSoggettoServizioRepository.findAllFetching().stream()
+            .filter(Objects::nonNull)
+            .filter(elem -> Objects.equals(elem.getFkCdsSoggetto(), subjectObjectId))
+            .map(this::toResponseCdsSoggettoServizio)
+            .toList();
+    return CdsSoggettoServizioList.builder().subjectServices(subjectServices).build();
   }
 
   @Transactional(readOnly = true)
