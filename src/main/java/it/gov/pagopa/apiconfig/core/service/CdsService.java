@@ -146,7 +146,7 @@ public class CdsService {
     String subjectObjectId = requireSubjectObjectId(soggetto, idSoggetto);
     requireIdSoggettoServizio(cdsSoggettoServizioRequestDto.getId());
     requireIdServizio(cdsSoggettoServizioRequestDto.getIdServizio());
-    findCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
+    CdsServizio servizio = findCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
 
     if (findCdsSubjectServiceOptional(subjectObjectId, cdsSoggettoServizioRequestDto.getId())
         .isPresent()) {
@@ -161,15 +161,15 @@ public class CdsService {
     CdsSoggettoServizio entity =
         CdsSoggettoServizio.builder()
             .fkCdsSoggetto(subjectObjectId)
-            .fkCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio())
+            .fkCdsServizio(String.valueOf(servizio.getId()))
             .fkStazione(stationFk)
             .idSoggettoServizio(cdsSoggettoServizioRequestDto.getId())
             .descrizioneServizio(cdsSoggettoServizioRequestDto.getDescrizioneServizio())
-            .dataInizioValidita(cdsSoggettoServizioRequestDto.getDataInizio())
-            .dataFineValidita(cdsSoggettoServizioRequestDto.getDataFine())
+            .dataInizioValidita(cdsSoggettoServizioRequestDto.getDataInizioValidita())
+            .dataFineValidita(cdsSoggettoServizioRequestDto.getDataFineValidita())
             .commissione(cdsSoggettoServizioRequestDto.getCommissione())
             .soggetto(soggetto)
-            .servizio(CdsServizio.builder().idServizio(cdsSoggettoServizioRequestDto.getIdServizio()).build())
+            .servizio(servizio)
             .stazionePa(resolveStation(cdsSoggettoServizioRequestDto.getIdStazione()))
             .build();
     return toResponseCdsSoggettoServizio(cdsSoggettoServizioRepository.save(entity));
@@ -183,20 +183,19 @@ public class CdsService {
     String subjectObjectId = requireSubjectObjectId(soggetto, idSoggetto);
     CdsSoggettoServizio existing = findCdsSubjectService(idSoggetto, idSoggettoServizio);
     requireIdServizio(cdsSoggettoServizioRequestDto.getIdServizio());
-    findCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
+    CdsServizio servizio = findCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
     String stationFk = resolveStationFk(cdsSoggettoServizioRequestDto.getIdStazione());
 
     existing.setFkCdsSoggetto(subjectObjectId);
-    existing.setFkCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
+    existing.setFkCdsServizio(String.valueOf(servizio.getId()));
     existing.setFkStazione(stationFk);
     existing.setIdSoggettoServizio(idSoggettoServizio);
     existing.setDescrizioneServizio(cdsSoggettoServizioRequestDto.getDescrizioneServizio());
-    existing.setDataInizioValidita(cdsSoggettoServizioRequestDto.getDataInizio());
-    existing.setDataFineValidita(cdsSoggettoServizioRequestDto.getDataFine());
+    existing.setDataInizioValidita(cdsSoggettoServizioRequestDto.getDataInizioValidita());
+    existing.setDataFineValidita(cdsSoggettoServizioRequestDto.getDataFineValidita());
     existing.setCommissione(cdsSoggettoServizioRequestDto.getCommissione());
     existing.setSoggetto(soggetto);
-    existing.setServizio(
-        CdsServizio.builder().idServizio(cdsSoggettoServizioRequestDto.getIdServizio()).build());
+    existing.setServizio(servizio);
     existing.setStazionePa(resolveStation(cdsSoggettoServizioRequestDto.getIdStazione()));
 
     return toResponseCdsSoggettoServizio(cdsSoggettoServizioRepository.save(existing));
@@ -310,7 +309,34 @@ public class CdsService {
             idStazione == null
                 ? null
                 : PaStazionePa.builder().fkStazione(Stazioni.builder().idStazione(idStazione).build()).build())
+        .servizio(getServizioFromFk(cdsSoggettoServizio.getFkCdsServizio()))
         .build();
+  }
+
+  private CdsServizio getServizioFromFk(String fkCdsServizio) {
+    if (fkCdsServizio == null || fkCdsServizio.isBlank()) {
+      return null;
+    }
+    try {
+      Long servizioObjId = Long.valueOf(fkCdsServizio);
+      return cdsServizioRepository.findAllFetching().stream()
+          .filter(Objects::nonNull)
+          .filter(elem -> Objects.equals(elem.getId(), servizioObjId))
+          .findFirst()
+          // build a lightweight, non-managed copy: the full entity's lazy "categoria"
+          // association may be an uninitialized Hibernate proxy here, which breaks
+          // JSON serialization (categoria isn't needed in this nested response anyway)
+          .map(
+              servizio ->
+                  CdsServizio.builder()
+                      .id(servizio.getId())
+                      .idServizio(servizio.getIdServizio())
+                      .descrizioneServizio(servizio.getDescrizioneServizio())
+                      .build())
+          .orElse(null);
+    } catch (NumberFormatException ignored) {
+      return null;
+    }
   }
 
   private String getStationIdFromFk(String fkStazione) {

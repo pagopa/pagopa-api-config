@@ -265,6 +265,7 @@ class CdsServiceTest {
     assertEquals(
         "STATION-1",
         result.getSubjectServices().get(0).getStazionePa().getFkStazione().getIdStazione());
+    assertEquals("service-1", result.getSubjectServices().get(0).getServizio().getIdServizio());
   }
 
   @Test
@@ -278,6 +279,7 @@ class CdsServiceTest {
     CdsSoggettoServizio result = cdsService.getCdsSubjectService("CI-1", "subject-service-1");
 
     assertEquals("subject-service-1", result.getIdSoggettoServizio());
+    assertEquals("service-1", result.getServizio().getIdServizio());
   }
 
   @Test
@@ -301,8 +303,9 @@ class CdsServiceTest {
     CdsSoggettoServizio result = cdsService.createCdsSubjectService("CI-1", request);
 
     assertEquals("1", result.getFkCdsSoggetto());
-    assertEquals("service-1", result.getFkCdsServizio());
+    assertEquals("1", result.getFkCdsServizio());
     assertEquals("subject-service-1", result.getIdSoggettoServizio());
+    assertEquals("service-1", result.getServizio().getIdServizio());
     verify(cdsSoggettoServizioRepository, times(1)).save(any(CdsSoggettoServizio.class));
   }
 
@@ -345,6 +348,8 @@ class CdsServiceTest {
 
     assertEquals("Descrizione aggiornata", result.getDescrizioneServizio());
     assertEquals(Boolean.FALSE, result.getCommissione());
+    assertEquals("1", result.getFkCdsServizio());
+    assertEquals("service-1", result.getServizio().getIdServizio());
     verify(cdsSoggettoServizioRepository, times(1)).save(existing);
   }
 
@@ -382,7 +387,7 @@ class CdsServiceTest {
     return CdsSoggettoServizio.builder()
         .id(1L)
         .fkCdsSoggetto("1")
-        .fkCdsServizio("service-1")
+        .fkCdsServizio("1")
         .fkStazione("1")
         .idSoggettoServizio("subject-service-1")
         .descrizioneServizio("Descrizione soggetto servizio")

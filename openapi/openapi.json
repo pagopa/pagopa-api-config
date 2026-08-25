@@ -20329,12 +20329,12 @@
             "type" : "string",
             "description" : "Subject identifier"
           },
-          "dataInizio" : {
+          "dataInizioValidita" : {
             "type" : "string",
             "description" : "Start validity date",
             "format" : "date-time"
           },
-          "dataFine" : {
+          "dataFineValidita" : {
             "type" : "string",
             "description" : "End validity date",
             "format" : "date-time"

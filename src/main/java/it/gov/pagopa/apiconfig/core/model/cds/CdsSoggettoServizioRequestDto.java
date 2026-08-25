@@ -23,10 +23,10 @@ public class CdsSoggettoServizioRequestDto {
   private String idSoggetto;
 
   @Schema(description = "Start validity date")
-  private ZonedDateTime dataInizio;
+  private ZonedDateTime dataInizioValidita;
 
   @Schema(description = "End validity date")
-  private ZonedDateTime dataFine;
+  private ZonedDateTime dataFineValidita;
 
   @Schema(description = "Commission flag")
   private Boolean commissione;
