@@ -6,20 +6,13 @@ import it.gov.pagopa.apiconfig.core.model.cds.CdsServizioList;
 import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoList;
 import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioList;
 import it.gov.pagopa.apiconfig.core.model.cds.CdsSoggettoServizioRequestDto;
-import it.gov.pagopa.apiconfig.starter.entity.CdsCategoria;
-import it.gov.pagopa.apiconfig.starter.entity.CdsSoggetto;
-import it.gov.pagopa.apiconfig.starter.entity.CdsSoggettoServizio;
-import it.gov.pagopa.apiconfig.starter.entity.CdsServizio;
-import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
-import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
-import it.gov.pagopa.apiconfig.starter.repository.CdsSoggettoRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdsSoggettoServizioRepository;
-import it.gov.pagopa.apiconfig.starter.repository.CdsServizioRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
-import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
+import it.gov.pagopa.apiconfig.starter.entity.*;
+import it.gov.pagopa.apiconfig.starter.repository.*;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +27,8 @@ public class CdsService {
   @Autowired private CdsSoggettoServizioRepository cdsSoggettoServizioRepository;
   @Autowired private PaStazionePaRepository paStazionePaRepository;
   @Autowired private PaRepository paRepository;
+  @Autowired private StazioniRepository stazioniRepository;
+  @Autowired private EntityManager entityManager;
 
   @Transactional(readOnly = true)
   public CdsServizioList getCdsServices() {
@@ -156,7 +151,7 @@ public class CdsService {
           idSoggetto);
     }
 
-    String stationFk = resolveStationFk(cdsSoggettoServizioRequestDto.getIdStazione());
+    String stationFk = resolveStationFk(cdsSoggettoServizioRequestDto.getIdStazione(), soggetto.getCreditorInstitutionCode());
 
     CdsSoggettoServizio entity =
         CdsSoggettoServizio.builder()
@@ -172,19 +167,24 @@ public class CdsService {
             .servizio(servizio)
             .stazionePa(resolveStation(cdsSoggettoServizioRequestDto.getIdStazione()))
             .build();
-    return toResponseCdsSoggettoServizio(cdsSoggettoServizioRepository.save(entity));
+    return toResponseCdsSoggettoServizio(saveAndRefresh(entity));
   }
 
   public CdsSoggettoServizio updateCdsSubjectService(
       String idSoggetto,
       String idSoggettoServizio,
       CdsSoggettoServizioRequestDto cdsSoggettoServizioRequestDto) {
+
     CdsSoggetto soggetto = findCdsSubjectByCreditorInstitutionCode(idSoggetto);
     String subjectObjectId = requireSubjectObjectId(soggetto, idSoggetto);
-    CdsSoggettoServizio existing = findCdsSubjectService(idSoggetto, idSoggettoServizio);
+    CdsSoggettoServizio existing = cdsSoggettoServizioRepository.findById(Long.parseLong(cdsSoggettoServizioRequestDto.getId())).orElseThrow(
+        () -> new AppException(AppError.CDS_SOGGETTO_SERVIZIO_NOT_FOUND, cdsSoggettoServizioRequestDto.getIdServizio(), idSoggetto)
+    );
+//    CdsSoggettoServizio existing = findCdsSubjectService(idSoggetto, idSoggettoServizio);
     requireIdServizio(cdsSoggettoServizioRequestDto.getIdServizio());
     CdsServizio servizio = findCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
-    String stationFk = resolveStationFk(cdsSoggettoServizioRequestDto.getIdStazione());
+    // note: fk paStazionePa
+    String stationFk = resolveStationFk(cdsSoggettoServizioRequestDto.getIdStazione(), soggetto.getCreditorInstitutionCode());
 
     existing.setFkCdsSoggetto(subjectObjectId);
     existing.setFkCdsServizio(String.valueOf(servizio.getId()));
@@ -198,7 +198,7 @@ public class CdsService {
     existing.setServizio(servizio);
     existing.setStazionePa(resolveStation(cdsSoggettoServizioRequestDto.getIdStazione()));
 
-    return toResponseCdsSoggettoServizio(cdsSoggettoServizioRepository.save(existing));
+    return toResponseCdsSoggettoServizio(saveAndRefresh(existing));
   }
 
   public void deleteCdsSubjectService(String idSoggetto, String idSoggettoServizio) {
@@ -222,6 +222,12 @@ public class CdsService {
     if (idServizio == null || idServizio.isBlank()) {
       throw new AppException(AppError.CDS_SERVIZIO_BAD_REQUEST);
     }
+  }
+
+  private CdsSoggettoServizio saveAndRefresh(CdsSoggettoServizio entity) {
+    CdsSoggettoServizio saved = cdsSoggettoServizioRepository.saveAndFlush(entity);
+    entityManager.refresh(saved);
+    return saved;
   }
 
   private CdsCategoria resolveCategoria(CdsServizio cdsServizio) {
@@ -363,16 +369,24 @@ public class CdsService {
     }
   }
 
-  private String resolveStationFk(String idStazione) {
-    if (idStazione == null || idStazione.isBlank()) {
-      return null;
-    }
+  private String resolveStationFk(String idStazione, String idDominio) {
+      if (idStazione == null || idStazione.isBlank()) {
+          return null;
+      }
 
-    PaStazionePa station = resolveStation(idStazione);
-    if (station.getObjId() == null) {
-      throw new AppException(AppError.STATION_NOT_FOUND, idStazione);
-    }
-    return String.valueOf(station.getObjId());
+      Pa ci = paRepository.findByIdDominio(idDominio).orElseThrow(
+              () -> new AppException(AppError.CREDITOR_INSTITUTION_NOT_FOUND, idDominio)
+      );
+
+      Stazioni station = stazioniRepository.findByIdStazione(idStazione).orElseThrow(
+              () -> new AppException(AppError.STATION_NOT_FOUND, idStazione)
+      );
+
+    PaStazionePa paStazionePa = paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(ci.getObjId(), station.getObjId()).orElseThrow(
+            () -> new AppException(AppError.STATION_NOT_FOUND, idStazione)
+    );
+
+    return String.valueOf(paStazionePa.getObjId());
   }
 
   private PaStazionePa resolveStation(String idStazione) {
@@ -400,8 +414,8 @@ public class CdsService {
     }
   }
 
-  private void validateCreditorInstitutionExists(String creditorInstitutionCode) {
-    paRepository
+  private Pa validateCreditorInstitutionExists(String creditorInstitutionCode) {
+    return paRepository
         .findByIdDominio(creditorInstitutionCode)
         .orElseThrow(
             () ->

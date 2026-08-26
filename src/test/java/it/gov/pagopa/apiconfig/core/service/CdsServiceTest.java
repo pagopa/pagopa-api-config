@@ -4,6 +4,7 @@ import static it.gov.pagopa.apiconfig.TestUtil.getMockPa;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,8 +26,11 @@ import it.gov.pagopa.apiconfig.starter.repository.CdsSoggettoServizioRepository;
 import it.gov.pagopa.apiconfig.starter.repository.CdsServizioRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
 import java.util.List;
 import java.util.Optional;
+import java.time.ZonedDateTime;
+import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,8 @@ class CdsServiceTest {
   @MockBean private CdsSoggettoServizioRepository cdsSoggettoServizioRepository;
   @MockBean private PaStazionePaRepository paStazionePaRepository;
   @MockBean private PaRepository paRepository;
+  @MockBean private StazioniRepository stazioniRepository;
+  @MockBean private EntityManager entityManager;
 
   @Autowired @InjectMocks private CdsService cdsService;
 
@@ -284,21 +290,37 @@ class CdsServiceTest {
 
   @Test
   void createCdsSubjectService() {
+    ZonedDateTime requestStart = ZonedDateTime.parse("2026-08-31T00:00:00Z");
+    ZonedDateTime persistedStart = ZonedDateTime.parse("2026-08-31T02:00:00+02:00");
     CdsSoggettoServizioRequestDto request =
         CdsSoggettoServizioRequestDto.builder()
             .id("subject-service-1")
             .idSoggetto("1")
             .idServizio("service-1")
             .descrizioneServizio("Descrizione soggetto servizio")
+            .dataInizioValidita(requestStart)
             .idStazione("STATION-1")
             .commissione(Boolean.TRUE)
             .build();
     when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
     when(cdsServizioRepository.findAllFetching()).thenReturn(List.of(getMockCdsServizio()));
+    when(paRepository.findByIdDominio("CI-1")).thenReturn(Optional.of(getMockPa()));
+    when(stazioniRepository.findByIdStazione("STATION-1"))
+        .thenReturn(Optional.of(Stazioni.builder().objId(1L).idStazione("STATION-1").build()));
+    when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(1L, 1L))
+        .thenReturn(Optional.of(getMockPaStazionePa()));
     when(paStazionePaRepository.findAllFetching()).thenReturn(List.of(getMockPaStazionePa()));
     when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of());
-    when(cdsSoggettoServizioRepository.save(any(CdsSoggettoServizio.class)))
+    when(cdsSoggettoServizioRepository.saveAndFlush(any(CdsSoggettoServizio.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
+    doAnswer(
+            invocation -> {
+              CdsSoggettoServizio entity = invocation.getArgument(0);
+              entity.setDataInizioValidita(persistedStart);
+              return null;
+            })
+        .when(entityManager)
+        .refresh(any(CdsSoggettoServizio.class));
 
     CdsSoggettoServizio result = cdsService.createCdsSubjectService("CI-1", request);
 
@@ -306,7 +328,8 @@ class CdsServiceTest {
     assertEquals("1", result.getFkCdsServizio());
     assertEquals("subject-service-1", result.getIdSoggettoServizio());
     assertEquals("service-1", result.getServizio().getIdServizio());
-    verify(cdsSoggettoServizioRepository, times(1)).save(any(CdsSoggettoServizio.class));
+    assertEquals(persistedStart, result.getDataInizioValidita());
+    verify(cdsSoggettoServizioRepository, times(1)).saveAndFlush(any(CdsSoggettoServizio.class));
   }
 
   @Test
@@ -325,23 +348,39 @@ class CdsServiceTest {
 
   @Test
   void updateCdsSubjectService() {
+    ZonedDateTime requestStart = ZonedDateTime.parse("2026-08-31T00:00:00Z");
+    ZonedDateTime persistedStart = ZonedDateTime.parse("2026-08-31T02:00:00+02:00");
     CdsSoggettoServizio existing = getMockCdsSoggettoServizio();
     when(cdsSoggettoRepository.findAll()).thenReturn(List.of(getMockCdsSoggetto()));
     when(cdsServizioRepository.findAllFetching()).thenReturn(List.of(getMockCdsServizio()));
+    when(paRepository.findByIdDominio("CI-1")).thenReturn(Optional.of(getMockPa()));
+    when(stazioniRepository.findByIdStazione("STATION-1"))
+        .thenReturn(Optional.of(Stazioni.builder().objId(1L).idStazione("STATION-1").build()));
+    when(paStazionePaRepository.findAllByFkPaAndFkStazione_ObjId(1L, 1L))
+        .thenReturn(Optional.of(getMockPaStazionePa()));
     when(paStazionePaRepository.findAllFetching()).thenReturn(List.of(getMockPaStazionePa()));
-    when(cdsSoggettoServizioRepository.findAllFetching()).thenReturn(List.of(existing));
-    when(cdsSoggettoServizioRepository.save(any(CdsSoggettoServizio.class)))
+    when(cdsSoggettoServizioRepository.findById(1L)).thenReturn(Optional.of(existing));
+    when(cdsSoggettoServizioRepository.saveAndFlush(any(CdsSoggettoServizio.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
+    doAnswer(
+            invocation -> {
+              CdsSoggettoServizio entity = invocation.getArgument(0);
+              entity.setDataInizioValidita(persistedStart);
+              return null;
+            })
+        .when(entityManager)
+        .refresh(any(CdsSoggettoServizio.class));
 
     CdsSoggettoServizio result =
         cdsService.updateCdsSubjectService(
             "CI-1",
             "subject-service-1",
             CdsSoggettoServizioRequestDto.builder()
-                .id("subject-service-1")
+                .id("1")
                 .idSoggetto("1")
                 .idServizio("service-1")
                 .descrizioneServizio("Descrizione aggiornata")
+                .dataInizioValidita(requestStart)
                 .idStazione("STATION-1")
                 .commissione(Boolean.FALSE)
                 .build());
@@ -350,7 +389,8 @@ class CdsServiceTest {
     assertEquals(Boolean.FALSE, result.getCommissione());
     assertEquals("1", result.getFkCdsServizio());
     assertEquals("service-1", result.getServizio().getIdServizio());
-    verify(cdsSoggettoServizioRepository, times(1)).save(existing);
+    assertEquals(persistedStart, result.getDataInizioValidita());
+    verify(cdsSoggettoServizioRepository, times(1)).saveAndFlush(existing);
   }
 
   @Test
@@ -391,6 +431,7 @@ class CdsServiceTest {
         .fkStazione("1")
         .idSoggettoServizio("subject-service-1")
         .descrizioneServizio("Descrizione soggetto servizio")
+        .dataInizioValidita(ZonedDateTime.parse("2026-08-31T02:00:00+02:00"))
         .commissione(Boolean.TRUE)
         .build();
   }
