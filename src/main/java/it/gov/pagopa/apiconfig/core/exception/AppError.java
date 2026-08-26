@@ -149,6 +149,31 @@ public enum AppError {
       "Relation Channel-PaymentType between Channel with code %s and PaymentType with code %s"
           + " already exists"),
 
+  CDS_SERVIZIO_BAD_REQUEST(
+      HttpStatus.BAD_REQUEST, "Cds service bad request", "Cds service id is required"),
+  CDS_SERVIZIO_NOT_FOUND(
+      HttpStatus.NOT_FOUND, "Cds service not found", "No Cds service found with id: %s"),
+  CDS_SERVIZIO_CONFLICT(
+      HttpStatus.CONFLICT, "Cds service conflict", "Cds service code %s already exists"),
+  CDS_SOGGETTO_BAD_REQUEST(
+      HttpStatus.BAD_REQUEST, "Cds subject bad request", "Cds subject id is required"),
+  CDS_SOGGETTO_NOT_FOUND(
+      HttpStatus.NOT_FOUND, "Cds subject not found", "No Cds subject found with id: %s"),
+  CDS_SOGGETTO_CONFLICT(
+      HttpStatus.CONFLICT, "Cds subject conflict", "Cds subject code %s already exists"),
+  CDS_SOGGETTO_SERVIZIO_BAD_REQUEST(
+      HttpStatus.BAD_REQUEST,
+      "Cds subject service bad request",
+      "Cds subject service id is required"),
+  CDS_SOGGETTO_SERVIZIO_NOT_FOUND(
+      HttpStatus.NOT_FOUND,
+      "Cds subject service not found",
+      "No Cds subject service found with id: %s for subject: %s"),
+  CDS_SOGGETTO_SERVIZIO_CONFLICT(
+      HttpStatus.CONFLICT,
+      "Cds subject service conflict",
+      "Cds subject service code %s already exists for subject: %s"),
+
   CDI_NOT_FOUND(HttpStatus.NOT_FOUND, "CDI not found", "No CDI found with id: %s"),
   CDI_CONFLICT(HttpStatus.CONFLICT, "CDI conflict", "CDI with code %s already exists"),
   CDI_BAD_REQUEST(HttpStatus.BAD_REQUEST, "CDI bad request", "XML CDI file is not valid: %s"),
