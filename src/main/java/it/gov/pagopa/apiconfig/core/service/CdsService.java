@@ -180,7 +180,6 @@ public class CdsService {
     CdsSoggettoServizio existing = cdsSoggettoServizioRepository.findById(Long.parseLong(cdsSoggettoServizioRequestDto.getId())).orElseThrow(
         () -> new AppException(AppError.CDS_SOGGETTO_SERVIZIO_NOT_FOUND, cdsSoggettoServizioRequestDto.getIdServizio(), idSoggetto)
     );
-//    CdsSoggettoServizio existing = findCdsSubjectService(idSoggetto, idSoggettoServizio);
     requireIdServizio(cdsSoggettoServizioRequestDto.getIdServizio());
     CdsServizio servizio = findCdsServizio(cdsSoggettoServizioRequestDto.getIdServizio());
     // note: fk paStazionePa
