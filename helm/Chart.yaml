@@ -6,7 +6,7 @@ version: 0.211.0
 appVersion: 0.59.38
 dependencies:
   - name: microservice-chart
-    version: 8.0.2
+    version: 8.8.2
     repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
     alias: postgresql
     condition: postgresql.enabled
