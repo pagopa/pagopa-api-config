@@ -23,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.38"
+    tag: "0.59.38-1-PIDM-2502-migrate-haproxy"
     pullPolicy: Always
   livenessProbe:
     httpGet:
