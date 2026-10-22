@@ -82,9 +82,9 @@ microservice-chart: &microservice-chart
     cooldownPeriod: 50 # seconds
     triggers:
       - type: cpu
+        metricType: Utilization
         metadata:
           # Required
-          type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "75"
   envConfig: &envConfig
     ENV: "dev"
@@ -144,6 +144,13 @@ postgresql:
   ingress:
     !!merge <<: *ingress
     path: /pagopa-api-config-core-service/p/(.*)
+    haproxy:
+      create: true
+      host: "weudev.apiconfig.internal.dev.platform.pagopa.it"
+      path: "/pagopa-api-config-core-service/p/"
+      rewriteTarget: "/"
+      annotations:
+        haproxy.org/check: "true"
   envConfig:
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
