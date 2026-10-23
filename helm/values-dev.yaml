@@ -146,7 +146,7 @@ postgresql:
     path: /pagopa-api-config-core-service/p/(.*)
     haproxy:
       create: true
-      host: "weudev.apiconfig.internal.dev.platform.pagopa.it"
+      host: "haproxy.apiconfig.internal.dev.platform.pagopa.it"
       path: "/pagopa-api-config-core-service/p/"
       rewriteTarget: "/\\1"
       annotations:

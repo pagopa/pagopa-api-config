@@ -157,7 +157,7 @@ postgresql:
       create: true
       host: "weuprod.apiconfig.internal.platform.pagopa.it"
       path: "/pagopa-api-config-core-service/p/"
-      rewriteTarget: "/"
+      rewriteTarget: "/\\1"
       annotations:
         haproxy.org/check: "true"
   envConfig:
