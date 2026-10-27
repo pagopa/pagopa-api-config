@@ -3,7 +3,7 @@ microservice-chart: &microservice-chart
   nameOverride: ""
   fullnameOverride: ""
   canaryDelivery:
-    create: false
+    create: true
     ingress:
       header: true
       headerName: X-Canary-Test
