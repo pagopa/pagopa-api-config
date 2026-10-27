@@ -3,15 +3,14 @@ microservice-chart: &microservice-chart
   nameOverride: ""
   fullnameOverride: ""
   canaryDelivery:
-    create: true
+    create: false
     ingress:
-      header: true
-      headerName: X-Canary-Test
-      headerValue: enabled
-      weightPercent: 20
-    image:
-      repository: ghcr.io/pagopa/pagopa-api-config
-      tag: "0.59.38"
+      proxyBodySize: 4m
+      canary:
+        type: header
+        headerName: X-Canary
+        headerValue: canary
+        weightPercent: 0
     service:
       create: true
     deployment:
@@ -24,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.38-5-PIDM-2502-migrate-haproxy"
+    tag: "0.59.38-2-PIDM-2502-migrate-haproxy"
     pullPolicy: Always
   livenessProbe:
     httpGet:

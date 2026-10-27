@@ -2,11 +2,11 @@ apiVersion: v2
 name: core
 description: APIs to manage configuration for CI and PSP of pagoPA
 type: application
-version: 0.216.0
-appVersion: 0.59.38-5-PIDM-2502-migrate-haproxy
+version: 0.213.0
+appVersion: 0.59.38-2-PIDM-2502-migrate-haproxy
 dependencies:
   - name: microservice-chart
-    version: 8.9.0
+    version: 8.8.2
     repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
     alias: postgresql
     condition: postgresql.enabled
