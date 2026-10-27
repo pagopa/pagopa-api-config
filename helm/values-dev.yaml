@@ -9,9 +9,9 @@ microservice-chart: &microservice-chart
       headerName: X-Canary-Test
       headerValue: enabled
       weightPercent: 20
-      image:
-        repository: ghcr.io/pagopa/pagopa-api-config
-        tag: "0.59.38"
+    image:
+      repository: ghcr.io/pagopa/pagopa-api-config
+      tag: "0.59.38"
     service:
       create: true
     deployment:
