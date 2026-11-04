@@ -23,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.38-1-PAGOPA-3780-maintenance"
+    tag: "0.59.38-2-PAGOPA-3780-maintenance"
     pullPolicy: Always
   livenessProbe:
     httpGet:
