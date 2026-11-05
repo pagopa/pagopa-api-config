@@ -69,7 +69,7 @@ microservice-chart: &microservice-chart
     allowPrivilegeEscalation: false
   resources:
     requests:
-      memory: "1Gi"
+      memory: "640Mi"
       cpu: "0.40"
     limits:
       memory: "1Gi"
