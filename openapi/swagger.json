@@ -3,7 +3,7 @@
   "info": {
     "description": "Spring application exposes APIs to manage configuration for CI/PSP on the Nodo dei Pagamenti",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "title": "PagoPA API configuration ${service}",
+    "title": "core",
     "version": "0.59.38-2-PAGOPA-3780-maintenance"
   },
   "host": "localhost:8080",
@@ -630,6 +630,145 @@
         ],
         "operationId": "getAllStationsMaintenances",
         "summary": "Get a list of all stations' maintenance filtered by dates"
+      }
+    },
+    "/brokers/station-maintenances/aggregated": {
+      "parameters": [
+        {
+          "description": "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+          "in": "header",
+          "name": "X-Request-Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Start date of maintenance, used to retrieve all maintenance that start before the provided date",
+            "format": "date-time",
+            "in": "query",
+            "name": "startDateTimeBefore",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "Start date of maintenance, used to retrieve all maintenance that start after the provided date",
+            "format": "date-time",
+            "in": "query",
+            "name": "startDateTimeAfter",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "End date of maintenance, used to retrieve all maintenance that end before the provided date",
+            "format": "date-time",
+            "in": "query",
+            "name": "endDateTimeBefore",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "End date of maintenance, used to retrieve all maintenance that end after the provided date",
+            "format": "date-time",
+            "in": "query",
+            "name": "endDateTimeAfter",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/AggregatedStationMaintenanceListResource"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            }
+          },
+          "500": {
+            "description": "Service unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "This header identifies the call",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProblemJson"
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          },
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "Creditor Institutions"
+        ],
+        "operationId": "getAggregatedStationMaintenances",
+        "summary": "Get station maintenances aggregated by broker and maintenance time"
       }
     },
     "/brokers/{brokercode}": {
@@ -16527,6 +16666,90 @@
     }
   },
   "definitions": {
+    "AffectedCreditorInstitutionResource": {
+      "description": "Distinct creditor institutions linked to the affected stations",
+      "properties": {
+        "business_name": {
+          "description": "Creditor institution's business name",
+          "type": "string"
+        },
+        "creditor_institution_code": {
+          "description": "Creditor institution's code",
+          "type": "string"
+        }
+      },
+      "required": [
+        "business_name",
+        "creditor_institution_code"
+      ],
+      "type": "object"
+    },
+    "AggregatedStationMaintenanceListResource": {
+      "properties": {
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "station_maintenance_list": {
+          "description": "List of aggregated station maintenances",
+          "items": {
+            "$ref": "#/definitions/AggregatedStationMaintenanceResource"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "page_info",
+        "station_maintenance_list"
+      ],
+      "type": "object"
+    },
+    "AggregatedStationMaintenanceResource": {
+      "description": "List of aggregated station maintenances",
+      "properties": {
+        "broker_code": {
+          "description": "Code of the broker that owns the stations",
+          "type": "string"
+        },
+        "broker_name": {
+          "description": "Name of the broker",
+          "type": "string"
+        },
+        "creditor_institutions": {
+          "description": "Distinct creditor institutions linked to the affected stations",
+          "items": {
+            "$ref": "#/definitions/AffectedCreditorInstitutionResource"
+          },
+          "type": "array"
+        },
+        "end_date_time": {
+          "example": "2024-04-01T13:00:00+02:00",
+          "format": "date-time",
+          "type": "string"
+        },
+        "start_date_time": {
+          "example": "2024-04-01T10:00:00+02:00",
+          "format": "date-time",
+          "type": "string"
+        },
+        "stations": {
+          "description": "Distinct station codes affected by the maintenance",
+          "items": {
+            "description": "Distinct station codes affected by the maintenance",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "broker_code",
+        "broker_name",
+        "creditor_institutions",
+        "end_date_time",
+        "start_date_time",
+        "stations"
+      ],
+      "type": "object"
+    },
     "AppInfo": {
       "properties": {
         "dbConnection": {

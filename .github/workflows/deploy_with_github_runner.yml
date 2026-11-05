@@ -54,8 +54,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - run: |
-          jq  '."servers"[0]."url" |= "${host}/apiconfig/api/v1"' "${GITHUB_WORKSPACE}/openapi/openapi.json" > "${GITHUB_WORKSPACE}/infra/api/apiconfig_api/v1/_openapi.json.tpl"
+        # this step is executed in the script generate_openapi_and_swagger.sh
+#      - run: |
+#          jq  '."servers"[0]."url" |= "${host}/apiconfig/api/v1"' "${GITHUB_WORKSPACE}/openapi/openapi.json" > "${GITHUB_WORKSPACE}/infra/api/apiconfig_api/v1/_openapi.json.tpl"
 
       - name: Setup Terraform
         # from https://github.com/hashicorp/setup-terraform/commits/main

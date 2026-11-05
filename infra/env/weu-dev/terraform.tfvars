@@ -3,6 +3,8 @@ env       = "dev"
 env_short = "d"
 domain    = "apiconfig"
 
+location_short = "weu"
+
 tags = {
   CreatedBy   = "Terraform"
   Environment = "Dev"
