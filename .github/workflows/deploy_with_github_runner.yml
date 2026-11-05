@@ -54,6 +54,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - run: |
+          jq  '."servers"[0]."url" |= "${host}/apiconfig/api/v1"' "${GITHUB_WORKSPACE}/openapi/openapi.json" > "${GITHUB_WORKSPACE}/infra/api/apiconfig_api/v1/_openapi.json.tpl"
+
       - name: Setup Terraform
         # from https://github.com/hashicorp/setup-terraform/commits/main
         uses: hashicorp/setup-terraform@8feba2b913ea459066180f9cb177f58a881cf146
