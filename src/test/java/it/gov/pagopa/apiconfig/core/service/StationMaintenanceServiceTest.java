@@ -3,6 +3,8 @@ package it.gov.pagopa.apiconfig.core.service;
 import it.gov.pagopa.apiconfig.core.config.MappingsConfiguration;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.AggregatedStationMaintenanceListResource;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.AggregatedStationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.MaintenanceHoursSummaryResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
@@ -10,10 +12,14 @@ import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceR
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
 import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
+import it.gov.pagopa.apiconfig.starter.entity.Pa;
+import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenance;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryId;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import it.gov.pagopa.apiconfig.starter.repository.IntermediariPaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StationMaintenanceSummaryViewRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
 import org.junit.Assert;
@@ -27,7 +33,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +44,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,6 +70,12 @@ class StationMaintenanceServiceTest {
 
     @MockBean
     private StazioniRepository stationRepository;
+
+    @MockBean
+    private IntermediariPaRepository brokerRepository;
+
+    @MockBean
+    private PaStazionePaRepository stationCreditorInstitutionRepository;
 
     @Captor
     private ArgumentCaptor<StationMaintenance> stationMaintenanceCaptor;
@@ -673,6 +689,126 @@ class StationMaintenanceServiceTest {
     }
 
     @Test
+    void getAggregatedStationMaintenancesGroupsByBrokerAndInstantsAndSortsDistinctAssociations() {
+        OffsetDateTime start = OffsetDateTime.parse("2026-03-01T10:00:00+01:00");
+        OffsetDateTime end = OffsetDateTime.parse("2026-03-01T12:00:00+01:00");
+        OffsetDateTime sameStartAtUtc = start.withOffsetSameInstant(ZoneOffset.UTC);
+        OffsetDateTime sameEndAtUtc = end.withOffsetSameInstant(ZoneOffset.UTC);
+        when(stationMaintenanceRepository.findAllStationsMaintenances(any(), any(), any(), any()))
+                .thenReturn(Arrays.asList(
+                        maintenance("BROKER-1", "STATION-Z", 1L, start, end, false),
+                        maintenance("BROKER-1", "STATION-Z", 1L, start, end, false),
+                        maintenance("BROKER-1", "STATION-A", 2L, sameStartAtUtc, sameEndAtUtc, true),
+                        maintenance("BROKER-1", "STATION-Z", 1L, start.plusDays(1), end.plusDays(1), false),
+                        maintenance("BROKER-2", "STATION-B", 3L, start, end, false)
+                ));
+        when(brokerRepository.findByIdIntermediarioPa("BROKER-1"))
+                .thenReturn(Optional.of(broker("BROKER-1", "Broker One")));
+        when(brokerRepository.findByIdIntermediarioPa("BROKER-2"))
+                .thenReturn(Optional.of(broker("BROKER-2", "Broker Two")));
+        when(stationRepository.findByIdStazione("STATION-Z"))
+                .thenReturn(Optional.of(station("STATION-Z", 1L)));
+        when(stationRepository.findByIdStazione("STATION-A"))
+                .thenReturn(Optional.of(station("STATION-A", 2L)));
+        when(stationRepository.findByIdStazione("STATION-B"))
+                .thenReturn(Optional.of(station("STATION-B", 3L)));
+        when(stationCreditorInstitutionRepository.findAllByFkStazione_ObjId(1L))
+                .thenReturn(Arrays.asList(relation("Zulu", "CI-Z"), relation("Alpha", "CI-A")));
+        when(stationCreditorInstitutionRepository.findAllByFkStazione_ObjId(2L))
+                .thenReturn(Arrays.asList(relation("Alpha", "CI-A"), relation("Alpha", "CI-B")));
+        when(stationCreditorInstitutionRepository.findAllByFkStazione_ObjId(3L))
+                .thenReturn(Collections.emptyList());
+
+        AggregatedStationMaintenanceListResource result =
+                sut.getAggregatedStationMaintenances(null, null, null, null);
+
+        assertEquals(3, result.getMaintenanceList().size());
+        AggregatedStationMaintenanceResource first = result.getMaintenanceList().get(0);
+        assertEquals("BROKER-1", first.getBrokerCode());
+        assertEquals("Broker One", first.getBrokerName());
+        assertEquals(Arrays.asList("STATION-A", "STATION-Z"), first.getStations());
+        assertEquals(start, first.getStartDateTime());
+        assertEquals(Arrays.asList("Alpha", "Alpha", "Zulu"), first.getCreditorInstitutions().stream()
+                .map(institution -> institution.getBusinessName()).toList());
+        assertEquals(Arrays.asList("CI-A", "CI-B", "CI-Z"), first.getCreditorInstitutions().stream()
+                .map(institution -> institution.getCreditorInstitutionCode()).toList());
+        assertEquals("2026-03-02T10:00+01:00", result.getMaintenanceList().get(1).getStartDateTime().toString());
+        assertEquals(Arrays.asList("CI-A", "CI-Z"), result.getMaintenanceList().get(1)
+                .getCreditorInstitutions().stream()
+                .map(institution -> institution.getCreditorInstitutionCode()).toList());
+        assertEquals("BROKER-2", result.getMaintenanceList().get(2).getBrokerCode());
+        assertEquals(Collections.emptyList(), result.getMaintenanceList().get(2).getCreditorInstitutions());
+        assertEquals(3, result.getPageInfo().getItemsFound());
+        assertEquals(3L, result.getPageInfo().getTotalItems());
+        assertEquals(1, result.getPageInfo().getTotalPages());
+        assertEquals(0, result.getPageInfo().getPage());
+        assertNull(result.getPageInfo().getLimit());
+        verify(brokerRepository, times(1)).findByIdIntermediarioPa("BROKER-1");
+        verify(stationRepository, times(1)).findByIdStazione("STATION-Z");
+        verify(stationCreditorInstitutionRepository, times(1)).findAllByFkStazione_ObjId(1L);
+    }
+
+    @Test
+    void getAggregatedStationMaintenancesForwardsDateFilters() {
+        OffsetDateTime startBefore = OffsetDateTime.now();
+        OffsetDateTime startAfter = startBefore.plusHours(1);
+        OffsetDateTime endBefore = startBefore.plusHours(2);
+        OffsetDateTime endAfter = startBefore.plusHours(3);
+        when(stationMaintenanceRepository.findAllStationsMaintenances(startBefore, startAfter, endBefore, endAfter))
+                .thenReturn(Collections.emptyList());
+
+        AggregatedStationMaintenanceListResource result =
+                sut.getAggregatedStationMaintenances(startBefore, startAfter, endBefore, endAfter);
+
+        assertEquals(0, result.getPageInfo().getItemsFound());
+        assertEquals(0L, result.getPageInfo().getTotalItems());
+        verify(stationMaintenanceRepository)
+                .findAllStationsMaintenances(startBefore, startAfter, endBefore, endAfter);
+        verify(brokerRepository, never()).findByIdIntermediarioPa(anyString());
+        verify(stationRepository, never()).findByIdStazione(anyString());
+    }
+
+    @Test
+    void getAggregatedStationMaintenancesFailsWhenStationIsMissing() {
+        OffsetDateTime start = OffsetDateTime.now();
+        when(stationMaintenanceRepository.findAllStationsMaintenances(any(), any(), any(), any()))
+                .thenReturn(Collections.singletonList(maintenance("BROKER-1", "MISSING", 1L, start, start.plusHours(1), false)));
+        when(brokerRepository.findByIdIntermediarioPa("BROKER-1"))
+                .thenReturn(Optional.of(broker("BROKER-1", "Broker One")));
+        when(stationRepository.findByIdStazione("MISSING")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class,
+                () -> sut.getAggregatedStationMaintenances(null, null, null, null));
+
+        assertEquals(AppError.STATION_NOT_FOUND.httpStatus, exception.getHttpStatus());
+    }
+
+    @Test
+    void getAggregatedStationMaintenancesFailsWhenBrokerIsMissing() {
+        OffsetDateTime start = OffsetDateTime.now();
+        when(stationMaintenanceRepository.findAllStationsMaintenances(any(), any(), any(), any()))
+                .thenReturn(Collections.singletonList(maintenance("MISSING", "STATION-A", 1L, start, start.plusHours(1), false)));
+        when(brokerRepository.findByIdIntermediarioPa("MISSING")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class,
+                () -> sut.getAggregatedStationMaintenances(null, null, null, null));
+
+        assertEquals(AppError.BROKER_NOT_FOUND.httpStatus, exception.getHttpStatus());
+    }
+
+    @Test
+    void getAggregatedStationMaintenancesPropagatesRepositoryFailures() {
+        IllegalStateException databaseFailure = new IllegalStateException("database failure");
+        when(stationMaintenanceRepository.findAllStationsMaintenances(any(), any(), any(), any()))
+                .thenThrow(databaseFailure);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> sut.getAggregatedStationMaintenances(null, null, null, null));
+
+        assertEquals(databaseFailure, exception);
+    }
+
+    @Test
     void getBrokerMaintenancesSummarySuccessWithoutExtra() {
         StationMaintenanceSummaryView summaryView = StationMaintenanceSummaryView.builder()
                 .usedHours(10.25)
@@ -801,6 +937,49 @@ class StationMaintenanceServiceTest {
                 .startDateTime(OffsetDateTime.now())
                 .endDateTime(OffsetDateTime.now())
                 .standIn(false)
+                .build();
+    }
+
+    private StationMaintenance maintenance(
+            String brokerCode,
+            String stationCode,
+            Long stationId,
+            OffsetDateTime start,
+            OffsetDateTime end,
+            boolean standIn
+    ) {
+        return StationMaintenance.builder()
+                .objId(MAINTENANCE_ID)
+                .station(Stazioni.builder()
+                        .objId(stationId)
+                        .idStazione(stationCode)
+                        .intermediarioPa(IntermediariPa.builder()
+                                .idIntermediarioPa(brokerCode)
+                                .build())
+                        .build())
+                .startDateTime(start)
+                .endDateTime(end)
+                .standIn(standIn)
+                .build();
+    }
+
+    private Stazioni station(String stationCode, Long stationId) {
+        return Stazioni.builder().objId(stationId).idStazione(stationCode).build();
+    }
+
+    private IntermediariPa broker(String brokerCode, String brokerName) {
+        return IntermediariPa.builder()
+                .idIntermediarioPa(brokerCode)
+                .codiceIntermediario(brokerName)
+                .build();
+    }
+
+    private PaStazionePa relation(String businessName, String creditorInstitutionCode) {
+        return PaStazionePa.builder()
+                .pa(Pa.builder()
+                        .ragioneSociale(businessName)
+                        .idDominio(creditorInstitutionCode)
+                        .build())
                 .build();
     }
 

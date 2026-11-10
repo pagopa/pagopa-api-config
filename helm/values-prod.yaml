@@ -23,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.38"
+    tag: "0.59.38-2-PAGOPA-3780-maintenance"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -82,9 +82,9 @@ microservice-chart: &microservice-chart
     cooldownPeriod: 50 # seconds
     triggers:
       - type: cpu
+        # Required
+        metricType: Utilization # Allowed types are 'Utilization' or 'AverageValue'
         metadata:
-          # Required
-          type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "75"
   envConfig: &envConfig
     ENV: "prod"
