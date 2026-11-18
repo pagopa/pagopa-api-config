@@ -145,7 +145,7 @@ postgresql:
     !!merge <<: *ingress
     path: /pagopa-api-config-core-service/p/(.*)
   envConfig:
-    JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics -XX:UseAVX=2"
+    JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics"
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
