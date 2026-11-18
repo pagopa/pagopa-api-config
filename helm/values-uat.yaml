@@ -23,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.38"
+    tag: "0.59.38-1-PIDM-2620"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -86,6 +86,7 @@ microservice-chart: &microservice-chart
         metadata:
           value: "75"
   envConfig: &envConfig
+    JAVA_OPTS: "-XX:-UseBASE64Intrinsics"
     ENV: "uat"
     AFM_MARKETPLACE_HOST: 'https://api.uat.platform.pagopa.it/afm/marketplace-service/v1'
     AFM_UTILS_HOST: 'https://api.uat.platform.pagopa.it/afm/utils/v1'
