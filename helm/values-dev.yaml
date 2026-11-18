@@ -19,7 +19,7 @@ microservice-chart: &microservice-chart
         repository: ghcr.io/pagopa/pagopa-api-config
         tag: "0.53.4"
         pullPolicy: Always
-      envConfig: {}
+      envConfig: {JAVA_OPTS: "-XX:-UseBASE64Intrinsics"}
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
@@ -87,6 +87,7 @@ microservice-chart: &microservice-chart
           type: Utilization # Allowed types are 'Utilization' or 'AverageValue'
           value: "75"
   envConfig: &envConfig
+    JAVA_OPTS: "-XX:-UseBASE64Intrinsics"
     ENV: "dev"
     AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
     AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
@@ -145,7 +146,6 @@ postgresql:
     !!merge <<: *ingress
     path: /pagopa-api-config-core-service/p/(.*)
   envConfig:
-    JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics"
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"

@@ -19,7 +19,7 @@ microservice-chart: &microservice-chart
         repository: ghcr.io/pagopa/pagopa-api-config
         tag: "0.53.4"
         pullPolicy: Always
-      envConfig: {}
+      envConfig: {JAVA_OPTS: "-XX:-UseBASE64Intrinsics"}
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
@@ -105,7 +105,7 @@ microservice-chart: &microservice-chart
     CRON_JOB_ICA_SCHEDULE_ENABLED: "false"
     CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
     AZURE_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
-    JAVA_OPTS: "-XX:+PrintFlagsFinal -XX:MaxHeapSize=1g"
+    JAVA_OPTS: "-XX:+PrintFlagsFinal -XX:MaxHeapSize=1g -XX:-UseBASE64Intrinsics"
     OTEL_SERVICE_NAME: "pagopa-api-config"
     OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=prod"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
@@ -154,7 +154,6 @@ postgresql:
     !!merge <<: *ingress
     path: /pagopa-api-config-core-service/p/(.*)
   envConfig:
-    JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics"
     !!merge <<: *envConfig
     WEBSITE_SITE_NAME: 'pagopaapiconfig-postgresql'
     APPLICATIONINSIGHTS_ROLE_NAME: "pagopa-api-config-core-postgresql"
