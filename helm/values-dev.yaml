@@ -19,7 +19,7 @@ microservice-chart: &microservice-chart
         repository: ghcr.io/pagopa/pagopa-api-config
         tag: "0.53.4"
         pullPolicy: Always
-      envConfig: {JAVA_OPTS: "-XX:-UseBASE64Intrinsics"}
+      envConfig: {}
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
