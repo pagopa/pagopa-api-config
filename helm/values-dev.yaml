@@ -86,7 +86,7 @@ microservice-chart: &microservice-chart
         metadata:
           value: "75"
   envConfig: &envConfig
-    JAVA_OPTS: "-XX:-UseBASE64Intrinsics"
+    JAVA_OPTS: "-XX:-UseBASE64Intrinsics -XX:+PrintFlagsFinal"
     ENV: "dev"
     AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
     AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
