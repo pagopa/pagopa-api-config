@@ -44,6 +44,8 @@ Lo script legge il primo foglio, con le intestazioni alla riga 2. Nella colonna 
 
 Per `Nuovo Censimento Ente e IBAN` indica anche la `Stazione`: lo script censisce l'ente, crea la relazione con la stazione e poi registra l'IBAN.
 
+Nella stessa esecuzione, le righe successive con lo stesso codice fiscale vengono saltate e segnate `KO` con motivazione `Ente Duplicato nel file`, anche se la prima riga è fallita. Nei report di retry, anche le righe già `OK` sono considerate per il controllo dei duplicati.
+
 ## Report e retry
 
 Lo script salva `report_<timestamp>.xlsx` nella cartella corrente. Controlla `Esito`, `Motivazione Errore` e `Dettaglio Azioni`. Dopo aver corretto le righe in errore, puoi rilanciare il report nello **stesso ambiente**:

@@ -25,6 +25,7 @@ Uso:
     python handle_ec_configuration.py [file_input.xlsx]
 """
 
+import json
 import os
 import re
 import sys
@@ -127,6 +128,8 @@ COL_IBAN_DUE_DATE = "Data scadenza IBAN"
 COL_ESITO = "Esito"
 COL_MOTIVAZIONE = "Motivazione Errore"
 COL_DETTAGLIO = "Dettaglio Azioni"
+DUPLICATE_REASON = "Ente Duplicato nel file"
+DUPLICATE_RETRY_PREFIX = "Retry precedente: "
 
 # =============================================================================
 # 2. UTILITY
@@ -463,6 +466,15 @@ def process_row(row):
     previous_detail = cell(row, COL_DETTAGLIO)
     if (cell(row, COL_ESITO) or "").upper() == "KO" and previous_detail:
         previous_reason = cell(row, COL_MOTIVAZIONE) or ""
+        if previous_reason == DUPLICATE_REASON and previous_detail.startswith(DUPLICATE_RETRY_PREFIX):
+            try:
+                previous = json.loads(previous_detail[len(DUPLICATE_RETRY_PREFIX):])
+                previous_reason = previous["motivazione"]
+                previous_detail = previous["dettaglio"]
+                if not isinstance(previous_reason, str) or not isinstance(previous_detail, str):
+                    raise ValueError("dati di retry non validi")
+            except (ValueError, KeyError, TypeError):
+                return "KO", "Dettaglio del retry duplicato non valido", previous_detail
         previous_steps = previous_detail.split(" | ")
         for index, (label, _) in enumerate(steps):
             entry = previous_steps[index] if index < len(previous_steps) else ""
@@ -507,15 +519,31 @@ def main():
     df = load_excel(FILE_PATH)
     results = []
     skipped_ok = 0
+    seen_codes = set()
 
     print("🚀 Inizio elaborazione...\n")
     for excel_row, row in df.iterrows():
         label = cell(row, COL_RAGIONE_SOCIALE) or cell(row, COL_CODICE_FISCALE) or "N/A"
+        cf = get_fiscal_code(row)
         if (cell(row, COL_ESITO) or "").upper() == "OK":
+            seen_codes.add(cf)
             results.append(("OK", cell(row, COL_MOTIVAZIONE) or "", cell(row, COL_DETTAGLIO) or ""))
             skipped_ok += 1
             print(f"⏭️ [riga {excel_row}] {label}: già OK, saltata")
             continue
+
+        if cf in seen_codes:
+            detail = cell(row, COL_DETTAGLIO) or ""
+            reason = cell(row, COL_MOTIVAZIONE) or ""
+            if detail and reason and reason != DUPLICATE_REASON:
+                detail = DUPLICATE_RETRY_PREFIX + json.dumps(
+                    {"motivazione": reason, "dettaglio": detail}, ensure_ascii=False
+                )
+            results.append(("KO", DUPLICATE_REASON, detail))
+            print(f"❌ [riga {excel_row}] {label}: KO {DUPLICATE_REASON}")
+            continue
+
+        seen_codes.add(cf)
 
         try:
             esito, motivazione, dettaglio = process_row(row)
