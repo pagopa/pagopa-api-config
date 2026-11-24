@@ -23,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.38-3-PAGOPA-3780-maintenance"
+    tag: "0.59.38-1-PIDM-2620"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -82,7 +82,6 @@ microservice-chart: &microservice-chart
     cooldownPeriod: 50 # seconds
     triggers:
       - type: cpu
-        # Required
         metricType: Utilization # Allowed types are 'Utilization' or 'AverageValue'
         metadata:
           value: "75"
@@ -105,7 +104,7 @@ microservice-chart: &microservice-chart
     CRON_JOB_ICA_SCHEDULE_ENABLED: "false"
     CRON_JOB_ICA_SCHEDULE_EXPRESSION: "0 0 0 * * *"
     AZURE_STORAGE_TABLE_NAME: "pagopapweuapiconfigsaicatable"
-    JAVA_OPTS: "-XX:+PrintFlagsFinal -XX:MaxHeapSize=1g"
+    JAVA_OPTS: "-XX:+PrintFlagsFinal -XX:MaxHeapSize=1g -XX:-UseBASE64Intrinsics"
     OTEL_SERVICE_NAME: "pagopa-api-config"
     OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=prod"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"

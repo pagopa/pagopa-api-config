@@ -23,7 +23,7 @@ microservice-chart: &microservice-chart
       envSecret: {}
   image:
     repository: ghcr.io/pagopa/pagopa-api-config
-    tag: "0.59.38-3-PAGOPA-3780-maintenance"
+    tag: "0.59.38-1-PIDM-2620"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -82,11 +82,11 @@ microservice-chart: &microservice-chart
     cooldownPeriod: 50 # seconds
     triggers:
       - type: cpu
-        # Required
         metricType: Utilization # Allowed types are 'Utilization' or 'AverageValue'
         metadata:
           value: "75"
   envConfig: &envConfig
+    JAVA_OPTS: "-XX:-UseBASE64Intrinsics -XX:+PrintFlagsFinal"
     ENV: "dev"
     AFM_MARKETPLACE_HOST: 'https://api.dev.platform.pagopa.it/afm/marketplace-service/v1'
     AFM_UTILS_HOST: 'https://api.dev.platform.pagopa.it/afm/utils/v1'
