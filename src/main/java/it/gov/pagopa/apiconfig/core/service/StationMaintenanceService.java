@@ -3,16 +3,23 @@ package it.gov.pagopa.apiconfig.core.service;
 import it.gov.pagopa.apiconfig.core.exception.AppError;
 import it.gov.pagopa.apiconfig.core.exception.AppException;
 import it.gov.pagopa.apiconfig.core.model.PageInfo;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.AffectedCreditorInstitutionResource;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.AggregatedStationMaintenanceListResource;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.AggregatedStationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.MaintenanceHoursSummaryResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.UpdateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.repository.ExtendedStationMaintenanceRepository;
+import it.gov.pagopa.apiconfig.starter.entity.IntermediariPa;
+import it.gov.pagopa.apiconfig.starter.entity.PaStazionePa;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenance;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryId;
 import it.gov.pagopa.apiconfig.starter.entity.StationMaintenanceSummaryView;
 import it.gov.pagopa.apiconfig.starter.entity.Stazioni;
+import it.gov.pagopa.apiconfig.starter.repository.IntermediariPaRepository;
+import it.gov.pagopa.apiconfig.starter.repository.PaStazionePaRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StationMaintenanceSummaryViewRepository;
 import it.gov.pagopa.apiconfig.starter.repository.StazioniRepository;
 import org.modelmapper.ModelMapper;
@@ -25,10 +32,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 @Service
 @Validated
@@ -38,6 +52,8 @@ public class StationMaintenanceService {
     private final ExtendedStationMaintenanceRepository stationMaintenanceRepository;
     private final StationMaintenanceSummaryViewRepository summaryViewRepository;
     private final StazioniRepository stationRepository;
+    private final IntermediariPaRepository brokerRepository;
+    private final PaStazionePaRepository stationCreditorInstitutionRepository;
     private final ModelMapper mapper;
     private final Double annualHoursLimit;
     private final Double minimumSchedulingNoticeHours;
@@ -47,6 +63,8 @@ public class StationMaintenanceService {
             ExtendedStationMaintenanceRepository stationMaintenanceRepository,
             StationMaintenanceSummaryViewRepository summaryViewRepository,
             StazioniRepository stationRepository,
+            IntermediariPaRepository brokerRepository,
+            PaStazionePaRepository stationCreditorInstitutionRepository,
             ModelMapper mapper,
             @Value("${station.maintenance.annual-hours-limit}") Double annualHoursLimit,
             @Value("${station.maintenance.minimum-scheduling-notice-hours}") Double minimumSchedulingNoticeHours
@@ -54,6 +72,8 @@ public class StationMaintenanceService {
         this.stationMaintenanceRepository = stationMaintenanceRepository;
         this.summaryViewRepository = summaryViewRepository;
         this.stationRepository = stationRepository;
+        this.brokerRepository = brokerRepository;
+        this.stationCreditorInstitutionRepository = stationCreditorInstitutionRepository;
         this.mapper = mapper;
         this.annualHoursLimit = annualHoursLimit;
         this.minimumSchedulingNoticeHours = minimumSchedulingNoticeHours;
@@ -233,6 +253,103 @@ public class StationMaintenanceService {
                         .itemsFound(response.size())
                         .build())
                 .build();
+    }
+
+    /**
+     * Retrieve station maintenances grouped by broker and identical maintenance instants.
+     */
+    public AggregatedStationMaintenanceListResource getAggregatedStationMaintenances(
+            OffsetDateTime startDateTimeBefore,
+            OffsetDateTime startDateTimeAfter,
+            OffsetDateTime endDateTimeBefore,
+            OffsetDateTime endDateTimeAfter
+    ) {
+        StationMaintenanceListResource maintenances = getAllStationsMaintenances(
+                startDateTimeBefore,
+                startDateTimeAfter,
+                endDateTimeBefore,
+                endDateTimeAfter
+        );
+        Map<AggregatedMaintenanceKey, AggregatedMaintenanceBuilder> groups = new LinkedHashMap<>();
+        for (StationMaintenanceResource maintenance : maintenances.getMaintenanceList()) {
+            AggregatedMaintenanceKey key = new AggregatedMaintenanceKey(
+                    maintenance.getBrokerCode(),
+                    maintenance.getStartDateTime().toInstant(),
+                    maintenance.getEndDateTime().toInstant()
+            );
+            groups.computeIfAbsent(key, ignored -> new AggregatedMaintenanceBuilder(
+                    maintenance.getBrokerCode(),
+                    maintenance.getStartDateTime(),
+                    maintenance.getEndDateTime()
+            )).stations.add(maintenance.getStationCode());
+        }
+
+        Map<String, IntermediariPa> brokers = new LinkedHashMap<>();
+        Map<String, Stazioni> stations = new LinkedHashMap<>();
+        Map<String, List<PaStazionePa>> stationInstitutions = new LinkedHashMap<>();
+        List<AggregatedStationMaintenanceResource> aggregated = new ArrayList<>(groups.size());
+        for (AggregatedMaintenanceBuilder group : groups.values()) {
+            IntermediariPa broker = brokers.computeIfAbsent(group.brokerCode, code ->
+                    brokerRepository.findByIdIntermediarioPa(code)
+                            .orElseThrow(() -> new AppException(AppError.BROKER_NOT_FOUND, code)));
+
+            TreeMap<CreditorInstitutionKey, AffectedCreditorInstitutionResource> institutions =
+                    new TreeMap<>(Comparator.comparing(CreditorInstitutionKey::businessName)
+                            .thenComparing(CreditorInstitutionKey::creditorInstitutionCode));
+            for (String stationCode : group.stations) {
+                Stazioni station = stations.computeIfAbsent(stationCode, this::getStationByStationCode);
+                List<PaStazionePa> stationRelations = stationInstitutions.computeIfAbsent(stationCode, ignored ->
+                        stationCreditorInstitutionRepository.findAllByFkStazione_ObjId(station.getObjId()));
+                for (PaStazionePa relation : stationRelations) {
+                    String businessName = relation.getPa().getRagioneSociale();
+                    String creditorInstitutionCode = relation.getPa().getIdDominio();
+                    CreditorInstitutionKey institutionKey =
+                            new CreditorInstitutionKey(businessName, creditorInstitutionCode);
+                    institutions.putIfAbsent(institutionKey, AffectedCreditorInstitutionResource.builder()
+                            .businessName(businessName)
+                            .creditorInstitutionCode(creditorInstitutionCode)
+                            .build());
+                }
+            }
+
+            aggregated.add(AggregatedStationMaintenanceResource.builder()
+                    .brokerCode(group.brokerCode)
+                    .brokerName(broker.getCodiceIntermediario())
+                    .startDateTime(group.startDateTime)
+                    .endDateTime(group.endDateTime)
+                    .stations(new ArrayList<>(group.stations))
+                    .creditorInstitutions(new ArrayList<>(institutions.values()))
+                    .build());
+        }
+
+        return AggregatedStationMaintenanceListResource.builder()
+                .maintenanceList(aggregated)
+                .pageInfo(PageInfo.builder()
+                        .page(0)
+                        .totalItems((long) aggregated.size())
+                        .totalPages(1)
+                        .itemsFound(aggregated.size())
+                        .build())
+                .build();
+    }
+
+    private record AggregatedMaintenanceKey(String brokerCode, Instant start, Instant end) {
+    }
+
+    private static class AggregatedMaintenanceBuilder {
+        private final String brokerCode;
+        private final OffsetDateTime startDateTime;
+        private final OffsetDateTime endDateTime;
+        private final TreeSet<String> stations = new TreeSet<>();
+
+        private AggregatedMaintenanceBuilder(String brokerCode, OffsetDateTime startDateTime, OffsetDateTime endDateTime) {
+            this.brokerCode = brokerCode;
+            this.startDateTime = startDateTime;
+            this.endDateTime = endDateTime;
+        }
+    }
+
+    private record CreditorInstitutionKey(String businessName, String creditorInstitutionCode) {
     }
 
     /**

@@ -36,3 +36,6 @@ jq  '."paths"."/creditorinstitutions/ibans".post.parameters[0].type |= "file"' .
 jq  '."paths"."/creditorinstitutions/cbill".post.parameters[1].type |= "file"' ./openapi/swagger.json > ./openapi/swagger.json.temp && mv ./openapi/swagger.json.temp ./openapi/swagger.json
 
 kill %% || true
+
+# Copy openapi in infra folder
+jq  '."servers"[0]."url" |= "${host}/apiconfig/api/v1"' "./openapi/openapi.json" > "./infra/api/apiconfig_api/v1/_openapi.json.tpl"

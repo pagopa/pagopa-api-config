@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.gov.pagopa.apiconfig.core.model.ProblemJson;
+import it.gov.pagopa.apiconfig.core.model.stationmaintenance.AggregatedStationMaintenanceListResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.CreateStationMaintenance;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.MaintenanceHoursSummaryResource;
 import it.gov.pagopa.apiconfig.core.model.stationmaintenance.StationMaintenanceListResource;
@@ -84,6 +85,40 @@ public class StationMaintenanceController {
                         endDateTimeBefore,
                         endDateTimeAfter
                 ));
+    }
+
+    @Operation(summary = "Get station maintenances aggregated by broker and maintenance time",
+            security = {@SecurityRequirement(name = "ApiKey"), @SecurityRequirement(name = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AggregatedStationMaintenanceListResource.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class))),
+            @ApiResponse(responseCode = "429", description = "Too many requests", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "500", description = "Service unavailable",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemJson.class)))
+    })
+    @GetMapping(value = "/station-maintenances/aggregated", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<AggregatedStationMaintenanceListResource> getAggregatedStationMaintenances(
+            @Parameter(description = "Start date of maintenance, used to retrieve all maintenance that start before the provided date")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDateTimeBefore,
+            @Parameter(description = "Start date of maintenance, used to retrieve all maintenance that start after the provided date")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDateTimeAfter,
+            @Parameter(description = "End date of maintenance, used to retrieve all maintenance that end before the provided date")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDateTimeBefore,
+            @Parameter(description = "End date of maintenance, used to retrieve all maintenance that end after the provided date")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDateTimeAfter
+    ) {
+        return ResponseEntity.ok(this.stationMaintenanceService.getAggregatedStationMaintenances(
+                startDateTimeBefore,
+                startDateTimeAfter,
+                endDateTimeBefore,
+                endDateTimeAfter
+        ));
     }
 
     @Operation(summary = "Get a paginated list of station's maintenance for the specified broker",
